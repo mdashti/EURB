@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="core/src"/>
+	<classpathentry kind="src" path="core/test"/>
 	<classpathentry kind="lib" path="core/lib/antlr.jar"/>
 	<classpathentry kind="lib" path="core/lib/asm-attrs.jar"/>
 	<classpathentry kind="lib" path="core/lib/asm.jar"/>
