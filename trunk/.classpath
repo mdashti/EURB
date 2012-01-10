@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="core/src"/>
+	<classpathentry kind="lib" path="core/lib/antlr.jar"/>
+	<classpathentry kind="lib" path="core/lib/asm-attrs.jar"/>
+	<classpathentry kind="lib" path="core/lib/asm.jar"/>
+	<classpathentry kind="lib" path="core/lib/common.jar"/>
+	<classpathentry kind="lib" path="core/lib/commons-cli.jar"/>
+	<classpathentry kind="lib" path="core/lib/commons-codec.jar"/>
+	<classpathentry kind="lib" path="core/lib/commons-collections.jar"/>
+	<classpathentry kind="lib" path="core/lib/commons-discovery.jar"/>
+	<classpathentry kind="lib" path="core/lib/commons-httpclient.jar"/>
+	<classpathentry kind="lib" path="core/lib/commons-lang.jar"/>
+	<classpathentry kind="lib" path="core/lib/commons-logging.jar"/>
+	<classpathentry kind="lib" path="core/lib/fw.jar"/>
+	<classpathentry kind="lib" path="core/lib/icu4j.jar"/>
+	<classpathentry kind="lib" path="core/lib/jxl.jar"/>
+	<classpathentry kind="lib" path="core/lib/log4j.jar"/>
+	<classpathentry kind="lib" path="core/lib/nanoxml.jar"/>
+	<classpathentry kind="lib" path="core/lib/ojdbc14_g.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-beans.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-context-support.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-context.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-core.jar"/>
+	<classpathentry kind="lib" path="core/lib/stringtemplate.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
