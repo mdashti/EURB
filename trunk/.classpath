@@ -16,50 +16,50 @@
 	<classpathentry kind="lib" path="core/lib/log4j.jar"/>
 	<classpathentry kind="lib" path="core/lib/nanoxml.jar"/>
 	<classpathentry kind="lib" path="core/lib/ojdbc14_g.jar"/>
-	<classpathentry kind="lib" path="core/lib/spring-beans.jar"/>
-	<classpathentry kind="lib" path="core/lib/spring-context-support.jar"/>
-	<classpathentry kind="lib" path="core/lib/spring-context.jar"/>
-	<classpathentry kind="lib" path="core/lib/spring-core.jar"/>
 	<classpathentry kind="lib" path="core/lib/stringtemplate.jar"/>
 	<classpathentry kind="lib" path="core/lib/jstl.jar"/>
 	<classpathentry kind="lib" path="core/lib/jtds-1.2.5.jar"/>
 	<classpathentry kind="lib" path="core/lib/mysql-connector-java-5.1.18-bin.jar"/>
 	<classpathentry kind="lib" path="core/lib/servlet-api.jar"/>
-	<classpathentry kind="lib" path="core/lib/spring-aop.jar"/>
-	<classpathentry kind="lib" path="core/lib/spring-asm.jar"/>
-	<classpathentry kind="lib" path="core/lib/spring-aspects.jar"/>
-	<classpathentry kind="lib" path="core/lib/spring-expression.jar"/>
-	<classpathentry kind="lib" path="core/lib/spring-instrument-tomcat.jar"/>
-	<classpathentry kind="lib" path="core/lib/spring-instrument.jar"/>
-	<classpathentry kind="lib" path="core/lib/spring-jdbc.jar"/>
-	<classpathentry kind="lib" path="core/lib/spring-jms.jar"/>
-	<classpathentry kind="lib" path="core/lib/spring-orm.jar"/>
-	<classpathentry kind="lib" path="core/lib/spring-oxm.jar"/>
-	<classpathentry kind="lib" path="core/lib/spring-portlet.jar"/>
-	<classpathentry kind="lib" path="core/lib/spring-servlet.jar"/>
-	<classpathentry kind="lib" path="core/lib/spring-struts.jar"/>
-	<classpathentry kind="lib" path="core/lib/spring-test.jar"/>
-	<classpathentry kind="lib" path="core/lib/spring-transaction.jar"/>
-	<classpathentry kind="lib" path="core/lib/spring-web.jar"/>
 	<classpathentry kind="lib" path="core/lib/standard.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="core/lib/ezmorph-1.0.6.jar"/>
 	<classpathentry kind="lib" path="core/lib/json-lib-2.2.3.jar"/>
 	<classpathentry kind="lib" path="core/lib/json-lib-ext-spring-1.0.2.jar"/>
-	<classpathentry kind="lib" path="core/lib/spring-security-acl.jar"/>
-	<classpathentry kind="lib" path="core/lib/spring-security-aspects.jar"/>
-	<classpathentry kind="lib" path="core/lib/spring-security-cas.jar"/>
-	<classpathentry kind="lib" path="core/lib/spring-security-config.jar"/>
-	<classpathentry kind="lib" path="core/lib/spring-security-core.jar"/>
-	<classpathentry kind="lib" path="core/lib/spring-security-crypto.jar"/>
-	<classpathentry kind="lib" path="core/lib/spring-security-ldap.jar"/>
-	<classpathentry kind="lib" path="core/lib/spring-security-openid.jar"/>
-	<classpathentry kind="lib" path="core/lib/spring-security-remoting.jar"/>
-	<classpathentry kind="lib" path="core/lib/spring-security-taglibs.jar"/>
-	<classpathentry kind="lib" path="core/lib/spring-security-web.jar"/>
 	<classpathentry kind="lib" path="core/lib/commons-beanutils.jar"/>
 	<classpathentry kind="lib" path="core/lib/commons-collections-3.2.1.jar"/>
 	<classpathentry kind="lib" path="core/lib/commons-lang-2.4.jar"/>
 	<classpathentry kind="lib" path="core/lib/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="core/lib/org.springframework.aop-3.1.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="core/lib/org.springframework.asm-3.1.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="core/lib/org.springframework.aspects-3.1.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="core/lib/org.springframework.beans-3.1.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="core/lib/org.springframework.context-3.1.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="core/lib/org.springframework.context.support-3.1.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="core/lib/org.springframework.core-3.1.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="core/lib/org.springframework.expression-3.1.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="core/lib/org.springframework.instrument-3.1.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="core/lib/org.springframework.instrument.tomcat-3.1.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="core/lib/org.springframework.jdbc-3.1.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="core/lib/org.springframework.jms-3.1.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="core/lib/org.springframework.orm-3.1.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="core/lib/org.springframework.oxm-3.1.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="core/lib/org.springframework.test-3.1.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="core/lib/org.springframework.transaction-3.1.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="core/lib/org.springframework.web-3.1.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="core/lib/org.springframework.web.portlet-3.1.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="core/lib/org.springframework.web.servlet-3.1.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="core/lib/org.springframework.web.struts-3.1.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-security-acl-3.1.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-security-aspects-3.1.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-security-cas-3.1.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-security-config-3.1.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-security-core-3.1.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-security-crypto-3.1.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-security-ldap-3.1.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-security-openid-3.1.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-security-remoting-3.1.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-security-taglibs-3.1.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-security-web-3.1.0.RELEASE.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
