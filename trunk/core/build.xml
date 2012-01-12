@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="build">
+
+	<property file="build.properties"/>
+	<property name="src.dir" value="src"/>
+	<property name="src.jsp.dir" value="web/jsp"/>
+	<property name="src.js.dir" value="web/js"/>
+	<property name="src.css.dir" value="web/css"/>
+	<property name="lib.dir" value="lib"/>
+
+	<path id="build.classpath">
+		<fileset dir="lib">
+			<include name="*.jar"/>
+		</fileset>
+		<fileset dir="${appserver.lib}">
+			<!-- servlet API classes: -->
+			<include name="servlet*.jar"/>
+		</fileset>
+		<pathelement path="${app.webinf.classes}"/>
+	</path>
+
+	<target name="build-jsp">
+		<copy todir="${app.root}">
+			<fileset dir="${src.jsp.dir}">
+				<exclude name="**/.#*"/>
+				<include name="**/*.jsp"/>
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="build" depends="build-jsp">
+		<mkdir dir="${app.root}"/>
+		<mkdir dir="${app.root}/src"/>
+		<mkdir dir="${app.webinf}"/>
+		<mkdir dir="${app.webinf.classes}"/>
+		<mkdir dir="${app.webinf.lib}"/>
+
+		<javac destdir="${app.webinf.classes}" source="1.5" target="1.5" debug="true" deprecation="false" optimize="false" failonerror="true">
+			<src path="${src.dir}"/>
+			<classpath refid="build.classpath"/>
+		</javac>
+
+		<copy todir="${app.root}/js">
+			<fileset dir="${src.js.dir}">
+				<exclude name="**/.#*"/>
+				<include name="**/*.js"/>
+				<include name="**/*.css"/>
+				<include name="**/*.gif"/>
+				<include name="**/*.png"/>
+			</fileset>
+		</copy>
+
+		<copy todir="${app.root}/css">
+			<fileset dir="${src.css.dir}">
+				<exclude name="**/.#*"/>
+				<include name="**/*.css"/>
+			</fileset>
+		</copy>
+
+		<copy todir="${app.webinf.lib}">
+			<fileset dir="${lib.dir}">
+				<exclude name="**/.#*"/>
+				<exclude name="**/servlet*.jar"/>
+				<include name="**/*.jar"/>
+			</fileset>
+		</copy>
+
+		<copy todir="${app.metainf}">
+			<fileset dir="conf/META-INF">
+				<exclude name="**/.#*"/>
+				<include name="**/*.MF"/>
+			</fileset>
+		</copy>
+
+		<copy todir="${app.webinf}">
+			<fileset dir="conf/WEB-INF">
+				<exclude name="**/.#*"/>
+				<include name="**/*.xml"/>
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="clean" description="Clean output directories">
+		<delete dir="${app.root}" includeemptydirs="true"/>
+	</target>
+
+</project>

@@ -8,11 +8,8 @@
 	<classpathentry kind="lib" path="core/lib/common.jar"/>
 	<classpathentry kind="lib" path="core/lib/commons-cli.jar"/>
 	<classpathentry kind="lib" path="core/lib/commons-codec.jar"/>
-	<classpathentry kind="lib" path="core/lib/commons-collections.jar"/>
 	<classpathentry kind="lib" path="core/lib/commons-discovery.jar"/>
 	<classpathentry kind="lib" path="core/lib/commons-httpclient.jar"/>
-	<classpathentry kind="lib" path="core/lib/commons-lang.jar"/>
-	<classpathentry kind="lib" path="core/lib/commons-logging.jar"/>
 	<classpathentry kind="lib" path="core/lib/fw.jar"/>
 	<classpathentry kind="lib" path="core/lib/icu4j.jar"/>
 	<classpathentry kind="lib" path="core/lib/jxl.jar"/>
@@ -24,5 +21,47 @@
 	<classpathentry kind="lib" path="core/lib/spring-context.jar"/>
 	<classpathentry kind="lib" path="core/lib/spring-core.jar"/>
 	<classpathentry kind="lib" path="core/lib/stringtemplate.jar"/>
+	<classpathentry kind="lib" path="core/lib/jstl.jar"/>
+	<classpathentry kind="lib" path="core/lib/jtds-1.2.5.jar"/>
+	<classpathentry kind="lib" path="core/lib/mysql-connector-java-5.1.18-bin.jar"/>
+	<classpathentry kind="lib" path="core/lib/servlet-api.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-aop.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-asm.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-aspects.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-expression.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-instrument-tomcat.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-instrument.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-jdbc.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-jms.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-orm.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-oxm.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-portlet.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-servlet.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-struts.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-test.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-transaction.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-web.jar"/>
+	<classpathentry kind="lib" path="core/lib/standard.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="core/lib/ezmorph-1.0.6.jar"/>
+	<classpathentry kind="lib" path="core/lib/json-lib-2.2.3.jar"/>
+	<classpathentry kind="lib" path="core/lib/json-lib-ext-spring-1.0.2.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-security-acl.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-security-aspects.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-security-cas.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-security-config.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-security-core.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-security-crypto.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-security-ldap.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-security-openid.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-security-remoting.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-security-samples-contacts-3.1.0.RELEASE.war"/>
+	<classpathentry kind="lib" path="core/lib/spring-security-samples-tutorial-3.1.0.RELEASE.war"/>
+	<classpathentry kind="lib" path="core/lib/spring-security-taglibs.jar"/>
+	<classpathentry kind="lib" path="core/lib/spring-security-web.jar"/>
+	<classpathentry kind="lib" path="core/lib/commons-beanutils.jar"/>
+	<classpathentry kind="lib" path="core/lib/commons-collections-3.2.1.jar"/>
+	<classpathentry kind="lib" path="core/lib/commons-lang-2.4.jar"/>
+	<classpathentry kind="lib" path="core/lib/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
