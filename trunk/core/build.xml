@@ -19,28 +19,47 @@
 		<pathelement path="${app.webinf.classes}"/>
 	</path>
 
-	<target name="build-jsp">
+	<target name="init">
+		<mkdir dir="${app.root}"/>
+		<mkdir dir="${app.root}/resources"/>
+		<mkdir dir="${app.root}/resources/js"/>
+		<mkdir dir="${app.root}/resources/css"/>
+		<mkdir dir="${app.webinf}"/>
+		<!--mkdir dir="${app.webinf}/views"/-->
+		<mkdir dir="${app.webinf.classes}"/>
+		<mkdir dir="${app.webinf.lib}"/>
+	</target>
+
+	<target name="build-jsp" depends="init">
+		<!--copy todir="${app.webinf}/views">
+			<fileset dir="${src.jsp.dir}">
+				<exclude name="**/.#*"/>
+				<include name="**/*.jsp"/>
+			</fileset>
+		</copy-->
+
 		<copy todir="${app.root}">
 			<fileset dir="${src.jsp.dir}">
 				<exclude name="**/.#*"/>
 				<include name="**/*.jsp"/>
 			</fileset>
 		</copy>
+
+		<copy todir="${app.webinf}">
+			<fileset dir="conf/WEB-INF">
+				<include name="**/*.jsp"/>
+			</fileset>
+		</copy>
 	</target>
 	
 	<target name="build" depends="build-jsp">
-		<mkdir dir="${app.root}"/>
-		<mkdir dir="${app.root}/src"/>
-		<mkdir dir="${app.webinf}"/>
-		<mkdir dir="${app.webinf.classes}"/>
-		<mkdir dir="${app.webinf.lib}"/>
 
 		<javac destdir="${app.webinf.classes}" source="1.5" target="1.5" debug="true" deprecation="false" optimize="false" failonerror="true">
 			<src path="${src.dir}"/>
 			<classpath refid="build.classpath"/>
 		</javac>
 
-		<copy todir="${app.root}/js">
+		<copy todir="${app.root}/resources/js">
 			<fileset dir="${src.js.dir}">
 				<exclude name="**/.#*"/>
 				<include name="**/*.js"/>
@@ -50,7 +69,7 @@
 			</fileset>
 		</copy>
 
-		<copy todir="${app.root}/css">
+		<copy todir="${app.root}/resources/css">
 			<fileset dir="${src.css.dir}">
 				<exclude name="**/.#*"/>
 				<include name="**/*.css"/>
@@ -76,6 +95,7 @@
 			<fileset dir="conf/WEB-INF">
 				<exclude name="**/.#*"/>
 				<include name="**/*.xml"/>
+				<include name="**/*.properties"/>
 			</fileset>
 		</copy>
 	</target>

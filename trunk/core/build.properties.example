@@ -1,0 +1,10 @@
+appserver.home=/Users/dashti/Documents/EURBDev/apache-tomcat-6.0.35
+
+
+appserver.lib=${appserver.home}/lib
+app.root=${appserver.home}/webapps/eurb
+app.metainf=${app.root}/META-INF
+app.webinf=${app.root}/WEB-INF
+app.webinf.classes=${app.webinf}/classes
+app.webinf.lib=${app.webinf}/lib
+
