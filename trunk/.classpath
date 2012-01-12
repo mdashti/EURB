@@ -55,8 +55,6 @@
 	<classpathentry kind="lib" path="core/lib/spring-security-ldap.jar"/>
 	<classpathentry kind="lib" path="core/lib/spring-security-openid.jar"/>
 	<classpathentry kind="lib" path="core/lib/spring-security-remoting.jar"/>
-	<classpathentry kind="lib" path="core/lib/spring-security-samples-contacts-3.1.0.RELEASE.war"/>
-	<classpathentry kind="lib" path="core/lib/spring-security-samples-tutorial-3.1.0.RELEASE.war"/>
 	<classpathentry kind="lib" path="core/lib/spring-security-taglibs.jar"/>
 	<classpathentry kind="lib" path="core/lib/spring-security-web.jar"/>
 	<classpathentry kind="lib" path="core/lib/commons-beanutils.jar"/>
