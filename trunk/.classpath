@@ -64,10 +64,11 @@
 	<classpathentry kind="lib" path="core/lib/aopalliance.jar"/>
 	<classpathentry kind="lib" path="core/lib/cglib-2.2.jar"/>
 	<classpathentry kind="lib" path="core/lib/dom4j-1.6.1.jar"/>
-	<classpathentry kind="lib" path="core/lib/jackson-core-asl-1.4.3.jar"/>
-	<classpathentry kind="lib" path="core/lib/jackson-mapper-asl-1.4.3.jar"/>
 	<classpathentry kind="lib" path="core/lib/javassist-3.9.0.GA.jar"/>
 	<classpathentry kind="lib" path="core/lib/slf4j-api-1.5.8.jar"/>
 	<classpathentry kind="lib" path="core/lib/slf4j-simple-1.5.8.jar"/>
+	<classpathentry kind="lib" path="core/lib/icu4j_3_2_calendar.jar"/>
+	<classpathentry kind="lib" path="core/lib/persiancalendar.jar"/>
+	<classpathentry kind="lib" path="core/lib/jackson-all-1.9.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

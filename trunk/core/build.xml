@@ -6,6 +6,7 @@
 	<property name="src.jsp.dir" value="web/jsp"/>
 	<property name="src.js.dir" value="web/js"/>
 	<property name="src.css.dir" value="web/css"/>
+	<property name="src.img.dir" value="web/img"/>
 	<property name="lib.dir" value="lib"/>
 
 	<path id="build.classpath">
@@ -24,6 +25,7 @@
 		<mkdir dir="${app.root}/resources"/>
 		<mkdir dir="${app.root}/resources/js"/>
 		<mkdir dir="${app.root}/resources/css"/>
+		<mkdir dir="${app.root}/resources/img"/>
 		<mkdir dir="${app.webinf}"/>
 		<!--mkdir dir="${app.webinf}/views"/-->
 		<mkdir dir="${app.webinf.classes}"/>
@@ -58,6 +60,14 @@
 			<src path="${src.dir}"/>
 			<classpath refid="build.classpath"/>
 		</javac>
+
+		<copy todir="${app.root}/resources/img">
+			<fileset dir="${src.img.dir}">
+				<exclude name="**/.#*"/>
+				<include name="**/*.gif"/>
+				<include name="**/*.png"/>
+			</fileset>
+		</copy>
 
 		<copy todir="${app.root}/resources/js">
 			<fileset dir="${src.js.dir}">
