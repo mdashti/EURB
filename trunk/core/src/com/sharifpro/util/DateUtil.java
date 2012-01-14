@@ -2,15 +2,18 @@ package com.sharifpro.util;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.TimeZone;
 
 import com.ghasemkiani.util.DateFields;
 import com.ghasemkiani.util.SimplePersianCalendar;
 import com.ibm.icu.util.Calendar;
 
 public class DateUtil {
+	static TimeZone IRAN_TIME_ZONE = TimeZone.getTimeZone("+0330");
 	public static int[] convertGregorianToPersian(int year, int month, int day) {
 		month--;
 		SimplePersianCalendar c = new SimplePersianCalendar();
+		c.setTimeZone(IRAN_TIME_ZONE);
 		c.set(SimplePersianCalendar.YEAR, year);
 		c.set(SimplePersianCalendar.MONTH, month);
 		c.set(SimplePersianCalendar.DAY_OF_MONTH, day);
@@ -71,6 +74,7 @@ public class DateUtil {
 		month--;
 
 		SimplePersianCalendar c = new SimplePersianCalendar();
+		c.setTimeZone(IRAN_TIME_ZONE);
 		c.setDateFields(year, month, day);
 		return new int[] {
 				c.get(SimplePersianCalendar.ERA) == SimplePersianCalendar.AD ? c

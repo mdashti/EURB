@@ -1,5 +1,6 @@
 package com.sharifpro.sample.util;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -7,12 +8,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import com.sharifpro.sample.model.Contact;
+import com.sharifpro.util.json.EURBObjectMapper;
 
 /**
  * Util class. Contains some common methods that can be used
@@ -26,8 +32,11 @@ public class Util {
 	 * Get list of Contacts from request.
 	 * @param data - json data from request 
 	 * @return list of Contacts
+	 * @throws IOException 
+	 * @throws JsonMappingException 
+	 * @throws JsonParseException 
 	 */
-	public List<Contact> getContactsFromRequest(Object data){
+	public List<Contact> getContactsFromRequest(Object data) throws JsonParseException, JsonMappingException, IOException{
 
 		List<Contact> list;
 
@@ -51,10 +60,12 @@ public class Util {
 	 * Transform json data format into Contact object
 	 * @param data - json data from request
 	 * @return 
+	 * @throws IOException 
+	 * @throws JsonMappingException 
+	 * @throws JsonParseException 
 	 */
-	private Contact getContactFromJSON(Object data){
-		JSONObject jsonObject = JSONObject.fromObject(data);
-		Contact newContact = (Contact) JSONObject.toBean(jsonObject, Contact.class);
+	private Contact getContactFromJSON(Object data) throws JsonParseException, JsonMappingException, IOException{
+		Contact newContact = (Contact) objectMapper.readValue(data.toString(), Contact.class);
 		return newContact;
 	}
 
@@ -82,20 +93,11 @@ public class Util {
 		List<Integer> idContacts = (List<Integer>) JSONArray.toCollection(jsonArray,Integer.class);
 		return idContacts;
 	}
-
-	private static DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 	
-	private static DateFormat dfString = new SimpleDateFormat("MM/dd/yyyy");
-	
-	/**
-	 * Format a yyyy-MM-dd'T'HH:mm:ss string to MM/dd/yyyy string
-	 * JSON date has the following format: yyyy-MM-dd'T'HH:mm:ss
-	 * @param jsonDate
-	 * @return MM/dd/yyyy string date
-	 * @throws ParseException
-	 */
-	public String getFormatedString(String jsonDate) throws ParseException{
-		Date date = df.parse(jsonDate);
-		return dfString.format(date);
+	@Autowired
+	public void setEURBObjectMapper(EURBObjectMapper objectMapper) {
+		this.objectMapper = objectMapper;
 	}
+	
+	EURBObjectMapper objectMapper;
 }

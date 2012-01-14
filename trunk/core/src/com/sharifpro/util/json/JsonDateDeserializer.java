@@ -1,6 +1,9 @@
 package com.sharifpro.util.json;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.codehaus.jackson.JsonParser;
@@ -19,11 +22,17 @@ import com.sharifpro.util.DateUtil;
  */
 @Component
 public class JsonDateDeserializer extends JsonDeserializer<Date>{
-
+	
+	private DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+	
 	@Override
 	public Date deserialize(JsonParser parser, DeserializationContext ctx)
 			throws IOException, JsonProcessingException {
-		return DateUtil.convertPersianStringToGregorian(parser.getText());
+		try {
+			return df.parse(parser.getText()+"+0330");
+		} catch (ParseException e) {
+			return null;
+		}
 	}
  
 }

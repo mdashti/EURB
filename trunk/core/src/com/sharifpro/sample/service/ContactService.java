@@ -1,8 +1,11 @@
 package com.sharifpro.sample.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,7 +45,12 @@ public class ContactService {
 
         List<Contact> newContacts = new ArrayList<Contact>();
 
-		List<Contact> list = util.getContactsFromRequest(data);
+		List<Contact> list = new ArrayList<Contact>(0);
+		try {
+			list = util.getContactsFromRequest(data);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		for (Contact contact : list){
 			newContacts.add(contactDAO.saveContact(contact));
@@ -62,7 +70,12 @@ public class ContactService {
 
 		List<Contact> returnContacts = new ArrayList<Contact>();
 
-		List<Contact> updatedContacts = util.getContactsFromRequest(data);
+		List<Contact> updatedContacts = new ArrayList<Contact>(0);
+		try {
+			updatedContacts = util.getContactsFromRequest(data);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		for (Contact contact : updatedContacts){
 			returnContacts.add(contactDAO.saveContact(contact));

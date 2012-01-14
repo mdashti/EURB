@@ -76,6 +76,7 @@
 				<include name="**/*.css"/>
 				<include name="**/*.gif"/>
 				<include name="**/*.png"/>
+				<include name="**/*.html"/>
 			</fileset>
 		</copy>
 
