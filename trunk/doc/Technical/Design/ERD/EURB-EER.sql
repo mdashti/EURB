@@ -12,8 +12,15 @@ USE `eurb` ;
 DROP TABLE IF EXISTS `eurb`.`persistable_object` ;
 
 CREATE  TABLE IF NOT EXISTS `eurb`.`persistable_object` (
-  `obj_id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT ,
-  PRIMARY KEY (`obj_id`) )
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `type` INT UNSIGNED NOT NULL ,
+  `create_date` TIMESTAMP NOT NULL ,
+  `creator_id` BIGINT UNSIGNED NOT NULL ,
+  `modify_date` TIMESTAMP NULL ,
+  `modifier_id` BIGINT UNSIGNED NULL ,
+  PRIMARY KEY (`id`) ,
+  UNIQUE INDEX `fk_user_persistable_object` (`id` ASC) ,
+  UNIQUE INDEX `fk_group_persistable_object` (`id` ASC) )
 ENGINE = InnoDB;
 
 
@@ -23,12 +30,17 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `eurb`.`db_config` ;
 
 CREATE  TABLE IF NOT EXISTS `eurb`.`db_config` (
-  `obj_id` BIGINT UNSIGNED NOT NULL ,
-  INDEX `fk_db_config_persistable_object` (`obj_id` ASC) ,
-  PRIMARY KEY (`obj_id`) ,
+  `id` BIGINT UNSIGNED NOT NULL ,
+  `name` VARCHAR(255) NOT NULL ,
+  `driver_class` VARCHAR(255) NOT NULL ,
+  `driver_url` VARCHAR(255) NOT NULL ,
+  `username` VARCHAR(255) NOT NULL ,
+  `password` VARCHAR(255) NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_db_config_persistable_object` (`id` ASC) ,
   CONSTRAINT `fk_db_config_persistable_object`
-    FOREIGN KEY (`obj_id` )
-    REFERENCES `eurb`.`persistable_object` (`obj_id` )
+    FOREIGN KEY (`id` )
+    REFERENCES `eurb`.`persistable_object` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -40,12 +52,12 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `eurb`.`table_mapping` ;
 
 CREATE  TABLE IF NOT EXISTS `eurb`.`table_mapping` (
-  `obj_id` BIGINT UNSIGNED NOT NULL ,
-  INDEX `fk_table_mapping_persistable_object1` (`obj_id` ASC) ,
-  PRIMARY KEY (`obj_id`) ,
+  `id` BIGINT UNSIGNED NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_table_mapping_persistable_object1` (`id` ASC) ,
   CONSTRAINT `fk_table_mapping_persistable_object1`
-    FOREIGN KEY (`obj_id` )
-    REFERENCES `eurb`.`persistable_object` (`obj_id` )
+    FOREIGN KEY (`id` )
+    REFERENCES `eurb`.`persistable_object` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -57,12 +69,12 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `eurb`.`column_mapping` ;
 
 CREATE  TABLE IF NOT EXISTS `eurb`.`column_mapping` (
-  `obj_id` BIGINT UNSIGNED NOT NULL ,
-  INDEX `fk_column_mapping_persistable_object1` (`obj_id` ASC) ,
-  PRIMARY KEY (`obj_id`) ,
+  `id` BIGINT UNSIGNED NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_column_mapping_persistable_object1` (`id` ASC) ,
   CONSTRAINT `fk_column_mapping_persistable_object1`
-    FOREIGN KEY (`obj_id` )
-    REFERENCES `eurb`.`persistable_object` (`obj_id` )
+    FOREIGN KEY (`id` )
+    REFERENCES `eurb`.`persistable_object` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -74,10 +86,15 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `eurb`.`users` ;
 
 CREATE  TABLE IF NOT EXISTS `eurb`.`users` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT ,
   `username` VARCHAR(50) NOT NULL ,
   `password` VARCHAR(50) NOT NULL ,
   `enabled` TINYINT(1) NOT NULL ,
-  PRIMARY KEY (`username`) )
+  PRIMARY KEY (`username`) ,
+  PRIMARY KEY (`id`) ,
+  CONSTRAINT `fk_user_persistable_object`
+    FOREIGN KEY (`id` )
+    REFERENCES `eurb`.`persistable_object` (`id` ))
 ENGINE = InnoDB;
 
 
@@ -104,7 +121,11 @@ DROP TABLE IF EXISTS `eurb`.`groups` ;
 CREATE  TABLE IF NOT EXISTS `eurb`.`groups` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT ,
   `group_name` VARCHAR(50) NOT NULL ,
-  PRIMARY KEY (`id`) );
+  PRIMARY KEY (`id`) ,
+  CONSTRAINT `fk_group_persistable_object`
+    FOREIGN KEY (`id` )
+    REFERENCES `eurb`.`persistable_object` (`id` ))
+ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
