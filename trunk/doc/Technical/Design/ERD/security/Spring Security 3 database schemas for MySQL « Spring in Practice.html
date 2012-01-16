@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<!--[if IE 7]>
+<html id="ie7" dir="ltr" lang="en">
+<![endif]-->
+<!--[if IE 8]>
+<html id="ie8" dir="ltr" lang="en">
+<![endif]-->
+<!--[if !(IE 6) | !(IE 7) | !(IE 8)]><!-->
+<html dir="ltr" lang="en">
+<!--<![endif]-->
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width" />
+<title>Spring Security 3 database schemas for MySQL &laquo; Spring in Practice</title>
+<link rel="profile" href="http://gmpg.org/xfn/11" />
+<link rel="stylesheet" href="http://s0.wp.com/wp-content/themes/pub/chateau/style.css?m=1324084872g" type="text/css" media="screen" />
+<link rel="pingback" href="http://springinpractice.com/xmlrpc.php" />
+<!--[if lt IE 9]>
+<script src="http://s0.wp.com/wp-content/themes/pub/chateau/js/html5.js?m=1315596926g" type="text/javascript"></script>
+<![endif]-->
+		<script src='http://wordpress.com/remote-login.php?action=js&amp;host=springinpractice.com&amp;id=4620434&amp;t=1326657368&amp;back=springinpractice.com%2F2010%2F07%2F06%2Fspring-security-database-schemas-for-mysql%2F' type="text/javascript"></script>
+		<script type="text/javascript">
+		/* <![CDATA[ */
+			if ( 'function' === typeof WPRemoteLogin ) {
+				document.cookie = "wordpress_test_cookie=test; path=/";
+				if ( document.cookie.match( /(;|^)\s*wordpress_test_cookie\=/ ) ) {
+					WPRemoteLogin();
+				}
+			}
+		/* ]]> */
+		</script>
+		<link rel="alternate" type="application/rss+xml" title="Spring in Practice &raquo; Feed" href="http://springinpractice.com/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Spring in Practice &raquo; Comments Feed" href="http://springinpractice.com/comments/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Spring in Practice &raquo; Spring Security 3 database schemas for&nbsp;MySQL Comments Feed" href="http://springinpractice.com/2010/07/06/spring-security-database-schemas-for-mysql/feed/" />
+<script type="text/javascript">
+/* <![CDATA[ */
+function addLoadEvent(func){var oldonload=window.onload;if(typeof window.onload!='function'){window.onload=func;}else{window.onload=function(){oldonload();func();}}}
+/* ]]> */
+</script>
+<link rel="stylesheet" href="http://s0.wp.com/wp-content/themes/h4/global.css?m=1313010130g" type="text/css" />
+<link rel='stylesheet' id='loggedout-subscribe-css'  href='http://s0.wp.com/wp-content/blog-plugins/loggedout-follow/widget.css?m=1325676616g&#038;ver=20120104' type='text/css' media='all' />
+<link rel='stylesheet' id='post-reactions-css'  href='http://s0.wp.com/wp-content/mu-plugins/post-flair/style.css?m=1322086826g&#038;ver=3' type='text/css' media='all' />
+<script type='text/javascript' src='http://s2.wp.com/wp-includes/js/jquery/jquery.js?m=1322588691g&#038;ver=1.7.1'></script>
+<script type='text/javascript' src='http://s0.wp.com/wp-content/blog-plugins/loggedout-follow/widget.js?m=1320005311g&#038;ver=20111128'></script>
+<script type='text/javascript' src='http://s1.wp.com/wp-includes/js/comment-reply.js?m=1301511943g&#038;ver=3.4-alpha-19719'></script>
+<link rel='stylesheet' id='highlander-comments-css'  href='http://s2.wp.com/wp-content/mu-plugins/highlander-comments/style.css?m=1323127129g&#038;ver=20110620' type='text/css' media='all' />
+<!--[if lt IE 8]>
+<link rel='stylesheet' id='highlander-comments-ie7-css'  href='http://s0.wp.com/wp-content/mu-plugins/highlander-comments/style-ie7.css?m=1307172301g&#038;ver=20110606' type='text/css' media='all' />
+<![endif]-->
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://springinpractice.wordpress.com/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://springinpractice.wordpress.com/wp-includes/wlwmanifest.xml" /> 
+<link rel='prev' title='New stuff in Spring 3.0, part&nbsp;2' href='http://springinpractice.com/2008/12/03/new-stuff-in-spring-30-part-2/' />
+<link rel='next' title='Annotation-based circuit breakers with&nbsp;Spring' href='http://springinpractice.com/2010/07/06/annotation-based-circuit-breakers-with-spring/' />
+<meta name="generator" content="WordPress.com" />
+<link rel='canonical' href='http://springinpractice.com/2010/07/06/spring-security-database-schemas-for-mysql/' />
+<link rel='shortlink' href='http://wp.me/pjnZ8-3g' />
+<link rel="alternate" type="application/json+oembed" href="http://public-api.wordpress.com/oembed/1.0/?format=json&url=http%3A%2F%2Fspringinpractice.com%2F2010%2F07%2F06%2Fspring-security-database-schemas-for-mysql%2F&for=wpcom-auto-discovery" /><link rel="alternate" type="application/xml+oembed" href="http://public-api.wordpress.com/oembed/1.0/?format=xml&url=http%3A%2F%2Fspringinpractice.com%2F2010%2F07%2F06%2Fspring-security-database-schemas-for-mysql%2F&for=wpcom-auto-discovery" /><meta property="og:type" content="article" />
+<meta property="og:title" content="Spring Security 3 database schemas for&nbsp;MySQL" />
+<meta property="og:url" content="http://springinpractice.com/2010/07/06/spring-security-database-schemas-for-mysql/" />
+<meta property="og:description" content="In preparation for a DZone Refcard on Spring Security 3 I&#039;m doing, here are the Spring Security database schemas for MySQL.
+
+This isn&#039;t intended to be an exhaustive treatment. Rather it&#039;s more a ..." />
+<meta property="og:site_name" content="Spring in Practice" />
+<meta property="og:image" content="http://springinpractice.s3.amazonaws.com/springsecurity/dbschemas/users_erd.png?w=300&amp;h=300" />
+<meta property="og:image" content="http://springinpractice.s3.amazonaws.com/springsecurity/dbschemas/groups_erd.png?w=300&amp;h=300" />
+<meta property="og:image" content="http://springinpractice.s3.amazonaws.com/springsecurity/dbschemas/remember_erd.png?w=300&amp;h=300" />
+<meta property="og:image" content="http://springinpractice.s3.amazonaws.com/springsecurity/dbschemas/acl_erd.png?w=300&amp;h=300" />
+<link rel="shortcut icon" type="image/x-icon" href="http://s2.wp.com/i/favicon.ico?m=1311976022g" sizes="16x16 24x24 32x32 48x48" />
+<link rel="icon" type="image/x-icon" href="http://s2.wp.com/i/favicon.ico?m=1311976022g" sizes="16x16 24x24 32x32 48x48" />
+<link rel="apple-touch-icon-precomposed" href="http://s0.wp.com/i/webclip.png?m=1311618115g" />
+<link rel='openid.server' href='http://springinpractice.wordpress.com/?openidserver=1' />
+<link rel='openid.delegate' href='http://springinpractice.wordpress.com/' />
+<link rel="search" type="application/opensearchdescription+xml" href="http://springinpractice.com/osd.xml" title="Spring in Practice" />
+<link rel="search" type="application/opensearchdescription+xml" href="http://wordpress.com/opensearch.xml" title="WordPress.com" />
+	<style type="text/css">
+	/* <![CDATA[ */
+			/* ]]> */
+	</style>
+	<meta name="application-name" content="Spring in Practice" /><meta name="msapplication-window" content="width=device-width;height=device-height" /><meta name="msapplication-tooltip" content="Willie Wheeler&#039;s Spring blog" /><meta name="msapplication-task" content="name=Subscribe;action-uri=http://springinpractice.com/feed/;icon-uri=http://s2.wp.com/i/favicon.ico" /><meta name="msapplication-task" content="name=Sign up for a free blog;action-uri=http://wordpress.com/signup/;icon-uri=http://s2.wp.com/i/favicon.ico" /><meta name="msapplication-task" content="name=WordPress.com Support;action-uri=http://support.wordpress.com/;icon-uri=http://s2.wp.com/i/favicon.ico" /><meta name="msapplication-task" content="name=WordPress.com Forums;action-uri=http://forums.wordpress.com/;icon-uri=http://s2.wp.com/i/favicon.ico" />
+<script type="text/javascript" src="http://rt.liftdna.com/liftrtb2_1.js"></script>
+<script type="text/javascript" src="http://rt.liftdna.com/WP.js"></script>
+<script type="text/javascript"> 
+	window.google_analytics_uacct = "UA-52447-2"; 
+</script>
+
+<script type="text/javascript">
+	var _gaq = _gaq || [];
+	_gaq.push(['_setAccount', 'UA-52447-2']);
+	_gaq.push(['_setDomainName', 'none']);
+	_gaq.push(['_setAllowLinker', true]);
+	_gaq.push(['_initData']);
+	_gaq.push(['_trackPageview']);
+
+	(function() {
+		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);
+	})();
+</script>
+</head>
+
+<body class="single single-post postid-202 single-format-standard two-column sidebar-content highlander-enabled highlander-light">
+<div id="page" class="hfeed">
+		<div id="page-inner">
+		<header id="branding" role="banner">
+			<nav id="menu" role="navigation">
+				<ul class="menu clear-fix"><li class="page_item page-item-2"><a href="http://springinpractice.com/about/">About this&nbsp;blog</a></li><li class="page_item page-item-476"><a href="http://springinpractice.com/selected-publications/">Selected&nbsp;publications</a></li></ul>
+			</nav><!-- end #menu -->
+
+			<div id="main-title">
+				<hgroup>
+					<h1 id="site-title"><a href="http://springinpractice.com/" title="Spring in Practice" rel="home">Spring in Practice</a></h1>
+												<h2 id="site-description">~ Willie Wheeler&#039;s Spring blog</h2>
+									</hgroup>
+			</div><!-- end #main-title -->
+
+							<div id="search">
+					
+<form method="get" action="http://springinpractice.com//" >
+	<div>
+		<label for="s" class="assistive-text">Search:</label>
+		<input type="text" value="Search&hellip;" name="s" id="s" onfocus="this.value=''" />
+		<input type="submit" name="search" value="Go" />
+	</div>
+</form>				</div><!-- end #search -->
+			
+			<div id="main-image">
+						</div><!-- end #main-image -->
+		</header><!-- #branding -->
+		<div id="main" class="clear-fix">
+	<div id="primary">
+		<div id="content" class="clear-fix">
+
+		
+			<article id="post-202" class="post-202 post type-post status-publish format-standard hentry category-reference category-security-2 tag-mysql tag-schemas tag-spring tag-spring-security">
+	<header class="post-title">
+		<h1>Spring Security 3 database schemas for&nbsp;MySQL</h1>
+					<p class="post-date">
+			<strong>06</strong>
+			<em>Tuesday</em>
+			<span>Jul 2010</span>
+		</p>
+		<div class="post-info clear-fix">
+		<p>
+			Posted <span class="by-author"> by <span class="author vcard"><a class="url fn n" href="http://springinpractice.com/author/williewheeler/" title="View all posts by Willie Wheeler" rel="author">Willie Wheeler</a></span></span> in <a href="http://springinpractice.com/category/reference/" title="View all posts in Reference" rel="category tag">Reference</a>, <a href="http://springinpractice.com/category/security-2/" title="View all posts in Security" rel="category tag">Security</a>		</p>
+		<p class="post-com-count">
+			<strong>&asymp; <a href="http://springinpractice.com/2010/07/06/spring-security-database-schemas-for-mysql/#comments" title="Comment on Spring Security 3 database schemas for&nbsp;MySQL">6 Comments</a></strong>
+		</p>
+	</div><!-- end .post-info -->
+	</header><!-- end .post-title -->
+
+	<div class="post-content clear-fix">
+			<div class="post-extras">
+				<p><strong>Tags</strong></p><p><a href="http://springinpractice.com/tag/mysql/" rel="tag">mysql</a>, <a href="http://springinpractice.com/tag/schemas/" rel="tag">schemas</a>, <a href="http://springinpractice.com/tag/spring/" rel="tag">spring</a>, <a href="http://springinpractice.com/tag/spring-security/" rel="tag">Spring Security</a></p>	</div><!-- end .post-extras -->
+
+		<div class="post-entry">
+			<p>In preparation for a <a href="http://refcardz.dzone.com/refcardz/expression-based-authorization?oid=hom25493">DZone Refcard on Spring Security 3</a> I&#8217;m doing, here are the Spring Security database schemas for MySQL.</p>
+<p>This isn&#8217;t intended to be an exhaustive treatment. Rather it&#8217;s more a reference for the MySQL dialect version of the database schemas, though I included a few brief notes just to help people get a high-level understanding of the schemas. For more detailed information, please consult the <a href="http://static.springsource.org/spring-security/site/reference.html">Spring Security 3 Reference Documentation</a>.</p>
+<h3>User schema</h3>
+<p><img src="http://springinpractice.s3.amazonaws.com/springsecurity/dbschemas/users_erd.png" alt="User schema ERD" /></p>
+<p>Each user can have zero or more &#8220;authorities&#8221;, or roles. I think Spring Security expects there to be at least one role, though, because login involving roleless users fail.</p>
+<pre>create table users (
+    username varchar(50) not null primary key,
+    password varchar(50) not null,
+    enabled boolean not null
+) engine = InnoDb;
+
+create table authorities (
+    username varchar(50) not null,
+    authority varchar(50) not null,
+    foreign key (username) references users (username),
+    unique index authorities_idx_1 (username, authority)
+) engine = InnoDb;
+</pre>
+<h3 style="margin-top:20px;">Group schema</h3>
+<p>The group schema provides a way to organize users into groups and then assign roles to those groups. Each user inherits the roles from his associated groups.</p>
+<p><img src="http://springinpractice.s3.amazonaws.com/springsecurity/dbschemas/groups_erd.png" alt="Group schema ERD" /></p>
+<pre>create table groups (
+    id bigint unsigned not null auto_increment primary key,
+    group_name varchar(50) not null
+) engine = InnoDb;
+
+create table group_authorities (
+    group_id bigint unsigned not null,
+    authority varchar(50) not null,
+    foreign key (group_id) references groups (id)
+) engine = InnoDb;
+
+create table group_members (
+    id bigint unsigned not null auto_increment primary key,
+    username varchar(50) not null,
+    group_id bigint unsigned not null,
+    foreign key (group_id) references groups (id)
+) engine = InnoDb;
+</pre>
+<h3 style="margin-top:20px;">Remember-me schema</h3>
+<p>Haven&#8217;t actually used this one, but from what I understand, this schema supports a hardened, persistent remember-me authentication scheme. Spring Security&#8217;s default remember-me scheme doesn&#8217;t use the database at all (just a cookie).</p>
+<p><img src="http://springinpractice.s3.amazonaws.com/springsecurity/dbschemas/remember_erd.png" alt="Remember-me schema ERD" /></p>
+<pre>create table persistent_logins (
+    username varchar(64) not null,
+    series varchar(64) primary key,
+    token varchar(64) not null,
+    last_used timestamp not null
+) engine = InnoDb;
+</pre>
+<h3 style="margin-top:20px;">ACL schema</h3>
+<p>Access control lists (ACLs) might be the most challenging aspect of Spring Security, but the underlying schema is actually pretty straightforward. The concept is that each secure domain object has an associated ACL that defines who can do what with that domain object. Exactly the same idea as permissions on an OS folder, for example.</p>
+<p>The SID (&#8220;security identity&#8221;) represents the &#8220;who&#8221;, and comes in both principal and role flavors; that is, the SID can be either an individual user or else it can be a role. The class and object identity, taken together, represent the domain object. Finally, the <code>acl_entry</code> table contains all the ACLs; each access control entry (ACE) specifies an ordered triple &lt;domain object, SID, permission&gt; and indicates whether the permission in question is granted or denied for the SID and domain object. To take an example, SID Ben might have the write permission granted for a particular forum message.</p>
+<p><img src="http://springinpractice.s3.amazonaws.com/springsecurity/dbschemas/acl_erd.png" alt="ACL schema ERD" /></p>
+<pre>create table acl_sid (
+    id bigint unsigned not null auto_increment primary key,
+    principal tinyint(1) not null,
+    sid varchar(100) not null,
+    unique index acl_sid_idx_1 (sid, principal)
+) engine = InnoDb;
+
+create table acl_class (
+    id bigint unsigned not null auto_increment primary key,
+    class varchar(100) unique not null
+) engine = InnoDb;
+
+create table acl_object_identity (
+    id bigint unsigned not null auto_increment primary key,
+    object_id_class bigint unsigned not null,
+    object_id_identity bigint unsigned not null,
+    parent_object bigint unsigned,
+    owner_sid bigint unsigned,
+    entries_inheriting tinyint(1) not null,
+    unique index acl_object_identity_idx_1
+        (object_id_class, object_id_identity),
+    foreign key (object_id_class) references acl_class (id),
+    foreign key (parent_object) references acl_object_identity (id),
+    foreign key (owner_sid) references acl_sid (id)
+) engine = InnoDb;
+
+create table acl_entry (
+    id bigint unsigned not null auto_increment primary key,
+    acl_object_identity bigint unsigned not null,
+    ace_order int unsigned not null,
+    sid bigint unsigned not null,
+    mask int not null,
+    granting tinyint(1) not null,
+    audit_success tinyint(1) not null,
+    audit_failure tinyint(1) not null,
+    unique index acl_entry_idx_1 (acl_object_identity, ace_order),
+    foreign key (acl_object_identity)
+        references acl_object_identity (id),
+    foreign key (sid) references acl_sid (id)
+) engine = InnoDb;
+</pre>
+
+<div id="wpcom_below_post"  class="wpadvert" style="text-align: center; padding: 5px; background: #; padding: 5px; margin: 10px auto; width: 310px;">
+<span style="text-align: left; letter-spacing: 1px; font: 8px/1em Verdana, sans-serif; color: #ccc; text-transform: uppercase; display: block; padding: 0 1px;">Advertisement</span>
+<script type="text/javascript">
+LD_AddCustomAttr("AdOpt", "1");
+LD_AddCustomAttr("Origin", "other");
+LD_AddCustomAttr("LangId", "1");
+LD_AddCustomAttr("Autotag", "technology");
+LD_AddCustomAttr("Tag", "reference");
+LD_AddCustomAttr("Tag", "security-2");
+LD_AddCustomAttr("Tag", "mysql");
+LD_AddCustomAttr("Tag", "schemas");
+LD_AddCustomAttr("Tag", "spring");
+LD_AddCustomAttr("Tag", "spring-security");
+
+LD_AddSlot("wpcom_below_post");
+LD_GetBids();
+</script>
+</div><div class="sharedaddy sd-like-enabled"><div id="wpl-likebox" class="sd-block sd-like"><h3 class="sd-title">Like this:</h3><div class="sd-content"><div id="wpl-button"><a href='http://springinpractice.com/2010/07/06/spring-security-database-schemas-for-mysql/?like=1&amp;_wpnonce=e60516c4aa' title='I like this post' class='like needs-login sd-button' rel='nofollow'><span>Like</span></a></div><div id="wpl-count" class="sd-like-count">Be the first to like this post.</div></div></div></div>					</div><!-- end .post-entry -->
+	</div><!-- end .post-content -->
+
+	</article><!-- #post-202 -->
+			<nav id="nav-below" class="clear-fix">
+				<h1 class="assistive-text">Post navigation</h1>
+				<span class="nav-previous"><a href="http://springinpractice.com/2008/12/03/new-stuff-in-spring-30-part-2/" rel="prev">&larr; Previous post</a></span>
+				<span class="nav-next"><a href="http://springinpractice.com/2010/07/06/annotation-based-circuit-breakers-with-spring/" rel="next">Next post &rarr;</a></span>
+			</nav><!-- #nav-below -->
+
+			<div id="comments">
+	
+	
+			<h3 id="comments-title">
+			<span>6</span> thoughts on &ldquo;Spring Security 3 database schemas for&nbsp;MySQL&rdquo;		</h3>
+
+		
+		<ol class="commentlist">
+			
+			<li class="comment even thread-even depth-1 parent highlander-comment" id="comment-85">
+
+				<div class="comment-heading clear-fix">
+					<p class="comment-author">
+						<img alt='' src='http://0.gravatar.com/avatar/c54f82303bf3866c60df4cdab566f883?s=32&amp;d=identicon&amp;r=G' class='avatar avatar-32' height='32' width='32' />						<span><a href='http://www.gordondickens.com' rel='external nofollow' class='url'>Gordon Dickens</a></span> <em>said:</em>					</p>
+					<p class="comment-date">
+						<a href="http://springinpractice.com/2010/07/06/spring-security-database-schemas-for-mysql/#comment-85"><time pubdate datetime="2010-07-20T09:05:30+00:00">July 20, 2010 at 9:05 am</time></a>					</p>
+				</div>
+				<div class="comment-text">
+					<p>You may want to update your Spring Security Documentation link to: <a href="http://static.springsource.org/spring-security/site/docs/3.0.x/reference/springsecurity.html" rel="nofollow">http://static.springsource.org/spring-security/site/docs/3.0.x/reference/springsecurity.html</a></p>
+<p>The current link is to core docs.</p>
+<p>Regards,<br />
+Gordon Dickens</p>
+										<p class="reply-link"><a class='comment-reply-link' href='/2010/07/06/spring-security-database-schemas-for-mysql/?replytocom=85#respond' onclick='return addComment.moveForm("comment-85", "85", "respond", "202")'>Reply</a></p>
+					<p class="edit-comment"></p>
+				</div>
+		<ul class='children'>
+
+			<li class="comment byuser comment-author-williewheeler bypostauthor odd alt depth-2 highlander-comment" id="comment-86">
+
+				<div class="comment-heading clear-fix">
+					<p class="comment-author">
+						<img alt='' src='http://1.gravatar.com/avatar/b0a72ae61c5c74a51fe46cf66599b6c5?s=32&amp;d=identicon&amp;r=G' class='avatar avatar-32' height='32' width='32' />						<span><a href='http://wheelersoftware.com/' rel='external nofollow' class='url'>Willie Wheeler</a></span> <em>said:</em>					</p>
+					<p class="comment-date">
+						<a href="http://springinpractice.com/2010/07/06/spring-security-database-schemas-for-mysql/#comment-86"><time pubdate datetime="2010-07-20T14:03:57+00:00">July 20, 2010 at 2:03 pm</time></a>					</p>
+				</div>
+				<div class="comment-text">
+					<p>Fixed. Thanks Gordon!</p>
+										<p class="reply-link"><a class='comment-reply-link' href='/2010/07/06/spring-security-database-schemas-for-mysql/?replytocom=86#respond' onclick='return addComment.moveForm("comment-86", "86", "respond", "202")'>Reply</a></p>
+					<p class="edit-comment"></p>
+				</div>
+		</li>
+</ul>
+</li>
+
+			<li class="comment even thread-odd thread-alt depth-1 highlander-comment" id="comment-129">
+
+				<div class="comment-heading clear-fix">
+					<p class="comment-author">
+						<img alt='' src='http://0.gravatar.com/avatar/6a145763a98839860d2eadda94728620?s=32&amp;d=identicon&amp;r=G' class='avatar avatar-32' height='32' width='32' />						<span>angus</span> <em>said:</em>					</p>
+					<p class="comment-date">
+						<a href="http://springinpractice.com/2010/07/06/spring-security-database-schemas-for-mysql/#comment-129"><time pubdate datetime="2010-09-18T05:30:50+00:00">September 18, 2010 at 5:30 am</time></a>					</p>
+				</div>
+				<div class="comment-text">
+					<p>how to use?<br />
+Could you provide complete web demo?</p>
+										<p class="reply-link"><a class='comment-reply-link' href='/2010/07/06/spring-security-database-schemas-for-mysql/?replytocom=129#respond' onclick='return addComment.moveForm("comment-129", "129", "respond", "202")'>Reply</a></p>
+					<p class="edit-comment"></p>
+				</div>
+		</li>
+
+			<li class="comment odd alt thread-even depth-1 parent highlander-comment" id="comment-189">
+
+				<div class="comment-heading clear-fix">
+					<p class="comment-author">
+						<img alt='' src='http://1.gravatar.com/avatar/d020362c861b74e62bf96a3e4a4b8aff?s=32&amp;d=identicon&amp;r=G' class='avatar avatar-32' height='32' width='32' />						<span>Patrick</span> <em>said:</em>					</p>
+					<p class="comment-date">
+						<a href="http://springinpractice.com/2010/07/06/spring-security-database-schemas-for-mysql/#comment-189"><time pubdate datetime="2011-09-11T19:48:56+00:00">September 11, 2011 at 7:48 pm</time></a>					</p>
+				</div>
+				<div class="comment-text">
+					<p>I&#8217;m wondering if there is any database relation between the user-group schema and the acl tables when combining those concepts?<br />
+for example what if a user gets deleted by the admin? do I need clean up two separte parts (user and acl tables) ?</p>
+										<p class="reply-link"><a class='comment-reply-link' href='/2010/07/06/spring-security-database-schemas-for-mysql/?replytocom=189#respond' onclick='return addComment.moveForm("comment-189", "189", "respond", "202")'>Reply</a></p>
+					<p class="edit-comment"></p>
+				</div>
+		<ul class='children'>
+
+			<li class="comment even depth-2 parent highlander-comment" id="comment-203">
+
+				<div class="comment-heading clear-fix">
+					<p class="comment-author">
+						<img alt='' src='http://0.gravatar.com/avatar/2b748155f6eb918939eaf87b001c995a?s=32&amp;d=identicon&amp;r=G' class='avatar avatar-32' height='32' width='32' />						<span>Ernie</span> <em>said:</em>					</p>
+					<p class="comment-date">
+						<a href="http://springinpractice.com/2010/07/06/spring-security-database-schemas-for-mysql/#comment-203"><time pubdate datetime="2011-12-16T13:26:21+00:00">December 16, 2011 at 1:26 pm</time></a>					</p>
+				</div>
+				<div class="comment-text">
+					<p>[Keeping in the theme of long times between posts]</p>
+<p>Your suspicions are correct.  If the user is deleted, you will need to clean up the user and all ACL entries associated to that user (which should be only one table ACL_ENTRY).  The same would hold true if you were using the groups construct.  Delete the group, and you must delete any associated ACL entries to that group.  </p>
+<p>Alternatively, you could just mark the user as deleted and leave the &#8220;garbage&#8221; ACL entries.</p>
+										<p class="reply-link"><a class='comment-reply-link' href='/2010/07/06/spring-security-database-schemas-for-mysql/?replytocom=203#respond' onclick='return addComment.moveForm("comment-203", "203", "respond", "202")'>Reply</a></p>
+					<p class="edit-comment"></p>
+				</div>
+		<ul class='children'>
+
+			<li class="comment byuser comment-author-williewheeler bypostauthor odd alt depth-3 highlander-comment" id="comment-204">
+
+				<div class="comment-heading clear-fix">
+					<p class="comment-author">
+						<img alt='' src='http://1.gravatar.com/avatar/b0a72ae61c5c74a51fe46cf66599b6c5?s=32&amp;d=identicon&amp;r=G' class='avatar avatar-32' height='32' width='32' />						<span><a href='http://wheelersoftware.com/' rel='external nofollow' class='url'>Willie Wheeler</a></span> <em>said:</em>					</p>
+					<p class="comment-date">
+						<a href="http://springinpractice.com/2010/07/06/spring-security-database-schemas-for-mysql/#comment-204"><time pubdate datetime="2011-12-16T23:39:54+00:00">December 16, 2011 at 11:39 pm</time></a>					</p>
+				</div>
+				<div class="comment-text">
+					<p>Ha ha ha. <img src='http://s0.wp.com/wp-includes/images/smilies/icon_smile.gif?m=1301511944g' alt=':-)' class='wp-smiley' /> </p>
+<p>I&#8217;ll be posting to this thing more after I get the book out. Almost done!! (Finally!)</p>
+										<p class="reply-link"></p>
+					<p class="edit-comment"></p>
+				</div>
+		</li>
+</ul>
+</li>
+</ul>
+</li>
+		</ol>
+
+		
+	
+									<div id="respond">
+				<h3 id="reply-title">Leave a Reply <small><a rel="nofollow" id="cancel-comment-reply-link" href="/2010/07/06/spring-security-database-schemas-for-mysql/#respond" style="display:none;">Cancel reply</a></small></h3>
+									<form action="http://springinpractice.com/wp-comments-post.php" method="post" id="commentform">
+																										
+
+
+												
+<input type="hidden" name="hc_post_as" id="hc_post_as" value="guest" />
+
+<div class="comment-form-field comment-textarea">
+	<label for="comment">Enter your comment here...</label>
+	<div id="comment-form-comment"><textarea id="comment" name="comment"></textarea></div>
+</div>
+
+<div id="comment-form-identity">
+
+	<div id="comment-form-nascar">
+		<p>Fill in your details below or click an icon to log in:</p>
+		<ul>
+			<li class="selected" style="display:none;">
+				<a href="#comment-form-guest" id="postas-guest" title="Guest">
+					<span></span>
+				</a>
+			</li>
+			<li>
+				<a href="#comment-form-wordpress" id="postas-wordpress" title="WordPress.com">
+					<span></span>
+				</a>
+			</li>
+			<li>
+				<a href="#comment-form-load-service:Twitter" id="postas-twitter" title="Twitter">
+					<span></span>
+				</a>
+			</li>
+			<li>
+				<a href="#comment-form-load-service:Facebook" id="postas-facebook" title="Facebook">
+					<span></span>
+				</a>
+			</li>
+		</ul>
+	</div>
+
+	<div id="comment-form-guest" class="comment-form-service selected">
+		<div class="comment-form-padder">
+			<div class="comment-form-avatar">
+				<img src="http://www.gravatar.com/avatar/ad516503a11cd5ca435acc9bb6523536?s=25&d=mm" alt="Gravatar" width="25" class="no-grav" />
+			</div>
+
+				<div class="comment-form-fields">
+				<div class="comment-form-field comment-form-email">
+					<label for="email">Email <span class="required">(required)</span> <span class="nopublish">(Not published)</span></label>
+					<div class="comment-form-input"><input id="email" name="email" type="text" value="" /></div>
+				</div>
+				<div class="comment-form-field comment-form-author">
+					<label for="author">Name <span class="required">(required)</span></label>
+					<div class="comment-form-input"><input id="author" name="author" type="text" value="" /></div>
+				</div>
+				<div class="comment-form-field comment-form-url">
+					<label for="url">Website</label>
+					<div class="comment-form-input"><input id="url" name="url" type="text" value="" /></div>
+				</div> 
+			</div>
+	
+		</div>
+	</div>
+
+	<div id="comment-form-wordpress" class="comment-form-service">
+		<div class="comment-form-padder">
+			<div class="comment-form-avatar">
+				<img src="http://s2.wp.com/wp-content/mu-plugins/highlander-comments/images/wplogo.png?m=1301511948g" alt="WordPress.com Logo" width="25" class="no-grav" />
+			</div>
+
+				<div class="comment-form-fields">
+					<p id="wordpress-login-first">Please log in to WordPress.com to post a comment to your blog.</p>
+				<iframe id="wordpress-login-iframe" data-srcurl="http://springinpractice.wordpress.com/wp-login.php?redirect_to=http%3A%2F%2Fspringinpractice.com%2Fhighlander.login%2F&#038;action=highlander-login&#038;skin=light"></iframe>
+				</div>
+	
+		</div>
+	</div>
+
+	<div id="comment-form-twitter" class="comment-form-service">
+		<div class="comment-form-padder">
+			<div class="comment-form-avatar">
+				<img src="http://www.gravatar.com/avatar/ad516503a11cd5ca435acc9bb6523536?s=25&d=mm" alt="Twitter picture" width="25" class="no-grav" />
+			</div>
+
+				<div class="comment-form-fields">
+				<input type="hidden" name="twitter_avatar" id="twitter-avatar" class="comment-meta-twitter" value="" />
+				<input type="hidden" name="twitter_user_id" id="twitter-user_id" class="comment-meta-twitter" value="" />
+				<input type="hidden" name="twitter_access_token" id="twitter-access_token" class="comment-meta-twitter" value="" />
+				<p class="comment-form-posting-as pa-twitter"><strong></strong> You are commenting using your Twitter account. <span class="comment-form-log-out">(&nbsp;<a href="javascript:HighlanderComments.doExternalLogout( 'twitter' );">Log&nbsp;Out</a>&nbsp;/&nbsp;<a href="#" onclick="javascript:HighlanderComments.switchAccount();return false;">Change</a>&nbsp;)</span></p>
+			</div>
+	
+		</div>
+	</div>
+
+	<div id="comment-form-facebook" class="comment-form-service">
+		<div class="comment-form-padder">
+			<div class="comment-form-avatar">
+				<img src="http://www.gravatar.com/avatar/ad516503a11cd5ca435acc9bb6523536?s=25&d=mm" alt="Facebook photo" width="25" class="no-grav" />
+			</div>
+
+				<div class="comment-form-fields">
+				<input type="hidden" name="fb_avatar" id="facebook-avatar" class="comment-meta-facebook" value="" />
+				<input type="hidden" name="fb_user_id" id="facebook-user_id" class="comment-meta-facebook" value="" />
+				<input type="hidden" name="fb_access_token" id="facebook-access_token" class="comment-meta-facebook" value="" />
+				<p class="comment-form-posting-as pa-facebook"><strong></strong> You are commenting using your Facebook account. <span class="comment-form-log-out">(&nbsp;<a href="javascript:HighlanderComments.doExternalLogout( 'facebook' );">Log&nbsp;Out</a>&nbsp;/&nbsp;<a href="#" onclick="javascript:HighlanderComments.switchAccount();return false;">Change</a>&nbsp;)</span></p>
+			</div>
+	
+		</div>
+	</div>
+
+
+	<div id="comment-form-load-service" class="comment-form-service"> 
+		<div class="comment-form-posting-as-cancel"><a href="javascript:HighlanderComments.cancelExternalWindow();">Cancel</a></div>
+		<p>Connecting to %s</p> 
+	</div>
+	
+	
+</div>
+
+
+<div id="comment-form-subscribe"> 
+<p class="comment-subscription-form"><input type="checkbox" name="subscribe" id="subscribe" value="subscribe" style="width: auto;" tabindex="6"/> <label class="subscribe-label" id="subscribe-label" for="subscribe">Notify me of follow-up comments via email.</label></p></div>
+
+	<script type="text/javascript">
+	jQuery(document).ready(function(){
+		HighlanderComments.comment_registration = '';
+		HighlanderComments.userIsLoggedIn = false;
+			});
+	</script>
+												<p class="form-submit">
+							<input name="submit" type="submit" id="comment-submit" value="Post Comment" />
+							<input type='hidden' name='comment_post_ID' value='202' id='comment_post_ID' />
+<input type='hidden' name='comment_parent' id='comment_parent' value='0' />
+						</p>
+						
+<input type="hidden" name="genseq" value="1326657368" />
+<p style="display: none;"><input type="hidden" id="akismet_comment_nonce" name="akismet_comment_nonce" value="9b9480e0c7" /></p><script type='text/javascript' src='http://s1.wp.com/wp-content/mu-plugins/akismet-2.5/form.js?m=1308783978g&#038;ver=1'></script>
+<p style="display: none;"><input type="hidden" id="ak_js" name="ak_js" value="235"/></p>					</form>
+							</div><!-- #respond -->
+			<div style="clear: both"></div>			
+</div><!-- #comments -->
+		
+		</div><!-- end #content -->
+	</div><!-- end #primary -->
+
+	
+	<div id="secondary" class="widget-area" role="complementary">
+		
+		<aside id="search-2" class="sidebar-widget widget_search">
+<form method="get" action="http://springinpractice.com//" >
+	<div>
+		<label for="s" class="assistive-text">Search:</label>
+		<input type="text" value="Search&hellip;" name="s" id="s" onfocus="this.value=''" />
+		<input type="submit" name="search" value="Go" />
+	</div>
+</form></aside>		<aside id="recent-posts-2" class="sidebar-widget widget_recent_entries">		<h1>&clubs; Recent Posts</h1>		<ul>
+				<li><a href="http://springinpractice.com/2012/01/14/calling-the-github-api-using-springs-resttemplate/" title="Calling the GitHub API using Spring&#8217;s&nbsp;RestTemplate">Calling the GitHub API using Spring&#8217;s&nbsp;RestTemplate</a></li>
+				<li><a href="http://springinpractice.com/2012/01/07/making-formselect-work-nicely-using-spring-3-formatters/" title="Making &lt;form:select&gt; work nicely using Spring 3&nbsp;Formatters">Making &lt;form:select&gt; work nicely using Spring 3&nbsp;Formatters</a></li>
+				<li><a href="http://springinpractice.com/2011/12/29/its-back-the-classpathscanningjaxb2marshaller/" title="ClasspathScanningJaxb2Marshaller">ClasspathScanningJaxb2Marshaller</a></li>
+				<li><a href="http://springinpractice.com/2011/12/28/initializing-lazy-loaded-collections-with-spring-data-neo4j/" title="Initializing lazy-loaded collections with Spring Data&nbsp;Neo4j">Initializing lazy-loaded collections with Spring Data&nbsp;Neo4j</a></li>
+				<li><a href="http://springinpractice.com/2011/12/06/jackson-json-jaxb2-xml-spring/" title="Configuring Jackson to use JAXB2 annotations with&nbsp;Spring">Configuring Jackson to use JAXB2 annotations with&nbsp;Spring</a></li>
+				</ul>
+		</aside><aside id="pages-2" class="sidebar-widget widget_pages"><h1>&clubs; Pages</h1>		<ul>
+			<li class="page_item page-item-2"><a href="http://springinpractice.com/about/">About this&nbsp;blog</a></li>
+<li class="page_item page-item-476"><a href="http://springinpractice.com/selected-publications/">Selected&nbsp;publications</a></li>
+		</ul>
+		</aside><aside id="linkcat-1356" class="sidebar-widget widget_links"><h1>&clubs; Blogroll</h1>
+	<ul class='xoxo blogroll'>
+<li><a href="http://skydingo.com/blog/" title="Devops and automation blog">Skydingo Blog</a></li>
+
+	</ul>
+</aside>
+<aside id="linkcat-2200" class="sidebar-widget widget_links"><h1>&clubs; Links</h1>
+	<ul class='xoxo blogroll'>
+<li><a href="http://www.manning.com/wheeler/" title="Spring in Practice MEAP page">Spring in Practice &#8211; the book</a></li>
+<li><a href="http://twitter.com/williewheeler" rel="me" title="My Twitter page">Twitter &#8211; Willie Wheeler</a></li>
+<li><a href="http://wheelersoftware.com/" rel="me" title="Willie&#8217;s software consulting company">Wheeler Software</a></li>
+<li><a href="http://wheelersoftware.com/articles/index.html" rel="me" title="A collection of technical articles, including several on the Spring Framework">Willie&#8217;s tech articles</a></li>
+
+	</ul>
+</aside>
+<aside id="archives-2" class="sidebar-widget widget_archive"><h1>&clubs; Archives</h1>		<ul>
+			<li><a href='http://springinpractice.com/2012/01/' title='January 2012'>January 2012</a></li>
+	<li><a href='http://springinpractice.com/2011/12/' title='December 2011'>December 2011</a></li>
+	<li><a href='http://springinpractice.com/2010/10/' title='October 2010'>October 2010</a></li>
+	<li><a href='http://springinpractice.com/2010/09/' title='September 2010'>September 2010</a></li>
+	<li><a href='http://springinpractice.com/2010/07/' title='July 2010'>July 2010</a></li>
+	<li><a href='http://springinpractice.com/2008/12/' title='December 2008'>December 2008</a></li>
+	<li><a href='http://springinpractice.com/2008/11/' title='November 2008'>November 2008</a></li>
+	<li><a href='http://springinpractice.com/2008/10/' title='October 2008'>October 2008</a></li>
+	<li><a href='http://springinpractice.com/2008/09/' title='September 2008'>September 2008</a></li>
+	<li><a href='http://springinpractice.com/2008/08/' title='August 2008'>August 2008</a></li>
+		</ul>
+</aside><aside id="wp_tag_cloud" class="sidebar-widget wp_widget_tag_cloud"><h1>&clubs; Tags</h1><div style="overflow:hidden"><a href='http://springinpractice.com/tag/authentication/' class='tag-link-44620' title='3 topics' style='font-size: 14.461538461538pt;'>authentication</a>
+<a href='http://springinpractice.com/tag/authorization/' class='tag-link-664383' title='3 topics' style='font-size: 14.461538461538pt;'>authorization</a>
+<a href='http://springinpractice.com/tag/bio/' class='tag-link-1772' title='1 topic' style='font-size: 8pt;'>bio</a>
+<a href='http://springinpractice.com/tag/book/' class='tag-link-2364' title='3 topics' style='font-size: 14.461538461538pt;'>book</a>
+<a href='http://springinpractice.com/tag/book-cover/' class='tag-link-707862' title='1 topic' style='font-size: 8pt;'>book cover</a>
+<a href='http://springinpractice.com/tag/complexity/' class='tag-link-3494' title='1 topic' style='font-size: 8pt;'>complexity</a>
+<a href='http://springinpractice.com/tag/hashing/' class='tag-link-200933' title='1 topic' style='font-size: 8pt;'>hashing</a>
+<a href='http://springinpractice.com/tag/hibernate-validator/' class='tag-link-9445662' title='1 topic' style='font-size: 8pt;'>Hibernate Validator</a>
+<a href='http://springinpractice.com/tag/industry/' class='tag-link-3570' title='1 topic' style='font-size: 8pt;'>industry</a>
+<a href='http://springinpractice.com/tag/it/' class='tag-link-3072' title='1 topic' style='font-size: 8pt;'>IT</a>
+<a href='http://springinpractice.com/tag/java/' class='tag-link-1017' title='1 topic' style='font-size: 8pt;'>Java</a>
+<a href='http://springinpractice.com/tag/jaxb2/' class='tag-link-529303' title='2 topics' style='font-size: 11.876923076923pt;'>jaxb2</a>
+<a href='http://springinpractice.com/tag/jee/' class='tag-link-239718' title='1 topic' style='font-size: 8pt;'>JEE</a>
+<a href='http://springinpractice.com/tag/jee-6/' class='tag-link-14265453' title='1 topic' style='font-size: 8pt;'>JEE 6</a>
+<a href='http://springinpractice.com/tag/jsr-303/' class='tag-link-6168416' title='1 topic' style='font-size: 8pt;'>JSR 303</a>
+<a href='http://springinpractice.com/tag/login/' class='tag-link-58714' title='1 topic' style='font-size: 8pt;'>login</a>
+<a href='http://springinpractice.com/tag/maintenance-policy/' class='tag-link-11784244' title='1 topic' style='font-size: 8pt;'>maintenance policy</a>
+<a href='http://springinpractice.com/tag/manning/' class='tag-link-97137' title='2 topics' style='font-size: 11.876923076923pt;'>Manning</a>
+<a href='http://springinpractice.com/tag/meap/' class='tag-link-467796' title='1 topic' style='font-size: 8pt;'>MEAP</a>
+<a href='http://springinpractice.com/tag/mysql/' class='tag-link-4419' title='1 topic' style='font-size: 8pt;'>mysql</a>
+<a href='http://springinpractice.com/tag/openid/' class='tag-link-36602' title='1 topic' style='font-size: 8pt;'>openid</a>
+<a href='http://springinpractice.com/tag/oxm/' class='tag-link-1555948' title='2 topics' style='font-size: 11.876923076923pt;'>oxm</a>
+<a href='http://springinpractice.com/tag/password/' class='tag-link-37471' title='1 topic' style='font-size: 8pt;'>password</a>
+<a href='http://springinpractice.com/tag/passwords/' class='tag-link-78192' title='2 topics' style='font-size: 11.876923076923pt;'>passwords</a>
+<a href='http://springinpractice.com/tag/problems/' class='tag-link-6615' title='1 topic' style='font-size: 8pt;'>problems</a>
+<a href='http://springinpractice.com/tag/recipes/' class='tag-link-2832' title='1 topic' style='font-size: 8pt;'>recipes</a>
+<a href='http://springinpractice.com/tag/reference-manuals/' class='tag-link-10554165' title='1 topic' style='font-size: 8pt;'>reference manuals</a>
+<a href='http://springinpractice.com/tag/registration/' class='tag-link-99329' title='1 topic' style='font-size: 8pt;'>registration</a>
+<a href='http://springinpractice.com/tag/remember-me/' class='tag-link-1461828' title='1 topic' style='font-size: 8pt;'>remember-me</a>
+<a href='http://springinpractice.com/tag/rest/' class='tag-link-15314' title='2 topics' style='font-size: 11.876923076923pt;'>REST</a>
+<a href='http://springinpractice.com/tag/salt/' class='tag-link-157421' title='2 topics' style='font-size: 11.876923076923pt;'>salt</a>
+<a href='http://springinpractice.com/tag/schemas/' class='tag-link-216333' title='1 topic' style='font-size: 8pt;'>schemas</a>
+<a href='http://springinpractice.com/tag/security/' class='tag-link-801' title='3 topics' style='font-size: 14.461538461538pt;'>security</a>
+<a href='http://springinpractice.com/tag/spring/' class='tag-link-9486' title='8 topics' style='font-size: 22pt;'>spring</a>
+<a href='http://springinpractice.com/tag/spring-30/' class='tag-link-14231927' title='1 topic' style='font-size: 8pt;'>Spring 3.0</a>
+<a href='http://springinpractice.com/tag/spring-el/' class='tag-link-14233428' title='1 topic' style='font-size: 8pt;'>Spring EL</a>
+<a href='http://springinpractice.com/tag/springone/' class='tag-link-1943542' title='5 topics' style='font-size: 18.338461538462pt;'>SpringOne</a>
+<a href='http://springinpractice.com/tag/spring-security/' class='tag-link-3428272' title='6 topics' style='font-size: 19.846153846154pt;'>Spring Security</a>
+<a href='http://springinpractice.com/tag/springsource/' class='tag-link-4289533' title='2 topics' style='font-size: 11.876923076923pt;'>springsource</a>
+<a href='http://springinpractice.com/tag/spring-web-mvc/' class='tag-link-14233432' title='2 topics' style='font-size: 11.876923076923pt;'>Spring Web MVC</a>
+<a href='http://springinpractice.com/tag/ss-apc/' class='tag-link-14196670' title='1 topic' style='font-size: 8pt;'>SS APC</a>
+<a href='http://springinpractice.com/tag/sso/' class='tag-link-325304' title='1 topic' style='font-size: 8pt;'>sso</a>
+<a href='http://springinpractice.com/tag/tc-server/' class='tag-link-14196669' title='1 topic' style='font-size: 8pt;'>tc Server</a>
+<a href='http://springinpractice.com/tag/welcome/' class='tag-link-4264' title='1 topic' style='font-size: 8pt;'>welcome</a>
+<a href='http://springinpractice.com/tag/willie/' class='tag-link-110469' title='1 topic' style='font-size: 8pt;'>willie</a></div></aside><aside id="rss-295329111" class="sidebar-widget widget_rss"><h1>&clubs; <a class='rsswidget' href='http://feeds.feedburner.com/wheelersoftware/?format=xml' title='Syndicate this content'><img style='background:orange;color:white;border:none;' width='14' height='14' src='http://s.wordpress.com/wp-includes/images/rss.png?m=1301511944g' alt='RSS' /></a> <a class='rsswidget' href='http://wheelersoftware.com/' title='Latest news and articles from Wheeler Software'>Wheeler Software</a></h1><ul><li>Spring Integration articles published on DZone.com</li><li><a class='rsswidget' href='http://wheelersoftware.com/articles/balancing-server-capacity.html' title='Simplify your system and cut costs using the capacity tip described here.'>Balancing Frontend and Backend Server Capacity</a></li><li>Spring Batch 2.0 article published on DZone.com</li><li><a class='rsswidget' href='http://wheelersoftware.com/articles/eclipse-svn-project-checkout.html' title='In this visual tutorial we&#039;ll learn how to check a project out from an existing Subversion repository using the Subclipse plugin for Eclipse.'>Checking Out a SVN Project in Eclipse</a></li><li><a class='rsswidget' href='http://wheelersoftware.com/articles/install-subclipse-eclipse-svn.html' title='This visual tutorial shows how to install the Subclipse plugin for easy Eclipse/Subversion integration.'>Installing the Subclipse Plugin for Eclipse/Subversion Integration</a></li><li><a class='rsswidget' href='http://wheelersoftware.com/articles/hibernate-validator.html' title='Use Hibernate Validator to define annotation-based bean validation constraints.'>Tutorial: Getting Started with Hibernate Validator</a></li><li>Submitted more Spring in Practice chapters</li><li><a class='rsswidget' href='http://wheelersoftware.com/articles/spring-3-0-publish-rss-feed.html' title='Use Spring 3.0&#039;s new AbstractRssFeedView class to publish an RSS feed.'>Publish an RSS Feed with Spring 3.0</a></li><li><a class='rsswidget' href='http://wheelersoftware.com/articles/spring-javamail-aop.html' title='Use AOP to eliminate the noticeable delay when sending e-mail via JavaMailSenderImpl.send().'>AOP 101: Speeding Up Spring&#039;s JavaMailSenderImpl with AOP</a></li><li><a class='rsswidget' href='http://wheelersoftware.com/articles/statistics-confounders-interactions.html' title='Conduct better A/B split tests by understanding the concepts of confounding and interactions.'>Two Useful Concepts from Statistics for Web Marketers</a></li></ul></aside><aside id="meta-2" class="sidebar-widget widget_meta"><h1>&clubs; Meta</h1>			<ul>
+			<li><a href="http://springinpractice.wordpress.com/wp-login.php?action=register">Register</a></li>			<li><a href="http://springinpractice.wordpress.com/wp-login.php">Log in</a></li>
+			<li><a href="http://springinpractice.com/feed/" title="Syndicate this site using RSS 2.0">Entries <abbr title="Really Simple Syndication">RSS</abbr></a></li>
+			<li><a href="http://springinpractice.com/comments/feed/" title="The latest comments to all posts in RSS">Comments <abbr title="Really Simple Syndication">RSS</abbr></a></li>
+			<li><a href="http://wordpress.com/" title="Powered by WordPress, state-of-the-art semantic personal publishing platform.">WordPress.com</a></li>
+						</ul>
+</aside>
+	</div><!-- #secondary .widget-area -->
+
+
+		</div><!-- end #main -->
+	</div><!-- end #page-inner -->
+
+	<footer id="colophon" role="contentinfo">
+		<div id="footer">
+			<div id="footer-inner">
+				<div id="footer-inner-inner">
+					
+				</div><!-- end #footer-inner-inner -->
+			</div><!-- end #footer-inner -->
+		</div>
+		<div id="copyright">
+			<div id="copyright-inner">
+					<div id="copyright-inner-inner">
+					<p>
+						<a href="http://wordpress.com/?ref=footer" rel="generator">Blog at WordPress.com</a>.
+		Theme: <a href="http://theme.wordpress.com/themes/chateau/">Chateau</a> by <a href="http://ignacioricci.com/" rel="designer">Ignacio Ricci</a>.					</p>
+				</div><!-- end #copyright-inner-inner -->
+			</div><!-- end #copyright-inner -->
+		</div><!-- end #copyright -->
+	</footer><!-- end #footer -->
+
+	<script type='text/javascript' src='http://s.gravatar.com/js/gprofiles.js?aa&#038;ver=3.4-alpha-19719'></script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var WPGroHo = {"my_hash":""};
+/* ]]> */
+</script>
+<script type='text/javascript' src='http://s1.wp.com/wp-content/mu-plugins/gravatar-hovercards/wpgroho.js?m=1318621574g&#038;ver=3.4-alpha-19719'></script>
+
+<script type="text/javascript">
+var _qevents = _qevents || [], wpcomQuantcastData = {"qacct":"p-18-mFEk4J448M","labels":",language.en,type.wpcom,posttag.mysql,posttag.schemas,posttag.spring,posttag.spring-security,as"};
+function wpcomQuantcastPixel( labels, options ) {
+	var i, defaults = wpcomQuantcastData, data = { event: 'ajax' };
+
+	labels  = labels  || '';
+	options = options || {};
+
+	if ( typeof labels != 'string' )
+		options = labels;
+
+	for ( i in defaults ) {
+		data[i] = defaults[i];
+	}
+
+	for ( i in options ) {
+		data[i] = options[i];
+	}
+
+	if ( data.labels ) {
+		data.labels += ',' + labels;
+	} else {
+		data.labels = labels;
+	}
+
+	_qevents.push( data );
+};
+(function() {var elem = document.createElement('script');elem.src = (document.location.protocol == "https:" ? "https://secure" : "http://edge") + ".quantserve.com/quant.js";elem.async = true;elem.type = "text/javascript";var scpt = document.getElementsByTagName('script')[0];scpt.parentNode.insertBefore(elem, scpt);  })();
+_qevents.push( wpcomQuantcastData );
+</script>
+<noscript><div style="display: none;"><img src="//pixel.quantserve.com/pixel/p-18-mFEk4J448M.gif?labels=%2Clanguage.en%2Ctype.wpcom%2Cposttag.mysql%2Cposttag.schemas%2Cposttag.spring%2Cposttag.spring-security%2Cas" height="1" width="1" alt="" /></div></noscript>
+
+	<script type="text/javascript">
+	/* <![CDATA[ */
+		jQuery(document).ready( function($) {
+
+			// Remove the login box when clicking the page
+			$( document ).mousedown( function( e ) {
+				if ( null == $( e.target ).closest( '#wpl-mustlogin' ).get( 0 ) ) {
+					$( '#wpl-mustlogin' ).remove();
+				}
+			});
+
+			// Handle clicking the like button itself
+			$('#wpl-button > a.like').click( function(e) {
+				e.preventDefault();
+				
+				$.post( 'http://springinpractice.com/wp-admin/admin-ajax.php', {
+					'action': 'wpl_record_stat',
+					'stat_name': 'loggedout_like_click'
+				} );
+
+				var tenMins = new Date();
+				tenMins.setTime( tenMins.getTime() + 600000 );
+				document.cookie = 'wpl_rand=b3343a6d29; expires=' + tenMins.toGMTString() + '; domain=wordpress.com; path=/;';
+
+				$('#wpl-count').after( '\
+					<div id="wpl-mustlogin"> \
+						<form action="https://springinpractice.wordpress.com/wp-login.php" method="post"> \
+							<p>Just one more step to like this post:</p> \
+							<label><span>Username</span> <input type="text" name="log" id="user_login" class="input" value="" size="20" tabindex="80" /></label> \
+							<label><span>Password</span> <input type="password" name="pwd" id="user_pass" class="input" value="" size="20" tabindex="81" /></label> \
+							<input type="submit" name="wp-submit" id="wp-submit" class="button-primary" value="Log In" tabindex="82" /> \
+							<input type="hidden" name="redirect_to" value="http://springinpractice.com/2010/07/06/spring-security-database-schemas-for-mysql/?like=1" /> \
+							<input type="hidden" name="wpl_rand" value="b3343a6d29" /> \
+							<p>Not a member yet? <a href="http://wordpress.com/signup/?ref=likebox" id="wpl-signup-link">Sign up with WordPress.com</a></p> \
+						</form> \
+					</div> \
+				');
+
+				$('#wpl-mustlogin').hide().slideDown('fast');
+			} );
+			
+			$('#wpl-mustlogin input.input').live( 'focus', function() {
+				$(this).prev().hide();
+			}).live( 'blur', function() {
+				if ( $(this).val() == '' )
+					$(this).prev().show();
+			});
+			
+			$('#wpl-mustlogin input#wp-submit').live( 'click', function(e) {
+				e.preventDefault();
+				
+				$.post( 'http://springinpractice.com/wp-admin/admin-ajax.php', { 
+					'action': 'wpl_record_stat',
+					'stat_name': 'loggedout_login_submit'
+				}, function() {
+					$('#wpl-mustlogin form').submit();
+				} );
+			});			
+			
+			$('#wpl-mustlogin a#wpl-signup-link').live( 'click', function(e) {
+				e.preventDefault();
+				
+				var link = $(this).attr('href');
+				
+				$.post( 'http://springinpractice.com/wp-admin/admin-ajax.php', { 
+					'action': 'wpl_record_stat',
+					'stat_name': 'loggedout_signup_click'
+				}, function() {
+					location.href = link;
+				} );
+			});					
+			
+		});
+	/* ]]> */
+	</script>
+<script>jQuery(document).ready(function($){ Gravatar.profile_cb = function( h, d ) { WPGroHo.syncProfileData( h, d );	}; Gravatar.my_hash = WPGroHo.my_hash; Gravatar.init( 'body', '#wpadminbar' ); });</script>	<div style="display:none">
+	<div class="grofile-hash-map-c54f82303bf3866c60df4cdab566f883">
+	</div>
+	<div class="grofile-hash-map-b0a72ae61c5c74a51fe46cf66599b6c5">
+	</div>
+	<div class="grofile-hash-map-6a145763a98839860d2eadda94728620">
+	</div>
+	<div class="grofile-hash-map-d020362c861b74e62bf96a3e4a4b8aff">
+	</div>
+	<div class="grofile-hash-map-2b748155f6eb918939eaf87b001c995a">
+	</div>
+	</div>
+		<style type="text/css">
+			
+				.reblog-from img                   { margin: 0 10px 0 0; vertical-align: middle; padding: 0; border: 0; }
+				.reblogger-note img.avatar         { float: left; padding: 0; border: 0; }
+				.reblogger-note-content            { margin: 0 0 20px 35px; }
+				.reblog-post                       { border-left: 3px solid #eee; padding-left: 15px; }
+				.reblog-post ul.thumb-list         { display: block; list-style: none; margin: 2px 0; padding: 0; clear: both; }
+				.reblog-post ul.thumb-list li      { display: inline; margin: 0; padding: 0 1px; border: 0; }
+				.reblog-post ul.thumb-list li a    { margin: 0; padding: 0; border: 0; }
+				.reblog-post ul.thumb-list li img  { margin: 0; padding: 0; border: 0; }
+				.reblog-post                       { border-left: 3px solid #eee; padding-left: 15px; }
+					</style><script type='text/javascript'>
+/* <![CDATA[ */
+var HighlanderComments = {"loggingInText":"Logging In\u2026","submittingText":"Posting Comment\u2026","postCommentText":"Post Comment","connectingToText":"Connecting to %s","commentingAsText":"%1$s: You are commenting using your %2$s account.","logoutText":"Log Out","loginText":"Log In","connectURL":"http:\/\/springinpractice.wordpress.com\/public.api\/connect\/?action=request","homeURL":"http:\/\/springinpractice.com\/","postID":"202","gravDefault":"identicon","enterACommentError":"Please enter a comment","enterEmailError":"Email address required","invalidEmailError":"Invalid email address","enterAuthorError":"Name required","gravatarFromEmail":"Your email address will be used to look up your Gravatar.","logInToExternalAccount":"Log in to use details from one of these accounts.","change":"Change","changeAccount":"Change Account"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='http://s1.wp.com/wp-content/mu-plugins/highlander-comments/script.js?m=1326414782g&#038;ver=20110804'></script>
+	
+	<div id="bit" class="loggedout-follow-normal">
+		<a class="bsub" href="javascript:void(0)"><span id='bsub-text'>Follow</span></a>
+		<div id="bitsubscribe">
+			
+					<h3><label for="loggedout-follow-field">Follow &ldquo;Spring in Practice&rdquo;</label></h3>
+		
+			<form action="http://subscribe.wordpress.com" method="post" accept-charset="utf-8" id="loggedout-follow">
+			<p>Get every new post delivered to your Inbox.</p>
+
+					
+			
+			<p><input type="text" name="email" style="width: 95%; padding: 1px 2px" value="Enter your email address" onfocus='this.value=(this.value=="Enter your email address") ? "" : this.value;' onblur='this.value=(this.value=="") ? "Enter email address" : this.value;'  id="loggedout-follow-field"/></p>
+
+			<input type="hidden" name="action" value="subscribe"/>
+			<input type="hidden" name="blog_id" value="4620434"/>
+			<input type="hidden" name="source" value="http://springinpractice.com/2010/07/06/spring-security-database-schemas-for-mysql/"/>
+			<input type="hidden" name="sub-type" value="loggedout-follow"/>
+
+			<input type="hidden" id="_wpnonce" name="_wpnonce" value="261f7868b1" /><input type="hidden" name="_wp_http_referer" value="/2010/07/06/spring-security-database-schemas-for-mysql/" />
+			<p id='bsub-subscribe-button'><input type="submit" value="Sign me up" /></p>
+			</form>
+					<div id='bsub-credit'><a href="http://wordpress.com/signup/?ref=lof">Powered by WordPress.com</a></div>
+		</div><!-- #bitsubscribe -->
+	</div><!-- #bit -->
+<script type="text/javascript" src="http://b.scorecardresearch.com/beacon.js"></script><script type="text/javascript">try{COMSCORE.beacon({c1:2,c2:7518284});}catch(e){}</script><noscript><p class="robots-nocontent"><img src="http://b.scorecardresearch.com/p?cj=1c1=2&#038;c2=7518284" alt="" style="display:none" width="1" height="1" /></p></noscript><script type="text/javascript">
+// <![CDATA[
+(function() {
+try{
+  if ( window.external &&'msIsSiteMode' in window.external) {
+    if (window.external.msIsSiteMode()) {
+      var jl = document.createElement('script');
+      jl.type='text/javascript';
+      jl.async=true;
+      jl.src='/wp-content/plugins/ie-sitemode/custom-jumplist.php';
+      var s = document.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(jl, s);
+    }
+  }
+}catch(e){}
+})();
+// ]]>
+</script><script src="http://s.stats.wordpress.com/w.js?21" type="text/javascript"></script>
+<script type="text/javascript">
+st_go({'blog':'4620434','v':'wpcom','user_id':'0','post':'202','subd':'springinpractice'});
+ex_go({'crypt':'UE5XaGUuOTlwaD85flAmcm1mcmZsaDhkV11YdWtpP0NsWnVkPS9sL0ViLndld3AsTTdhbFhNYTZuakJZZVBFRSZQdVJDdEEmXXxRcz1nVHhQXVFhYTJzJUhZYnA5dlUrN0pLb2dBTVd6QSx5Z1dJeWVVcmMlNmp1VW9YRHg0P04rQjJrUEdBWkgsYyxVNH4yZ3A4Y3REJnMwYVh5LXw4dnFfeG1TOFhtUHZyc2E0cG5BN0JCLC5ERXoxMUo9U0plRTVKckRqdyVELHJYcVctMkRBQXZIPVhFTEhmbktWLnZpUjFjQVhJR0Z+THBhNGl0MkppYkl4ZzFC'});
+addLoadEvent(function(){linktracker_init('4620434',202);});
+	</script>
+<noscript><img src="http://stats.wordpress.com/b.gif?v=noscript" style="height:0px;width:0px;overflow:hidden" alt="" /></noscript>
+</div><!-- end #page -->
+</body>
+</html>
