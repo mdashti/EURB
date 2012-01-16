@@ -37,6 +37,10 @@ CREATE  TABLE IF NOT EXISTS `eurb`.`persistable_object` (
   `modifier_id` BIGINT UNSIGNED NULL ,
   `modify_date` TIMESTAMP NULL ,
   PRIMARY KEY (`id`) ,
+  UNIQUE INDEX `fk_user_persistable_object` (`id` ASC) ,
+  UNIQUE INDEX `fk_group_persistable_object` (`id` ASC) ,
+  INDEX `fk_persistable_object_creator` (`creator_id` ASC) ,
+  INDEX `fk_persistable_object_modifier` (`modifier_id` ASC) ,
   CONSTRAINT `fk_persistable_object_creator`
     FOREIGN KEY (`creator_id` )
     REFERENCES `eurb`.`users` (`id` )
@@ -48,14 +52,6 @@ CREATE  TABLE IF NOT EXISTS `eurb`.`persistable_object` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
-
-CREATE UNIQUE INDEX `fk_user_persistable_object` ON `eurb`.`persistable_object` (`id` ASC) ;
-
-CREATE UNIQUE INDEX `fk_group_persistable_object` ON `eurb`.`persistable_object` (`id` ASC) ;
-
-CREATE INDEX `fk_persistable_object_creator` ON `eurb`.`persistable_object` (`creator_id` ASC) ;
-
-CREATE INDEX `fk_persistable_object_modifier` ON `eurb`.`persistable_object` (`modifier_id` ASC) ;
 
 
 -- -----------------------------------------------------
@@ -71,14 +67,13 @@ CREATE  TABLE IF NOT EXISTS `eurb`.`db_config` (
   `username` VARCHAR(255) NOT NULL ,
   `password` VARCHAR(255) NULL ,
   PRIMARY KEY (`id`) ,
+  INDEX `fk_db_config_persistable_object` (`id` ASC) ,
   CONSTRAINT `fk_db_config_persistable_object`
     FOREIGN KEY (`id` )
     REFERENCES `eurb`.`persistable_object` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
-
-CREATE INDEX `fk_db_config_persistable_object` ON `eurb`.`db_config` (`id` ASC) ;
 
 
 -- -----------------------------------------------------
@@ -95,6 +90,8 @@ CREATE  TABLE IF NOT EXISTS `eurb`.`table_mapping` (
   `active_for_manager` TINYINT(1) NOT NULL DEFAULT 1 ,
   `active_for_user` TINYINT(1) NOT NULL DEFAULT 0 ,
   PRIMARY KEY (`id`) ,
+  INDEX `fk_table_mapping_persistable_object1` (`id` ASC) ,
+  INDEX `fk_table_mapping_db_config1` (`db_config_id` ASC) ,
   CONSTRAINT `fk_table_mapping_persistable_object1`
     FOREIGN KEY (`id` )
     REFERENCES `eurb`.`persistable_object` (`id` )
@@ -106,10 +103,6 @@ CREATE  TABLE IF NOT EXISTS `eurb`.`table_mapping` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
-
-CREATE INDEX `fk_table_mapping_persistable_object1` ON `eurb`.`table_mapping` (`id` ASC) ;
-
-CREATE INDEX `fk_table_mapping_db_config1` ON `eurb`.`table_mapping` (`db_config_id` ASC) ;
 
 
 -- -----------------------------------------------------
@@ -129,6 +122,8 @@ CREATE  TABLE IF NOT EXISTS `eurb`.`column_mapping` (
   `referenced_id_col` VARCHAR(255) NULL ,
   `referenced_value_col` VARCHAR(255) NULL ,
   PRIMARY KEY (`id`) ,
+  INDEX `fk_column_mapping_persistable_object1` (`id` ASC) ,
+  INDEX `fk_column_mapping_table_mapping1` (`table_mapping_id` ASC) ,
   CONSTRAINT `fk_column_mapping_persistable_object1`
     FOREIGN KEY (`id` )
     REFERENCES `eurb`.`persistable_object` (`id` )
@@ -141,10 +136,6 @@ CREATE  TABLE IF NOT EXISTS `eurb`.`column_mapping` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_column_mapping_persistable_object1` ON `eurb`.`column_mapping` (`id` ASC) ;
-
-CREATE INDEX `fk_column_mapping_table_mapping1` ON `eurb`.`column_mapping` (`table_mapping_id` ASC) ;
-
 
 -- -----------------------------------------------------
 -- Table `eurb`.`authorities`
@@ -154,12 +145,11 @@ DROP TABLE IF EXISTS `eurb`.`authorities` ;
 CREATE  TABLE IF NOT EXISTS `eurb`.`authorities` (
   `username` VARCHAR(50) NOT NULL ,
   `authority` VARCHAR(50) NOT NULL ,
+  UNIQUE INDEX `ix_auth_username` (`username` ASC, `authority` ASC) ,
   CONSTRAINT `fk_authorities_users`
     FOREIGN KEY (`username` )
     REFERENCES `eurb`.`users` (`username` ))
 ENGINE = InnoDB;
-
-CREATE UNIQUE INDEX `ix_auth_username` ON `eurb`.`authorities` (`username` ASC, `authority` ASC) ;
 
 
 -- -----------------------------------------------------
@@ -185,12 +175,11 @@ DROP TABLE IF EXISTS `eurb`.`group_authorities` ;
 CREATE  TABLE IF NOT EXISTS `eurb`.`group_authorities` (
   `group_id` BIGINT UNSIGNED NOT NULL ,
   `authority` VARCHAR(50) NOT NULL ,
+  INDEX `fk_group_authorities_group` (`group_id` ASC) ,
   CONSTRAINT `fk_group_authorities_group`
     FOREIGN KEY (`group_id` )
     REFERENCES `eurb`.`groups` (`id` ))
 ENGINE = InnoDB;
-
-CREATE INDEX `fk_group_authorities_group` ON `eurb`.`group_authorities` (`group_id` ASC) ;
 
 
 -- -----------------------------------------------------
@@ -203,12 +192,11 @@ CREATE  TABLE IF NOT EXISTS `eurb`.`group_members` (
   `username` VARCHAR(50) NOT NULL ,
   `group_id` BIGINT UNSIGNED NOT NULL ,
   PRIMARY KEY (`id`) ,
+  INDEX `fk_group_members_group` (`group_id` ASC) ,
   CONSTRAINT `fk_group_members_group`
     FOREIGN KEY (`group_id` )
     REFERENCES `eurb`.`groups` (`id` ))
 ENGINE = InnoDB;
-
-CREATE INDEX `fk_group_members_group` ON `eurb`.`group_members` (`group_id` ASC) ;
 
 
 -- -----------------------------------------------------
@@ -234,10 +222,9 @@ CREATE  TABLE IF NOT EXISTS `eurb`.`acl_sid` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT ,
   `principal` TINYINT(1) NOT NULL ,
   `sid` VARCHAR(100) NOT NULL ,
-  PRIMARY KEY (`id`) )
+  PRIMARY KEY (`id`) ,
+  UNIQUE INDEX `unique_uk_1` (`sid` ASC, `principal` ASC) )
 ENGINE = InnoDB;
-
-CREATE UNIQUE INDEX `unique_uk_1` ON `eurb`.`acl_sid` (`sid` ASC, `principal` ASC) ;
 
 
 -- -----------------------------------------------------
@@ -248,10 +235,9 @@ DROP TABLE IF EXISTS `eurb`.`acl_class` ;
 CREATE  TABLE IF NOT EXISTS `eurb`.`acl_class` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT ,
   `class` VARCHAR(100) NOT NULL ,
-  PRIMARY KEY (`id`) )
+  PRIMARY KEY (`id`) ,
+  UNIQUE INDEX `unique_uk_2` (`class` ASC) )
 ENGINE = InnoDB;
-
-CREATE UNIQUE INDEX `unique_uk_2` ON `eurb`.`acl_class` (`class` ASC) ;
 
 
 -- -----------------------------------------------------
@@ -267,6 +253,9 @@ CREATE  TABLE IF NOT EXISTS `eurb`.`acl_object_identity` (
   `owner_sid` BIGINT UNSIGNED NOT NULL ,
   `entries_inheriting` TINYINT(1) NOT NULL ,
   PRIMARY KEY (`id`) ,
+  UNIQUE INDEX `unique_uk_3` (`object_id_class` ASC, `object_id_identity` ASC) ,
+  INDEX `foreign_fk_1` (`parent_object` ASC) ,
+  INDEX `foreign_fk_3` (`owner_sid` ASC) ,
   CONSTRAINT `foreign_fk_1`
     FOREIGN KEY (`parent_object` )
     REFERENCES `eurb`.`acl_object_identity` (`id` ),
@@ -277,12 +266,6 @@ CREATE  TABLE IF NOT EXISTS `eurb`.`acl_object_identity` (
     FOREIGN KEY (`owner_sid` )
     REFERENCES `eurb`.`acl_sid` (`id` ))
 ENGINE = InnoDB;
-
-CREATE UNIQUE INDEX `unique_uk_3` ON `eurb`.`acl_object_identity` (`object_id_class` ASC, `object_id_identity` ASC) ;
-
-CREATE INDEX `foreign_fk_1` ON `eurb`.`acl_object_identity` (`parent_object` ASC) ;
-
-CREATE INDEX `foreign_fk_3` ON `eurb`.`acl_object_identity` (`owner_sid` ASC) ;
 
 
 -- -----------------------------------------------------
@@ -300,6 +283,8 @@ CREATE  TABLE IF NOT EXISTS `eurb`.`acl_entry` (
   `audit_success` TINYINT(1) NOT NULL ,
   `audit_failure` TINYINT(1) NOT NULL ,
   PRIMARY KEY (`id`) ,
+  UNIQUE INDEX `unique_uk_4` (`acl_object_identity` ASC, `ace_order` ASC) ,
+  INDEX `foreign_fk_5` (`sid` ASC) ,
   CONSTRAINT `foreign_fk_4`
     FOREIGN KEY (`acl_object_identity` )
     REFERENCES `eurb`.`acl_object_identity` (`id` ),
@@ -308,9 +293,203 @@ CREATE  TABLE IF NOT EXISTS `eurb`.`acl_entry` (
     REFERENCES `eurb`.`acl_sid` (`id` ))
 ENGINE = InnoDB;
 
-CREATE UNIQUE INDEX `unique_uk_4` ON `eurb`.`acl_entry` (`acl_object_identity` ASC, `ace_order` ASC) ;
 
-CREATE INDEX `foreign_fk_5` ON `eurb`.`acl_entry` (`sid` ASC) ;
+-- -----------------------------------------------------
+-- Table `eurb`.`report_category`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `eurb`.`report_category` ;
+
+CREATE  TABLE IF NOT EXISTS `eurb`.`report_category` (
+  `id` BIGINT UNSIGNED NOT NULL ,
+  `name` VARCHAR(255) NULL ,
+  `description` VARCHAR(1024) NULL ,
+  PRIMARY KEY (`id`) ,
+  CONSTRAINT `fk_report_category_persistable_object1`
+    FOREIGN KEY (`id` )
+    REFERENCES `eurb`.`persistable_object` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `eurb`.`report_design`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `eurb`.`report_design` ;
+
+CREATE  TABLE IF NOT EXISTS `eurb`.`report_design` (
+  `id` BIGINT UNSIGNED NOT NULL ,
+  `name` VARCHAR(45) NULL ,
+  `description` VARCHAR(45) NULL ,
+  `category_id` BIGINT UNSIGNED NULL ,
+  `query_text` LONGTEXT NULL ,
+  `select_part` LONGTEXT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_report_design_report_category1` (`category_id` ASC) ,
+  CONSTRAINT `fk_report_design_persistable_object1`
+    FOREIGN KEY (`id` )
+    REFERENCES `eurb`.`persistable_object` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_report_design_report_category1`
+    FOREIGN KEY (`category_id` )
+    REFERENCES `eurb`.`report_category` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `eurb`.`report_dataset`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `eurb`.`report_dataset` ;
+
+CREATE  TABLE IF NOT EXISTS `eurb`.`report_dataset` (
+  `id` BIGINT UNSIGNED NOT NULL ,
+  `design_id` BIGINT UNSIGNED NOT NULL ,
+  `table_mapping_id` BIGINT UNSIGNED NULL ,
+  `base_report_id` BIGINT UNSIGNED NULL ,
+  `order` INT UNSIGNED NOT NULL ,
+  `operator` INT UNSIGNED NOT NULL DEFAULT 0 ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_report_dataset_report_design1` (`base_report_id` ASC) ,
+  INDEX `fk_report_dataset_report_design2` (`design_id` ASC) ,
+  INDEX `fk_report_dataset_table_mapping1` (`table_mapping_id` ASC) ,
+  CONSTRAINT `fk_report_dataset_persistable_object1`
+    FOREIGN KEY (`id` )
+    REFERENCES `eurb`.`persistable_object` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_report_dataset_report_design1`
+    FOREIGN KEY (`base_report_id` )
+    REFERENCES `eurb`.`report_design` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_report_dataset_report_design2`
+    FOREIGN KEY (`design_id` )
+    REFERENCES `eurb`.`report_design` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_report_dataset_table_mapping1`
+    FOREIGN KEY (`table_mapping_id` )
+    REFERENCES `eurb`.`table_mapping` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `eurb`.`report_column`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `eurb`.`report_column` ;
+
+CREATE  TABLE IF NOT EXISTS `eurb`.`report_column` (
+  `id` BIGINT UNSIGNED NOT NULL ,
+  `dataset_id` BIGINT UNSIGNED NOT NULL ,
+  `type` INT UNSIGNED NOT NULL ,
+  `column_mapping_id` BIGINT UNSIGNED NULL ,
+  `report_column_id` BIGINT UNSIGNED NULL ,
+  `order` INT NOT NULL DEFAULT 0 ,
+  `sort_order` INT NOT NULL DEFAULT 0 ,
+  `sort_type` TINYINT(1) NOT NULL DEFAULT 0 ,
+  `group_level` INT NULL ,
+  `column_width` INT NOT NULL DEFAULT 20 ,
+  `column_header` VARCHAR(255) NULL ,
+  `is_custom` TINYINT(1) NOT NULL DEFAULT 0 ,
+  `formula` LONGTEXT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_report_column_report_dataset1` (`dataset_id` ASC) ,
+  INDEX `fk_report_column_column_mapping1` (`column_mapping_id` ASC) ,
+  INDEX `fk_report_column_report_column1` (`report_column_id` ASC) ,
+  CONSTRAINT `fk_report_column_persistable_object1`
+    FOREIGN KEY (`id` )
+    REFERENCES `eurb`.`persistable_object` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_report_column_report_dataset1`
+    FOREIGN KEY (`dataset_id` )
+    REFERENCES `eurb`.`report_dataset` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_report_column_column_mapping1`
+    FOREIGN KEY (`column_mapping_id` )
+    REFERENCES `eurb`.`column_mapping` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_report_column_report_column1`
+    FOREIGN KEY (`report_column_id` )
+    REFERENCES `eurb`.`report_column` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `eurb`.`group_aggregation`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `eurb`.`group_aggregation` ;
+
+CREATE  TABLE IF NOT EXISTS `eurb`.`group_aggregation` (
+  `id` BIGINT UNSIGNED NOT NULL ,
+  `parent_column_id` BIGINT UNSIGNED NOT NULL ,
+  `aggregated_column_id` BIGINT UNSIGNED NOT NULL ,
+  `aggregation_function` VARCHAR(45) NOT NULL ,
+  `place` INT NOT NULL DEFAULT 0 ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_group_aggregation_report_column1` (`parent_column_id` ASC) ,
+  INDEX `fk_group_aggregation_report_column2` (`aggregated_column_id` ASC) ,
+  CONSTRAINT `fk_group_aggregation_persistable_object1`
+    FOREIGN KEY (`id` )
+    REFERENCES `eurb`.`persistable_object` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_group_aggregation_report_column1`
+    FOREIGN KEY (`parent_column_id` )
+    REFERENCES `eurb`.`report_column` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_group_aggregation_report_column2`
+    FOREIGN KEY (`aggregated_column_id` )
+    REFERENCES `eurb`.`report_column` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `eurb`.`report_filter`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `eurb`.`report_filter` ;
+
+CREATE  TABLE IF NOT EXISTS `eurb`.`report_filter` (
+  `id` BIGINT UNSIGNED NOT NULL ,
+  `report_column_id` BIGINT UNSIGNED NOT NULL ,
+  `prefix` VARCHAR(45) NULL ,
+  `operator` VARCHAR(45) NULL ,
+  `suffix` VARCHAR(45) NULL ,
+  `operand1` VARCHAR(255) NULL ,
+  `operand2` VARCHAR(255) NULL ,
+  `type` INT NULL ,
+  `operand1_report_colmun_id` BIGINT UNSIGNED NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_report_filter_report_column1` (`report_column_id` ASC) ,
+  INDEX `fk_report_filter_report_column2` (`operand1_report_colmun_id` ASC) ,
+  CONSTRAINT `fk_report_filter_persistable_object1`
+    FOREIGN KEY (`id` )
+    REFERENCES `eurb`.`persistable_object` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_report_filter_report_column1`
+    FOREIGN KEY (`report_column_id` )
+    REFERENCES `eurb`.`report_column` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_report_filter_report_column2`
+    FOREIGN KEY (`operand1_report_colmun_id` )
+    REFERENCES `eurb`.`report_column` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
 
 
 
