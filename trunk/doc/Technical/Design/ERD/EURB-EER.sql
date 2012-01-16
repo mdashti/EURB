@@ -17,10 +17,7 @@ CREATE  TABLE IF NOT EXISTS `eurb`.`users` (
   `password` VARCHAR(50) NOT NULL ,
   `enabled` TINYINT(1) NOT NULL ,
   PRIMARY KEY (`username`) ,
-  PRIMARY KEY (`id`) ,
-  CONSTRAINT `fk_user_persistable_object`
-    FOREIGN KEY (`id` )
-    REFERENCES `eurb`.`persistable_object` (`id` ))
+  PRIMARY KEY (`id`) )
 ENGINE = InnoDB;
 
 
@@ -160,10 +157,7 @@ DROP TABLE IF EXISTS `eurb`.`groups` ;
 CREATE  TABLE IF NOT EXISTS `eurb`.`groups` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT ,
   `group_name` VARCHAR(50) NOT NULL ,
-  PRIMARY KEY (`id`) ,
-  CONSTRAINT `fk_group_persistable_object`
-    FOREIGN KEY (`id` )
-    REFERENCES `eurb`.`persistable_object` (`id` ))
+  PRIMARY KEY (`id`) )
 ENGINE = InnoDB;
 
 
@@ -351,7 +345,7 @@ CREATE  TABLE IF NOT EXISTS `eurb`.`report_dataset` (
   `base_report_id` BIGINT UNSIGNED NULL ,
   `order` INT UNSIGNED NOT NULL ,
   `operator` INT UNSIGNED NOT NULL DEFAULT 0 ,
-  PRIMARY KEY (`id`) ,
+  PRIMARY KEY (`id`, `design_id`) ,
   INDEX `fk_report_dataset_report_design1` (`base_report_id` ASC) ,
   INDEX `fk_report_dataset_report_design2` (`design_id` ASC) ,
   INDEX `fk_report_dataset_table_mapping1` (`table_mapping_id` ASC) ,
@@ -386,6 +380,7 @@ DROP TABLE IF EXISTS `eurb`.`report_column` ;
 CREATE  TABLE IF NOT EXISTS `eurb`.`report_column` (
   `id` BIGINT UNSIGNED NOT NULL ,
   `dataset_id` BIGINT UNSIGNED NOT NULL ,
+  `design_id` BIGINT UNSIGNED NOT NULL ,
   `type` INT UNSIGNED NOT NULL ,
   `column_mapping_id` BIGINT UNSIGNED NULL ,
   `report_column_id` BIGINT UNSIGNED NULL ,
@@ -397,18 +392,13 @@ CREATE  TABLE IF NOT EXISTS `eurb`.`report_column` (
   `column_header` VARCHAR(255) NULL ,
   `is_custom` TINYINT(1) NOT NULL DEFAULT 0 ,
   `formula` LONGTEXT NULL ,
-  PRIMARY KEY (`id`) ,
-  INDEX `fk_report_column_report_dataset1` (`dataset_id` ASC) ,
+  PRIMARY KEY (`id`, `dataset_id`, `design_id`) ,
   INDEX `fk_report_column_column_mapping1` (`column_mapping_id` ASC) ,
   INDEX `fk_report_column_report_column1` (`report_column_id` ASC) ,
+  INDEX `fk_report_column_report_dataset1` (`dataset_id` ASC, `design_id` ASC) ,
   CONSTRAINT `fk_report_column_persistable_object1`
     FOREIGN KEY (`id` )
     REFERENCES `eurb`.`persistable_object` (`id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_report_column_report_dataset1`
-    FOREIGN KEY (`dataset_id` )
-    REFERENCES `eurb`.`report_dataset` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_report_column_column_mapping1`
@@ -419,6 +409,11 @@ CREATE  TABLE IF NOT EXISTS `eurb`.`report_column` (
   CONSTRAINT `fk_report_column_report_column1`
     FOREIGN KEY (`report_column_id` )
     REFERENCES `eurb`.`report_column` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_report_column_report_dataset1`
+    FOREIGN KEY (`dataset_id` , `design_id` )
+    REFERENCES `eurb`.`report_dataset` (`id` , `design_id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -432,25 +427,29 @@ DROP TABLE IF EXISTS `eurb`.`group_aggregation` ;
 CREATE  TABLE IF NOT EXISTS `eurb`.`group_aggregation` (
   `id` BIGINT UNSIGNED NOT NULL ,
   `parent_column_id` BIGINT UNSIGNED NOT NULL ,
-  `aggregated_column_id` BIGINT UNSIGNED NOT NULL ,
+  `parent_column_dataset_id` BIGINT UNSIGNED NOT NULL ,
+  `parent_column_design_id` BIGINT UNSIGNED NOT NULL ,
+  `aggregated_report_column_id` BIGINT UNSIGNED NOT NULL ,
+  `aggregated_report_column_dataset_id` BIGINT UNSIGNED NOT NULL ,
+  `aggregated_report_column_design_id` BIGINT UNSIGNED NOT NULL ,
   `aggregation_function` VARCHAR(45) NOT NULL ,
   `place` INT NOT NULL DEFAULT 0 ,
   PRIMARY KEY (`id`) ,
-  INDEX `fk_group_aggregation_report_column1` (`parent_column_id` ASC) ,
-  INDEX `fk_group_aggregation_report_column2` (`aggregated_column_id` ASC) ,
+  INDEX `fk_group_aggregation_report_column1` (`parent_column_id` ASC, `parent_column_dataset_id` ASC, `parent_column_design_id` ASC) ,
+  INDEX `fk_group_aggregation_report_column2` (`aggregated_report_column_id` ASC, `aggregated_report_column_dataset_id` ASC, `aggregated_report_column_design_id` ASC) ,
   CONSTRAINT `fk_group_aggregation_persistable_object1`
     FOREIGN KEY (`id` )
     REFERENCES `eurb`.`persistable_object` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_group_aggregation_report_column1`
-    FOREIGN KEY (`parent_column_id` )
-    REFERENCES `eurb`.`report_column` (`id` )
+    FOREIGN KEY (`parent_column_id` , `parent_column_dataset_id` , `parent_column_design_id` )
+    REFERENCES `eurb`.`report_column` (`id` , `dataset_id` , `design_id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_group_aggregation_report_column2`
-    FOREIGN KEY (`aggregated_column_id` )
-    REFERENCES `eurb`.`report_column` (`id` )
+    FOREIGN KEY (`aggregated_report_column_id` , `aggregated_report_column_dataset_id` , `aggregated_report_column_design_id` )
+    REFERENCES `eurb`.`report_column` (`id` , `dataset_id` , `design_id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -464,29 +463,33 @@ DROP TABLE IF EXISTS `eurb`.`report_filter` ;
 CREATE  TABLE IF NOT EXISTS `eurb`.`report_filter` (
   `id` BIGINT UNSIGNED NOT NULL ,
   `report_column_id` BIGINT UNSIGNED NOT NULL ,
+  `report_column_dataset_id` BIGINT UNSIGNED NOT NULL ,
+  `report_column_design_id` BIGINT UNSIGNED NOT NULL ,
   `prefix` VARCHAR(45) NULL ,
   `operator` VARCHAR(45) NULL ,
   `suffix` VARCHAR(45) NULL ,
   `operand1` VARCHAR(255) NULL ,
   `operand2` VARCHAR(255) NULL ,
   `type` INT NULL ,
-  `operand1_report_colmun_id` BIGINT UNSIGNED NOT NULL ,
+  `operand1_column_id` BIGINT UNSIGNED NULL ,
+  `operand1_column_dataset_id` BIGINT UNSIGNED NULL ,
+  `operand1_column_design_id` BIGINT UNSIGNED NULL ,
   PRIMARY KEY (`id`) ,
-  INDEX `fk_report_filter_report_column1` (`report_column_id` ASC) ,
-  INDEX `fk_report_filter_report_column2` (`operand1_report_colmun_id` ASC) ,
+  INDEX `fk_report_filter_report_column1` (`operand1_column_id` ASC, `operand1_column_dataset_id` ASC, `operand1_column_design_id` ASC) ,
+  INDEX `fk_report_filter_report_column2` (`report_column_id` ASC, `report_column_dataset_id` ASC, `report_column_design_id` ASC) ,
   CONSTRAINT `fk_report_filter_persistable_object1`
     FOREIGN KEY (`id` )
     REFERENCES `eurb`.`persistable_object` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_report_filter_report_column1`
-    FOREIGN KEY (`report_column_id` )
-    REFERENCES `eurb`.`report_column` (`id` )
+    FOREIGN KEY (`operand1_column_id` , `operand1_column_dataset_id` , `operand1_column_design_id` )
+    REFERENCES `eurb`.`report_column` (`id` , `dataset_id` , `design_id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_report_filter_report_column2`
-    FOREIGN KEY (`operand1_report_colmun_id` )
-    REFERENCES `eurb`.`report_column` (`id` )
+    FOREIGN KEY (`report_column_id` , `report_column_dataset_id` , `report_column_design_id` )
+    REFERENCES `eurb`.`report_column` (`id` , `dataset_id` , `design_id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
