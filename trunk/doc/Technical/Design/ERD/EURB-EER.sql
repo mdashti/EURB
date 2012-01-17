@@ -18,6 +18,7 @@ CREATE  TABLE IF NOT EXISTS `eurb`.`users` (
   `enabled` TINYINT(1) NOT NULL ,
   PRIMARY KEY (`username`) ,
   INDEX `fk_usr_persistable_object` (`id` ASC) ,
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) ,
   CONSTRAINT `fk_usr_persistable_object`
     FOREIGN KEY (`id` )
     REFERENCES `eurb`.`persistable_object` (`id` )
@@ -34,21 +35,21 @@ DROP TABLE IF EXISTS `eurb`.`persistable_object` ;
 CREATE  TABLE IF NOT EXISTS `eurb`.`persistable_object` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT ,
   `type` INT UNSIGNED NOT NULL ,
-  `creator_id` BIGINT UNSIGNED NOT NULL ,
+  `creator` VARCHAR(50) NOT NULL ,
   `create_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
-  `modifier_id` BIGINT UNSIGNED NULL ,
+  `modifier` VARCHAR(50) NULL ,
   `modify_date` TIMESTAMP NULL ,
   PRIMARY KEY (`id`) ,
-  INDEX `fk_persistable_object_creator` (`creator_id` ASC) ,
-  INDEX `fk_persistable_object_modifier` (`modifier_id` ASC) ,
+  INDEX `fk_persistable_object_creator` (`creator` ASC) ,
+  INDEX `fk_persistable_object_modifier` (`modifier` ASC) ,
   CONSTRAINT `fk_persistable_object_creator`
-    FOREIGN KEY (`creator_id` )
-    REFERENCES `eurb`.`users` (`id` )
+    FOREIGN KEY (`creator` )
+    REFERENCES `eurb`.`users` (`username` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_persistable_object_modifier`
-    FOREIGN KEY (`modifier_id` )
-    REFERENCES `eurb`.`users` (`id` )
+    FOREIGN KEY (`modifier` )
+    REFERENCES `eurb`.`users` (`username` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -66,6 +67,7 @@ CREATE  TABLE IF NOT EXISTS `eurb`.`db_config` (
   `driver_url` VARCHAR(255) NOT NULL ,
   `username` VARCHAR(255) NOT NULL ,
   `password` VARCHAR(255) NULL ,
+  `test_query` VARCHAR(1024) NULL ,
   PRIMARY KEY (`id`) ,
   INDEX `fk_db_config_persistable_object` (`id` ASC) ,
   CONSTRAINT `fk_db_config_persistable_object`
@@ -508,7 +510,7 @@ ENGINE = InnoDB;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
-
+SET FOREIGN_KEY_CHECKS = 0;
 -- -----------------------------------------------------
 -- Data for table `eurb`.`users`
 -- -----------------------------------------------------
@@ -526,9 +528,10 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `eurb`;
-INSERT INTO `eurb`.`persistable_object` (`id`, `type`, `creator_id`, `create_date`, `modifier_id`, `modify_date`) VALUES (100, 100, 100, NULL, NULL, NULL);
-INSERT INTO `eurb`.`persistable_object` (`id`, `type`, `creator_id`, `create_date`, `modifier_id`, `modify_date`) VALUES (101, 100, 100, NULL, NULL, NULL);
-INSERT INTO `eurb`.`persistable_object` (`id`, `type`, `creator_id`, `create_date`, `modifier_id`, `modify_date`) VALUES (102, 100, 100, NULL, NULL, NULL);
-INSERT INTO `eurb`.`persistable_object` (`id`, `type`, `creator_id`, `create_date`, `modifier_id`, `modify_date`) VALUES (103, 100, 100, NULL, NULL, NULL);
+INSERT INTO `eurb`.`persistable_object` (`id`, `type`, `creator`, `create_date`, `modifier`, `modify_date`) VALUES (100, 100, 'dashti', NULL, NULL, NULL);
+INSERT INTO `eurb`.`persistable_object` (`id`, `type`, `creator`, `create_date`, `modifier`, `modify_date`) VALUES (101, 100, 'dashti', NULL, NULL, NULL);
+INSERT INTO `eurb`.`persistable_object` (`id`, `type`, `creator`, `create_date`, `modifier`, `modify_date`) VALUES (102, 100, 'dashti', NULL, NULL, NULL);
+INSERT INTO `eurb`.`persistable_object` (`id`, `type`, `creator`, `create_date`, `modifier`, `modify_date`) VALUES (103, 100, 'dashti', NULL, NULL, NULL);
 
 COMMIT;
+SET FOREIGN_KEY_CHECKS = 1;
