@@ -40,7 +40,7 @@ public class GroupMembersDaoImpl extends AbstractDAO implements ParameterizedRow
 	{
 		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( username, group_id ) VALUES ( ?, ? )",dto.getUsername(),dto.getGroupId());
 		GroupMembersPk pk = new GroupMembersPk();
-		pk.setId( jdbcTemplate.queryForInt("select last_insert_id()") );
+		pk.setId( jdbcTemplate.queryForLong("select last_insert_id()") );
 		return pk;
 	}
 

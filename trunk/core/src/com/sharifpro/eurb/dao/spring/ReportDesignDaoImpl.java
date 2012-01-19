@@ -38,7 +38,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	@Transactional
 	public ReportDesignPk insert(ReportDesign dto)
 	{
-		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, version_id, name, description, category_id, query_text, select_part, result_data, format_file, is_current, record_status ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",dto.getId(),dto.getVersionId(),dto.getName(),dto.getDescription(),dto.getCategoryId(),dto.getQueryText(),dto.getSelectPart(),dto.getResultData(),dto.getFormatFile(),dto.getIsCurrent(),dto.getRecordStatus());
+		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, version_id, name, description, category_id, query_text, select_part, result_data, format_file, is_current, record_status ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",dto.getId(),dto.getVersionId(),dto.getName(),dto.getDescription(),dto.getCategoryId(),dto.getQueryText(),dto.getSelectPart(),dto.getResultData(),dto.getFormatFile(),dto.isIsCurrent(),dto.getRecordStatus());
 		return dto.createPk();
 	}
 
@@ -48,7 +48,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	@Transactional
 	public void update(ReportDesignPk pk, ReportDesign dto) throws ReportDesignDaoException
 	{
-		jdbcTemplate.update("UPDATE " + getTableName() + " SET id = ?, version_id = ?, name = ?, description = ?, category_id = ?, query_text = ?, select_part = ?, result_data = ?, format_file = ?, is_current = ?, record_status = ? WHERE id = ? AND version_id = ?",dto.getId(),dto.getVersionId(),dto.getName(),dto.getDescription(),dto.getCategoryId(),dto.getQueryText(),dto.getSelectPart(),dto.getResultData(),dto.getFormatFile(),dto.getIsCurrent(),dto.getRecordStatus(),pk.getId(),pk.getVersionId());
+		jdbcTemplate.update("UPDATE " + getTableName() + " SET id = ?, version_id = ?, name = ?, description = ?, category_id = ?, query_text = ?, select_part = ?, result_data = ?, format_file = ?, is_current = ?, record_status = ? WHERE id = ? AND version_id = ?",dto.getId(),dto.getVersionId(),dto.getName(),dto.getDescription(),dto.getCategoryId(),dto.getQueryText(),dto.getSelectPart(),dto.getResultData(),dto.getFormatFile(),dto.isIsCurrent(),dto.getRecordStatus(),pk.getId(),pk.getVersionId());
 	}
 
 	/** 

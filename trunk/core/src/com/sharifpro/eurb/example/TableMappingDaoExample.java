@@ -209,9 +209,9 @@ public class TableMappingDaoExample
 		buf.append( ", " );
 		buf.append( dto.getType() );
 		buf.append( ", " );
-		buf.append( dto.getActiveForManager() );
+		buf.append( dto.isActiveForManager() );
 		buf.append( ", " );
-		buf.append( dto.getActiveForUser() );
+		buf.append( dto.isActiveForUser() );
 		System.out.println( buf.toString() );
 	}
 

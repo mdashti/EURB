@@ -41,7 +41,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements Parameteriz
 	{
 		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( type, creator, create_date, modifier, modify_date ) VALUES ( ?, ?, ?, ?, ? )",dto.getType(),dto.getCreator(),dto.getCreateDate(),dto.getModifier(),dto.getModifyDate());
 		PersistableObjectPk pk = new PersistableObjectPk();
-		pk.setId( jdbcTemplate.queryForInt("select last_insert_id()") );
+		pk.setId( jdbcTemplate.queryForLong("select last_insert_id()") );
 		return pk;
 	}
 

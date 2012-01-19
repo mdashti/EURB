@@ -40,7 +40,7 @@ public class GroupsDaoImpl extends AbstractDAO implements ParameterizedRowMapper
 	{
 		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( group_name ) VALUES ( ? )",dto.getGroupName());
 		GroupsPk pk = new GroupsPk();
-		pk.setId( jdbcTemplate.queryForInt("select last_insert_id()") );
+		pk.setId( jdbcTemplate.queryForLong("select last_insert_id()") );
 		return pk;
 	}
 

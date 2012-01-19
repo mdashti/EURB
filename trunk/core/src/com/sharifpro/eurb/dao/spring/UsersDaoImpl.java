@@ -38,9 +38,9 @@ public class UsersDaoImpl extends AbstractDAO implements ParameterizedRowMapper<
 	@Transactional
 	public UsersPk insert(Users dto)
 	{
-		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( username, password, enabled ) VALUES ( ?, ?, ? )",dto.getUsername(),dto.getPassword(),dto.getEnabled());
+		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( username, password, enabled ) VALUES ( ?, ?, ? )",dto.getUsername(),dto.getPassword(),dto.isEnabled());
 		UsersPk pk = new UsersPk();
-		pk.setUsername( jdbcTemplate.queryForInt("select last_insert_id()") );
+		pk.setUsername( jdbcTemplate.queryForObject("select last_insert_id()", String.class) );
 		return pk;
 	}
 
@@ -50,7 +50,7 @@ public class UsersDaoImpl extends AbstractDAO implements ParameterizedRowMapper<
 	@Transactional
 	public void update(UsersPk pk, Users dto) throws UsersDaoException
 	{
-		jdbcTemplate.update("UPDATE " + getTableName() + " SET id = ?, username = ?, password = ?, enabled = ? WHERE username = ?",dto.getId(),dto.getUsername(),dto.getPassword(),dto.getEnabled(),pk.getUsername());
+		jdbcTemplate.update("UPDATE " + getTableName() + " SET id = ?, username = ?, password = ?, enabled = ? WHERE username = ?",dto.getId(),dto.getUsername(),dto.getPassword(),dto.isEnabled(),pk.getUsername());
 	}
 
 	/** 

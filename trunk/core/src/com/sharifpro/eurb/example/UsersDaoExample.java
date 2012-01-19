@@ -137,7 +137,7 @@ public class UsersDaoExample
 		buf.append( ", " );
 		buf.append( dto.getPassword() );
 		buf.append( ", " );
-		buf.append( dto.getEnabled() );
+		buf.append( dto.isEnabled() );
 		System.out.println( buf.toString() );
 	}
 

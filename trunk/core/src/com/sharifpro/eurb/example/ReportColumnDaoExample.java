@@ -423,7 +423,7 @@ public class ReportColumnDaoExample
 		buf.append( ", " );
 		buf.append( dto.getSortOrder() );
 		buf.append( ", " );
-		buf.append( dto.getSortType() );
+		buf.append( dto.isSortType() );
 		buf.append( ", " );
 		buf.append( dto.getGroupLevel() );
 		buf.append( ", " );
@@ -435,7 +435,7 @@ public class ReportColumnDaoExample
 		buf.append( ", " );
 		buf.append( dto.getColumnHeader() );
 		buf.append( ", " );
-		buf.append( dto.getIsCustom() );
+		buf.append( dto.isIsCustom() );
 		buf.append( ", " );
 		buf.append( dto.getFormula() );
 		System.out.println( buf.toString() );

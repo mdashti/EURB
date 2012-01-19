@@ -38,7 +38,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	@Transactional
 	public TableMappingPk insert(TableMapping dto)
 	{
-		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, db_config_id, table_name, mapped_name, type, active_for_manager, active_for_user ) VALUES ( ?, ?, ?, ?, ?, ?, ? )",dto.getId(),dto.getDbConfigId(),dto.getTableName(),dto.getMappedName(),dto.getType(),dto.getActiveForManager(),dto.getActiveForUser());
+		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, db_config_id, table_name, mapped_name, type, active_for_manager, active_for_user ) VALUES ( ?, ?, ?, ?, ?, ?, ? )",dto.getId(),dto.getDbConfigId(),dto.getTableName(),dto.getMappedName(),dto.getType(),dto.isActiveForManager(),dto.isActiveForUser());
 		return dto.createPk();
 	}
 
@@ -48,7 +48,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	@Transactional
 	public void update(TableMappingPk pk, TableMapping dto) throws TableMappingDaoException
 	{
-		jdbcTemplate.update("UPDATE " + getTableName() + " SET id = ?, db_config_id = ?, table_name = ?, mapped_name = ?, type = ?, active_for_manager = ?, active_for_user = ? WHERE id = ?",dto.getId(),dto.getDbConfigId(),dto.getTableName(),dto.getMappedName(),dto.getType(),dto.getActiveForManager(),dto.getActiveForUser(),pk.getId());
+		jdbcTemplate.update("UPDATE " + getTableName() + " SET id = ?, db_config_id = ?, table_name = ?, mapped_name = ?, type = ?, active_for_manager = ?, active_for_user = ? WHERE id = ?",dto.getId(),dto.getDbConfigId(),dto.getTableName(),dto.getMappedName(),dto.getType(),dto.isActiveForManager(),dto.isActiveForUser(),pk.getId());
 	}
 
 	/** 

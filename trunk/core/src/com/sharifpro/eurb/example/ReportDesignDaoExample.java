@@ -285,7 +285,7 @@ public class ReportDesignDaoExample
 		buf.append( ", " );
 		buf.append( dto.getFormatFile() );
 		buf.append( ", " );
-		buf.append( dto.getIsCurrent() );
+		buf.append( dto.isIsCurrent() );
 		buf.append( ", " );
 		buf.append( dto.getRecordStatus() );
 		System.out.println( buf.toString() );

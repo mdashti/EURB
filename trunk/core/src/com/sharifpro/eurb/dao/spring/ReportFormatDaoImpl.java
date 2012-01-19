@@ -38,9 +38,9 @@ public class ReportFormatDaoImpl extends AbstractDAO implements ParameterizedRow
 	@Transactional
 	public ReportFormatPk insert(ReportFormat dto)
 	{
-		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, format_file, is_current, record_status, report_design_id, report_design_version_id ) VALUES ( ?, ?, ?, ?, ?, ? )",dto.getId(),dto.getFormatFile(),dto.getIsCurrent(),dto.getRecordStatus(),dto.getReportDesignId(),dto.getReportDesignVersionId());
+		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, format_file, is_current, record_status, report_design_id, report_design_version_id ) VALUES ( ?, ?, ?, ?, ?, ? )",dto.getId(),dto.getFormatFile(),dto.isIsCurrent(),dto.getRecordStatus(),dto.getReportDesignId(),dto.getReportDesignVersionId());
 		ReportFormatPk pk = new ReportFormatPk();
-		pk.setVersionId( jdbcTemplate.queryForInt("select last_insert_id()") );
+		pk.setVersionId( jdbcTemplate.queryForLong("select last_insert_id()") );
 		return pk;
 	}
 
@@ -50,7 +50,7 @@ public class ReportFormatDaoImpl extends AbstractDAO implements ParameterizedRow
 	@Transactional
 	public void update(ReportFormatPk pk, ReportFormat dto) throws ReportFormatDaoException
 	{
-		jdbcTemplate.update("UPDATE " + getTableName() + " SET id = ?, version_id = ?, format_file = ?, is_current = ?, record_status = ?, report_design_id = ?, report_design_version_id = ? WHERE version_id = ? AND id = ?",dto.getId(),dto.getVersionId(),dto.getFormatFile(),dto.getIsCurrent(),dto.getRecordStatus(),dto.getReportDesignId(),dto.getReportDesignVersionId(),pk.getVersionId(),pk.getId());
+		jdbcTemplate.update("UPDATE " + getTableName() + " SET id = ?, version_id = ?, format_file = ?, is_current = ?, record_status = ?, report_design_id = ?, report_design_version_id = ? WHERE version_id = ? AND id = ?",dto.getId(),dto.getVersionId(),dto.getFormatFile(),dto.isIsCurrent(),dto.getRecordStatus(),dto.getReportDesignId(),dto.getReportDesignVersionId(),pk.getVersionId(),pk.getId());
 	}
 
 	/** 

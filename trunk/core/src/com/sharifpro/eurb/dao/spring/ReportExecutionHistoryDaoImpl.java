@@ -38,7 +38,7 @@ public class ReportExecutionHistoryDaoImpl extends AbstractDAO implements Parame
 	@Transactional
 	public ReportExecutionHistoryPk insert(ReportExecutionHistory dto)
 	{
-		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, version_id, execution_result, is_current, record_status, report_design_id, report_design_version_id ) VALUES ( ?, ?, ?, ?, ?, ?, ? )",dto.getId(),dto.getVersionId(),dto.getExecutionResult(),dto.getIsCurrent(),dto.getRecordStatus(),dto.getReportDesignId(),dto.getReportDesignVersionId());
+		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, version_id, execution_result, is_current, record_status, report_design_id, report_design_version_id ) VALUES ( ?, ?, ?, ?, ?, ?, ? )",dto.getId(),dto.getVersionId(),dto.getExecutionResult(),dto.isIsCurrent(),dto.getRecordStatus(),dto.getReportDesignId(),dto.getReportDesignVersionId());
 		return dto.createPk();
 	}
 
@@ -48,7 +48,7 @@ public class ReportExecutionHistoryDaoImpl extends AbstractDAO implements Parame
 	@Transactional
 	public void update(ReportExecutionHistoryPk pk, ReportExecutionHistory dto) throws ReportExecutionHistoryDaoException
 	{
-		jdbcTemplate.update("UPDATE " + getTableName() + " SET id = ?, version_id = ?, execution_result = ?, is_current = ?, record_status = ?, report_design_id = ?, report_design_version_id = ? WHERE id = ? AND version_id = ?",dto.getId(),dto.getVersionId(),dto.getExecutionResult(),dto.getIsCurrent(),dto.getRecordStatus(),dto.getReportDesignId(),dto.getReportDesignVersionId(),pk.getId(),pk.getVersionId());
+		jdbcTemplate.update("UPDATE " + getTableName() + " SET id = ?, version_id = ?, execution_result = ?, is_current = ?, record_status = ?, report_design_id = ?, report_design_version_id = ? WHERE id = ? AND version_id = ?",dto.getId(),dto.getVersionId(),dto.getExecutionResult(),dto.isIsCurrent(),dto.getRecordStatus(),dto.getReportDesignId(),dto.getReportDesignVersionId(),pk.getId(),pk.getVersionId());
 	}
 
 	/** 

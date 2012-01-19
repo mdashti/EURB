@@ -38,7 +38,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	@Transactional
 	public ReportColumnPk insert(ReportColumn dto)
 	{
-		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, dataset_id, design_id, design_version_id, type, column_mapping_id, report_column_id, order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",dto.getId(),dto.getDatasetId(),dto.getDesignId(),dto.getDesignVersionId(),dto.getType(),dto.getColumnMappingId(),dto.getReportColumnId(),dto.getOrder(),dto.getSortOrder(),dto.getSortType(),dto.getGroupLevel(),dto.getColumnWidth(),dto.getColumnAlign(),dto.getColumnDir(),dto.getColumnHeader(),dto.getIsCustom(),dto.getFormula());
+		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, dataset_id, design_id, design_version_id, type, column_mapping_id, report_column_id, order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",dto.getId(),dto.getDatasetId(),dto.getDesignId(),dto.getDesignVersionId(),dto.getType(),dto.getColumnMappingId(),dto.getReportColumnId(),dto.getOrder(),dto.getSortOrder(),dto.isSortType(),dto.getGroupLevel(),dto.getColumnWidth(),dto.getColumnAlign(),dto.getColumnDir(),dto.getColumnHeader(),dto.isIsCustom(),dto.getFormula());
 		return dto.createPk();
 	}
 
@@ -48,7 +48,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	@Transactional
 	public void update(ReportColumnPk pk, ReportColumn dto) throws ReportColumnDaoException
 	{
-		jdbcTemplate.update("UPDATE " + getTableName() + " SET id = ?, dataset_id = ?, design_id = ?, design_version_id = ?, type = ?, column_mapping_id = ?, report_column_id = ?, order = ?, sort_order = ?, sort_type = ?, group_level = ?, column_width = ?, column_align = ?, column_dir = ?, column_header = ?, is_custom = ?, formula = ? WHERE id = ? AND dataset_id = ? AND design_id = ? AND design_version_id = ?",dto.getId(),dto.getDatasetId(),dto.getDesignId(),dto.getDesignVersionId(),dto.getType(),dto.getColumnMappingId(),dto.getReportColumnId(),dto.getOrder(),dto.getSortOrder(),dto.getSortType(),dto.getGroupLevel(),dto.getColumnWidth(),dto.getColumnAlign(),dto.getColumnDir(),dto.getColumnHeader(),dto.getIsCustom(),dto.getFormula(),pk.getId(),pk.getDatasetId(),pk.getDesignId(),pk.getDesignVersionId());
+		jdbcTemplate.update("UPDATE " + getTableName() + " SET id = ?, dataset_id = ?, design_id = ?, design_version_id = ?, type = ?, column_mapping_id = ?, report_column_id = ?, order = ?, sort_order = ?, sort_type = ?, group_level = ?, column_width = ?, column_align = ?, column_dir = ?, column_header = ?, is_custom = ?, formula = ? WHERE id = ? AND dataset_id = ? AND design_id = ? AND design_version_id = ?",dto.getId(),dto.getDatasetId(),dto.getDesignId(),dto.getDesignVersionId(),dto.getType(),dto.getColumnMappingId(),dto.getReportColumnId(),dto.getOrder(),dto.getSortOrder(),dto.isSortType(),dto.getGroupLevel(),dto.getColumnWidth(),dto.getColumnAlign(),dto.getColumnDir(),dto.getColumnHeader(),dto.isIsCustom(),dto.getFormula(),pk.getId(),pk.getDatasetId(),pk.getDesignId(),pk.getDesignVersionId());
 	}
 
 	/** 
