@@ -7,13 +7,13 @@ import java.util.List;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.transaction.annotation.Transactional;
 
 public class GroupAuthoritiesDaoImpl extends AbstractDAO implements ParameterizedRowMapper<GroupAuthorities>, GroupAuthoritiesDao
 {
-	protected SimpleJdbcTemplate jdbcTemplate;
+	protected JdbcTemplate jdbcTemplate;
 
 	protected DataSource dataSource;
 
@@ -25,7 +25,7 @@ public class GroupAuthoritiesDaoImpl extends AbstractDAO implements Parameterize
 	public void setDataSource(DataSource dataSource)
 	{
 		this.dataSource = dataSource;
-		jdbcTemplate = new SimpleJdbcTemplate(dataSource);
+		jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 
 	/**

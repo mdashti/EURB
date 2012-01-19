@@ -8,13 +8,13 @@ import java.util.List;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.transaction.annotation.Transactional;
 
 public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRowMapper<ReportColumn>, ReportColumnDao
 {
-	protected SimpleJdbcTemplate jdbcTemplate;
+	protected JdbcTemplate jdbcTemplate;
 
 	protected DataSource dataSource;
 
@@ -26,7 +26,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public void setDataSource(DataSource dataSource)
 	{
 		this.dataSource = dataSource;
-		jdbcTemplate = new SimpleJdbcTemplate(dataSource);
+		jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 
 	/**
