@@ -1,7 +1,7 @@
 package com.sharifpro.eurb.factory;
 
 import com.sharifpro.eurb.dao.*;
-import com.sharifpro.util.MyApplicationContext;
+import com.sharifpro.util.SharifProApplicationContext;
 
 public class DaoFactory
 {
@@ -12,7 +12,7 @@ public class DaoFactory
 	 */
 	public static AuthoritiesDao createAuthoritiesDao()
 	{
-		return (AuthoritiesDao) MyApplicationContext.getApplicationContext().getBean( "AuthoritiesDao" );
+		return (AuthoritiesDao) SharifProApplicationContext.getApplicationContext().getBean( "AuthoritiesDao" );
 	}
 
 	/**
@@ -22,7 +22,7 @@ public class DaoFactory
 	 */
 	public static ColumnMappingDao createColumnMappingDao()
 	{
-		return (ColumnMappingDao) MyApplicationContext.getApplicationContext().getBean( "ColumnMappingDao" );
+		return (ColumnMappingDao) SharifProApplicationContext.getApplicationContext().getBean( "ColumnMappingDao" );
 	}
 
 	/**
@@ -32,7 +32,7 @@ public class DaoFactory
 	 */
 	public static DbConfigDao createDbConfigDao()
 	{
-		return (DbConfigDao) MyApplicationContext.getApplicationContext().getBean( "DbConfigDao" );
+		return (DbConfigDao) SharifProApplicationContext.getApplicationContext().getBean( "DbConfigDao" );
 	}
 
 	/**
@@ -42,7 +42,7 @@ public class DaoFactory
 	 */
 	public static GroupAggregationDao createGroupAggregationDao()
 	{
-		return (GroupAggregationDao) MyApplicationContext.getApplicationContext().getBean( "GroupAggregationDao" );
+		return (GroupAggregationDao) SharifProApplicationContext.getApplicationContext().getBean( "GroupAggregationDao" );
 	}
 
 	/**
@@ -52,7 +52,7 @@ public class DaoFactory
 	 */
 	public static GroupAuthoritiesDao createGroupAuthoritiesDao()
 	{
-		return (GroupAuthoritiesDao) MyApplicationContext.getApplicationContext().getBean( "GroupAuthoritiesDao" );
+		return (GroupAuthoritiesDao) SharifProApplicationContext.getApplicationContext().getBean( "GroupAuthoritiesDao" );
 	}
 
 	/**
@@ -62,7 +62,7 @@ public class DaoFactory
 	 */
 	public static GroupMembersDao createGroupMembersDao()
 	{
-		return (GroupMembersDao) MyApplicationContext.getApplicationContext().getBean( "GroupMembersDao" );
+		return (GroupMembersDao) SharifProApplicationContext.getApplicationContext().getBean( "GroupMembersDao" );
 	}
 
 	/**
@@ -72,7 +72,7 @@ public class DaoFactory
 	 */
 	public static GroupsDao createGroupsDao()
 	{
-		return (GroupsDao) MyApplicationContext.getApplicationContext().getBean( "GroupsDao" );
+		return (GroupsDao) SharifProApplicationContext.getApplicationContext().getBean( "GroupsDao" );
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class DaoFactory
 	 */
 	public static PersistableObjectDao createPersistableObjectDao()
 	{
-		return (PersistableObjectDao) MyApplicationContext.getApplicationContext().getBean( "PersistableObjectDao" );
+		return (PersistableObjectDao) SharifProApplicationContext.getApplicationContext().getBean( "PersistableObjectDao" );
 	}
 
 	/**
@@ -92,7 +92,7 @@ public class DaoFactory
 	 */
 	public static ReportCategoryDao createReportCategoryDao()
 	{
-		return (ReportCategoryDao) MyApplicationContext.getApplicationContext().getBean( "ReportCategoryDao" );
+		return (ReportCategoryDao) SharifProApplicationContext.getApplicationContext().getBean( "ReportCategoryDao" );
 	}
 
 	/**
@@ -102,7 +102,7 @@ public class DaoFactory
 	 */
 	public static ReportColumnDao createReportColumnDao()
 	{
-		return (ReportColumnDao) MyApplicationContext.getApplicationContext().getBean( "ReportColumnDao" );
+		return (ReportColumnDao) SharifProApplicationContext.getApplicationContext().getBean( "ReportColumnDao" );
 	}
 
 	/**
@@ -112,7 +112,7 @@ public class DaoFactory
 	 */
 	public static ReportDatasetDao createReportDatasetDao()
 	{
-		return (ReportDatasetDao) MyApplicationContext.getApplicationContext().getBean( "ReportDatasetDao" );
+		return (ReportDatasetDao) SharifProApplicationContext.getApplicationContext().getBean( "ReportDatasetDao" );
 	}
 
 	/**
@@ -122,7 +122,7 @@ public class DaoFactory
 	 */
 	public static ReportDesignDao createReportDesignDao()
 	{
-		return (ReportDesignDao) MyApplicationContext.getApplicationContext().getBean( "ReportDesignDao" );
+		return (ReportDesignDao) SharifProApplicationContext.getApplicationContext().getBean( "ReportDesignDao" );
 	}
 
 	/**
@@ -132,7 +132,7 @@ public class DaoFactory
 	 */
 	public static ReportExecutionHistoryDao createReportExecutionHistoryDao()
 	{
-		return (ReportExecutionHistoryDao) MyApplicationContext.getApplicationContext().getBean( "ReportExecutionHistoryDao" );
+		return (ReportExecutionHistoryDao) SharifProApplicationContext.getApplicationContext().getBean( "ReportExecutionHistoryDao" );
 	}
 
 	/**
@@ -142,7 +142,7 @@ public class DaoFactory
 	 */
 	public static ReportFilterDao createReportFilterDao()
 	{
-		return (ReportFilterDao) MyApplicationContext.getApplicationContext().getBean( "ReportFilterDao" );
+		return (ReportFilterDao) SharifProApplicationContext.getApplicationContext().getBean( "ReportFilterDao" );
 	}
 
 	/**
@@ -152,7 +152,7 @@ public class DaoFactory
 	 */
 	public static ReportFormatDao createReportFormatDao()
 	{
-		return (ReportFormatDao) MyApplicationContext.getApplicationContext().getBean( "ReportFormatDao" );
+		return (ReportFormatDao) SharifProApplicationContext.getApplicationContext().getBean( "ReportFormatDao" );
 	}
 
 	/**
@@ -162,7 +162,7 @@ public class DaoFactory
 	 */
 	public static TableMappingDao createTableMappingDao()
 	{
-		return (TableMappingDao) MyApplicationContext.getApplicationContext().getBean( "TableMappingDao" );
+		return (TableMappingDao) SharifProApplicationContext.getApplicationContext().getBean( "TableMappingDao" );
 	}
 
 	/**
@@ -172,7 +172,7 @@ public class DaoFactory
 	 */
 	public static UsersDao createUsersDao()
 	{
-		return (UsersDao) MyApplicationContext.getApplicationContext().getBean( "UsersDao" );
+		return (UsersDao) SharifProApplicationContext.getApplicationContext().getBean( "UsersDao" );
 	}
 
 }

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import net.sf.json.JSONArray;
 
 import com.sharifpro.sample.model.Contact;
-import com.sharifpro.util.json.EURBObjectMapper;
+import com.sharifpro.util.json.SharifProObjectMapper;
 
 /**
  * Util class. Contains some common methods that can be used
@@ -89,9 +89,9 @@ public class Util {
 	}
 	
 	@Autowired
-	public void setEURBObjectMapper(EURBObjectMapper objectMapper) {
-		this.objectMapper = objectMapper;
+	public void setSharifProObjectMapper(SharifProObjectMapper sharifProObjectMapper) {
+		this.objectMapper = sharifProObjectMapper;
 	}
 	
-	EURBObjectMapper objectMapper;
+	SharifProObjectMapper objectMapper;
 }

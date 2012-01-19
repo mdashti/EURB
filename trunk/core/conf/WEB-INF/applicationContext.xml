@@ -15,7 +15,7 @@
 	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd">
 	<util:properties id="applicationProps" location="/WEB-INF/application.properties"/>
 	
-	<bean id="contextApplicationContextProvider" class="com.sharifpro.util.MyApplicationContext"></bean> 
+	<bean id="contextApplicationContextProvider" class="com.sharifpro.util.SharifProApplicationContext"></bean> 
 
 	<bean id="EURBDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />

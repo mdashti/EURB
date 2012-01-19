@@ -5,7 +5,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public class MyApplicationContext implements ApplicationContextAware {
+public class SharifProApplicationContext implements ApplicationContextAware {
 
     private static ApplicationContext appContext;
 
@@ -13,7 +13,7 @@ public class MyApplicationContext implements ApplicationContextAware {
     public void setApplicationContext(ApplicationContext globalAppContext)
         throws BeansException {
 
-    	MyApplicationContext.appContext = globalAppContext;
+    	SharifProApplicationContext.appContext = globalAppContext;
 
     }
 
