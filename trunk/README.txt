@@ -9,7 +9,7 @@ For preparing development environment:
 	- replace apache-tomcat-6.0.35/conf/context.xml with <EURB>/core/conf
 	- change email config in apache-tomcat-6.0.35/conf/context.xml
 3- Download and install mysql-5.5.19
-	- put database user/pass in apache-tomcat-6.0.35/conf/context.xml
+	- put database user/pass in core/conf/WEB-INF/applicationContext.xml
 4- Import EURB project into eclipse
 	- File > Import... > Import > General > Existing projects into workspace
 5- Copy core/build.properties.example to core/build.properties

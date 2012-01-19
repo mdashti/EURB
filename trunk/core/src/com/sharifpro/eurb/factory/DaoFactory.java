@@ -1,11 +1,7 @@
 package com.sharifpro.eurb.factory;
 
 import com.sharifpro.eurb.dao.*;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.xml.XmlBeanFactory;
-import org.springframework.beans.BeansException;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.FileSystemResource;
+import com.sharifpro.util.MyApplicationContext;
 
 public class DaoFactory
 {
@@ -16,8 +12,7 @@ public class DaoFactory
 	 */
 	public static AuthoritiesDao createAuthoritiesDao()
 	{
-		BeanFactory bf = new XmlBeanFactory( new ClassPathResource("dao-beans.xml") );
-		return (AuthoritiesDao) bf.getBean( "AuthoritiesDao" );
+		return (AuthoritiesDao) MyApplicationContext.getApplicationContext().getBean( "AuthoritiesDao" );
 	}
 
 	/**
@@ -27,8 +22,7 @@ public class DaoFactory
 	 */
 	public static ColumnMappingDao createColumnMappingDao()
 	{
-		BeanFactory bf = new XmlBeanFactory( new ClassPathResource("dao-beans.xml") );
-		return (ColumnMappingDao) bf.getBean( "ColumnMappingDao" );
+		return (ColumnMappingDao) MyApplicationContext.getApplicationContext().getBean( "ColumnMappingDao" );
 	}
 
 	/**
@@ -38,8 +32,7 @@ public class DaoFactory
 	 */
 	public static DbConfigDao createDbConfigDao()
 	{
-		BeanFactory bf = new XmlBeanFactory( new ClassPathResource("dao-beans.xml") );
-		return (DbConfigDao) bf.getBean( "DbConfigDao" );
+		return (DbConfigDao) MyApplicationContext.getApplicationContext().getBean( "DbConfigDao" );
 	}
 
 	/**
@@ -49,8 +42,7 @@ public class DaoFactory
 	 */
 	public static GroupAggregationDao createGroupAggregationDao()
 	{
-		BeanFactory bf = new XmlBeanFactory( new ClassPathResource("dao-beans.xml") );
-		return (GroupAggregationDao) bf.getBean( "GroupAggregationDao" );
+		return (GroupAggregationDao) MyApplicationContext.getApplicationContext().getBean( "GroupAggregationDao" );
 	}
 
 	/**
@@ -60,8 +52,7 @@ public class DaoFactory
 	 */
 	public static GroupAuthoritiesDao createGroupAuthoritiesDao()
 	{
-		BeanFactory bf = new XmlBeanFactory( new ClassPathResource("dao-beans.xml") );
-		return (GroupAuthoritiesDao) bf.getBean( "GroupAuthoritiesDao" );
+		return (GroupAuthoritiesDao) MyApplicationContext.getApplicationContext().getBean( "GroupAuthoritiesDao" );
 	}
 
 	/**
@@ -71,8 +62,7 @@ public class DaoFactory
 	 */
 	public static GroupMembersDao createGroupMembersDao()
 	{
-		BeanFactory bf = new XmlBeanFactory( new ClassPathResource("dao-beans.xml") );
-		return (GroupMembersDao) bf.getBean( "GroupMembersDao" );
+		return (GroupMembersDao) MyApplicationContext.getApplicationContext().getBean( "GroupMembersDao" );
 	}
 
 	/**
@@ -82,8 +72,7 @@ public class DaoFactory
 	 */
 	public static GroupsDao createGroupsDao()
 	{
-		BeanFactory bf = new XmlBeanFactory( new ClassPathResource("dao-beans.xml") );
-		return (GroupsDao) bf.getBean( "GroupsDao" );
+		return (GroupsDao) MyApplicationContext.getApplicationContext().getBean( "GroupsDao" );
 	}
 
 	/**
@@ -93,8 +82,7 @@ public class DaoFactory
 	 */
 	public static PersistableObjectDao createPersistableObjectDao()
 	{
-		BeanFactory bf = new XmlBeanFactory( new ClassPathResource("dao-beans.xml") );
-		return (PersistableObjectDao) bf.getBean( "PersistableObjectDao" );
+		return (PersistableObjectDao) MyApplicationContext.getApplicationContext().getBean( "PersistableObjectDao" );
 	}
 
 	/**
@@ -104,8 +92,7 @@ public class DaoFactory
 	 */
 	public static ReportCategoryDao createReportCategoryDao()
 	{
-		BeanFactory bf = new XmlBeanFactory( new ClassPathResource("dao-beans.xml") );
-		return (ReportCategoryDao) bf.getBean( "ReportCategoryDao" );
+		return (ReportCategoryDao) MyApplicationContext.getApplicationContext().getBean( "ReportCategoryDao" );
 	}
 
 	/**
@@ -115,8 +102,7 @@ public class DaoFactory
 	 */
 	public static ReportColumnDao createReportColumnDao()
 	{
-		BeanFactory bf = new XmlBeanFactory( new ClassPathResource("dao-beans.xml") );
-		return (ReportColumnDao) bf.getBean( "ReportColumnDao" );
+		return (ReportColumnDao) MyApplicationContext.getApplicationContext().getBean( "ReportColumnDao" );
 	}
 
 	/**
@@ -126,8 +112,7 @@ public class DaoFactory
 	 */
 	public static ReportDatasetDao createReportDatasetDao()
 	{
-		BeanFactory bf = new XmlBeanFactory( new ClassPathResource("dao-beans.xml") );
-		return (ReportDatasetDao) bf.getBean( "ReportDatasetDao" );
+		return (ReportDatasetDao) MyApplicationContext.getApplicationContext().getBean( "ReportDatasetDao" );
 	}
 
 	/**
@@ -137,8 +122,7 @@ public class DaoFactory
 	 */
 	public static ReportDesignDao createReportDesignDao()
 	{
-		BeanFactory bf = new XmlBeanFactory( new ClassPathResource("dao-beans.xml") );
-		return (ReportDesignDao) bf.getBean( "ReportDesignDao" );
+		return (ReportDesignDao) MyApplicationContext.getApplicationContext().getBean( "ReportDesignDao" );
 	}
 
 	/**
@@ -148,8 +132,7 @@ public class DaoFactory
 	 */
 	public static ReportExecutionHistoryDao createReportExecutionHistoryDao()
 	{
-		BeanFactory bf = new XmlBeanFactory( new ClassPathResource("dao-beans.xml") );
-		return (ReportExecutionHistoryDao) bf.getBean( "ReportExecutionHistoryDao" );
+		return (ReportExecutionHistoryDao) MyApplicationContext.getApplicationContext().getBean( "ReportExecutionHistoryDao" );
 	}
 
 	/**
@@ -159,8 +142,7 @@ public class DaoFactory
 	 */
 	public static ReportFilterDao createReportFilterDao()
 	{
-		BeanFactory bf = new XmlBeanFactory( new ClassPathResource("dao-beans.xml") );
-		return (ReportFilterDao) bf.getBean( "ReportFilterDao" );
+		return (ReportFilterDao) MyApplicationContext.getApplicationContext().getBean( "ReportFilterDao" );
 	}
 
 	/**
@@ -170,8 +152,7 @@ public class DaoFactory
 	 */
 	public static ReportFormatDao createReportFormatDao()
 	{
-		BeanFactory bf = new XmlBeanFactory( new ClassPathResource("dao-beans.xml") );
-		return (ReportFormatDao) bf.getBean( "ReportFormatDao" );
+		return (ReportFormatDao) MyApplicationContext.getApplicationContext().getBean( "ReportFormatDao" );
 	}
 
 	/**
@@ -181,8 +162,7 @@ public class DaoFactory
 	 */
 	public static TableMappingDao createTableMappingDao()
 	{
-		BeanFactory bf = new XmlBeanFactory( new ClassPathResource("dao-beans.xml") );
-		return (TableMappingDao) bf.getBean( "TableMappingDao" );
+		return (TableMappingDao) MyApplicationContext.getApplicationContext().getBean( "TableMappingDao" );
 	}
 
 	/**
@@ -192,8 +172,7 @@ public class DaoFactory
 	 */
 	public static UsersDao createUsersDao()
 	{
-		BeanFactory bf = new XmlBeanFactory( new ClassPathResource("dao-beans.xml") );
-		return (UsersDao) bf.getBean( "UsersDao" );
+		return (UsersDao) MyApplicationContext.getApplicationContext().getBean( "UsersDao" );
 	}
 
 }

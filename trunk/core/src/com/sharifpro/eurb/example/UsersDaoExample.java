@@ -20,7 +20,7 @@ public class UsersDaoExample
 	{
 		// Uncomment one of the lines below to test the generated code
 		
-		// findAll();
+		findAll();
 		// findByPersistableObject(null);
 		// findWhereIdEquals(null);
 		// findWhereUsernameEquals("");

@@ -20,7 +20,7 @@ public class PersistableObjectDaoExample
 	{
 		// Uncomment one of the lines below to test the generated code
 		
-		// findAll();
+		 findAll();
 		// findByUsers("");
 		// findByUsers2("");
 		// findWhereIdEquals(null);

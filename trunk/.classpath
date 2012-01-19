@@ -3,8 +3,6 @@
 	<classpathentry kind="src" path="core/src"/>
 	<classpathentry kind="src" path="core/test"/>
 	<classpathentry kind="lib" path="core/lib/antlr.jar"/>
-	<classpathentry kind="lib" path="core/lib/asm-attrs.jar"/>
-	<classpathentry kind="lib" path="core/lib/asm.jar"/>
 	<classpathentry kind="lib" path="core/lib/common.jar"/>
 	<classpathentry kind="lib" path="core/lib/commons-cli.jar"/>
 	<classpathentry kind="lib" path="core/lib/commons-codec.jar"/>
@@ -62,7 +60,6 @@
 	<classpathentry kind="lib" path="core/lib/spring-security-taglibs-3.1.0.RELEASE.jar"/>
 	<classpathentry kind="lib" path="core/lib/spring-security-web-3.1.0.RELEASE.jar"/>
 	<classpathentry kind="lib" path="core/lib/aopalliance.jar"/>
-	<classpathentry kind="lib" path="core/lib/cglib-2.2.jar"/>
 	<classpathentry kind="lib" path="core/lib/dom4j-1.6.1.jar"/>
 	<classpathentry kind="lib" path="core/lib/javassist-3.9.0.GA.jar"/>
 	<classpathentry kind="lib" path="core/lib/slf4j-api-1.5.8.jar"/>
@@ -70,5 +67,10 @@
 	<classpathentry kind="lib" path="core/lib/icu4j_3_2_calendar.jar"/>
 	<classpathentry kind="lib" path="core/lib/persiancalendar.jar"/>
 	<classpathentry kind="lib" path="core/lib/jackson-all-1.9.3.jar"/>
+	<classpathentry kind="lib" path="core/lib/commons-dbcp-1.4.jar"/>
+	<classpathentry kind="lib" path="core/lib/commons-pool-1.6.jar"/>
+	<classpathentry kind="lib" path="core/lib/asm-all-4.0.jar"/>
+	<classpathentry kind="lib" path="core/lib/cglib-nodep-2.2.2.jar"/>
+	<classpathentry kind="lib" path="core/conf"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
