@@ -1,11 +1,8 @@
 package com.sharifpro.eurb.example;
 
-import java.math.*;
-import java.util.Date;
 import java.util.List;
 import com.sharifpro.eurb.dao.TableMappingDao;
 import com.sharifpro.eurb.dto.TableMapping;
-import com.sharifpro.eurb.exceptions.TableMappingDaoException;
 import com.sharifpro.eurb.factory.DaoFactory;
 
 public class TableMappingDaoExample

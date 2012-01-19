@@ -2,6 +2,8 @@ package com.sharifpro.eurb.exceptions;
 
 public class GroupAuthoritiesDaoException extends DaoException
 {
+	private static final long serialVersionUID = -5289944845800604809L;
+
 	/**
 	 * Method 'GroupAuthoritiesDaoException'
 	 * 

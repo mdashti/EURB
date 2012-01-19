@@ -1,14 +1,13 @@
 package com.sharifpro.eurb.dto;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
 
 /** 
  * This class represents the primary key of the persistable_object table.
  */
 public class PersistableObjectPk implements Serializable
 {
+	private static final long serialVersionUID = 7824973615075879998L;
 	protected Long id;
 
 	/** 

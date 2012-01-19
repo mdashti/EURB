@@ -1,14 +1,13 @@
 package com.sharifpro.eurb.dto;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
 
 /** 
  * This class represents the primary key of the table_mapping table.
  */
 public class TableMappingPk implements Serializable
 {
+	private static final long serialVersionUID = 4898300769518763179L;
 	protected Long id;
 
 	/** 

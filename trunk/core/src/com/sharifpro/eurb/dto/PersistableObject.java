@@ -1,14 +1,12 @@
 package com.sharifpro.eurb.dto;
 
-import com.sharifpro.eurb.dao.*;
-import com.sharifpro.eurb.factory.*;
-import com.sharifpro.eurb.exceptions.*;
 import java.io.Serializable;
-import java.util.*;
 import java.util.Date;
 
 public class PersistableObject implements Serializable
 {
+	private static final long serialVersionUID = -8510014065738364759L;
+
 	/** 
 	 * This attribute maps to the column id in the persistable_object table.
 	 */

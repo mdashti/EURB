@@ -1,21 +1,15 @@
 package com.sharifpro.sample.util;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 
 import com.sharifpro.sample.model.Contact;
 import com.sharifpro.util.json.EURBObjectMapper;

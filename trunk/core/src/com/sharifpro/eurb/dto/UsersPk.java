@@ -1,14 +1,13 @@
 package com.sharifpro.eurb.dto;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
 
 /** 
  * This class represents the primary key of the users table.
  */
 public class UsersPk implements Serializable
 {
+	private static final long serialVersionUID = -2572395260394655158L;
 	protected String username;
 
 	/** 

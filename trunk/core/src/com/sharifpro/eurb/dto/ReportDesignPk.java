@@ -1,14 +1,14 @@
 package com.sharifpro.eurb.dto;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
 
 /** 
  * This class represents the primary key of the report_design table.
  */
 public class ReportDesignPk implements Serializable
 {
+	private static final long serialVersionUID = 3685496952009516376L;
+
 	protected Long id;
 
 	protected Long versionId;

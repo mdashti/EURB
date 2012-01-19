@@ -1,13 +1,11 @@
 package com.sharifpro.eurb.dto;
 
-import com.sharifpro.eurb.dao.*;
-import com.sharifpro.eurb.factory.*;
-import com.sharifpro.eurb.exceptions.*;
 import java.io.Serializable;
-import java.util.*;
 
 public class GroupAuthorities implements Serializable
 {
+	private static final long serialVersionUID = -744855063749823823L;
+
 	/** 
 	 * This attribute maps to the column group_id in the group_authorities table.
 	 */

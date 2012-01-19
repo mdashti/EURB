@@ -1,11 +1,8 @@
 package com.sharifpro.eurb.example;
 
-import java.math.*;
-import java.util.Date;
 import java.util.List;
 import com.sharifpro.eurb.dao.ReportDesignDao;
 import com.sharifpro.eurb.dto.ReportDesign;
-import com.sharifpro.eurb.exceptions.ReportDesignDaoException;
 import com.sharifpro.eurb.factory.DaoFactory;
 
 public class ReportDesignDaoExample

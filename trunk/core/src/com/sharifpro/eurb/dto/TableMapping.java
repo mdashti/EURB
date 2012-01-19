@@ -1,13 +1,11 @@
 package com.sharifpro.eurb.dto;
 
-import com.sharifpro.eurb.dao.*;
-import com.sharifpro.eurb.factory.*;
-import com.sharifpro.eurb.exceptions.*;
 import java.io.Serializable;
-import java.util.*;
 
 public class TableMapping implements Serializable
 {
+	private static final long serialVersionUID = 8016638670642078075L;
+
 	/** 
 	 * This attribute maps to the column id in the table_mapping table.
 	 */

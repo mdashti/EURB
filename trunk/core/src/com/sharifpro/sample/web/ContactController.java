@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.sharifpro.eurb.example.UsersDaoExample;
 import com.sharifpro.sample.model.Contact;
 import com.sharifpro.sample.service.ContactService;
 
@@ -28,9 +27,6 @@ public class ContactController  {
 	public @ResponseBody Map<String,? extends Object> view() throws Exception {
 
 		try{
-
-			UsersDaoExample.main(null);
-			
 			List<Contact> contacts = contactService.getContactList();
 
 			return getMap(contacts);

@@ -1,11 +1,8 @@
 package com.sharifpro.eurb.example;
 
-import java.math.*;
-import java.util.Date;
 import java.util.List;
 import com.sharifpro.eurb.dao.ReportCategoryDao;
 import com.sharifpro.eurb.dto.ReportCategory;
-import com.sharifpro.eurb.exceptions.ReportCategoryDaoException;
 import com.sharifpro.eurb.factory.DaoFactory;
 
 public class ReportCategoryDaoExample

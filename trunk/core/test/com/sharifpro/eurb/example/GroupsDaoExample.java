@@ -1,11 +1,8 @@
 package com.sharifpro.eurb.example;
 
-import java.math.*;
-import java.util.Date;
 import java.util.List;
 import com.sharifpro.eurb.dao.GroupsDao;
 import com.sharifpro.eurb.dto.Groups;
-import com.sharifpro.eurb.exceptions.GroupsDaoException;
 import com.sharifpro.eurb.factory.DaoFactory;
 
 public class GroupsDaoExample

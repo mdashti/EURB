@@ -1,13 +1,11 @@
 package com.sharifpro.eurb.dto;
 
-import com.sharifpro.eurb.dao.*;
-import com.sharifpro.eurb.factory.*;
-import com.sharifpro.eurb.exceptions.*;
 import java.io.Serializable;
-import java.util.*;
 
 public class Authorities implements Serializable
 {
+	private static final long serialVersionUID = 9080484423268142973L;
+
 	/** 
 	 * This attribute maps to the column username in the authorities table.
 	 */

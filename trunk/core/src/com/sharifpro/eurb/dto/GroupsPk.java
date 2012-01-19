@@ -1,14 +1,13 @@
 package com.sharifpro.eurb.dto;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
 
 /** 
  * This class represents the primary key of the groups table.
  */
 public class GroupsPk implements Serializable
 {
+	private static final long serialVersionUID = 444358832111560554L;
 	protected Long id;
 
 	/** 

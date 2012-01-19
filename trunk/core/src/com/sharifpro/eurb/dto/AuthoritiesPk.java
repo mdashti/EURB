@@ -1,14 +1,14 @@
 package com.sharifpro.eurb.dto;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
 
 /** 
  * This class represents the primary key of the authorities table.
  */
 public class AuthoritiesPk implements Serializable
 {
+	private static final long serialVersionUID = -3818159220097967583L;
+
 	protected String username;
 
 	protected String authority;

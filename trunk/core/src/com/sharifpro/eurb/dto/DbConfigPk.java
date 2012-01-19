@@ -1,14 +1,13 @@
 package com.sharifpro.eurb.dto;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
 
 /** 
  * This class represents the primary key of the db_config table.
  */
 public class DbConfigPk implements Serializable
 {
+	private static final long serialVersionUID = -3702933065555246694L;
 	protected Long id;
 
 	/** 

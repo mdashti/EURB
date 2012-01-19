@@ -2,6 +2,8 @@ package com.sharifpro.eurb.exceptions;
 
 public class ColumnMappingDaoException extends DaoException
 {
+	private static final long serialVersionUID = 5230637432117019930L;
+
 	/**
 	 * Method 'ColumnMappingDaoException'
 	 * 

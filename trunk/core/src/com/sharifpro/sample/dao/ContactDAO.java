@@ -33,7 +33,7 @@ public class ContactDAO implements IContactDAO{
 	 */
 	private static int contactNextId = 11;
 	
-	private Util util;
+	protected Util util;
 	
 	
 	public ContactDAO(){

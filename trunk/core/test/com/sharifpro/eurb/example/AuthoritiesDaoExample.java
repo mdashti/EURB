@@ -1,11 +1,8 @@
 package com.sharifpro.eurb.example;
 
-import java.math.*;
-import java.util.Date;
 import java.util.List;
 import com.sharifpro.eurb.dao.AuthoritiesDao;
 import com.sharifpro.eurb.dto.Authorities;
-import com.sharifpro.eurb.exceptions.AuthoritiesDaoException;
 import com.sharifpro.eurb.factory.DaoFactory;
 
 public class AuthoritiesDaoExample

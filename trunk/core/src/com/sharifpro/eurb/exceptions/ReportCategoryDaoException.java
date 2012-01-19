@@ -2,6 +2,8 @@ package com.sharifpro.eurb.exceptions;
 
 public class ReportCategoryDaoException extends DaoException
 {
+	private static final long serialVersionUID = -248540213069213504L;
+
 	/**
 	 * Method 'ReportCategoryDaoException'
 	 * 

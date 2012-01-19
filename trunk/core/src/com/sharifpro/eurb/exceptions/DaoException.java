@@ -2,6 +2,7 @@ package com.sharifpro.eurb.exceptions;
 
 public class DaoException extends Exception
 {
+	private static final long serialVersionUID = 3722509684452338388L;
 	protected Throwable throwable;
 
 	/**

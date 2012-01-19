@@ -1,13 +1,11 @@
 package com.sharifpro.eurb.dto;
 
-import com.sharifpro.eurb.dao.*;
-import com.sharifpro.eurb.factory.*;
-import com.sharifpro.eurb.exceptions.*;
 import java.io.Serializable;
-import java.util.*;
 
 public class ReportColumn implements Serializable
 {
+	private static final long serialVersionUID = 608566522317972974L;
+
 	/** 
 	 * This attribute maps to the column id in the report_column table.
 	 */

@@ -1,11 +1,8 @@
 package com.sharifpro.eurb.example;
 
-import java.math.*;
-import java.util.Date;
 import java.util.List;
 import com.sharifpro.eurb.dao.DbConfigDao;
 import com.sharifpro.eurb.dto.DbConfig;
-import com.sharifpro.eurb.exceptions.DbConfigDaoException;
 import com.sharifpro.eurb.factory.DaoFactory;
 
 public class DbConfigDaoExample

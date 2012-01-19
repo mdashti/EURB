@@ -1,13 +1,11 @@
 package com.sharifpro.eurb.dto;
 
-import com.sharifpro.eurb.dao.*;
-import com.sharifpro.eurb.factory.*;
-import com.sharifpro.eurb.exceptions.*;
 import java.io.Serializable;
-import java.util.*;
 
 public class DbConfig implements Serializable
 {
+	private static final long serialVersionUID = 4348520185323565243L;
+
 	/** 
 	 * This attribute maps to the column id in the db_config table.
 	 */

@@ -2,6 +2,8 @@ package com.sharifpro.eurb.exceptions;
 
 public class UsersDaoException extends DaoException
 {
+	private static final long serialVersionUID = -7970981304156363006L;
+
 	/**
 	 * Method 'UsersDaoException'
 	 * 

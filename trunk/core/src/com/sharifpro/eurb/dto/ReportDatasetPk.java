@@ -1,14 +1,14 @@
 package com.sharifpro.eurb.dto;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
 
 /** 
  * This class represents the primary key of the report_dataset table.
  */
 public class ReportDatasetPk implements Serializable
 {
+	private static final long serialVersionUID = -7675029193501887771L;
+
 	protected Long id;
 
 	protected Long designId;

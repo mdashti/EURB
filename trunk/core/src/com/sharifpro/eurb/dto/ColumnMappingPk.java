@@ -1,14 +1,13 @@
 package com.sharifpro.eurb.dto;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
 
 /** 
  * This class represents the primary key of the column_mapping table.
  */
 public class ColumnMappingPk implements Serializable
 {
+	private static final long serialVersionUID = -7588588103055754287L;
 	protected Long id;
 
 	/** 

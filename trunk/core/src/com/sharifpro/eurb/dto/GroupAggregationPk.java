@@ -1,14 +1,13 @@
 package com.sharifpro.eurb.dto;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
 
 /** 
  * This class represents the primary key of the group_aggregation table.
  */
 public class GroupAggregationPk implements Serializable
 {
+	private static final long serialVersionUID = -1191737386686997465L;
 	protected Long id;
 
 	/** 

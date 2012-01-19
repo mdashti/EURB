@@ -11,8 +11,6 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.DeserializationContext;
 import org.codehaus.jackson.map.JsonDeserializer;
 import org.springframework.stereotype.Component;
-
-import com.sharifpro.util.DateUtil;
  
 /**
  * Used to serialize Java.util.Date, which is not a common JSON

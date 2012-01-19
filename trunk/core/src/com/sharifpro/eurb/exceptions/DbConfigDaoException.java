@@ -2,6 +2,8 @@ package com.sharifpro.eurb.exceptions;
 
 public class DbConfigDaoException extends DaoException
 {
+	private static final long serialVersionUID = -4211413329613215119L;
+
 	/**
 	 * Method 'DbConfigDaoException'
 	 * 

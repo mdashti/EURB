@@ -2,6 +2,8 @@ package com.sharifpro.eurb.exceptions;
 
 public class PersistableObjectDaoException extends DaoException
 {
+	private static final long serialVersionUID = 6654299621451218876L;
+
 	/**
 	 * Method 'PersistableObjectDaoException'
 	 * 

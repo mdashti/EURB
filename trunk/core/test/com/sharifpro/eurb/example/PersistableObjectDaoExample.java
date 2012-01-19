@@ -1,11 +1,9 @@
 package com.sharifpro.eurb.example;
 
-import java.math.*;
 import java.util.Date;
 import java.util.List;
 import com.sharifpro.eurb.dao.PersistableObjectDao;
 import com.sharifpro.eurb.dto.PersistableObject;
-import com.sharifpro.eurb.exceptions.PersistableObjectDaoException;
 import com.sharifpro.eurb.factory.DaoFactory;
 
 public class PersistableObjectDaoExample
