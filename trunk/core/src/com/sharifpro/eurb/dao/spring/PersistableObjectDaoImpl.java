@@ -7,10 +7,18 @@ import com.sharifpro.eurb.exceptions.PersistableObjectDaoException;
 import java.util.Date;
 import java.util.List;
 import javax.sql.DataSource;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.transaction.annotation.Transactional;
 
 public class PersistableObjectDaoImpl extends AbstractDAO implements ParameterizedRowMapper<PersistableObject>, PersistableObjectDao
@@ -37,11 +45,26 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements Parameteriz
 	 * @return PersistableObjectPk
 	 */
 	@Transactional
-	public PersistableObjectPk insert(PersistableObject dto)
+	public PersistableObjectPk insert(final PersistableObject dto)
 	{
-		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( type, creator, create_date, modifier, modify_date ) VALUES ( ?, ?, ?, ?, ? )",dto.getType(),dto.getCreator(),dto.getCreateDate(),dto.getModifier(),dto.getModifyDate());
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+		final String INSERT_SQL = "INSERT INTO " + getTableName() + " ( type, creator, create_date, modifier, modify_date ) VALUES ( ?, ?, ?, ?, ? )";
+		jdbcTemplate.update(
+			new PreparedStatementCreator() {
+				public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+					PreparedStatement ps = connection.prepareStatement(INSERT_SQL, new String[] {"id"});
+					Long now = new Date().getTime();
+					int i=0;
+					ps.setInt(++i, dto.getType());
+					ps.setString(++i, dto.getCreator());
+					ps.setTimestamp(++i, new java.sql.Timestamp(now));
+					ps.setString(++i, dto.getCreator());
+					ps.setTimestamp(++i, new java.sql.Timestamp(now));
+					return ps;
+				}
+			}, keyHolder);
 		PersistableObjectPk pk = new PersistableObjectPk();
-		pk.setId( jdbcTemplate.queryForLong("select last_insert_id()") );
+		pk.setId( keyHolder.getKey().longValue() );
 		return pk;
 	}
 
@@ -51,7 +74,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements Parameteriz
 	@Transactional
 	public void update(PersistableObjectPk pk, PersistableObject dto) throws PersistableObjectDaoException
 	{
-		jdbcTemplate.update("UPDATE " + getTableName() + " SET id = ?, type = ?, creator = ?, create_date = ?, modifier = ?, modify_date = ? WHERE id = ?",dto.getId(),dto.getType(),dto.getCreator(),dto.getCreateDate(),dto.getModifier(),dto.getModifyDate(),pk.getId());
+		jdbcTemplate.update("UPDATE " + getTableName() + " SET modifier = ?, modify_date = ? WHERE id = ?",dto.getModifier(),new Timestamp(new Date().getTime()),pk.getId());
 	}
 
 	/** 
