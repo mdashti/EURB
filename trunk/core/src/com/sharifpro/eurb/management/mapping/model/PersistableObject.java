@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.sharifpro.eurb.PersistableObjectType;
-import com.sharifpro.eurb.management.security.model.User;
 
 public class PersistableObject implements Serializable
 {
