@@ -1,9 +1,10 @@
 package com.sharifpro.eurb.example;
 
 import java.util.List;
-import com.sharifpro.eurb.dao.ReportCategoryDao;
-import com.sharifpro.eurb.dto.ReportCategory;
-import com.sharifpro.eurb.factory.DaoFactory;
+
+import com.sharifpro.eurb.DaoFactory;
+import com.sharifpro.eurb.builder.dao.ReportCategoryDao;
+import com.sharifpro.eurb.builder.model.ReportCategory;
 
 public class ReportCategoryDaoExample
 {

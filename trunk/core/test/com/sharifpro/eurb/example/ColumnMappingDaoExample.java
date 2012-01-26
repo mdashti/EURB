@@ -1,9 +1,10 @@
 package com.sharifpro.eurb.example;
 
 import java.util.List;
-import com.sharifpro.eurb.dao.ColumnMappingDao;
-import com.sharifpro.eurb.dto.ColumnMapping;
-import com.sharifpro.eurb.factory.DaoFactory;
+
+import com.sharifpro.eurb.DaoFactory;
+import com.sharifpro.eurb.management.mapping.dao.ColumnMappingDao;
+import com.sharifpro.eurb.management.mapping.model.ColumnMapping;
 
 public class ColumnMappingDaoExample
 {

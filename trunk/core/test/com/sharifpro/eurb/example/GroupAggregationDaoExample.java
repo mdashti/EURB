@@ -1,9 +1,10 @@
 package com.sharifpro.eurb.example;
 
 import java.util.List;
-import com.sharifpro.eurb.dao.GroupAggregationDao;
-import com.sharifpro.eurb.dto.GroupAggregation;
-import com.sharifpro.eurb.factory.DaoFactory;
+
+import com.sharifpro.eurb.DaoFactory;
+import com.sharifpro.eurb.builder.dao.GroupAggregationDao;
+import com.sharifpro.eurb.builder.model.GroupAggregation;
 
 public class GroupAggregationDaoExample
 {

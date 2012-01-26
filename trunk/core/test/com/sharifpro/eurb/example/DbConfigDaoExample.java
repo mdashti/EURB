@@ -1,9 +1,10 @@
 package com.sharifpro.eurb.example;
 
 import java.util.List;
-import com.sharifpro.eurb.dao.DbConfigDao;
-import com.sharifpro.eurb.dto.DbConfig;
-import com.sharifpro.eurb.factory.DaoFactory;
+
+import com.sharifpro.eurb.DaoFactory;
+import com.sharifpro.eurb.management.mapping.dao.DbConfigDao;
+import com.sharifpro.eurb.management.mapping.model.DbConfig;
 
 public class DbConfigDaoExample
 {

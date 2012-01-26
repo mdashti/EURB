@@ -1,9 +1,10 @@
 package com.sharifpro.eurb.example;
 
 import java.util.List;
-import com.sharifpro.eurb.dao.ReportDatasetDao;
-import com.sharifpro.eurb.dto.ReportDataset;
-import com.sharifpro.eurb.factory.DaoFactory;
+
+import com.sharifpro.eurb.DaoFactory;
+import com.sharifpro.eurb.builder.dao.ReportDatasetDao;
+import com.sharifpro.eurb.builder.model.ReportDataset;
 
 public class ReportDatasetDaoExample
 {

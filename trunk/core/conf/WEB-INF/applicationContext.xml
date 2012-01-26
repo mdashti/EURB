@@ -83,55 +83,55 @@
 			<property name="suffix" value=".jsp"/>
 		</bean-->
 		
-	<bean id="AuthoritiesDao" class="com.sharifpro.eurb.dao.spring.AuthoritiesDaoImpl" scope="singleton">
+	<bean id="AuthoritiesDao" class="com.sharifpro.eurb.management.security.dao.impl.AuthoritiesDaoImpl" scope="singleton">
 		<property name="dataSource" ref="EURBDataSource" />
 	</bean>
-	<bean id="ColumnMappingDao" class="com.sharifpro.eurb.dao.spring.ColumnMappingDaoImpl" scope="singleton">
+	<bean id="ColumnMappingDao" class="com.sharifpro.eurb.management.mapping.dao.impl.ColumnMappingDaoImpl" scope="singleton">
 		<property name="dataSource" ref="EURBDataSource" />
 	</bean>
-	<bean id="DbConfigDao" class="com.sharifpro.eurb.dao.spring.DbConfigDaoImpl" scope="singleton">
+	<bean id="DbConfigDao" class="com.sharifpro.eurb.management.mapping.dao.impl.DbConfigDaoImpl" scope="singleton">
 		<property name="dataSource" ref="EURBDataSource" />
 	</bean>
-	<bean id="GroupAggregationDao" class="com.sharifpro.eurb.dao.spring.GroupAggregationDaoImpl" scope="singleton">
+	<bean id="GroupAggregationDao" class="com.sharifpro.eurb.builder.dao.impl.GroupAggregationDaoImpl" scope="singleton">
 		<property name="dataSource" ref="EURBDataSource" />
 	</bean>
-	<bean id="GroupAuthoritiesDao" class="com.sharifpro.eurb.dao.spring.GroupAuthoritiesDaoImpl" scope="singleton">
+	<bean id="GroupAuthoritiesDao" class="com.sharifpro.eurb.management.security.dao.impl.GroupAuthoritiesDaoImpl" scope="singleton">
 		<property name="dataSource" ref="EURBDataSource" />
 	</bean>
-	<bean id="GroupMembersDao" class="com.sharifpro.eurb.dao.spring.GroupMembersDaoImpl" scope="singleton">
+	<bean id="GroupMembersDao" class="com.sharifpro.eurb.management.security.dao.impl.GroupMembersDaoImpl" scope="singleton">
 		<property name="dataSource" ref="EURBDataSource" />
 	</bean>
-	<bean id="GroupsDao" class="com.sharifpro.eurb.dao.spring.GroupsDaoImpl" scope="singleton">
+	<bean id="GroupsDao" class="com.sharifpro.eurb.management.security.dao.impl.GroupsDaoImpl" scope="singleton">
 		<property name="dataSource" ref="EURBDataSource" />
 	</bean>
-	<bean id="PersistableObjectDao" class="com.sharifpro.eurb.dao.spring.PersistableObjectDaoImpl" scope="singleton">
+	<bean id="PersistableObjectDao" class="com.sharifpro.eurb.management.mapping.dao.impl.PersistableObjectDaoImpl" scope="singleton">
 		<property name="dataSource" ref="EURBDataSource" />
 	</bean>
-	<bean id="ReportCategoryDao" class="com.sharifpro.eurb.dao.spring.ReportCategoryDaoImpl" scope="singleton">
+	<bean id="ReportCategoryDao" class="com.sharifpro.eurb.builder.dao.impl.ReportCategoryDaoImpl" scope="singleton">
 		<property name="dataSource" ref="EURBDataSource" />
 	</bean>
-	<bean id="ReportColumnDao" class="com.sharifpro.eurb.dao.spring.ReportColumnDaoImpl" scope="singleton">
+	<bean id="ReportColumnDao" class="com.sharifpro.eurb.builder.dao.impl.ReportColumnDaoImpl" scope="singleton">
 		<property name="dataSource" ref="EURBDataSource" />
 	</bean>
-	<bean id="ReportDatasetDao" class="com.sharifpro.eurb.dao.spring.ReportDatasetDaoImpl" scope="singleton">
+	<bean id="ReportDatasetDao" class="com.sharifpro.eurb.builder.dao.impl.ReportDatasetDaoImpl" scope="singleton">
 		<property name="dataSource" ref="EURBDataSource" />
 	</bean>
-	<bean id="ReportDesignDao" class="com.sharifpro.eurb.dao.spring.ReportDesignDaoImpl" scope="singleton">
+	<bean id="ReportDesignDao" class="com.sharifpro.eurb.builder.dao.impl.ReportDesignDaoImpl" scope="singleton">
 		<property name="dataSource" ref="EURBDataSource" />
 	</bean>
-	<bean id="ReportExecutionHistoryDao" class="com.sharifpro.eurb.dao.spring.ReportExecutionHistoryDaoImpl" scope="singleton">
+	<bean id="ReportExecutionHistoryDao" class="com.sharifpro.eurb.builder.dao.impl.ReportExecutionHistoryDaoImpl" scope="singleton">
 		<property name="dataSource" ref="EURBDataSource" />
 	</bean>
-	<bean id="ReportFilterDao" class="com.sharifpro.eurb.dao.spring.ReportFilterDaoImpl" scope="singleton">
+	<bean id="ReportFilterDao" class="com.sharifpro.eurb.builder.dao.impl.ReportFilterDaoImpl" scope="singleton">
 		<property name="dataSource" ref="EURBDataSource" />
 	</bean>
-	<bean id="ReportFormatDao" class="com.sharifpro.eurb.dao.spring.ReportFormatDaoImpl" scope="singleton">
+	<bean id="ReportFormatDao" class="com.sharifpro.eurb.builder.dao.impl.ReportFormatDaoImpl" scope="singleton">
 		<property name="dataSource" ref="EURBDataSource" />
 	</bean>
-	<bean id="TableMappingDao" class="com.sharifpro.eurb.dao.spring.TableMappingDaoImpl" scope="singleton">
+	<bean id="TableMappingDao" class="com.sharifpro.eurb.management.mapping.dao.impl.TableMappingDaoImpl" scope="singleton">
 		<property name="dataSource" ref="EURBDataSource" />
 	</bean>
-	<bean id="UsersDao" class="com.sharifpro.eurb.dao.spring.UsersDaoImpl" scope="singleton">
+	<bean id="UsersDao" class="com.sharifpro.eurb.management.security.dao.impl.UsersDaoImpl" scope="singleton">
 		<property name="dataSource" ref="EURBDataSource" />
 	</bean>
 </beans>

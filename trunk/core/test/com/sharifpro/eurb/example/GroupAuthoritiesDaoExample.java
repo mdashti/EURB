@@ -1,9 +1,10 @@
 package com.sharifpro.eurb.example;
 
 import java.util.List;
-import com.sharifpro.eurb.dao.GroupAuthoritiesDao;
-import com.sharifpro.eurb.dto.GroupAuthorities;
-import com.sharifpro.eurb.factory.DaoFactory;
+
+import com.sharifpro.eurb.DaoFactory;
+import com.sharifpro.eurb.management.security.dao.GroupAuthoritiesDao;
+import com.sharifpro.eurb.management.security.model.GroupAuthorities;
 
 public class GroupAuthoritiesDaoExample
 {

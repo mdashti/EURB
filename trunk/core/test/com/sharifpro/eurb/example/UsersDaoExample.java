@@ -1,9 +1,10 @@
 package com.sharifpro.eurb.example;
 
 import java.util.List;
-import com.sharifpro.eurb.dao.UsersDao;
-import com.sharifpro.eurb.dto.Users;
-import com.sharifpro.eurb.factory.DaoFactory;
+
+import com.sharifpro.eurb.DaoFactory;
+import com.sharifpro.eurb.management.security.dao.UsersDao;
+import com.sharifpro.eurb.management.security.model.Users;
 
 public class UsersDaoExample
 {
