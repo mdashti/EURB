@@ -1,6 +1,6 @@
 package com.sharifpro.eurb.management.mapping.exception;
 
-public class DbConfigDaoException extends DaoException
+public class DbConfigDaoException extends PersistableObjectDaoException
 {
 	private static final long serialVersionUID = -4211413329613215119L;
 

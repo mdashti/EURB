@@ -1,8 +1,8 @@
 package com.sharifpro.eurb.builder.exception;
 
-import com.sharifpro.eurb.management.mapping.exception.DaoException;
+import com.sharifpro.eurb.management.mapping.exception.PersistableObjectDaoException;
 
-public class ReportDatasetDaoException extends DaoException
+public class ReportDatasetDaoException extends PersistableObjectDaoException
 {
 	private static final long serialVersionUID = 5405082594019799278L;
 
