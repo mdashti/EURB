@@ -10,7 +10,7 @@ import com.sharifpro.util.CollectionUtil;
 public class UserOperationsTest extends InsertInitialData{
 	public static void main(String[] args) throws Exception {
 		UserOperationsTest test = new UserOperationsTest();
-		test.athenticate();
+		test.authenticate();
 		test.addUser();
 	}
 
@@ -21,22 +21,23 @@ public class UserOperationsTest extends InsertInitialData{
 		System.out.println(CollectionUtil.toString(dao.findAll()));
 		
 
-		User adminUser = dao.findByPrimaryKey("admin");
+		User adminUser = dao.findByPrimaryKey("dashti");
 
 		if (adminUser == null) {
 			System.out.println("Admin user not found! trying to make it...");
 
 			adminUser = new User();
-			adminUser.setUsername("admin");
+			adminUser.setUsername("dashti");
 			adminUser.setPassword("mohamad");
 			adminUser.setEnabled(true);
 
-			//dao.insert(adminUser);
+			dao.insert(adminUser);
 
 			System.out.println("current users: ");
 			System.out.println(dao.findAll());
 		} else {
-			System.out.println("Admin user exists.");
+			System.out.println("Admin user exists. trying to delete it ...");
+			dao.delete(adminUser.createPk());
 		}
 	}
 }

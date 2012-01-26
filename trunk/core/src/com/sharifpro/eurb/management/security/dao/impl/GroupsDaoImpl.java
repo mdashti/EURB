@@ -1,35 +1,24 @@
 package com.sharifpro.eurb.management.security.dao.impl;
 
+import com.sharifpro.eurb.DaoFactory;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
+import com.sharifpro.eurb.management.mapping.dao.impl.PersistableObjectDaoImpl;
 import com.sharifpro.eurb.management.security.dao.GroupsDao;
 import com.sharifpro.eurb.management.security.exception.GroupsDaoException;
 import com.sharifpro.eurb.management.security.model.Groups;
 import com.sharifpro.eurb.management.security.model.GroupsPk;
 
 import java.util.List;
-import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.transaction.annotation.Transactional;
 
 public class GroupsDaoImpl extends AbstractDAO implements ParameterizedRowMapper<Groups>, GroupsDao
 {
-	protected JdbcTemplate jdbcTemplate;
+	private final static String QUERY_FROM_COLUMNS = "o.group_name";
 
-	protected DataSource dataSource;
-
-	/**
-	 * Method 'setDataSource'
-	 * 
-	 * @param dataSource
-	 */
-	public void setDataSource(DataSource dataSource)
-	{
-		this.dataSource = dataSource;
-		jdbcTemplate = new JdbcTemplate(dataSource);
-	}
+	private final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL_AND_JOIN;
 
 	/**
 	 * Method 'insert'
@@ -40,9 +29,9 @@ public class GroupsDaoImpl extends AbstractDAO implements ParameterizedRowMapper
 	@Transactional
 	public GroupsPk insert(Groups dto)
 	{
-		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( group_name ) VALUES ( ? )",dto.getGroupName());
 		GroupsPk pk = new GroupsPk();
-		pk.setId( jdbcTemplate.queryForLong("select last_insert_id()") );
+		DaoFactory.createPersistableObjectDao().insert(dto, pk);
+		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, group_name ) VALUES ( ?, ? )", pk.getId(),dto.getGroupName());
 		return pk;
 	}
 
@@ -52,6 +41,7 @@ public class GroupsDaoImpl extends AbstractDAO implements ParameterizedRowMapper
 	@Transactional
 	public void update(GroupsPk pk, Groups dto) throws GroupsDaoException
 	{
+		DaoFactory.createPersistableObjectDao().update(pk, dto);
 		jdbcTemplate.update("UPDATE " + getTableName() + " SET id = ?, group_name = ? WHERE id = ?",dto.getId(),dto.getGroupName(),pk.getId());
 	}
 
@@ -62,6 +52,7 @@ public class GroupsDaoImpl extends AbstractDAO implements ParameterizedRowMapper
 	public void delete(GroupsPk pk) throws GroupsDaoException
 	{
 		jdbcTemplate.update("DELETE FROM " + getTableName() + " WHERE id = ?",pk.getId());
+		DaoFactory.createPersistableObjectDao().delete(pk);
 	}
 
 	/**
@@ -75,8 +66,9 @@ public class GroupsDaoImpl extends AbstractDAO implements ParameterizedRowMapper
 	public Groups mapRow(ResultSet rs, int row) throws SQLException
 	{
 		Groups dto = new Groups();
-		dto.setId( new Long( rs.getLong(1) ) );
-		dto.setGroupName( rs.getString( 2 ) );
+		PersistableObjectDaoImpl.PERSISTABLE_OBJECT_MAPPER.mapRow(rs, row, dto);
+		int i = PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS_COUNT;
+		dto.setGroupName( rs.getString( ++i ) );
 		return dto;
 	}
 
@@ -85,7 +77,7 @@ public class GroupsDaoImpl extends AbstractDAO implements ParameterizedRowMapper
 	 * 
 	 * @return String
 	 */
-	public String getTableName()
+	public static String getTableName()
 	{
 		return "groups";
 	}
@@ -97,7 +89,7 @@ public class GroupsDaoImpl extends AbstractDAO implements ParameterizedRowMapper
 	public Groups findByPrimaryKey(Long id) throws GroupsDaoException
 	{
 		try {
-			List<Groups> list = jdbcTemplate.query("SELECT id, group_name FROM " + getTableName() + " WHERE id = ?", this,id);
+			List<Groups> list = jdbcTemplate.query(QUERY_SELECT_PART + " WHERE id = ?", this,id);
 			return list.size() == 0 ? null : list.get(0);
 		}
 		catch (Exception e) {
@@ -113,7 +105,7 @@ public class GroupsDaoImpl extends AbstractDAO implements ParameterizedRowMapper
 	public List<Groups> findAll() throws GroupsDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, group_name FROM " + getTableName() + " ORDER BY id", this);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " ORDER BY id", this);
 		}
 		catch (Exception e) {
 			throw new GroupsDaoException("Query failed", e);
@@ -128,7 +120,7 @@ public class GroupsDaoImpl extends AbstractDAO implements ParameterizedRowMapper
 	public List<Groups> findByPersistableObject(Long id) throws GroupsDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, group_name FROM " + getTableName() + " WHERE id = ?", this,id);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE id = ?", this,id);
 		}
 		catch (Exception e) {
 			throw new GroupsDaoException("Query failed", e);
@@ -143,7 +135,7 @@ public class GroupsDaoImpl extends AbstractDAO implements ParameterizedRowMapper
 	public List<Groups> findWhereIdEquals(Long id) throws GroupsDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, group_name FROM " + getTableName() + " WHERE id = ? ORDER BY id", this,id);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE id = ? ORDER BY id", this,id);
 		}
 		catch (Exception e) {
 			throw new GroupsDaoException("Query failed", e);
@@ -158,7 +150,7 @@ public class GroupsDaoImpl extends AbstractDAO implements ParameterizedRowMapper
 	public List<Groups> findWhereGroupNameEquals(String groupName) throws GroupsDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, group_name FROM " + getTableName() + " WHERE group_name = ? ORDER BY group_name", this,groupName);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE group_name = ? ORDER BY group_name", this,groupName);
 		}
 		catch (Exception e) {
 			throw new GroupsDaoException("Query failed", e);

@@ -3,6 +3,10 @@ package com.sharifpro.eurb.management.mapping.dao.impl;
 import java.io.*;
 import java.sql.*;
 
+import javax.sql.DataSource;
+
+import org.springframework.jdbc.core.JdbcTemplate;
+
 /**
  * Generic Base class for DAO classes.
  *
@@ -10,6 +14,20 @@ import java.sql.*;
  */
 public class AbstractDAO
 {
+	protected JdbcTemplate jdbcTemplate;
+
+	protected DataSource dataSource;
+
+	/**
+	 * Method 'setDataSource'
+	 * 
+	 * @param dataSource
+	 */
+	public void setDataSource(DataSource dataSource)
+	{
+		this.dataSource = dataSource;
+		jdbcTemplate = new JdbcTemplate(dataSource);
+	}
 
     public byte[] getBlobColumn(ResultSet rs, int columnIndex)
             throws SQLException

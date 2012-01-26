@@ -8,7 +8,6 @@ import com.sharifpro.util.SessionManager;
 
 import java.util.Date;
 import java.util.List;
-import javax.sql.DataSource;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,7 +15,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -35,21 +33,6 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 	public static final int PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS_COUNT = 6;
 	
 	public static final PersistableObjectRowMapper PERSISTABLE_OBJECT_MAPPER = (new PersistableObjectDaoImpl()).new PersistableObjectRowMapper();
-	
-	protected JdbcTemplate jdbcTemplate;
-
-	protected DataSource dataSource;
-
-	/**
-	 * Method 'setDataSource'
-	 * 
-	 * @param dataSource
-	 */
-	public void setDataSource(DataSource dataSource)
-	{
-		this.dataSource = dataSource;
-		jdbcTemplate = new JdbcTemplate(dataSource);
-	}
 
 	/**
 	 * Method 'insert'
@@ -104,7 +87,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 	 * 
 	 * @return String
 	 */
-	public String getTableName()
+	public static String getTableName()
 	{
 		return TABLE_NAME;
 	}

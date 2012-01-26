@@ -620,8 +620,8 @@ COMMIT;
 START TRANSACTION;
 USE `eurb`;
 INSERT INTO `eurb`.`groups` (`id`, `group_name`) VALUES (200, 'مدیران');
-INSERT INTO `eurb`.`groups` (`id`, `group_name`) VALUES (201, 'کاربران گزاش ساز');
-INSERT INTO `eurb`.`groups` (`id`, `group_name`) VALUES (202, 'کاربران گزارش گیر');
+INSERT INTO `eurb`.`groups` (`id`, `group_name`) VALUES (201, 'کاربران گزاش‌ساز');
+INSERT INTO `eurb`.`groups` (`id`, `group_name`) VALUES (202, 'کاربران گزارش‌گیر');
 
 COMMIT;
 

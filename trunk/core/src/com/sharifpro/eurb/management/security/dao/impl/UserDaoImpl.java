@@ -14,9 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.naming.OperationNotSupportedException;
-import javax.sql.DataSource;
 
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,21 +23,6 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 	private final static String QUERY_FROM_COLUMNS = "o.username, o.password, o.enabled";
 
 	private final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL_AND_JOIN;
-	
-	protected JdbcTemplate jdbcTemplate;
-
-	protected DataSource dataSource;
-
-	/**
-	 * Method 'setDataSource'
-	 * 
-	 * @param dataSource
-	 */
-	public void setDataSource(DataSource dataSource)
-	{
-		this.dataSource = dataSource;
-		jdbcTemplate = new JdbcTemplate(dataSource);
-	}
 	
 	/**
 	 * Method 'insert'

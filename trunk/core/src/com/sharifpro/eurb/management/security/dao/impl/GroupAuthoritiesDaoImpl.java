@@ -6,30 +6,13 @@ import com.sharifpro.eurb.management.security.exception.GroupAuthoritiesDaoExcep
 import com.sharifpro.eurb.management.security.model.GroupAuthorities;
 
 import java.util.List;
-import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.transaction.annotation.Transactional;
 
 public class GroupAuthoritiesDaoImpl extends AbstractDAO implements ParameterizedRowMapper<GroupAuthorities>, GroupAuthoritiesDao
 {
-	protected JdbcTemplate jdbcTemplate;
-
-	protected DataSource dataSource;
-
-	/**
-	 * Method 'setDataSource'
-	 * 
-	 * @param dataSource
-	 */
-	public void setDataSource(DataSource dataSource)
-	{
-		this.dataSource = dataSource;
-		jdbcTemplate = new JdbcTemplate(dataSource);
-	}
-
 	/**
 	 * Method 'insert'
 	 * 
@@ -62,7 +45,7 @@ public class GroupAuthoritiesDaoImpl extends AbstractDAO implements Parameterize
 	 * 
 	 * @return String
 	 */
-	public String getTableName()
+	public static String getTableName()
 	{
 		return "group_authorities";
 	}

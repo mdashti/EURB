@@ -7,30 +7,13 @@ import com.sharifpro.eurb.management.security.model.Authorities;
 import com.sharifpro.eurb.management.security.model.AuthoritiesPk;
 
 import java.util.List;
-import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.transaction.annotation.Transactional;
 
 public class AuthoritiesDaoImpl extends AbstractDAO implements ParameterizedRowMapper<Authorities>, AuthoritiesDao
 {
-	protected JdbcTemplate jdbcTemplate;
-
-	protected DataSource dataSource;
-
-	/**
-	 * Method 'setDataSource'
-	 * 
-	 * @param dataSource
-	 */
-	public void setDataSource(DataSource dataSource)
-	{
-		this.dataSource = dataSource;
-		jdbcTemplate = new JdbcTemplate(dataSource);
-	}
-
 	/**
 	 * Method 'insert'
 	 * 
@@ -83,7 +66,7 @@ public class AuthoritiesDaoImpl extends AbstractDAO implements ParameterizedRowM
 	 * 
 	 * @return String
 	 */
-	public String getTableName()
+	public static String getTableName()
 	{
 		return "authorities";
 	}

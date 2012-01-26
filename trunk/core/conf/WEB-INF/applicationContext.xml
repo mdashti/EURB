@@ -19,7 +19,7 @@
 
 	<bean id="EURBDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<property name="url" value="jdbc:mysql://localhost/eurb" />
+		<property name="url" value="jdbc:mysql://localhost/eurb?useUnicode=yes&amp;characterEncoding=UTF-8" />
 		<property name="username" value="root" />
 		<property name="password" value="mohamad" />
 	</bean>
@@ -36,7 +36,7 @@
 
 	<bean class="org.springframework.security.authentication.encoding.ShaPasswordEncoder" id="passwordEncoder"/>
              
-	<security:authentication-manager alias="authManager">
+	<security:authentication-manager id="authManager">
 		<security:authentication-provider user-service-ref="userDetailsService">
 			<security:password-encoder ref="passwordEncoder"> 
 				<security:salt-source ref="saltSource"/>

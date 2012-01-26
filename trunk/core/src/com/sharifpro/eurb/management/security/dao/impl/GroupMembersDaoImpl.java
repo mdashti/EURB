@@ -7,30 +7,13 @@ import com.sharifpro.eurb.management.security.model.GroupMembers;
 import com.sharifpro.eurb.management.security.model.GroupMembersPk;
 
 import java.util.List;
-import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.transaction.annotation.Transactional;
 
 public class GroupMembersDaoImpl extends AbstractDAO implements ParameterizedRowMapper<GroupMembers>, GroupMembersDao
 {
-	protected JdbcTemplate jdbcTemplate;
-
-	protected DataSource dataSource;
-
-	/**
-	 * Method 'setDataSource'
-	 * 
-	 * @param dataSource
-	 */
-	public void setDataSource(DataSource dataSource)
-	{
-		this.dataSource = dataSource;
-		jdbcTemplate = new JdbcTemplate(dataSource);
-	}
-
 	/**
 	 * Method 'insert'
 	 * 
@@ -86,7 +69,7 @@ public class GroupMembersDaoImpl extends AbstractDAO implements ParameterizedRow
 	 * 
 	 * @return String
 	 */
-	public String getTableName()
+	public static String getTableName()
 	{
 		return "group_members";
 	}

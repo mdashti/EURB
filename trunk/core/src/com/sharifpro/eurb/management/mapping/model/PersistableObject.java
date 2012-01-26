@@ -3,6 +3,7 @@ package com.sharifpro.eurb.management.mapping.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.sharifpro.eurb.PersistableObjectType;
 import com.sharifpro.eurb.management.security.model.User;
 
 public class PersistableObject implements Serializable
@@ -74,11 +75,7 @@ public class PersistableObject implements Serializable
 	 */
 	public Integer getObjectType()
 	{
-		if(this instanceof User) {
-			return 100;
-		} else {
-			return -1;
-		}
+		return PersistableObjectType.getObjectTypeFor(getClass());
 	}
 
 	/**

@@ -18,7 +18,7 @@ public class GroupMembersDaoExample
 	{
 		// Uncomment one of the lines below to test the generated code
 		
-		// findAll();
+		findAll();
 		// findByGroups(null);
 		// findWhereIdEquals(null);
 		// findWhereUsernameEquals("");

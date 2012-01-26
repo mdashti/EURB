@@ -4,7 +4,7 @@ public class InsertTestData extends InsertInitialData{
 
 	public static void main(String[] args) throws Exception {
 		InsertTestData test = new InsertTestData();
-		test.athenticate();
+		test.authenticate();
 		
 		//Test DATA HERE!
 	}

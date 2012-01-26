@@ -7,30 +7,13 @@ import com.sharifpro.eurb.builder.model.ReportFilterPk;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
 
 import java.util.List;
-import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.transaction.annotation.Transactional;
 
 public class ReportFilterDaoImpl extends AbstractDAO implements ParameterizedRowMapper<ReportFilter>, ReportFilterDao
 {
-	protected JdbcTemplate jdbcTemplate;
-
-	protected DataSource dataSource;
-
-	/**
-	 * Method 'setDataSource'
-	 * 
-	 * @param dataSource
-	 */
-	public void setDataSource(DataSource dataSource)
-	{
-		this.dataSource = dataSource;
-		jdbcTemplate = new JdbcTemplate(dataSource);
-	}
-
 	/**
 	 * Method 'insert'
 	 * 
@@ -111,7 +94,7 @@ public class ReportFilterDaoImpl extends AbstractDAO implements ParameterizedRow
 	 * 
 	 * @return String
 	 */
-	public String getTableName()
+	public static String getTableName()
 	{
 		return "report_filter";
 	}
