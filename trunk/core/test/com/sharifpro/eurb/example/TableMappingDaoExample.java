@@ -149,7 +149,7 @@ public class TableMappingDaoExample
 	public static void findWhereTypeEquals(Integer type) throws Exception
 	{
 		TableMappingDao dao = DaoFactory.createTableMappingDao();
-		List<TableMapping> _result = dao.findWhereTypeEquals(type);
+		List<TableMapping> _result = dao.findWhereMappedTypeEquals(type);
 		for (TableMapping dto : _result) {
 			display(dto);
 		}
@@ -204,7 +204,7 @@ public class TableMappingDaoExample
 		buf.append( ", " );
 		buf.append( dto.getMappedName() );
 		buf.append( ", " );
-		buf.append( dto.getType() );
+		buf.append( dto.getMappedType() );
 		buf.append( ", " );
 		buf.append( dto.isActiveForManager() );
 		buf.append( ", " );

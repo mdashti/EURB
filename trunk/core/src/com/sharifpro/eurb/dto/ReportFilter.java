@@ -57,9 +57,9 @@ public class ReportFilter implements Serializable
 	protected String operand2;
 
 	/** 
-	 * This attribute maps to the column type in the report_filter table.
+	 * This attribute maps to the column filter_type in the report_filter table.
 	 */
-	protected Integer type;
+	protected Integer filterType;
 
 	/** 
 	 * This attribute maps to the column operand1_column_id in the report_filter table.
@@ -285,23 +285,23 @@ public class ReportFilter implements Serializable
 	}
 
 	/**
-	 * Method 'getType'
+	 * Method 'getFilterType'
 	 * 
 	 * @return Integer
 	 */
-	public Integer getType()
+	public Integer getFilterType()
 	{
-		return type;
+		return filterType;
 	}
 
 	/**
-	 * Method 'setType'
+	 * Method 'setFilterType'
 	 * 
-	 * @param type
+	 * @param filterType
 	 */
-	public void setType(Integer type)
+	public void setFilterType(Integer filterType)
 	{
-		this.type = type;
+		this.filterType = filterType;
 	}
 
 	/**
@@ -425,7 +425,7 @@ public class ReportFilter implements Serializable
 			return false;
 		}
 		
-		if (type == null ? _cast.type != type : !type.equals( _cast.type )) {
+		if (filterType == null ? _cast.filterType != filterType : !filterType.equals( _cast.filterType )) {
 			return false;
 		}
 		
@@ -492,8 +492,8 @@ public class ReportFilter implements Serializable
 			_hashCode = 29 * _hashCode + operand2.hashCode();
 		}
 		
-		if (type != null) {
-			_hashCode = 29 * _hashCode + type.hashCode();
+		if (filterType != null) {
+			_hashCode = 29 * _hashCode + filterType.hashCode();
 		}
 		
 		if (operand1ColumnId != null) {
@@ -540,7 +540,7 @@ public class ReportFilter implements Serializable
 		ret.append( ", suffix=" + suffix );
 		ret.append( ", operand1=" + operand1 );
 		ret.append( ", operand2=" + operand2 );
-		ret.append( ", type=" + type );
+		ret.append( ", filterType=" + filterType );
 		ret.append( ", operand1ColumnId=" + operand1ColumnId );
 		ret.append( ", operand1ColumnDatasetId=" + operand1ColumnDatasetId );
 		ret.append( ", operand1ColumnDesignId=" + operand1ColumnDesignId );

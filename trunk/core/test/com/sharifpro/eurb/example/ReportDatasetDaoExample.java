@@ -218,7 +218,7 @@ public class ReportDatasetDaoExample
 	public static void findWhereOrderEquals(Integer order) throws Exception
 	{
 		ReportDatasetDao dao = DaoFactory.createReportDatasetDao();
-		List<ReportDataset> _result = dao.findWhereOrderEquals(order);
+		List<ReportDataset> _result = dao.findWhereDsOrderEquals(order);
 		for (ReportDataset dto : _result) {
 			display(dto);
 		}
@@ -261,7 +261,7 @@ public class ReportDatasetDaoExample
 		buf.append( ", " );
 		buf.append( dto.getBaseReportVersionId() );
 		buf.append( ", " );
-		buf.append( dto.getOrder() );
+		buf.append( dto.getDsOrder() );
 		buf.append( ", " );
 		buf.append( dto.getOperator() );
 		System.out.println( buf.toString() );

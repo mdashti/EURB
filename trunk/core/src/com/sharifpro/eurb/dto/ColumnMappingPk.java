@@ -5,26 +5,9 @@ import java.io.Serializable;
 /** 
  * This class represents the primary key of the column_mapping table.
  */
-public class ColumnMappingPk implements Serializable
+public class ColumnMappingPk extends PersistableObjectPk implements Serializable
 {
 	private static final long serialVersionUID = -7588588103055754287L;
-	protected Long id;
-
-	/** 
-	 * Sets the value of id
-	 */
-	public void setId(Long id)
-	{
-		this.id = id;
-	}
-
-	/** 
-	 * Gets the value of id
-	 */
-	public Long getId()
-	{
-		return id;
-	}
 
 	/**
 	 * Method 'ColumnMappingPk'
@@ -41,7 +24,7 @@ public class ColumnMappingPk implements Serializable
 	 */
 	public ColumnMappingPk(final Long id)
 	{
-		this.id = id;
+		super(id);
 	}
 
 	/**
@@ -73,21 +56,6 @@ public class ColumnMappingPk implements Serializable
 	}
 
 	/**
-	 * Method 'hashCode'
-	 * 
-	 * @return int
-	 */
-	public int hashCode()
-	{
-		int _hashCode = 0;
-		if (id != null) {
-			_hashCode = 29 * _hashCode + id.hashCode();
-		}
-		
-		return _hashCode;
-	}
-
-	/**
 	 * Method 'toString'
 	 * 
 	 * @return String
@@ -96,7 +64,7 @@ public class ColumnMappingPk implements Serializable
 	{
 		StringBuffer ret = new StringBuffer();
 		ret.append( "com.sharifpro.eurb.dto.ColumnMappingPk: " );
-		ret.append( "id=" + id );
+		ret.append( super.toString() );
 		return ret.toString();
 	}
 

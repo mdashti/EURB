@@ -38,7 +38,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	@Transactional
 	public ReportColumnPk insert(ReportColumn dto)
 	{
-		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, dataset_id, design_id, design_version_id, type, column_mapping_id, report_column_id, order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",dto.getId(),dto.getDatasetId(),dto.getDesignId(),dto.getDesignVersionId(),dto.getType(),dto.getColumnMappingId(),dto.getReportColumnId(),dto.getOrder(),dto.getSortOrder(),dto.isSortType(),dto.getGroupLevel(),dto.getColumnWidth(),dto.getColumnAlign(),dto.getColumnDir(),dto.getColumnHeader(),dto.isIsCustom(),dto.getFormula());
+		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, dataset_id, design_id, design_version_id, col_type, column_mapping_id, report_column_id, col_order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",dto.getId(),dto.getDatasetId(),dto.getDesignId(),dto.getDesignVersionId(),dto.getColType(),dto.getColumnMappingId(),dto.getReportColumnId(),dto.getColOrder(),dto.getSortOrder(),dto.isSortType(),dto.getGroupLevel(),dto.getColumnWidth(),dto.getColumnAlign(),dto.getColumnDir(),dto.getColumnHeader(),dto.isCustom(),dto.getFormula());
 		return dto.createPk();
 	}
 
@@ -48,7 +48,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	@Transactional
 	public void update(ReportColumnPk pk, ReportColumn dto) throws ReportColumnDaoException
 	{
-		jdbcTemplate.update("UPDATE " + getTableName() + " SET id = ?, dataset_id = ?, design_id = ?, design_version_id = ?, type = ?, column_mapping_id = ?, report_column_id = ?, order = ?, sort_order = ?, sort_type = ?, group_level = ?, column_width = ?, column_align = ?, column_dir = ?, column_header = ?, is_custom = ?, formula = ? WHERE id = ? AND dataset_id = ? AND design_id = ? AND design_version_id = ?",dto.getId(),dto.getDatasetId(),dto.getDesignId(),dto.getDesignVersionId(),dto.getType(),dto.getColumnMappingId(),dto.getReportColumnId(),dto.getOrder(),dto.getSortOrder(),dto.isSortType(),dto.getGroupLevel(),dto.getColumnWidth(),dto.getColumnAlign(),dto.getColumnDir(),dto.getColumnHeader(),dto.isIsCustom(),dto.getFormula(),pk.getId(),pk.getDatasetId(),pk.getDesignId(),pk.getDesignVersionId());
+		jdbcTemplate.update("UPDATE " + getTableName() + " SET id = ?, dataset_id = ?, design_id = ?, design_version_id = ?, col_type = ?, column_mapping_id = ?, report_column_id = ?, col_order = ?, sort_order = ?, sort_type = ?, group_level = ?, column_width = ?, column_align = ?, column_dir = ?, column_header = ?, is_custom = ?, formula = ? WHERE id = ? AND dataset_id = ? AND design_id = ? AND design_version_id = ?",dto.getId(),dto.getDatasetId(),dto.getDesignId(),dto.getDesignVersionId(),dto.getColType(),dto.getColumnMappingId(),dto.getReportColumnId(),dto.getColOrder(),dto.getSortOrder(),dto.isSortType(),dto.getGroupLevel(),dto.getColumnWidth(),dto.getColumnAlign(),dto.getColumnDir(),dto.getColumnHeader(),dto.isCustom(),dto.getFormula(),pk.getId(),pk.getDatasetId(),pk.getDesignId(),pk.getDesignVersionId());
 	}
 
 	/** 
@@ -75,7 +75,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 		dto.setDatasetId( new Long( rs.getLong(2) ) );
 		dto.setDesignId( new Long( rs.getLong(3) ) );
 		dto.setDesignVersionId( new Long( rs.getLong(4) ) );
-		dto.setType( new Integer( rs.getInt(5) ) );
+		dto.setColType( new Integer( rs.getInt(5) ) );
 		dto.setColumnMappingId( new Long( rs.getLong(6) ) );
 		if (rs.wasNull()) {
 			dto.setColumnMappingId( null );
@@ -86,7 +86,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 			dto.setReportColumnId( null );
 		}
 		
-		dto.setOrder( new Integer( rs.getInt(8) ) );
+		dto.setColOrder( new Integer( rs.getInt(8) ) );
 		dto.setSortOrder( new Integer( rs.getInt(9) ) );
 		dto.setSortType( rs.getBoolean( 10 ) );
 		dto.setGroupLevel( new Integer( rs.getInt(11) ) );
@@ -98,7 +98,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 		dto.setColumnAlign( rs.getString( 13 ) );
 		dto.setColumnDir( rs.getString( 14 ) );
 		dto.setColumnHeader( rs.getString( 15 ) );
-		dto.setIsCustom( rs.getBoolean( 16 ) );
+		dto.setCustom( rs.getBoolean( 16 ) );
 		dto.setFormula( rs.getString( 17 ) );
 		return dto;
 	}
@@ -120,7 +120,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public ReportColumn findByPrimaryKey(Long id, Long datasetId, Long designId, Long designVersionId) throws ReportColumnDaoException
 	{
 		try {
-			List<ReportColumn> list = jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, type, column_mapping_id, report_column_id, order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE id = ? AND dataset_id = ? AND design_id = ? AND design_version_id = ?", this,id,datasetId,designId,designVersionId);
+			List<ReportColumn> list = jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, col_type, column_mapping_id, report_column_id, col_order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE id = ? AND dataset_id = ? AND design_id = ? AND design_version_id = ?", this,id,datasetId,designId,designVersionId);
 			return list.size() == 0 ? null : list.get(0);
 		}
 		catch (Exception e) {
@@ -136,7 +136,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findAll() throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, type, column_mapping_id, report_column_id, order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " ORDER BY id, dataset_id, design_id, design_version_id", this);
+			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, col_type, column_mapping_id, report_column_id, col_order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " ORDER BY id, dataset_id, design_id, design_version_id", this);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException("Query failed", e);
@@ -151,7 +151,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findByPersistableObject(Long id) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, type, column_mapping_id, report_column_id, order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE id = ?", this,id);
+			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, col_type, column_mapping_id, report_column_id, col_order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE id = ?", this,id);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException("Query failed", e);
@@ -166,7 +166,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findByColumnMapping(Long columnMappingId) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, type, column_mapping_id, report_column_id, order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE column_mapping_id = ?", this,columnMappingId);
+			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, col_type, column_mapping_id, report_column_id, col_order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE column_mapping_id = ?", this,columnMappingId);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException("Query failed", e);
@@ -181,7 +181,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findByReportColumn(Long reportColumnId) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, type, column_mapping_id, report_column_id, order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE report_column_id = ?", this,reportColumnId);
+			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, col_type, column_mapping_id, report_column_id, col_order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE report_column_id = ?", this,reportColumnId);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException("Query failed", e);
@@ -196,7 +196,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findByReportDataset(Long datasetId, Long designId, Long designVersionId) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, type, column_mapping_id, report_column_id, order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE dataset_id = ? AND design_id = ? AND design_version_id = ?", this,datasetId,designId,designVersionId);
+			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, col_type, column_mapping_id, report_column_id, col_order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE dataset_id = ? AND design_id = ? AND design_version_id = ?", this,datasetId,designId,designVersionId);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException("Query failed", e);
@@ -211,7 +211,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findWhereIdEquals(Long id) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, type, column_mapping_id, report_column_id, order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE id = ? ORDER BY id", this,id);
+			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, col_type, column_mapping_id, report_column_id, col_order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE id = ? ORDER BY id", this,id);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException("Query failed", e);
@@ -226,7 +226,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findWhereDatasetIdEquals(Long datasetId) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, type, column_mapping_id, report_column_id, order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE dataset_id = ? ORDER BY dataset_id", this,datasetId);
+			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, col_type, column_mapping_id, report_column_id, col_order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE dataset_id = ? ORDER BY dataset_id", this,datasetId);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException("Query failed", e);
@@ -241,7 +241,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findWhereDesignIdEquals(Long designId) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, type, column_mapping_id, report_column_id, order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE design_id = ? ORDER BY design_id", this,designId);
+			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, col_type, column_mapping_id, report_column_id, col_order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE design_id = ? ORDER BY design_id", this,designId);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException("Query failed", e);
@@ -256,7 +256,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findWhereDesignVersionIdEquals(Long designVersionId) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, type, column_mapping_id, report_column_id, order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE design_version_id = ? ORDER BY design_version_id", this,designVersionId);
+			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, col_type, column_mapping_id, report_column_id, col_order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE design_version_id = ? ORDER BY design_version_id", this,designVersionId);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException("Query failed", e);
@@ -265,13 +265,13 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	}
 
 	/** 
-	 * Returns all rows from the report_column table that match the criteria 'type = :type'.
+	 * Returns all rows from the report_column table that match the criteria 'col_type = :colType'.
 	 */
 	@Transactional
-	public List<ReportColumn> findWhereTypeEquals(Integer type) throws ReportColumnDaoException
+	public List<ReportColumn> findWhereColTypeEquals(Integer colType) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, type, column_mapping_id, report_column_id, order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE type = ? ORDER BY type", this,type);
+			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, col_type, column_mapping_id, report_column_id, col_order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE col_type = ? ORDER BY col_type", this,colType);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException("Query failed", e);
@@ -286,7 +286,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findWhereColumnMappingIdEquals(Long columnMappingId) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, type, column_mapping_id, report_column_id, order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE column_mapping_id = ? ORDER BY column_mapping_id", this,columnMappingId);
+			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, col_type, column_mapping_id, report_column_id, col_order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE column_mapping_id = ? ORDER BY column_mapping_id", this,columnMappingId);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException("Query failed", e);
@@ -301,7 +301,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findWhereReportColumnIdEquals(Long reportColumnId) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, type, column_mapping_id, report_column_id, order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE report_column_id = ? ORDER BY report_column_id", this,reportColumnId);
+			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, col_type, column_mapping_id, report_column_id, col_order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE report_column_id = ? ORDER BY report_column_id", this,reportColumnId);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException("Query failed", e);
@@ -310,13 +310,13 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	}
 
 	/** 
-	 * Returns all rows from the report_column table that match the criteria 'order = :order'.
+	 * Returns all rows from the report_column table that match the criteria 'col_order = :colOrder'.
 	 */
 	@Transactional
-	public List<ReportColumn> findWhereOrderEquals(Integer order) throws ReportColumnDaoException
+	public List<ReportColumn> findWhereColOrderEquals(Integer colOrder) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, type, column_mapping_id, report_column_id, order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE order = ? ORDER BY order", this,order);
+			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, col_type, column_mapping_id, report_column_id, col_order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE col_order = ? ORDER BY col_order", this,colOrder);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException("Query failed", e);
@@ -331,7 +331,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findWhereSortOrderEquals(Integer sortOrder) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, type, column_mapping_id, report_column_id, order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE sort_order = ? ORDER BY sort_order", this,sortOrder);
+			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, col_type, column_mapping_id, report_column_id, col_order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE sort_order = ? ORDER BY sort_order", this,sortOrder);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException("Query failed", e);
@@ -346,7 +346,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findWhereSortTypeEquals(Short sortType) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, type, column_mapping_id, report_column_id, order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE sort_type = ? ORDER BY sort_type", this,sortType);
+			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, col_type, column_mapping_id, report_column_id, col_order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE sort_type = ? ORDER BY sort_type", this,sortType);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException("Query failed", e);
@@ -361,7 +361,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findWhereGroupLevelEquals(Integer groupLevel) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, type, column_mapping_id, report_column_id, order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE group_level = ? ORDER BY group_level", this,groupLevel);
+			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, col_type, column_mapping_id, report_column_id, col_order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE group_level = ? ORDER BY group_level", this,groupLevel);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException("Query failed", e);
@@ -376,7 +376,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findWhereColumnWidthEquals(Integer columnWidth) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, type, column_mapping_id, report_column_id, order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE column_width = ? ORDER BY column_width", this,columnWidth);
+			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, col_type, column_mapping_id, report_column_id, col_order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE column_width = ? ORDER BY column_width", this,columnWidth);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException("Query failed", e);
@@ -391,7 +391,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findWhereColumnAlignEquals(String columnAlign) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, type, column_mapping_id, report_column_id, order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE column_align = ? ORDER BY column_align", this,columnAlign);
+			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, col_type, column_mapping_id, report_column_id, col_order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE column_align = ? ORDER BY column_align", this,columnAlign);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException("Query failed", e);
@@ -406,7 +406,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findWhereColumnDirEquals(String columnDir) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, type, column_mapping_id, report_column_id, order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE column_dir = ? ORDER BY column_dir", this,columnDir);
+			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, col_type, column_mapping_id, report_column_id, col_order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE column_dir = ? ORDER BY column_dir", this,columnDir);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException("Query failed", e);
@@ -421,7 +421,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findWhereColumnHeaderEquals(String columnHeader) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, type, column_mapping_id, report_column_id, order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE column_header = ? ORDER BY column_header", this,columnHeader);
+			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, col_type, column_mapping_id, report_column_id, col_order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE column_header = ? ORDER BY column_header", this,columnHeader);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException("Query failed", e);
@@ -436,7 +436,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findWhereIsCustomEquals(Short isCustom) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, type, column_mapping_id, report_column_id, order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE is_custom = ? ORDER BY is_custom", this,isCustom);
+			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, col_type, column_mapping_id, report_column_id, col_order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE is_custom = ? ORDER BY is_custom", this,isCustom);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException("Query failed", e);
@@ -451,7 +451,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findWhereFormulaEquals(String formula) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, type, column_mapping_id, report_column_id, order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE formula = ? ORDER BY formula", this,formula);
+			return jdbcTemplate.query("SELECT id, dataset_id, design_id, design_version_id, col_type, column_mapping_id, report_column_id, col_order, sort_order, sort_type, group_level, column_width, column_align, column_dir, column_header, is_custom, formula FROM " + getTableName() + " WHERE formula = ? ORDER BY formula", this,formula);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException("Query failed", e);

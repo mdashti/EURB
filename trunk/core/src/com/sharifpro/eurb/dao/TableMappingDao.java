@@ -67,9 +67,9 @@ public interface TableMappingDao
 	public List<TableMapping> findWhereMappedNameEquals(String mappedName) throws TableMappingDaoException;
 
 	/** 
-	 * Returns all rows from the table_mapping table that match the criteria 'type = :type'.
+	 * Returns all rows from the table_mapping table that match the criteria 'mapped_type = :mappedType'.
 	 */
-	public List<TableMapping> findWhereTypeEquals(Integer type) throws TableMappingDaoException;
+	public List<TableMapping> findWhereMappedTypeEquals(Integer mappedType) throws TableMappingDaoException;
 
 	/** 
 	 * Returns all rows from the table_mapping table that match the criteria 'active_for_manager = :activeForManager'.

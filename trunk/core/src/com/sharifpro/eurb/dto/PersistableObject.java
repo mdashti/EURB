@@ -15,7 +15,7 @@ public class PersistableObject implements Serializable
 	/** 
 	 * This attribute maps to the column type in the persistable_object table.
 	 */
-	protected Integer type;
+	protected Integer objectType;
 
 	/** 
 	 * This attribute maps to the column creator in the persistable_object table.
@@ -66,23 +66,23 @@ public class PersistableObject implements Serializable
 	}
 
 	/**
-	 * Method 'getType'
+	 * Method 'getObjectType'
 	 * 
 	 * @return Integer
 	 */
-	public Integer getType()
+	public Integer getObjectType()
 	{
-		return type;
+		return objectType;
 	}
 
 	/**
-	 * Method 'setType'
+	 * Method 'setObjectType'
 	 * 
-	 * @param type
+	 * @param objectType
 	 */
-	public void setType(Integer type)
+	public void setObjectType(Integer objectType)
 	{
-		this.type = type;
+		this.objectType = objectType;
 	}
 
 	/**
@@ -190,7 +190,7 @@ public class PersistableObject implements Serializable
 			return false;
 		}
 		
-		if (type == null ? _cast.type != type : !type.equals( _cast.type )) {
+		if (objectType == null ? _cast.objectType != objectType : !objectType.equals( _cast.objectType )) {
 			return false;
 		}
 		
@@ -225,8 +225,8 @@ public class PersistableObject implements Serializable
 			_hashCode = 29 * _hashCode + id.hashCode();
 		}
 		
-		if (type != null) {
-			_hashCode = 29 * _hashCode + type.hashCode();
+		if (objectType != null) {
+			_hashCode = 29 * _hashCode + objectType.hashCode();
 		}
 		
 		if (creator != null) {
@@ -268,7 +268,7 @@ public class PersistableObject implements Serializable
 		StringBuffer ret = new StringBuffer();
 		ret.append( "com.sharifpro.eurb.dto.PersistableObject: " );
 		ret.append( "id=" + id );
-		ret.append( ", type=" + type );
+		ret.append( ", type=" + objectType );
 		ret.append( ", creator=" + creator );
 		ret.append( ", createDate=" + createDate );
 		ret.append( ", modifier=" + modifier );

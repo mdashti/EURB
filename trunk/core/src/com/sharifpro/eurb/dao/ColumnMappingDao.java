@@ -67,9 +67,14 @@ public interface ColumnMappingDao
 	public List<ColumnMapping> findWhereMappedNameEquals(String mappedName) throws ColumnMappingDaoException;
 
 	/** 
-	 * Returns all rows from the column_mapping table that match the criteria 'type = :type'.
+	 * Returns all rows from the column_mapping table that match the criteria 'col_type = :colType'.
 	 */
-	public List<ColumnMapping> findWhereTypeEquals(String type) throws ColumnMappingDaoException;
+	public List<ColumnMapping> findWhereColTypeEquals(String colType) throws ColumnMappingDaoException;
+
+	/** 
+	 * Returns all rows from the column_mapping table that match the criteria 'col_order = :colOrder'.
+	 */
+	public List<ColumnMapping> findWhereColOrderEquals(String colOrder) throws ColumnMappingDaoException;
 
 	/** 
 	 * Returns all rows from the column_mapping table that match the criteria 'format_pattern = :formatPattern'.

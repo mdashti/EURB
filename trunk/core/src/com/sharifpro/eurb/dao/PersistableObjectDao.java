@@ -53,9 +53,9 @@ public interface PersistableObjectDao
 	public List<PersistableObject> findWhereIdEquals(Long id) throws PersistableObjectDaoException;
 
 	/** 
-	 * Returns all rows from the persistable_object table that match the criteria 'type = :type'.
+	 * Returns all rows from the persistable_object table that match the criteria 'type = :objectType'.
 	 */
-	public List<PersistableObject> findWhereTypeEquals(Integer type) throws PersistableObjectDaoException;
+	public List<PersistableObject> findWhereObjectTypeEquals(Integer type) throws PersistableObjectDaoException;
 
 	/** 
 	 * Returns all rows from the persistable_object table that match the criteria 'creator = :creator'.

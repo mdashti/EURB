@@ -152,7 +152,7 @@ public class ColumnMappingDaoExample
 	public static void findWhereTypeEquals(String type) throws Exception
 	{
 		ColumnMappingDao dao = DaoFactory.createColumnMappingDao();
-		List<ColumnMapping> _result = dao.findWhereTypeEquals(type);
+		List<ColumnMapping> _result = dao.findWhereColTypeEquals(type);
 		for (ColumnMapping dto : _result) {
 			display(dto);
 		}
@@ -255,7 +255,9 @@ public class ColumnMappingDaoExample
 		buf.append( ", " );
 		buf.append( dto.getMappedName() );
 		buf.append( ", " );
-		buf.append( dto.getType() );
+		buf.append( dto.getColType() );
+		buf.append( ", " );
+		buf.append( dto.getColOrder() );
 		buf.append( ", " );
 		buf.append( dto.getFormatPattern() );
 		buf.append( ", " );

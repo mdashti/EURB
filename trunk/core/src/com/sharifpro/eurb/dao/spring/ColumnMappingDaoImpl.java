@@ -38,7 +38,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 	@Transactional
 	public ColumnMappingPk insert(ColumnMapping dto)
 	{
-		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, table_mapping_id, column_name, mapped_name, type, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",dto.getId(),dto.getTableMappingId(),dto.getColumnName(),dto.getMappedName(),dto.getType(),dto.getFormatPattern(),dto.getStaticMapping(),dto.getReferencedTable(),dto.getReferencedIdCol(),dto.getReferencedValueCol());
+		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, table_mapping_id, column_name, mapped_name, col_type, col_order, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",dto.getId(),dto.getTableMappingId(),dto.getColumnName(),dto.getMappedName(),dto.getColType(),dto.getColOrder(),dto.getFormatPattern(),dto.getStaticMapping(),dto.getReferencedTable(),dto.getReferencedIdCol(),dto.getReferencedValueCol());
 		return dto.createPk();
 	}
 
@@ -48,7 +48,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 	@Transactional
 	public void update(ColumnMappingPk pk, ColumnMapping dto) throws ColumnMappingDaoException
 	{
-		jdbcTemplate.update("UPDATE " + getTableName() + " SET id = ?, table_mapping_id = ?, column_name = ?, mapped_name = ?, type = ?, format_pattern = ?, static_mapping = ?, referenced_table = ?, referenced_id_col = ?, referenced_value_col = ? WHERE id = ?",dto.getId(),dto.getTableMappingId(),dto.getColumnName(),dto.getMappedName(),dto.getType(),dto.getFormatPattern(),dto.getStaticMapping(),dto.getReferencedTable(),dto.getReferencedIdCol(),dto.getReferencedValueCol(),pk.getId());
+		jdbcTemplate.update("UPDATE " + getTableName() + " SET id = ?, table_mapping_id = ?, column_name = ?, mapped_name = ?, col_type = ?, col_order = ?, format_pattern = ?, static_mapping = ?, referenced_table = ?, referenced_id_col = ?, referenced_value_col = ? WHERE id = ?",dto.getId(),dto.getTableMappingId(),dto.getColumnName(),dto.getMappedName(),dto.getColType(),dto.getColOrder(),dto.getFormatPattern(),dto.getStaticMapping(),dto.getReferencedTable(),dto.getReferencedIdCol(),dto.getReferencedValueCol(),pk.getId());
 	}
 
 	/** 
@@ -75,12 +75,13 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 		dto.setTableMappingId( new Long( rs.getLong(2) ) );
 		dto.setColumnName( rs.getString( 3 ) );
 		dto.setMappedName( rs.getString( 4 ) );
-		dto.setType( rs.getString( 5 ) );
-		dto.setFormatPattern( rs.getString( 6 ) );
-		dto.setStaticMapping( rs.getString( 7 ) );
-		dto.setReferencedTable( rs.getString( 8 ) );
-		dto.setReferencedIdCol( rs.getString( 9 ) );
-		dto.setReferencedValueCol( rs.getString( 10 ) );
+		dto.setColType( rs.getString( 5 ) );
+		dto.setColOrder( rs.getString( 6 ) );
+		dto.setFormatPattern( rs.getString( 7 ) );
+		dto.setStaticMapping( rs.getString( 8 ) );
+		dto.setReferencedTable( rs.getString( 9 ) );
+		dto.setReferencedIdCol( rs.getString( 10 ) );
+		dto.setReferencedValueCol( rs.getString( 11 ) );
 		return dto;
 	}
 
@@ -101,7 +102,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 	public ColumnMapping findByPrimaryKey(Long id) throws ColumnMappingDaoException
 	{
 		try {
-			List<ColumnMapping> list = jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, type, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE id = ?", this,id);
+			List<ColumnMapping> list = jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, col_type, col_order, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE id = ?", this,id);
 			return list.size() == 0 ? null : list.get(0);
 		}
 		catch (Exception e) {
@@ -117,7 +118,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 	public List<ColumnMapping> findAll() throws ColumnMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, type, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " ORDER BY id", this);
+			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, col_type, col_order, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " ORDER BY id", this);
 		}
 		catch (Exception e) {
 			throw new ColumnMappingDaoException("Query failed", e);
@@ -132,7 +133,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 	public List<ColumnMapping> findByPersistableObject(Long id) throws ColumnMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, type, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE id = ?", this,id);
+			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, col_type, col_order, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE id = ?", this,id);
 		}
 		catch (Exception e) {
 			throw new ColumnMappingDaoException("Query failed", e);
@@ -147,7 +148,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 	public List<ColumnMapping> findByTableMapping(Long tableMappingId) throws ColumnMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, type, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE table_mapping_id = ?", this,tableMappingId);
+			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, col_type, col_order, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE table_mapping_id = ?", this,tableMappingId);
 		}
 		catch (Exception e) {
 			throw new ColumnMappingDaoException("Query failed", e);
@@ -162,7 +163,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 	public List<ColumnMapping> findWhereIdEquals(Long id) throws ColumnMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, type, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE id = ? ORDER BY id", this,id);
+			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, col_type, col_order, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE id = ? ORDER BY id", this,id);
 		}
 		catch (Exception e) {
 			throw new ColumnMappingDaoException("Query failed", e);
@@ -177,7 +178,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 	public List<ColumnMapping> findWhereTableMappingIdEquals(Long tableMappingId) throws ColumnMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, type, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE table_mapping_id = ? ORDER BY table_mapping_id", this,tableMappingId);
+			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, col_type, col_order, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE table_mapping_id = ? ORDER BY table_mapping_id", this,tableMappingId);
 		}
 		catch (Exception e) {
 			throw new ColumnMappingDaoException("Query failed", e);
@@ -192,7 +193,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 	public List<ColumnMapping> findWhereColumnNameEquals(String columnName) throws ColumnMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, type, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE column_name = ? ORDER BY column_name", this,columnName);
+			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, col_type, col_order, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE column_name = ? ORDER BY column_name", this,columnName);
 		}
 		catch (Exception e) {
 			throw new ColumnMappingDaoException("Query failed", e);
@@ -207,7 +208,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 	public List<ColumnMapping> findWhereMappedNameEquals(String mappedName) throws ColumnMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, type, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE mapped_name = ? ORDER BY mapped_name", this,mappedName);
+			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, col_type, col_order, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE mapped_name = ? ORDER BY mapped_name", this,mappedName);
 		}
 		catch (Exception e) {
 			throw new ColumnMappingDaoException("Query failed", e);
@@ -216,13 +217,28 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 	}
 
 	/** 
-	 * Returns all rows from the column_mapping table that match the criteria 'type = :type'.
+	 * Returns all rows from the column_mapping table that match the criteria 'col_type = :colType'.
 	 */
 	@Transactional
-	public List<ColumnMapping> findWhereTypeEquals(String type) throws ColumnMappingDaoException
+	public List<ColumnMapping> findWhereColTypeEquals(String colType) throws ColumnMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, type, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE type = ? ORDER BY type", this,type);
+			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, col_type, col_order, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE col_type = ? ORDER BY col_type", this,colType);
+		}
+		catch (Exception e) {
+			throw new ColumnMappingDaoException("Query failed", e);
+		}
+		
+	}
+
+	/** 
+	 * Returns all rows from the column_mapping table that match the criteria 'col_order = :colOrder'.
+	 */
+	@Transactional
+	public List<ColumnMapping> findWhereColOrderEquals(String colOrder) throws ColumnMappingDaoException
+	{
+		try {
+			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, col_type, col_order, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE col_order = ? ORDER BY col_order", this,colOrder);
 		}
 		catch (Exception e) {
 			throw new ColumnMappingDaoException("Query failed", e);
@@ -237,7 +253,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 	public List<ColumnMapping> findWhereFormatPatternEquals(String formatPattern) throws ColumnMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, type, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE format_pattern = ? ORDER BY format_pattern", this,formatPattern);
+			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, col_type, col_order, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE format_pattern = ? ORDER BY format_pattern", this,formatPattern);
 		}
 		catch (Exception e) {
 			throw new ColumnMappingDaoException("Query failed", e);
@@ -252,7 +268,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 	public List<ColumnMapping> findWhereStaticMappingEquals(String staticMapping) throws ColumnMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, type, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE static_mapping = ? ORDER BY static_mapping", this,staticMapping);
+			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, col_type, col_order, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE static_mapping = ? ORDER BY static_mapping", this,staticMapping);
 		}
 		catch (Exception e) {
 			throw new ColumnMappingDaoException("Query failed", e);
@@ -267,7 +283,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 	public List<ColumnMapping> findWhereReferencedTableEquals(String referencedTable) throws ColumnMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, type, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE referenced_table = ? ORDER BY referenced_table", this,referencedTable);
+			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, col_type, col_order, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE referenced_table = ? ORDER BY referenced_table", this,referencedTable);
 		}
 		catch (Exception e) {
 			throw new ColumnMappingDaoException("Query failed", e);
@@ -282,7 +298,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 	public List<ColumnMapping> findWhereReferencedIdColEquals(String referencedIdCol) throws ColumnMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, type, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE referenced_id_col = ? ORDER BY referenced_id_col", this,referencedIdCol);
+			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, col_type, col_order, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE referenced_id_col = ? ORDER BY referenced_id_col", this,referencedIdCol);
 		}
 		catch (Exception e) {
 			throw new ColumnMappingDaoException("Query failed", e);
@@ -297,7 +313,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 	public List<ColumnMapping> findWhereReferencedValueColEquals(String referencedValueCol) throws ColumnMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, type, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE referenced_value_col = ? ORDER BY referenced_value_col", this,referencedValueCol);
+			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, col_type, col_order, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE referenced_value_col = ? ORDER BY referenced_value_col", this,referencedValueCol);
 		}
 		catch (Exception e) {
 			throw new ColumnMappingDaoException("Query failed", e);

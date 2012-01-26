@@ -101,7 +101,7 @@ public class PersistableObjectDaoExample
 	public static void findWhereTypeEquals(Integer type) throws Exception
 	{
 		PersistableObjectDao dao = DaoFactory.createPersistableObjectDao();
-		List<PersistableObject> _result = dao.findWhereTypeEquals(type);
+		List<PersistableObject> _result = dao.findWhereObjectTypeEquals(type);
 		for (PersistableObject dto : _result) {
 			display(dto);
 		}
@@ -182,7 +182,7 @@ public class PersistableObjectDaoExample
 		StringBuffer buf = new StringBuffer();
 		buf.append( dto.getId() );
 		buf.append( ", " );
-		buf.append( dto.getType() );
+		buf.append( dto.getObjectType() );
 		buf.append( ", " );
 		buf.append( dto.getCreator() );
 		buf.append( ", " );

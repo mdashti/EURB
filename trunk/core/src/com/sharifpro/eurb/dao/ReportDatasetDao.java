@@ -87,9 +87,9 @@ public interface ReportDatasetDao
 	public List<ReportDataset> findWhereBaseReportVersionIdEquals(Long baseReportVersionId) throws ReportDatasetDaoException;
 
 	/** 
-	 * Returns all rows from the report_dataset table that match the criteria 'order = :order'.
+	 * Returns all rows from the report_dataset table that match the criteria 'ds_order = :dsOrder'.
 	 */
-	public List<ReportDataset> findWhereOrderEquals(Integer order) throws ReportDatasetDaoException;
+	public List<ReportDataset> findWhereDsOrderEquals(Integer dsOrder) throws ReportDatasetDaoException;
 
 	/** 
 	 * Returns all rows from the report_dataset table that match the criteria 'operator = :operator'.

@@ -274,7 +274,7 @@ public class ReportFilterDaoExample
 	public static void findWhereTypeEquals(Integer type) throws Exception
 	{
 		ReportFilterDao dao = DaoFactory.createReportFilterDao();
-		List<ReportFilter> _result = dao.findWhereTypeEquals(type);
+		List<ReportFilter> _result = dao.findWhereFilterTypeEquals(type);
 		for (ReportFilter dto : _result) {
 			display(dto);
 		}
@@ -357,7 +357,7 @@ public class ReportFilterDaoExample
 		buf.append( ", " );
 		buf.append( dto.getOperand2() );
 		buf.append( ", " );
-		buf.append( dto.getType() );
+		buf.append( dto.getFilterType() );
 		buf.append( ", " );
 		buf.append( dto.getOperand1ColumnId() );
 		buf.append( ", " );

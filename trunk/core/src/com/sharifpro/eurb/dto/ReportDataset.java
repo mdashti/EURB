@@ -37,9 +37,9 @@ public class ReportDataset implements Serializable
 	protected Long baseReportVersionId;
 
 	/** 
-	 * This attribute maps to the column order in the report_dataset table.
+	 * This attribute maps to the column ds_order in the report_dataset table.
 	 */
-	protected Integer order;
+	protected Integer dsOrder;
 
 	/** 
 	 * This attribute maps to the column operator in the report_dataset table.
@@ -175,23 +175,23 @@ public class ReportDataset implements Serializable
 	}
 
 	/**
-	 * Method 'getOrder'
+	 * Method 'getDsOrder'
 	 * 
 	 * @return Integer
 	 */
-	public Integer getOrder()
+	public Integer getDsOrder()
 	{
-		return order;
+		return dsOrder;
 	}
 
 	/**
-	 * Method 'setOrder'
+	 * Method 'setDsOrder'
 	 * 
-	 * @param order
+	 * @param dsOrder
 	 */
-	public void setOrder(Integer order)
+	public void setDsOrder(Integer dsOrder)
 	{
-		this.order = order;
+		this.dsOrder = dsOrder;
 	}
 
 	/**
@@ -259,7 +259,7 @@ public class ReportDataset implements Serializable
 			return false;
 		}
 		
-		if (order == null ? _cast.order != order : !order.equals( _cast.order )) {
+		if (dsOrder == null ? _cast.dsOrder != dsOrder : !dsOrder.equals( _cast.dsOrder )) {
 			return false;
 		}
 		
@@ -302,8 +302,8 @@ public class ReportDataset implements Serializable
 			_hashCode = 29 * _hashCode + baseReportVersionId.hashCode();
 		}
 		
-		if (order != null) {
-			_hashCode = 29 * _hashCode + order.hashCode();
+		if (dsOrder != null) {
+			_hashCode = 29 * _hashCode + dsOrder.hashCode();
 		}
 		
 		if (operator != null) {
@@ -338,7 +338,7 @@ public class ReportDataset implements Serializable
 		ret.append( ", tableMappingId=" + tableMappingId );
 		ret.append( ", baseReportId=" + baseReportId );
 		ret.append( ", baseReportVersionId=" + baseReportVersionId );
-		ret.append( ", order=" + order );
+		ret.append( ", dsOrder=" + dsOrder );
 		ret.append( ", operator=" + operator );
 		return ret.toString();
 	}

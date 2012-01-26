@@ -27,9 +27,9 @@ public class ReportColumn implements Serializable
 	protected Long designVersionId;
 
 	/** 
-	 * This attribute maps to the column type in the report_column table.
+	 * This attribute maps to the column col_type in the report_column table.
 	 */
-	protected Integer type;
+	protected Integer colType;
 
 	/** 
 	 * This attribute maps to the column column_mapping_id in the report_column table.
@@ -42,9 +42,9 @@ public class ReportColumn implements Serializable
 	protected Long reportColumnId;
 
 	/** 
-	 * This attribute maps to the column order in the report_column table.
+	 * This attribute maps to the column col_order in the report_column table.
 	 */
-	protected Integer order;
+	protected Integer colOrder;
 
 	/** 
 	 * This attribute maps to the column sort_order in the report_column table.
@@ -180,23 +180,23 @@ public class ReportColumn implements Serializable
 	}
 
 	/**
-	 * Method 'getType'
+	 * Method 'getColType'
 	 * 
 	 * @return Integer
 	 */
-	public Integer getType()
+	public Integer getColType()
 	{
-		return type;
+		return colType;
 	}
 
 	/**
-	 * Method 'setType'
+	 * Method 'setColType'
 	 * 
-	 * @param type
+	 * @param colType
 	 */
-	public void setType(Integer type)
+	public void setColType(Integer colType)
 	{
-		this.type = type;
+		this.colType = colType;
 	}
 
 	/**
@@ -240,23 +240,23 @@ public class ReportColumn implements Serializable
 	}
 
 	/**
-	 * Method 'getOrder'
+	 * Method 'getColOrder'
 	 * 
 	 * @return Integer
 	 */
-	public Integer getOrder()
+	public Integer getColOrder()
 	{
-		return order;
+		return colOrder;
 	}
 
 	/**
-	 * Method 'setOrder'
+	 * Method 'setColOrder'
 	 * 
-	 * @param order
+	 * @param colOrder
 	 */
-	public void setOrder(Integer order)
+	public void setColOrder(Integer colOrder)
 	{
-		this.order = order;
+		this.colOrder = colOrder;
 	}
 
 	/**
@@ -404,7 +404,7 @@ public class ReportColumn implements Serializable
 	 * 
 	 * @return boolean
 	 */
-	public boolean isIsCustom()
+	public boolean isCustom()
 	{
 		return isCustom;
 	}
@@ -414,7 +414,7 @@ public class ReportColumn implements Serializable
 	 * 
 	 * @param isCustom
 	 */
-	public void setIsCustom(boolean isCustom)
+	public void setCustom(boolean isCustom)
 	{
 		this.isCustom = isCustom;
 	}
@@ -476,7 +476,7 @@ public class ReportColumn implements Serializable
 			return false;
 		}
 		
-		if (type == null ? _cast.type != type : !type.equals( _cast.type )) {
+		if (colType == null ? _cast.colType != colType : !colType.equals( _cast.colType )) {
 			return false;
 		}
 		
@@ -488,7 +488,7 @@ public class ReportColumn implements Serializable
 			return false;
 		}
 		
-		if (order == null ? _cast.order != order : !order.equals( _cast.order )) {
+		if (colOrder == null ? _cast.colOrder != colOrder : !colOrder.equals( _cast.colOrder )) {
 			return false;
 		}
 		
@@ -555,8 +555,8 @@ public class ReportColumn implements Serializable
 			_hashCode = 29 * _hashCode + designVersionId.hashCode();
 		}
 		
-		if (type != null) {
-			_hashCode = 29 * _hashCode + type.hashCode();
+		if (colType != null) {
+			_hashCode = 29 * _hashCode + colType.hashCode();
 		}
 		
 		if (columnMappingId != null) {
@@ -567,8 +567,8 @@ public class ReportColumn implements Serializable
 			_hashCode = 29 * _hashCode + reportColumnId.hashCode();
 		}
 		
-		if (order != null) {
-			_hashCode = 29 * _hashCode + order.hashCode();
+		if (colOrder != null) {
+			_hashCode = 29 * _hashCode + colOrder.hashCode();
 		}
 		
 		if (sortOrder != null) {
@@ -627,10 +627,10 @@ public class ReportColumn implements Serializable
 		ret.append( ", datasetId=" + datasetId );
 		ret.append( ", designId=" + designId );
 		ret.append( ", designVersionId=" + designVersionId );
-		ret.append( ", type=" + type );
+		ret.append( ", colType=" + colType );
 		ret.append( ", columnMappingId=" + columnMappingId );
 		ret.append( ", reportColumnId=" + reportColumnId );
-		ret.append( ", order=" + order );
+		ret.append( ", colOrder=" + colOrder );
 		ret.append( ", sortOrder=" + sortOrder );
 		ret.append( ", sortType=" + sortType );
 		ret.append( ", groupLevel=" + groupLevel );

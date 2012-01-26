@@ -77,9 +77,9 @@ public interface ReportColumnDao
 	public List<ReportColumn> findWhereDesignVersionIdEquals(Long designVersionId) throws ReportColumnDaoException;
 
 	/** 
-	 * Returns all rows from the report_column table that match the criteria 'type = :type'.
+	 * Returns all rows from the report_column table that match the criteria 'col_type = :colType'.
 	 */
-	public List<ReportColumn> findWhereTypeEquals(Integer type) throws ReportColumnDaoException;
+	public List<ReportColumn> findWhereColTypeEquals(Integer colType) throws ReportColumnDaoException;
 
 	/** 
 	 * Returns all rows from the report_column table that match the criteria 'column_mapping_id = :columnMappingId'.
@@ -92,9 +92,9 @@ public interface ReportColumnDao
 	public List<ReportColumn> findWhereReportColumnIdEquals(Long reportColumnId) throws ReportColumnDaoException;
 
 	/** 
-	 * Returns all rows from the report_column table that match the criteria 'order = :order'.
+	 * Returns all rows from the report_column table that match the criteria 'col_order = :colOrder'.
 	 */
-	public List<ReportColumn> findWhereOrderEquals(Integer order) throws ReportColumnDaoException;
+	public List<ReportColumn> findWhereColOrderEquals(Integer colOrder) throws ReportColumnDaoException;
 
 	/** 
 	 * Returns all rows from the report_column table that match the criteria 'sort_order = :sortOrder'.

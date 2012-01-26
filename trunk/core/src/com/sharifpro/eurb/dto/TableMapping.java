@@ -27,9 +27,9 @@ public class TableMapping implements Serializable
 	protected String mappedName;
 
 	/** 
-	 * This attribute maps to the column type in the table_mapping table.
+	 * This attribute maps to the column mapped_type in the table_mapping table.
 	 */
-	protected Integer type;
+	protected Integer mappedType;
 
 	/** 
 	 * This attribute maps to the column active_for_manager in the table_mapping table.
@@ -130,23 +130,23 @@ public class TableMapping implements Serializable
 	}
 
 	/**
-	 * Method 'getType'
+	 * Method 'getMappedType'
 	 * 
 	 * @return Integer
 	 */
-	public Integer getType()
+	public Integer getMappedType()
 	{
-		return type;
+		return mappedType;
 	}
 
 	/**
-	 * Method 'setType'
+	 * Method 'setMappedType'
 	 * 
-	 * @param type
+	 * @param mappedType
 	 */
-	public void setType(Integer type)
+	public void setMappedType(Integer mappedType)
 	{
-		this.type = type;
+		this.mappedType = mappedType;
 	}
 
 	/**
@@ -226,7 +226,7 @@ public class TableMapping implements Serializable
 			return false;
 		}
 		
-		if (type == null ? _cast.type != type : !type.equals( _cast.type )) {
+		if (mappedType == null ? _cast.mappedType != mappedType : !mappedType.equals( _cast.mappedType )) {
 			return false;
 		}
 		
@@ -265,8 +265,8 @@ public class TableMapping implements Serializable
 			_hashCode = 29 * _hashCode + mappedName.hashCode();
 		}
 		
-		if (type != null) {
-			_hashCode = 29 * _hashCode + type.hashCode();
+		if (mappedType != null) {
+			_hashCode = 29 * _hashCode + mappedType.hashCode();
 		}
 		
 		_hashCode = 29 * _hashCode + (activeForManager ? 1 : 0);
@@ -297,7 +297,7 @@ public class TableMapping implements Serializable
 		ret.append( ", dbConfigId=" + dbConfigId );
 		ret.append( ", tableName=" + tableName );
 		ret.append( ", mappedName=" + mappedName );
-		ret.append( ", type=" + type );
+		ret.append( ", mappedType=" + mappedType );
 		ret.append( ", activeForManager=" + activeForManager );
 		ret.append( ", activeForUser=" + activeForUser );
 		return ret.toString();

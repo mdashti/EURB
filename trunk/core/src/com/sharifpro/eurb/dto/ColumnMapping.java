@@ -2,14 +2,9 @@ package com.sharifpro.eurb.dto;
 
 import java.io.Serializable;
 
-public class ColumnMapping implements Serializable
+public class ColumnMapping extends PersistableObject implements Serializable
 {
 	private static final long serialVersionUID = -2903512798099004237L;
-
-	/** 
-	 * This attribute maps to the column id in the column_mapping table.
-	 */
-	protected Long id;
 
 	/** 
 	 * This attribute maps to the column table_mapping_id in the column_mapping table.
@@ -27,9 +22,14 @@ public class ColumnMapping implements Serializable
 	protected String mappedName;
 
 	/** 
-	 * This attribute maps to the column type in the column_mapping table.
+	 * This attribute maps to the column col_type in the column_mapping table.
 	 */
-	protected String type;
+	protected String colType;
+
+	/** 
+	 * This attribute maps to the column col_order in the column_mapping table.
+	 */
+	protected String colOrder;
 
 	/** 
 	 * This attribute maps to the column format_pattern in the column_mapping table.
@@ -64,25 +64,6 @@ public class ColumnMapping implements Serializable
 	{
 	}
 
-	/**
-	 * Method 'getId'
-	 * 
-	 * @return Long
-	 */
-	public Long getId()
-	{
-		return id;
-	}
-
-	/**
-	 * Method 'setId'
-	 * 
-	 * @param id
-	 */
-	public void setId(Long id)
-	{
-		this.id = id;
-	}
 
 	/**
 	 * Method 'getTableMappingId'
@@ -145,23 +126,43 @@ public class ColumnMapping implements Serializable
 	}
 
 	/**
-	 * Method 'getType'
+	 * Method 'getColType'
 	 * 
 	 * @return String
 	 */
-	public String getType()
+	public String getColType()
 	{
-		return type;
+		return colType;
 	}
 
 	/**
-	 * Method 'setType'
+	 * Method 'setColType'
 	 * 
-	 * @param type
+	 * @param colType
 	 */
-	public void setType(String type)
+	public void setColType(String colType)
 	{
-		this.type = type;
+		this.colType = colType;
+	}
+
+	/**
+	 * Method 'getColOrder'
+	 * 
+	 * @return String
+	 */
+	public String getColOrder()
+	{
+		return colOrder;
+	}
+
+	/**
+	 * Method 'setColOrder'
+	 * 
+	 * @param colOrder
+	 */
+	public void setColOrder(String colOrder)
+	{
+		this.colOrder = colOrder;
 	}
 
 	/**
@@ -301,7 +302,11 @@ public class ColumnMapping implements Serializable
 			return false;
 		}
 		
-		if (type == null ? _cast.type != type : !type.equals( _cast.type )) {
+		if (colType == null ? _cast.colType != colType : !colType.equals( _cast.colType )) {
+			return false;
+		}
+		
+		if (colOrder == null ? _cast.colOrder != colOrder : !colOrder.equals( _cast.colOrder )) {
 			return false;
 		}
 		
@@ -352,8 +357,12 @@ public class ColumnMapping implements Serializable
 			_hashCode = 29 * _hashCode + mappedName.hashCode();
 		}
 		
-		if (type != null) {
-			_hashCode = 29 * _hashCode + type.hashCode();
+		if (colType != null) {
+			_hashCode = 29 * _hashCode + colType.hashCode();
+		}
+		
+		if (colOrder != null) {
+			_hashCode = 29 * _hashCode + colOrder.hashCode();
 		}
 		
 		if (formatPattern != null) {
@@ -402,7 +411,8 @@ public class ColumnMapping implements Serializable
 		ret.append( ", tableMappingId=" + tableMappingId );
 		ret.append( ", columnName=" + columnName );
 		ret.append( ", mappedName=" + mappedName );
-		ret.append( ", type=" + type );
+		ret.append( ", colType=" + colType );
+		ret.append( ", colOrder=" + colOrder );
 		ret.append( ", formatPattern=" + formatPattern );
 		ret.append( ", staticMapping=" + staticMapping );
 		ret.append( ", referencedTable=" + referencedTable );

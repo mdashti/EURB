@@ -102,9 +102,9 @@ public interface ReportFilterDao
 	public List<ReportFilter> findWhereOperand2Equals(String operand2) throws ReportFilterDaoException;
 
 	/** 
-	 * Returns all rows from the report_filter table that match the criteria 'type = :type'.
+	 * Returns all rows from the report_filter table that match the criteria 'filter_type = :filterType'.
 	 */
-	public List<ReportFilter> findWhereTypeEquals(Integer type) throws ReportFilterDaoException;
+	public List<ReportFilter> findWhereFilterTypeEquals(Integer filterType) throws ReportFilterDaoException;
 
 	/** 
 	 * Returns all rows from the report_filter table that match the criteria 'operand1_column_id = :operand1ColumnId'.

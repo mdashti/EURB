@@ -278,20 +278,6 @@
             <sequence-name />
           </column>
           <column>
-            <java-name>type</java-name>
-            <java-type>java.lang.String</java-type>
-            <java-default-value />
-            <sql-name>type</sql-name>
-            <sql-type>VARCHAR</sql-type>
-            <jdbc-type>VARCHAR</jdbc-type>
-            <jdbc-precision>45</jdbc-precision>
-            <jdbc-scale>0</jdbc-scale>
-            <nullable>false</nullable>
-            <unique>false</unique>
-            <auto-increment>false</auto-increment>
-            <sequence-name />
-          </column>
-          <column>
             <java-name>formatPattern</java-name>
             <java-type>java.lang.String</java-type>
             <java-default-value />
@@ -361,6 +347,34 @@
             <auto-increment>false</auto-increment>
             <sequence-name />
           </column>
+          <column>
+            <java-name>colType</java-name>
+            <java-type>java.lang.String</java-type>
+            <java-default-value />
+            <sql-name>col_type</sql-name>
+            <sql-type>VARCHAR</sql-type>
+            <jdbc-type>VARCHAR</jdbc-type>
+            <jdbc-precision>45</jdbc-precision>
+            <jdbc-scale>0</jdbc-scale>
+            <nullable>false</nullable>
+            <unique>false</unique>
+            <auto-increment>false</auto-increment>
+            <sequence-name />
+          </column>
+          <column>
+            <java-name>colOrder</java-name>
+            <java-type>java.lang.String</java-type>
+            <java-default-value />
+            <sql-name>col_order</sql-name>
+            <sql-type>VARCHAR</sql-type>
+            <jdbc-type>VARCHAR</jdbc-type>
+            <jdbc-precision>45</jdbc-precision>
+            <jdbc-scale>0</jdbc-scale>
+            <nullable>false</nullable>
+            <unique>false</unique>
+            <auto-increment>false</auto-increment>
+            <sequence-name />
+          </column>
         </column-list>
         <finder-list>
           <finder>
@@ -375,6 +389,22 @@
                 <java-type>java.lang.Long</java-type>
                 <jdbc-type>BIGINT</jdbc-type>
                 <jdbc-precision>20</jdbc-precision>
+                <jdbc-scale>0</jdbc-scale>
+              </parameter>
+            </parameter-list>
+          </finder>
+          <finder>
+            <name>findWhereTypeEquals</name>
+            <multi-finder>true</multi-finder>
+            <where>type = :type</where>
+            <order-by>type</order-by>
+            <query-type>WHERE</query-type>
+            <parameter-list>
+              <parameter>
+                <java-name>type</java-name>
+                <java-type>java.lang.String</java-type>
+                <jdbc-type>VARCHAR</jdbc-type>
+                <jdbc-precision>45</jdbc-precision>
                 <jdbc-scale>0</jdbc-scale>
               </parameter>
             </parameter-list>
@@ -484,14 +514,30 @@
             </parameter-list>
           </finder>
           <finder>
-            <name>findWhereTypeEquals</name>
+            <name>findWhereColTypeEquals</name>
             <multi-finder>true</multi-finder>
-            <where>type = :type</where>
-            <order-by>type</order-by>
+            <where>col_type = :colType</where>
+            <order-by>col_type</order-by>
             <query-type>WHERE</query-type>
             <parameter-list>
               <parameter>
-                <java-name>type</java-name>
+                <java-name>colType</java-name>
+                <java-type>java.lang.String</java-type>
+                <jdbc-type>VARCHAR</jdbc-type>
+                <jdbc-precision>45</jdbc-precision>
+                <jdbc-scale>0</jdbc-scale>
+              </parameter>
+            </parameter-list>
+          </finder>
+          <finder>
+            <name>findWhereColOrderEquals</name>
+            <multi-finder>true</multi-finder>
+            <where>col_order = :colOrder</where>
+            <order-by>col_order</order-by>
+            <query-type>WHERE</query-type>
+            <parameter-list>
+              <parameter>
+                <java-name>colOrder</java-name>
                 <java-type>java.lang.String</java-type>
                 <jdbc-type>VARCHAR</jdbc-type>
                 <jdbc-precision>45</jdbc-precision>
@@ -889,7 +935,7 @@
             <name>fk_group_aggregation_report_column_parent</name>
             <parent-table>report_column</parent-table>
             <cardinality>1-many</cardinality>
-            <nav-to-parent-term>ParentColumn</nav-to-parent-term>
+            <nav-to-parent-term>ReportColumn</nav-to-parent-term>
             <nav-to-child-term>GroupAggregation1</nav-to-child-term>
             <nav-to-parent>true</nav-to-parent>
             <nav-to-child>false</nav-to-child>
@@ -916,7 +962,7 @@
             <name>fk_group_aggregation_report_column_aggregated</name>
             <parent-table>report_column</parent-table>
             <cardinality>1-many</cardinality>
-            <nav-to-parent-term>AggregatedColumn</nav-to-parent-term>
+            <nav-to-parent-term>ReportColumn2</nav-to-parent-term>
             <nav-to-child-term>GroupAggregation3</nav-to-child-term>
             <nav-to-parent>true</nav-to-parent>
             <nav-to-child>false</nav-to-child>
@@ -1801,7 +1847,7 @@
             <name>fk_persistable_object_creator</name>
             <parent-table>users</parent-table>
             <cardinality>1-many</cardinality>
-            <nav-to-parent-term>Creator</nav-to-parent-term>
+            <nav-to-parent-term>Users</nav-to-parent-term>
             <nav-to-child-term>PersistableObject</nav-to-child-term>
             <nav-to-parent>true</nav-to-parent>
             <nav-to-child>false</nav-to-child>
@@ -1816,7 +1862,7 @@
             <name>fk_persistable_object_modifier</name>
             <parent-table>users</parent-table>
             <cardinality>1-many</cardinality>
-            <nav-to-parent-term>Modifier</nav-to-parent-term>
+            <nav-to-parent-term>Users1</nav-to-parent-term>
             <nav-to-child-term>PersistableObject2</nav-to-child-term>
             <nav-to-parent>true</nav-to-parent>
             <nav-to-child>false</nav-to-child>
@@ -1841,20 +1887,6 @@
             <nullable>false</nullable>
             <unique>false</unique>
             <auto-increment>true</auto-increment>
-            <sequence-name />
-          </column>
-          <column>
-            <java-name>type</java-name>
-            <java-type>java.lang.Integer</java-type>
-            <java-default-value />
-            <sql-name>type</sql-name>
-            <sql-type>INT UNSIGNED</sql-type>
-            <jdbc-type>INTEGER</jdbc-type>
-            <jdbc-precision>10</jdbc-precision>
-            <jdbc-scale>0</jdbc-scale>
-            <nullable>false</nullable>
-            <unique>false</unique>
-            <auto-increment>false</auto-increment>
             <sequence-name />
           </column>
           <column>
@@ -1913,6 +1945,20 @@
             <auto-increment>false</auto-increment>
             <sequence-name />
           </column>
+          <column>
+            <java-name>objType</java-name>
+            <java-type>java.lang.Integer</java-type>
+            <java-default-value />
+            <sql-name>obj_type</sql-name>
+            <sql-type>INT UNSIGNED</sql-type>
+            <jdbc-type>INTEGER</jdbc-type>
+            <jdbc-precision>10</jdbc-precision>
+            <jdbc-scale>0</jdbc-scale>
+            <nullable>false</nullable>
+            <unique>false</unique>
+            <auto-increment>false</auto-increment>
+            <sequence-name />
+          </column>
         </column-list>
         <finder-list>
           <finder>
@@ -1927,6 +1973,22 @@
                 <java-type>java.lang.Long</java-type>
                 <jdbc-type>BIGINT</jdbc-type>
                 <jdbc-precision>20</jdbc-precision>
+                <jdbc-scale>0</jdbc-scale>
+              </parameter>
+            </parameter-list>
+          </finder>
+          <finder>
+            <name>findWhereTypeEquals</name>
+            <multi-finder>true</multi-finder>
+            <where>type = :type</where>
+            <order-by>type</order-by>
+            <query-type>WHERE</query-type>
+            <parameter-list>
+              <parameter>
+                <java-name>type</java-name>
+                <java-type>java.lang.Integer</java-type>
+                <jdbc-type>INTEGER</jdbc-type>
+                <jdbc-precision>10</jdbc-precision>
                 <jdbc-scale>0</jdbc-scale>
               </parameter>
             </parameter-list>
@@ -1988,14 +2050,14 @@
             </parameter-list>
           </finder>
           <finder>
-            <name>findWhereTypeEquals</name>
+            <name>findWhereObjTypeEquals</name>
             <multi-finder>true</multi-finder>
-            <where>type = :type</where>
-            <order-by>type</order-by>
+            <where>obj_type = :objType</where>
+            <order-by>obj_type</order-by>
             <query-type>WHERE</query-type>
             <parameter-list>
               <parameter>
-                <java-name>type</java-name>
+                <java-name>objType</java-name>
                 <java-type>java.lang.Integer</java-type>
                 <jdbc-type>INTEGER</jdbc-type>
                 <jdbc-precision>10</jdbc-precision>
@@ -2368,20 +2430,6 @@
             <sequence-name />
           </column>
           <column>
-            <java-name>type</java-name>
-            <java-type>java.lang.Integer</java-type>
-            <java-default-value />
-            <sql-name>type</sql-name>
-            <sql-type>INT UNSIGNED</sql-type>
-            <jdbc-type>INTEGER</jdbc-type>
-            <jdbc-precision>10</jdbc-precision>
-            <jdbc-scale>0</jdbc-scale>
-            <nullable>false</nullable>
-            <unique>false</unique>
-            <auto-increment>false</auto-increment>
-            <sequence-name />
-          </column>
-          <column>
             <java-name>columnMappingId</java-name>
             <java-type>java.lang.Long</java-type>
             <java-default-value />
@@ -2405,20 +2453,6 @@
             <jdbc-precision>20</jdbc-precision>
             <jdbc-scale>0</jdbc-scale>
             <nullable>true</nullable>
-            <unique>false</unique>
-            <auto-increment>false</auto-increment>
-            <sequence-name />
-          </column>
-          <column>
-            <java-name>order</java-name>
-            <java-type>java.lang.Integer</java-type>
-            <java-default-value />
-            <sql-name>order</sql-name>
-            <sql-type>INT</sql-type>
-            <jdbc-type>INTEGER</jdbc-type>
-            <jdbc-precision>10</jdbc-precision>
-            <jdbc-scale>0</jdbc-scale>
-            <nullable>false</nullable>
             <unique>false</unique>
             <auto-increment>false</auto-increment>
             <sequence-name />
@@ -2549,6 +2583,34 @@
             <auto-increment>false</auto-increment>
             <sequence-name />
           </column>
+          <column>
+            <java-name>colType</java-name>
+            <java-type>java.lang.Integer</java-type>
+            <java-default-value />
+            <sql-name>col_type</sql-name>
+            <sql-type>INT UNSIGNED</sql-type>
+            <jdbc-type>INTEGER</jdbc-type>
+            <jdbc-precision>10</jdbc-precision>
+            <jdbc-scale>0</jdbc-scale>
+            <nullable>false</nullable>
+            <unique>false</unique>
+            <auto-increment>false</auto-increment>
+            <sequence-name />
+          </column>
+          <column>
+            <java-name>colOrder</java-name>
+            <java-type>java.lang.Integer</java-type>
+            <java-default-value />
+            <sql-name>col_order</sql-name>
+            <sql-type>INT</sql-type>
+            <jdbc-type>INTEGER</jdbc-type>
+            <jdbc-precision>10</jdbc-precision>
+            <jdbc-scale>0</jdbc-scale>
+            <nullable>false</nullable>
+            <unique>false</unique>
+            <auto-increment>false</auto-increment>
+            <sequence-name />
+          </column>
         </column-list>
         <finder-list>
           <finder>
@@ -2584,6 +2646,38 @@
                 <java-type>java.lang.Long</java-type>
                 <jdbc-type>BIGINT</jdbc-type>
                 <jdbc-precision>20</jdbc-precision>
+                <jdbc-scale>0</jdbc-scale>
+              </parameter>
+            </parameter-list>
+          </finder>
+          <finder>
+            <name>findWhereTypeEquals</name>
+            <multi-finder>true</multi-finder>
+            <where>type = :type</where>
+            <order-by>type</order-by>
+            <query-type>WHERE</query-type>
+            <parameter-list>
+              <parameter>
+                <java-name>type</java-name>
+                <java-type>java.lang.Integer</java-type>
+                <jdbc-type>INTEGER</jdbc-type>
+                <jdbc-precision>10</jdbc-precision>
+                <jdbc-scale>0</jdbc-scale>
+              </parameter>
+            </parameter-list>
+          </finder>
+          <finder>
+            <name>findWhereOrderEquals</name>
+            <multi-finder>true</multi-finder>
+            <where>order = :order</where>
+            <order-by>order</order-by>
+            <query-type>WHERE</query-type>
+            <parameter-list>
+              <parameter>
+                <java-name>order</java-name>
+                <java-type>java.lang.Integer</java-type>
+                <jdbc-type>INTEGER</jdbc-type>
+                <jdbc-precision>10</jdbc-precision>
                 <jdbc-scale>0</jdbc-scale>
               </parameter>
             </parameter-list>
@@ -2739,14 +2833,14 @@
             </parameter-list>
           </finder>
           <finder>
-            <name>findWhereTypeEquals</name>
+            <name>findWhereColTypeEquals</name>
             <multi-finder>true</multi-finder>
-            <where>type = :type</where>
-            <order-by>type</order-by>
+            <where>col_type = :colType</where>
+            <order-by>col_type</order-by>
             <query-type>WHERE</query-type>
             <parameter-list>
               <parameter>
-                <java-name>type</java-name>
+                <java-name>colType</java-name>
                 <java-type>java.lang.Integer</java-type>
                 <jdbc-type>INTEGER</jdbc-type>
                 <jdbc-precision>10</jdbc-precision>
@@ -2787,14 +2881,14 @@
             </parameter-list>
           </finder>
           <finder>
-            <name>findWhereOrderEquals</name>
+            <name>findWhereColOrderEquals</name>
             <multi-finder>true</multi-finder>
-            <where>order = :order</where>
-            <order-by>order</order-by>
+            <where>col_order = :colOrder</where>
+            <order-by>col_order</order-by>
             <query-type>WHERE</query-type>
             <parameter-list>
               <parameter>
-                <java-name>order</java-name>
+                <java-name>colOrder</java-name>
                 <java-type>java.lang.Integer</java-type>
                 <jdbc-type>INTEGER</jdbc-type>
                 <jdbc-precision>10</jdbc-precision>
@@ -2978,7 +3072,7 @@
             <name>fk_report_dataset_report_design_base_rpt</name>
             <parent-table>report_design</parent-table>
             <cardinality>1-many</cardinality>
-            <nav-to-parent-term>BaseReport</nav-to-parent-term>
+            <nav-to-parent-term>ReportDesign</nav-to-parent-term>
             <nav-to-child-term>ReportDataset1</nav-to-child-term>
             <nav-to-parent>true</nav-to-parent>
             <nav-to-child>false</nav-to-child>
@@ -2997,7 +3091,7 @@
             <name>fk_report_dataset_report_design_id</name>
             <parent-table>report_design</parent-table>
             <cardinality>1-many</cardinality>
-            <nav-to-parent-term>ReportDesign</nav-to-parent-term>
+            <nav-to-parent-term>ReportDesign2</nav-to-parent-term>
             <nav-to-child-term>ReportDataset3</nav-to-child-term>
             <nav-to-parent>true</nav-to-parent>
             <nav-to-child>false</nav-to-child>
@@ -3114,10 +3208,10 @@
             <sequence-name />
           </column>
           <column>
-            <java-name>order</java-name>
+            <java-name>operator</java-name>
             <java-type>java.lang.Integer</java-type>
             <java-default-value />
-            <sql-name>order</sql-name>
+            <sql-name>operator</sql-name>
             <sql-type>INT UNSIGNED</sql-type>
             <jdbc-type>INTEGER</jdbc-type>
             <jdbc-precision>10</jdbc-precision>
@@ -3128,10 +3222,10 @@
             <sequence-name />
           </column>
           <column>
-            <java-name>operator</java-name>
+            <java-name>rptOrder</java-name>
             <java-type>java.lang.Integer</java-type>
             <java-default-value />
-            <sql-name>operator</sql-name>
+            <sql-name>rpt_order</sql-name>
             <sql-type>INT UNSIGNED</sql-type>
             <jdbc-type>INTEGER</jdbc-type>
             <jdbc-precision>10</jdbc-precision>
@@ -3169,6 +3263,22 @@
                 <java-type>java.lang.Long</java-type>
                 <jdbc-type>BIGINT</jdbc-type>
                 <jdbc-precision>20</jdbc-precision>
+                <jdbc-scale>0</jdbc-scale>
+              </parameter>
+            </parameter-list>
+          </finder>
+          <finder>
+            <name>findWhereOrderEquals</name>
+            <multi-finder>true</multi-finder>
+            <where>order = :order</where>
+            <order-by>order</order-by>
+            <query-type>WHERE</query-type>
+            <parameter-list>
+              <parameter>
+                <java-name>order</java-name>
+                <java-type>java.lang.Integer</java-type>
+                <jdbc-type>INTEGER</jdbc-type>
+                <jdbc-precision>10</jdbc-precision>
                 <jdbc-scale>0</jdbc-scale>
               </parameter>
             </parameter-list>
@@ -3356,14 +3466,14 @@
             </parameter-list>
           </finder>
           <finder>
-            <name>findWhereOrderEquals</name>
+            <name>findWhereRptOrderEquals</name>
             <multi-finder>true</multi-finder>
-            <where>order = :order</where>
-            <order-by>order</order-by>
+            <where>rpt_order = :rptOrder</where>
+            <order-by>rpt_order</order-by>
             <query-type>WHERE</query-type>
             <parameter-list>
               <parameter>
-                <java-name>order</java-name>
+                <java-name>rptOrder</java-name>
                 <java-type>java.lang.Integer</java-type>
                 <jdbc-type>INTEGER</jdbc-type>
                 <jdbc-precision>10</jdbc-precision>
@@ -4186,7 +4296,7 @@
             <name>fk_report_filter_report_column_operand1</name>
             <parent-table>report_column</parent-table>
             <cardinality>1-many</cardinality>
-            <nav-to-parent-term>Operand1Column</nav-to-parent-term>
+            <nav-to-parent-term>ReportColumn</nav-to-parent-term>
             <nav-to-child-term>ReportFilter1</nav-to-child-term>
             <nav-to-parent>true</nav-to-parent>
             <nav-to-child>false</nav-to-child>
@@ -4209,7 +4319,7 @@
             <name>fk_report_filter_report_column_id</name>
             <parent-table>report_column</parent-table>
             <cardinality>1-many</cardinality>
-            <nav-to-parent-term>ReportColumn</nav-to-parent-term>
+            <nav-to-parent-term>ReportColumn2</nav-to-parent-term>
             <nav-to-child-term>ReportFilter3</nav-to-child-term>
             <nav-to-parent>true</nav-to-parent>
             <nav-to-child>false</nav-to-child>
@@ -4375,20 +4485,6 @@
             <sequence-name />
           </column>
           <column>
-            <java-name>type</java-name>
-            <java-type>java.lang.Integer</java-type>
-            <java-default-value />
-            <sql-name>type</sql-name>
-            <sql-type>INT</sql-type>
-            <jdbc-type>INTEGER</jdbc-type>
-            <jdbc-precision>10</jdbc-precision>
-            <jdbc-scale>0</jdbc-scale>
-            <nullable>true</nullable>
-            <unique>false</unique>
-            <auto-increment>false</auto-increment>
-            <sequence-name />
-          </column>
-          <column>
             <java-name>operand1ColumnId</java-name>
             <java-type>java.lang.Long</java-type>
             <java-default-value />
@@ -4430,6 +4526,20 @@
             <auto-increment>false</auto-increment>
             <sequence-name />
           </column>
+          <column>
+            <java-name>filterType</java-name>
+            <java-type>java.lang.Integer</java-type>
+            <java-default-value />
+            <sql-name>filter_type</sql-name>
+            <sql-type>INT</sql-type>
+            <jdbc-type>INTEGER</jdbc-type>
+            <jdbc-precision>10</jdbc-precision>
+            <jdbc-scale>0</jdbc-scale>
+            <nullable>true</nullable>
+            <unique>false</unique>
+            <auto-increment>false</auto-increment>
+            <sequence-name />
+          </column>
         </column-list>
         <finder-list>
           <finder>
@@ -4444,6 +4554,22 @@
                 <java-type>java.lang.Long</java-type>
                 <jdbc-type>BIGINT</jdbc-type>
                 <jdbc-precision>20</jdbc-precision>
+                <jdbc-scale>0</jdbc-scale>
+              </parameter>
+            </parameter-list>
+          </finder>
+          <finder>
+            <name>findWhereTypeEquals</name>
+            <multi-finder>true</multi-finder>
+            <where>type = :type</where>
+            <order-by>type</order-by>
+            <query-type>WHERE</query-type>
+            <parameter-list>
+              <parameter>
+                <java-name>type</java-name>
+                <java-type>java.lang.Integer</java-type>
+                <jdbc-type>INTEGER</jdbc-type>
+                <jdbc-precision>10</jdbc-precision>
                 <jdbc-scale>0</jdbc-scale>
               </parameter>
             </parameter-list>
@@ -4700,14 +4826,14 @@
             </parameter-list>
           </finder>
           <finder>
-            <name>findWhereTypeEquals</name>
+            <name>findWhereFilterTypeEquals</name>
             <multi-finder>true</multi-finder>
-            <where>type = :type</where>
-            <order-by>type</order-by>
+            <where>filter_type = :filterType</where>
+            <order-by>filter_type</order-by>
             <query-type>WHERE</query-type>
             <parameter-list>
               <parameter>
-                <java-name>type</java-name>
+                <java-name>filterType</java-name>
                 <java-type>java.lang.Integer</java-type>
                 <jdbc-type>INTEGER</jdbc-type>
                 <jdbc-precision>10</jdbc-precision>
@@ -5193,20 +5319,6 @@
             <sequence-name />
           </column>
           <column>
-            <java-name>type</java-name>
-            <java-type>java.lang.Integer</java-type>
-            <java-default-value />
-            <sql-name>type</sql-name>
-            <sql-type>INT</sql-type>
-            <jdbc-type>INTEGER</jdbc-type>
-            <jdbc-precision>10</jdbc-precision>
-            <jdbc-scale>0</jdbc-scale>
-            <nullable>false</nullable>
-            <unique>false</unique>
-            <auto-increment>false</auto-increment>
-            <sequence-name />
-          </column>
-          <column>
             <java-name>activeForManager</java-name>
             <java-type>boolean</java-type>
             <java-default-value />
@@ -5234,6 +5346,20 @@
             <auto-increment>false</auto-increment>
             <sequence-name />
           </column>
+          <column>
+            <java-name>mappedType</java-name>
+            <java-type>java.lang.Integer</java-type>
+            <java-default-value />
+            <sql-name>mapped_type</sql-name>
+            <sql-type>INT</sql-type>
+            <jdbc-type>INTEGER</jdbc-type>
+            <jdbc-precision>10</jdbc-precision>
+            <jdbc-scale>0</jdbc-scale>
+            <nullable>false</nullable>
+            <unique>false</unique>
+            <auto-increment>false</auto-increment>
+            <sequence-name />
+          </column>
         </column-list>
         <finder-list>
           <finder>
@@ -5248,6 +5374,22 @@
                 <java-type>java.lang.Long</java-type>
                 <jdbc-type>BIGINT</jdbc-type>
                 <jdbc-precision>20</jdbc-precision>
+                <jdbc-scale>0</jdbc-scale>
+              </parameter>
+            </parameter-list>
+          </finder>
+          <finder>
+            <name>findWhereTypeEquals</name>
+            <multi-finder>true</multi-finder>
+            <where>type = :type</where>
+            <order-by>type</order-by>
+            <query-type>WHERE</query-type>
+            <parameter-list>
+              <parameter>
+                <java-name>type</java-name>
+                <java-type>java.lang.Integer</java-type>
+                <jdbc-type>INTEGER</jdbc-type>
+                <jdbc-precision>10</jdbc-precision>
                 <jdbc-scale>0</jdbc-scale>
               </parameter>
             </parameter-list>
@@ -5357,14 +5499,14 @@
             </parameter-list>
           </finder>
           <finder>
-            <name>findWhereTypeEquals</name>
+            <name>findWhereMappedTypeEquals</name>
             <multi-finder>true</multi-finder>
-            <where>type = :type</where>
-            <order-by>type</order-by>
+            <where>mapped_type = :mappedType</where>
+            <order-by>mapped_type</order-by>
             <query-type>WHERE</query-type>
             <parameter-list>
               <parameter>
-                <java-name>type</java-name>
+                <java-name>mappedType</java-name>
                 <java-type>java.lang.Integer</java-type>
                 <jdbc-type>INTEGER</jdbc-type>
                 <jdbc-precision>10</jdbc-precision>

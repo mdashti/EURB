@@ -195,7 +195,7 @@ public class ReportColumnDaoExample
 	public static void findWhereTypeEquals(Integer type) throws Exception
 	{
 		ReportColumnDao dao = DaoFactory.createReportColumnDao();
-		List<ReportColumn> _result = dao.findWhereTypeEquals(type);
+		List<ReportColumn> _result = dao.findWhereColTypeEquals(type);
 		for (ReportColumn dto : _result) {
 			display(dto);
 		}
@@ -243,7 +243,7 @@ public class ReportColumnDaoExample
 	public static void findWhereOrderEquals(Integer order) throws Exception
 	{
 		ReportColumnDao dao = DaoFactory.createReportColumnDao();
-		List<ReportColumn> _result = dao.findWhereOrderEquals(order);
+		List<ReportColumn> _result = dao.findWhereColOrderEquals(order);
 		for (ReportColumn dto : _result) {
 			display(dto);
 		}
@@ -410,13 +410,13 @@ public class ReportColumnDaoExample
 		buf.append( ", " );
 		buf.append( dto.getDesignVersionId() );
 		buf.append( ", " );
-		buf.append( dto.getType() );
+		buf.append( dto.getColType() );
 		buf.append( ", " );
 		buf.append( dto.getColumnMappingId() );
 		buf.append( ", " );
 		buf.append( dto.getReportColumnId() );
 		buf.append( ", " );
-		buf.append( dto.getOrder() );
+		buf.append( dto.getColOrder() );
 		buf.append( ", " );
 		buf.append( dto.getSortOrder() );
 		buf.append( ", " );
@@ -432,7 +432,7 @@ public class ReportColumnDaoExample
 		buf.append( ", " );
 		buf.append( dto.getColumnHeader() );
 		buf.append( ", " );
-		buf.append( dto.isIsCustom() );
+		buf.append( dto.isCustom() );
 		buf.append( ", " );
 		buf.append( dto.getFormula() );
 		System.out.println( buf.toString() );
