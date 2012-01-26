@@ -52,7 +52,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 					
 					int i=0;
 					ps.setInt(++i, dto.getObjectType());
-					ps.setString(++i, dto.getCreator() == null ? SessionManager.getUser().getUsername() : dto.getCreator());
+					ps.setString(++i, SessionManager.getUser().getUsername());
 					/*Long now = new Date().getTime();
 					ps.setTimestamp(++i, new java.sql.Timestamp(now));
 					ps.setString(++i, dto.getCreator());
@@ -70,7 +70,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 	@Transactional
 	public void update(PersistableObjectPk pk, PersistableObject dto)
 	{
-		jdbcTemplate.update("UPDATE persistable_object SET modifier = ?, modify_date = ? WHERE id = ?", dto.getModifier() == null ? SessionManager.getUser().getUsername() : dto.getModifier(),new Timestamp(new Date().getTime()),pk.getId());
+		jdbcTemplate.update("UPDATE persistable_object SET modifier = ?, modify_date = ? WHERE id = ?", SessionManager.getUser().getUsername(),new Timestamp(new Date().getTime()),pk.getId());
 	}
 
 	/** 
