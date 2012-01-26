@@ -2,7 +2,7 @@ package com.sharifpro.eurb.dto;
 
 import java.io.Serializable;
 
-public class Authorities implements Serializable
+public class Authorities extends PersistableObject implements Serializable
 {
 	private static final long serialVersionUID = 9080484423268142973L;
 
@@ -22,6 +22,7 @@ public class Authorities implements Serializable
 	 */
 	public Authorities()
 	{
+		super();
 	}
 
 	/**
@@ -133,7 +134,7 @@ public class Authorities implements Serializable
 	public String toString()
 	{
 		StringBuffer ret = new StringBuffer();
-		ret.append( "com.sharifpro.eurb.dto.Authorities: " );
+		ret.append( "model.Authorities: " );
 		ret.append( "username=" + username );
 		ret.append( ", authority=" + authority );
 		return ret.toString();

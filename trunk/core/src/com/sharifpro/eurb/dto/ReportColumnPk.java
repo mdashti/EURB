@@ -5,11 +5,9 @@ import java.io.Serializable;
 /** 
  * This class represents the primary key of the report_column table.
  */
-public class ReportColumnPk implements Serializable
+public class ReportColumnPk extends PersistableObjectPk implements Serializable
 {
 	private static final long serialVersionUID = 1413131159263541714L;
-
-	protected Long id;
 
 	protected Long datasetId;
 
@@ -17,21 +15,6 @@ public class ReportColumnPk implements Serializable
 
 	protected Long designVersionId;
 
-	/** 
-	 * Sets the value of id
-	 */
-	public void setId(Long id)
-	{
-		this.id = id;
-	}
-
-	/** 
-	 * Gets the value of id
-	 */
-	public Long getId()
-	{
-		return id;
-	}
 
 	/** 
 	 * Sets the value of datasetId
@@ -87,6 +70,7 @@ public class ReportColumnPk implements Serializable
 	 */
 	public ReportColumnPk()
 	{
+		super();
 	}
 
 	/**
@@ -99,7 +83,7 @@ public class ReportColumnPk implements Serializable
 	 */
 	public ReportColumnPk(final Long id, final Long datasetId, final Long designId, final Long designVersionId)
 	{
-		this.id = id;
+		super(id);
 		this.datasetId = datasetId;
 		this.designId = designId;
 		this.designVersionId = designVersionId;
@@ -113,12 +97,8 @@ public class ReportColumnPk implements Serializable
 	 */
 	public boolean equals(Object _other)
 	{
-		if (_other == null) {
+		if (!super.equals(_other)) {
 			return false;
-		}
-		
-		if (_other == this) {
-			return true;
 		}
 		
 		if (!(_other instanceof ReportColumnPk)) {
@@ -126,9 +106,6 @@ public class ReportColumnPk implements Serializable
 		}
 		
 		final ReportColumnPk _cast = (ReportColumnPk) _other;
-		if (id == null ? _cast.id != id : !id.equals( _cast.id )) {
-			return false;
-		}
 		
 		if (datasetId == null ? _cast.datasetId != datasetId : !datasetId.equals( _cast.datasetId )) {
 			return false;
@@ -152,10 +129,7 @@ public class ReportColumnPk implements Serializable
 	 */
 	public int hashCode()
 	{
-		int _hashCode = 0;
-		if (id != null) {
-			_hashCode = 29 * _hashCode + id.hashCode();
-		}
+		int _hashCode = super.hashCode();
 		
 		if (datasetId != null) {
 			_hashCode = 29 * _hashCode + datasetId.hashCode();
@@ -180,8 +154,8 @@ public class ReportColumnPk implements Serializable
 	public String toString()
 	{
 		StringBuffer ret = new StringBuffer();
-		ret.append( "com.sharifpro.eurb.dto.ReportColumnPk: " );
-		ret.append( "id=" + id );
+		ret.append( "model.ReportColumnPk: " );
+		ret.append( super.toString() );
 		ret.append( ", datasetId=" + datasetId );
 		ret.append( ", designId=" + designId );
 		ret.append( ", designVersionId=" + designVersionId );

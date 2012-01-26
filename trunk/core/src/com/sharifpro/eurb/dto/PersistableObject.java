@@ -190,7 +190,7 @@ public class PersistableObject implements Serializable
 			return false;
 		}
 		
-		if (objectType == null ? _cast.objectType != objectType : !objectType.equals( _cast.objectType )) {
+		/*if (objectType == null ? _cast.objectType != objectType : !objectType.equals( _cast.objectType )) {
 			return false;
 		}
 		
@@ -208,7 +208,7 @@ public class PersistableObject implements Serializable
 		
 		if (modifyDate == null ? _cast.modifyDate != modifyDate : !modifyDate.equals( _cast.modifyDate )) {
 			return false;
-		}
+		}*/
 		
 		return true;
 	}
@@ -225,7 +225,7 @@ public class PersistableObject implements Serializable
 			_hashCode = 29 * _hashCode + id.hashCode();
 		}
 		
-		if (objectType != null) {
+		/*if (objectType != null) {
 			_hashCode = 29 * _hashCode + objectType.hashCode();
 		}
 		
@@ -243,7 +243,7 @@ public class PersistableObject implements Serializable
 		
 		if (modifyDate != null) {
 			_hashCode = 29 * _hashCode + modifyDate.hashCode();
-		}
+		}*/
 		
 		return _hashCode;
 	}
@@ -266,7 +266,7 @@ public class PersistableObject implements Serializable
 	public String toString()
 	{
 		StringBuffer ret = new StringBuffer();
-		ret.append( "com.sharifpro.eurb.dto.PersistableObject: " );
+		ret.append( "model.PersistableObject: " );
 		ret.append( "id=" + id );
 		ret.append( ", type=" + objectType );
 		ret.append( ", creator=" + creator );

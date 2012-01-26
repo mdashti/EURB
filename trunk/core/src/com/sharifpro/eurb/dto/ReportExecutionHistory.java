@@ -2,14 +2,9 @@ package com.sharifpro.eurb.dto;
 
 import java.io.Serializable;
 
-public class ReportExecutionHistory implements Serializable
+public class ReportExecutionHistory extends PersistableObject implements Serializable
 {
 	private static final long serialVersionUID = 1452367950789156477L;
-
-	/** 
-	 * This attribute maps to the column id in the report_execution_history table.
-	 */
-	protected Long id;
 
 	/** 
 	 * This attribute maps to the column version_id in the report_execution_history table.
@@ -47,26 +42,7 @@ public class ReportExecutionHistory implements Serializable
 	 */
 	public ReportExecutionHistory()
 	{
-	}
-
-	/**
-	 * Method 'getId'
-	 * 
-	 * @return Long
-	 */
-	public Long getId()
-	{
-		return id;
-	}
-
-	/**
-	 * Method 'setId'
-	 * 
-	 * @param id
-	 */
-	public void setId(Long id)
-	{
-		this.id = id;
+		super();
 	}
 
 	/**
@@ -114,7 +90,7 @@ public class ReportExecutionHistory implements Serializable
 	 * 
 	 * @return boolean
 	 */
-	public boolean isIsCurrent()
+	public boolean isCurrent()
 	{
 		return isCurrent;
 	}
@@ -124,7 +100,7 @@ public class ReportExecutionHistory implements Serializable
 	 * 
 	 * @param isCurrent
 	 */
-	public void setIsCurrent(boolean isCurrent)
+	public void setCurrent(boolean isCurrent)
 	{
 		this.isCurrent = isCurrent;
 	}
@@ -197,12 +173,8 @@ public class ReportExecutionHistory implements Serializable
 	 */
 	public boolean equals(Object _other)
 	{
-		if (_other == null) {
+		if (!super.equals(_other)) {
 			return false;
-		}
-		
-		if (_other == this) {
-			return true;
 		}
 		
 		if (!(_other instanceof ReportExecutionHistory)) {
@@ -210,15 +182,12 @@ public class ReportExecutionHistory implements Serializable
 		}
 		
 		final ReportExecutionHistory _cast = (ReportExecutionHistory) _other;
-		if (id == null ? _cast.id != id : !id.equals( _cast.id )) {
-			return false;
-		}
 		
 		if (versionId == null ? _cast.versionId != versionId : !versionId.equals( _cast.versionId )) {
 			return false;
 		}
 		
-		if (executionResult == null ? _cast.executionResult != executionResult : !executionResult.equals( _cast.executionResult )) {
+		/*if (executionResult == null ? _cast.executionResult != executionResult : !executionResult.equals( _cast.executionResult )) {
 			return false;
 		}
 		
@@ -236,7 +205,7 @@ public class ReportExecutionHistory implements Serializable
 		
 		if (reportDesignVersionId == null ? _cast.reportDesignVersionId != reportDesignVersionId : !reportDesignVersionId.equals( _cast.reportDesignVersionId )) {
 			return false;
-		}
+		}*/
 		
 		return true;
 	}
@@ -248,16 +217,13 @@ public class ReportExecutionHistory implements Serializable
 	 */
 	public int hashCode()
 	{
-		int _hashCode = 0;
-		if (id != null) {
-			_hashCode = 29 * _hashCode + id.hashCode();
-		}
+		int _hashCode = super.hashCode();
 		
 		if (versionId != null) {
 			_hashCode = 29 * _hashCode + versionId.hashCode();
 		}
 		
-		if (executionResult != null) {
+		/*if (executionResult != null) {
 			_hashCode = 29 * _hashCode + executionResult.hashCode();
 		}
 		
@@ -272,7 +238,7 @@ public class ReportExecutionHistory implements Serializable
 		
 		if (reportDesignVersionId != null) {
 			_hashCode = 29 * _hashCode + reportDesignVersionId.hashCode();
-		}
+		}*/
 		
 		return _hashCode;
 	}
@@ -295,8 +261,8 @@ public class ReportExecutionHistory implements Serializable
 	public String toString()
 	{
 		StringBuffer ret = new StringBuffer();
-		ret.append( "com.sharifpro.eurb.dto.ReportExecutionHistory: " );
-		ret.append( "id=" + id );
+		ret.append( "model.ReportExecutionHistory: " );
+		ret.append( super.toString() );
 		ret.append( ", versionId=" + versionId );
 		ret.append( ", executionResult=" + executionResult );
 		ret.append( ", isCurrent=" + isCurrent );

@@ -5,29 +5,11 @@ import java.io.Serializable;
 /** 
  * This class represents the primary key of the report_execution_history table.
  */
-public class ReportExecutionHistoryPk implements Serializable
+public class ReportExecutionHistoryPk extends PersistableObjectPk implements Serializable
 {
 	private static final long serialVersionUID = 1519520376177972733L;
 
-	protected Long id;
-
 	protected Long versionId;
-
-	/** 
-	 * Sets the value of id
-	 */
-	public void setId(Long id)
-	{
-		this.id = id;
-	}
-
-	/** 
-	 * Gets the value of id
-	 */
-	public Long getId()
-	{
-		return id;
-	}
 
 	/** 
 	 * Sets the value of versionId
@@ -51,6 +33,7 @@ public class ReportExecutionHistoryPk implements Serializable
 	 */
 	public ReportExecutionHistoryPk()
 	{
+		super();
 	}
 
 	/**
@@ -61,7 +44,7 @@ public class ReportExecutionHistoryPk implements Serializable
 	 */
 	public ReportExecutionHistoryPk(final Long id, final Long versionId)
 	{
-		this.id = id;
+		super(id);
 		this.versionId = versionId;
 	}
 
@@ -73,12 +56,8 @@ public class ReportExecutionHistoryPk implements Serializable
 	 */
 	public boolean equals(Object _other)
 	{
-		if (_other == null) {
+		if (!super.equals(_other)) {
 			return false;
-		}
-		
-		if (_other == this) {
-			return true;
 		}
 		
 		if (!(_other instanceof ReportExecutionHistoryPk)) {
@@ -86,9 +65,6 @@ public class ReportExecutionHistoryPk implements Serializable
 		}
 		
 		final ReportExecutionHistoryPk _cast = (ReportExecutionHistoryPk) _other;
-		if (id == null ? _cast.id != id : !id.equals( _cast.id )) {
-			return false;
-		}
 		
 		if (versionId == null ? _cast.versionId != versionId : !versionId.equals( _cast.versionId )) {
 			return false;
@@ -104,10 +80,7 @@ public class ReportExecutionHistoryPk implements Serializable
 	 */
 	public int hashCode()
 	{
-		int _hashCode = 0;
-		if (id != null) {
-			_hashCode = 29 * _hashCode + id.hashCode();
-		}
+		int _hashCode = super.hashCode();
 		
 		if (versionId != null) {
 			_hashCode = 29 * _hashCode + versionId.hashCode();
@@ -124,8 +97,8 @@ public class ReportExecutionHistoryPk implements Serializable
 	public String toString()
 	{
 		StringBuffer ret = new StringBuffer();
-		ret.append( "com.sharifpro.eurb.dto.ReportExecutionHistoryPk: " );
-		ret.append( "id=" + id );
+		ret.append( "model.ReportExecutionHistoryPk: " );
+		ret.append( super.toString() );
 		ret.append( ", versionId=" + versionId );
 		return ret.toString();
 	}

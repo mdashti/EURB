@@ -38,7 +38,7 @@ public class ReportExecutionHistoryDaoImpl extends AbstractDAO implements Parame
 	@Transactional
 	public ReportExecutionHistoryPk insert(ReportExecutionHistory dto)
 	{
-		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, version_id, execution_result, is_current, record_status, report_design_id, report_design_version_id ) VALUES ( ?, ?, ?, ?, ?, ?, ? )",dto.getId(),dto.getVersionId(),dto.getExecutionResult(),dto.isIsCurrent(),dto.getRecordStatus(),dto.getReportDesignId(),dto.getReportDesignVersionId());
+		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, version_id, execution_result, is_current, record_status, report_design_id, report_design_version_id ) VALUES ( ?, ?, ?, ?, ?, ?, ? )",dto.getId(),dto.getVersionId(),dto.getExecutionResult(),dto.isCurrent(),dto.getRecordStatus(),dto.getReportDesignId(),dto.getReportDesignVersionId());
 		return dto.createPk();
 	}
 
@@ -48,7 +48,7 @@ public class ReportExecutionHistoryDaoImpl extends AbstractDAO implements Parame
 	@Transactional
 	public void update(ReportExecutionHistoryPk pk, ReportExecutionHistory dto) throws ReportExecutionHistoryDaoException
 	{
-		jdbcTemplate.update("UPDATE " + getTableName() + " SET id = ?, version_id = ?, execution_result = ?, is_current = ?, record_status = ?, report_design_id = ?, report_design_version_id = ? WHERE id = ? AND version_id = ?",dto.getId(),dto.getVersionId(),dto.getExecutionResult(),dto.isIsCurrent(),dto.getRecordStatus(),dto.getReportDesignId(),dto.getReportDesignVersionId(),pk.getId(),pk.getVersionId());
+		jdbcTemplate.update("UPDATE " + getTableName() + " SET id = ?, version_id = ?, execution_result = ?, is_current = ?, record_status = ?, report_design_id = ?, report_design_version_id = ? WHERE id = ? AND version_id = ?",dto.getId(),dto.getVersionId(),dto.getExecutionResult(),dto.isCurrent(),dto.getRecordStatus(),dto.getReportDesignId(),dto.getReportDesignVersionId(),pk.getId(),pk.getVersionId());
 	}
 
 	/** 
@@ -74,7 +74,7 @@ public class ReportExecutionHistoryDaoImpl extends AbstractDAO implements Parame
 		dto.setId( new Long( rs.getLong(1) ) );
 		dto.setVersionId( new Long( rs.getLong(2) ) );
 		dto.setExecutionResult( rs.getString( 3 ) );
-		dto.setIsCurrent( rs.getBoolean( 4 ) );
+		dto.setCurrent( rs.getBoolean( 4 ) );
 		dto.setRecordStatus( rs.getString( 5 ) );
 		dto.setReportDesignId( new Long( rs.getLong(6) ) );
 		dto.setReportDesignVersionId( new Long( rs.getLong(7) ) );

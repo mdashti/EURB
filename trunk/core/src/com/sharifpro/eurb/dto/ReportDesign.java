@@ -2,14 +2,9 @@ package com.sharifpro.eurb.dto;
 
 import java.io.Serializable;
 
-public class ReportDesign implements Serializable
+public class ReportDesign extends PersistableObject implements Serializable
 {
 	private static final long serialVersionUID = 3682115548053435821L;
-
-	/** 
-	 * This attribute maps to the column id in the report_design table.
-	 */
-	protected Long id;
 
 	/** 
 	 * This attribute maps to the column version_id in the report_design table.
@@ -67,26 +62,7 @@ public class ReportDesign implements Serializable
 	 */
 	public ReportDesign()
 	{
-	}
-
-	/**
-	 * Method 'getId'
-	 * 
-	 * @return Long
-	 */
-	public Long getId()
-	{
-		return id;
-	}
-
-	/**
-	 * Method 'setId'
-	 * 
-	 * @param id
-	 */
-	public void setId(Long id)
-	{
-		this.id = id;
+		super();
 	}
 
 	/**
@@ -297,12 +273,8 @@ public class ReportDesign implements Serializable
 	 */
 	public boolean equals(Object _other)
 	{
-		if (_other == null) {
+		if (!super.equals(_other)) {
 			return false;
-		}
-		
-		if (_other == this) {
-			return true;
 		}
 		
 		if (!(_other instanceof ReportDesign)) {
@@ -310,15 +282,12 @@ public class ReportDesign implements Serializable
 		}
 		
 		final ReportDesign _cast = (ReportDesign) _other;
-		if (id == null ? _cast.id != id : !id.equals( _cast.id )) {
-			return false;
-		}
 		
 		if (versionId == null ? _cast.versionId != versionId : !versionId.equals( _cast.versionId )) {
 			return false;
 		}
 		
-		if (name == null ? _cast.name != name : !name.equals( _cast.name )) {
+		/*if (name == null ? _cast.name != name : !name.equals( _cast.name )) {
 			return false;
 		}
 		
@@ -352,7 +321,7 @@ public class ReportDesign implements Serializable
 		
 		if (recordStatus == null ? _cast.recordStatus != recordStatus : !recordStatus.equals( _cast.recordStatus )) {
 			return false;
-		}
+		}*/
 		
 		return true;
 	}
@@ -364,16 +333,13 @@ public class ReportDesign implements Serializable
 	 */
 	public int hashCode()
 	{
-		int _hashCode = 0;
-		if (id != null) {
-			_hashCode = 29 * _hashCode + id.hashCode();
-		}
+		int _hashCode = super.hashCode();
 		
 		if (versionId != null) {
 			_hashCode = 29 * _hashCode + versionId.hashCode();
 		}
 		
-		if (name != null) {
+		/*if (name != null) {
 			_hashCode = 29 * _hashCode + name.hashCode();
 		}
 		
@@ -404,7 +370,7 @@ public class ReportDesign implements Serializable
 		_hashCode = 29 * _hashCode + (isCurrent ? 1 : 0);
 		if (recordStatus != null) {
 			_hashCode = 29 * _hashCode + recordStatus.hashCode();
-		}
+		}*/
 		
 		return _hashCode;
 	}
@@ -427,8 +393,8 @@ public class ReportDesign implements Serializable
 	public String toString()
 	{
 		StringBuffer ret = new StringBuffer();
-		ret.append( "com.sharifpro.eurb.dto.ReportDesign: " );
-		ret.append( "id=" + id );
+		ret.append( "model.ReportDesign: " );
+		ret.append( super.toString() );
 		ret.append( ", versionId=" + versionId );
 		ret.append( ", name=" + name );
 		ret.append( ", description=" + description );

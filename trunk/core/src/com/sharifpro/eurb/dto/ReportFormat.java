@@ -2,14 +2,9 @@ package com.sharifpro.eurb.dto;
 
 import java.io.Serializable;
 
-public class ReportFormat implements Serializable
+public class ReportFormat extends PersistableObject implements Serializable
 {
 	private static final long serialVersionUID = -3386076504808806513L;
-
-	/** 
-	 * This attribute maps to the column id in the report_format table.
-	 */
-	protected Long id;
 
 	/** 
 	 * This attribute maps to the column version_id in the report_format table.
@@ -47,26 +42,7 @@ public class ReportFormat implements Serializable
 	 */
 	public ReportFormat()
 	{
-	}
-
-	/**
-	 * Method 'getId'
-	 * 
-	 * @return Long
-	 */
-	public Long getId()
-	{
-		return id;
-	}
-
-	/**
-	 * Method 'setId'
-	 * 
-	 * @param id
-	 */
-	public void setId(Long id)
-	{
-		this.id = id;
+		super();
 	}
 
 	/**
@@ -197,12 +173,8 @@ public class ReportFormat implements Serializable
 	 */
 	public boolean equals(Object _other)
 	{
-		if (_other == null) {
+		if (!super.equals(_other)) {
 			return false;
-		}
-		
-		if (_other == this) {
-			return true;
 		}
 		
 		if (!(_other instanceof ReportFormat)) {
@@ -210,15 +182,12 @@ public class ReportFormat implements Serializable
 		}
 		
 		final ReportFormat _cast = (ReportFormat) _other;
-		if (id == null ? _cast.id != id : !id.equals( _cast.id )) {
-			return false;
-		}
 		
 		if (versionId == null ? _cast.versionId != versionId : !versionId.equals( _cast.versionId )) {
 			return false;
 		}
 		
-		if (formatFile == null ? _cast.formatFile != formatFile : !formatFile.equals( _cast.formatFile )) {
+		/*if (formatFile == null ? _cast.formatFile != formatFile : !formatFile.equals( _cast.formatFile )) {
 			return false;
 		}
 		
@@ -236,7 +205,7 @@ public class ReportFormat implements Serializable
 		
 		if (reportDesignVersionId == null ? _cast.reportDesignVersionId != reportDesignVersionId : !reportDesignVersionId.equals( _cast.reportDesignVersionId )) {
 			return false;
-		}
+		}*/
 		
 		return true;
 	}
@@ -248,16 +217,13 @@ public class ReportFormat implements Serializable
 	 */
 	public int hashCode()
 	{
-		int _hashCode = 0;
-		if (id != null) {
-			_hashCode = 29 * _hashCode + id.hashCode();
-		}
+		int _hashCode = super.hashCode();
 		
 		if (versionId != null) {
 			_hashCode = 29 * _hashCode + versionId.hashCode();
 		}
 		
-		if (formatFile != null) {
+		/*if (formatFile != null) {
 			_hashCode = 29 * _hashCode + formatFile.hashCode();
 		}
 		
@@ -272,7 +238,7 @@ public class ReportFormat implements Serializable
 		
 		if (reportDesignVersionId != null) {
 			_hashCode = 29 * _hashCode + reportDesignVersionId.hashCode();
-		}
+		}*/
 		
 		return _hashCode;
 	}
@@ -295,8 +261,8 @@ public class ReportFormat implements Serializable
 	public String toString()
 	{
 		StringBuffer ret = new StringBuffer();
-		ret.append( "com.sharifpro.eurb.dto.ReportFormat: " );
-		ret.append( "id=" + id );
+		ret.append( "model.ReportFormat: " );
+		ret.append( super.toString() );
 		ret.append( ", versionId=" + versionId );
 		ret.append( ", formatFile=" + formatFile );
 		ret.append( ", isCurrent=" + isCurrent );

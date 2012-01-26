@@ -15,6 +15,7 @@ public class ColumnMappingPk extends PersistableObjectPk implements Serializable
 	 */
 	public ColumnMappingPk()
 	{
+		super();
 	}
 
 	/**
@@ -35,20 +36,11 @@ public class ColumnMappingPk extends PersistableObjectPk implements Serializable
 	 */
 	public boolean equals(Object _other)
 	{
-		if (_other == null) {
+		if (!super.equals(_other)) {
 			return false;
-		}
-		
-		if (_other == this) {
-			return true;
 		}
 		
 		if (!(_other instanceof ColumnMappingPk)) {
-			return false;
-		}
-		
-		final ColumnMappingPk _cast = (ColumnMappingPk) _other;
-		if (id == null ? _cast.id != id : !id.equals( _cast.id )) {
 			return false;
 		}
 		
@@ -63,7 +55,7 @@ public class ColumnMappingPk extends PersistableObjectPk implements Serializable
 	public String toString()
 	{
 		StringBuffer ret = new StringBuffer();
-		ret.append( "com.sharifpro.eurb.dto.ColumnMappingPk: " );
+		ret.append( "model.ColumnMappingPk: " );
 		ret.append( super.toString() );
 		return ret.toString();
 	}

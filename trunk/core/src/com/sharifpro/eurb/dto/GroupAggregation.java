@@ -2,14 +2,9 @@ package com.sharifpro.eurb.dto;
 
 import java.io.Serializable;
 
-public class GroupAggregation implements Serializable
+public class GroupAggregation extends PersistableObject implements Serializable
 {
 	private static final long serialVersionUID = -8458707854067698993L;
-
-	/** 
-	 * This attribute maps to the column id in the group_aggregation table.
-	 */
-	protected Long id;
 
 	/** 
 	 * This attribute maps to the column parent_column_id in the group_aggregation table.
@@ -67,26 +62,7 @@ public class GroupAggregation implements Serializable
 	 */
 	public GroupAggregation()
 	{
-	}
-
-	/**
-	 * Method 'getId'
-	 * 
-	 * @return Long
-	 */
-	public Long getId()
-	{
-		return id;
-	}
-
-	/**
-	 * Method 'setId'
-	 * 
-	 * @param id
-	 */
-	public void setId(Long id)
-	{
-		this.id = id;
+		super();
 	}
 
 	/**
@@ -297,22 +273,15 @@ public class GroupAggregation implements Serializable
 	 */
 	public boolean equals(Object _other)
 	{
-		if (_other == null) {
+		if (!super.equals(_other)) {
 			return false;
-		}
-		
-		if (_other == this) {
-			return true;
 		}
 		
 		if (!(_other instanceof GroupAggregation)) {
 			return false;
 		}
 		
-		final GroupAggregation _cast = (GroupAggregation) _other;
-		if (id == null ? _cast.id != id : !id.equals( _cast.id )) {
-			return false;
-		}
+		/*final GroupAggregation _cast = (GroupAggregation) _other;
 		
 		if (parentColumnId == null ? _cast.parentColumnId != parentColumnId : !parentColumnId.equals( _cast.parentColumnId )) {
 			return false;
@@ -352,7 +321,7 @@ public class GroupAggregation implements Serializable
 		
 		if (place == null ? _cast.place != place : !place.equals( _cast.place )) {
 			return false;
-		}
+		}*/
 		
 		return true;
 	}
@@ -364,12 +333,9 @@ public class GroupAggregation implements Serializable
 	 */
 	public int hashCode()
 	{
-		int _hashCode = 0;
-		if (id != null) {
-			_hashCode = 29 * _hashCode + id.hashCode();
-		}
+		int _hashCode = super.hashCode();
 		
-		if (parentColumnId != null) {
+		/*if (parentColumnId != null) {
 			_hashCode = 29 * _hashCode + parentColumnId.hashCode();
 		}
 		
@@ -407,7 +373,7 @@ public class GroupAggregation implements Serializable
 		
 		if (place != null) {
 			_hashCode = 29 * _hashCode + place.hashCode();
-		}
+		}*/
 		
 		return _hashCode;
 	}
@@ -430,8 +396,8 @@ public class GroupAggregation implements Serializable
 	public String toString()
 	{
 		StringBuffer ret = new StringBuffer();
-		ret.append( "com.sharifpro.eurb.dto.GroupAggregation: " );
-		ret.append( "id=" + id );
+		ret.append( "model.GroupAggregation: " );
+		ret.append( super.toString() );
 		ret.append( ", parentColumnId=" + parentColumnId );
 		ret.append( ", parentColumnDatasetId=" + parentColumnDatasetId );
 		ret.append( ", parentColumnDesignId=" + parentColumnDesignId );

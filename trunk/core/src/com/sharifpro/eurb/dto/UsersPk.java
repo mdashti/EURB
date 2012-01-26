@@ -5,7 +5,7 @@ import java.io.Serializable;
 /** 
  * This class represents the primary key of the users table.
  */
-public class UsersPk implements Serializable
+public class UsersPk extends PersistableObjectPk implements Serializable
 {
 	private static final long serialVersionUID = -2572395260394655158L;
 	protected String username;
@@ -32,6 +32,7 @@ public class UsersPk implements Serializable
 	 */
 	public UsersPk()
 	{
+		super();
 	}
 
 	/**
@@ -39,8 +40,9 @@ public class UsersPk implements Serializable
 	 * 
 	 * @param username
 	 */
-	public UsersPk(final String username)
+	public UsersPk(final String username, final Long id)
 	{
+		super(id);
 		this.username = username;
 	}
 
@@ -52,12 +54,8 @@ public class UsersPk implements Serializable
 	 */
 	public boolean equals(Object _other)
 	{
-		if (_other == null) {
+		if (!super.equals(_other)) {
 			return false;
-		}
-		
-		if (_other == this) {
-			return true;
 		}
 		
 		if (!(_other instanceof UsersPk)) {
@@ -79,7 +77,8 @@ public class UsersPk implements Serializable
 	 */
 	public int hashCode()
 	{
-		int _hashCode = 0;
+		int _hashCode = super.hashCode();
+		
 		if (username != null) {
 			_hashCode = 29 * _hashCode + username.hashCode();
 		}
@@ -95,8 +94,9 @@ public class UsersPk implements Serializable
 	public String toString()
 	{
 		StringBuffer ret = new StringBuffer();
-		ret.append( "com.sharifpro.eurb.dto.UsersPk: " );
-		ret.append( "username=" + username );
+		ret.append( "model.UsersPk: " );
+		ret.append( super.toString() );
+		ret.append( ", username=" + username );
 		return ret.toString();
 	}
 

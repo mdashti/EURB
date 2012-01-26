@@ -203,7 +203,7 @@ public class ReportExecutionHistoryDaoExample
 		buf.append( ", " );
 		buf.append( dto.getExecutionResult() );
 		buf.append( ", " );
-		buf.append( dto.isIsCurrent() );
+		buf.append( dto.isCurrent() );
 		buf.append( ", " );
 		buf.append( dto.getRecordStatus() );
 		buf.append( ", " );

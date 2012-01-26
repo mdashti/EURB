@@ -2,14 +2,9 @@ package com.sharifpro.eurb.dto;
 
 import java.io.Serializable;
 
-public class DbConfig implements Serializable
+public class DbConfig extends PersistableObject implements Serializable
 {
 	private static final long serialVersionUID = 4348520185323565243L;
-
-	/** 
-	 * This attribute maps to the column id in the db_config table.
-	 */
-	protected Long id;
 
 	/** 
 	 * This attribute maps to the column name in the db_config table.
@@ -47,26 +42,7 @@ public class DbConfig implements Serializable
 	 */
 	public DbConfig()
 	{
-	}
-
-	/**
-	 * Method 'getId'
-	 * 
-	 * @return Long
-	 */
-	public Long getId()
-	{
-		return id;
-	}
-
-	/**
-	 * Method 'setId'
-	 * 
-	 * @param id
-	 */
-	public void setId(Long id)
-	{
-		this.id = id;
+		super();
 	}
 
 	/**
@@ -197,22 +173,15 @@ public class DbConfig implements Serializable
 	 */
 	public boolean equals(Object _other)
 	{
-		if (_other == null) {
+		if (!super.equals(_other)) {
 			return false;
-		}
-		
-		if (_other == this) {
-			return true;
 		}
 		
 		if (!(_other instanceof DbConfig)) {
 			return false;
 		}
 		
-		final DbConfig _cast = (DbConfig) _other;
-		if (id == null ? _cast.id != id : !id.equals( _cast.id )) {
-			return false;
-		}
+		/*final DbConfig _cast = (DbConfig) _other;
 		
 		if (name == null ? _cast.name != name : !name.equals( _cast.name )) {
 			return false;
@@ -236,7 +205,7 @@ public class DbConfig implements Serializable
 		
 		if (testQuery == null ? _cast.testQuery != testQuery : !testQuery.equals( _cast.testQuery )) {
 			return false;
-		}
+		}*/
 		
 		return true;
 	}
@@ -248,12 +217,9 @@ public class DbConfig implements Serializable
 	 */
 	public int hashCode()
 	{
-		int _hashCode = 0;
-		if (id != null) {
-			_hashCode = 29 * _hashCode + id.hashCode();
-		}
+		int _hashCode = super.hashCode();
 		
-		if (name != null) {
+		/*if (name != null) {
 			_hashCode = 29 * _hashCode + name.hashCode();
 		}
 		
@@ -275,7 +241,7 @@ public class DbConfig implements Serializable
 		
 		if (testQuery != null) {
 			_hashCode = 29 * _hashCode + testQuery.hashCode();
-		}
+		}*/
 		
 		return _hashCode;
 	}
@@ -298,8 +264,8 @@ public class DbConfig implements Serializable
 	public String toString()
 	{
 		StringBuffer ret = new StringBuffer();
-		ret.append( "com.sharifpro.eurb.dto.DbConfig: " );
-		ret.append( "id=" + id );
+		ret.append( "model.DbConfig: " );
+		ret.append( super.toString() );
 		ret.append( ", name=" + name );
 		ret.append( ", driverClass=" + driverClass );
 		ret.append( ", driverUrl=" + driverUrl );

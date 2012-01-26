@@ -2,14 +2,9 @@ package com.sharifpro.eurb.dto;
 
 import java.io.Serializable;
 
-public class ReportDataset implements Serializable
+public class ReportDataset extends PersistableObject implements Serializable
 {
 	private static final long serialVersionUID = 7156092611112201177L;
-
-	/** 
-	 * This attribute maps to the column id in the report_dataset table.
-	 */
-	protected Long id;
 
 	/** 
 	 * This attribute maps to the column design_id in the report_dataset table.
@@ -52,26 +47,7 @@ public class ReportDataset implements Serializable
 	 */
 	public ReportDataset()
 	{
-	}
-
-	/**
-	 * Method 'getId'
-	 * 
-	 * @return Long
-	 */
-	public Long getId()
-	{
-		return id;
-	}
-
-	/**
-	 * Method 'setId'
-	 * 
-	 * @param id
-	 */
-	public void setId(Long id)
-	{
-		this.id = id;
+		super();
 	}
 
 	/**
@@ -222,12 +198,8 @@ public class ReportDataset implements Serializable
 	 */
 	public boolean equals(Object _other)
 	{
-		if (_other == null) {
+		if (!super.equals(_other)) {
 			return false;
-		}
-		
-		if (_other == this) {
-			return true;
 		}
 		
 		if (!(_other instanceof ReportDataset)) {
@@ -235,9 +207,6 @@ public class ReportDataset implements Serializable
 		}
 		
 		final ReportDataset _cast = (ReportDataset) _other;
-		if (id == null ? _cast.id != id : !id.equals( _cast.id )) {
-			return false;
-		}
 		
 		if (designId == null ? _cast.designId != designId : !designId.equals( _cast.designId )) {
 			return false;
@@ -247,7 +216,7 @@ public class ReportDataset implements Serializable
 			return false;
 		}
 		
-		if (tableMappingId == null ? _cast.tableMappingId != tableMappingId : !tableMappingId.equals( _cast.tableMappingId )) {
+		/*if (tableMappingId == null ? _cast.tableMappingId != tableMappingId : !tableMappingId.equals( _cast.tableMappingId )) {
 			return false;
 		}
 		
@@ -265,7 +234,7 @@ public class ReportDataset implements Serializable
 		
 		if (operator == null ? _cast.operator != operator : !operator.equals( _cast.operator )) {
 			return false;
-		}
+		}*/
 		
 		return true;
 	}
@@ -277,10 +246,7 @@ public class ReportDataset implements Serializable
 	 */
 	public int hashCode()
 	{
-		int _hashCode = 0;
-		if (id != null) {
-			_hashCode = 29 * _hashCode + id.hashCode();
-		}
+		int _hashCode = super.hashCode();
 		
 		if (designId != null) {
 			_hashCode = 29 * _hashCode + designId.hashCode();
@@ -290,7 +256,7 @@ public class ReportDataset implements Serializable
 			_hashCode = 29 * _hashCode + designVersionId.hashCode();
 		}
 		
-		if (tableMappingId != null) {
+		/*if (tableMappingId != null) {
 			_hashCode = 29 * _hashCode + tableMappingId.hashCode();
 		}
 		
@@ -308,7 +274,7 @@ public class ReportDataset implements Serializable
 		
 		if (operator != null) {
 			_hashCode = 29 * _hashCode + operator.hashCode();
-		}
+		}*/
 		
 		return _hashCode;
 	}
@@ -331,8 +297,8 @@ public class ReportDataset implements Serializable
 	public String toString()
 	{
 		StringBuffer ret = new StringBuffer();
-		ret.append( "com.sharifpro.eurb.dto.ReportDataset: " );
-		ret.append( "id=" + id );
+		ret.append( "model.ReportDataset: " );
+		ret.append( super.toString() );
 		ret.append( ", designId=" + designId );
 		ret.append( ", designVersionId=" + designVersionId );
 		ret.append( ", tableMappingId=" + tableMappingId );

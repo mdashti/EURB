@@ -2,14 +2,9 @@ package com.sharifpro.eurb.dto;
 
 import java.io.Serializable;
 
-public class GroupMembers implements Serializable
+public class GroupMembers extends PersistableObject implements Serializable
 {
 	private static final long serialVersionUID = -4745387844493492387L;
-
-	/** 
-	 * This attribute maps to the column id in the group_members table.
-	 */
-	protected Long id;
 
 	/** 
 	 * This attribute maps to the column username in the group_members table.
@@ -27,26 +22,7 @@ public class GroupMembers implements Serializable
 	 */
 	public GroupMembers()
 	{
-	}
-
-	/**
-	 * Method 'getId'
-	 * 
-	 * @return Long
-	 */
-	public Long getId()
-	{
-		return id;
-	}
-
-	/**
-	 * Method 'setId'
-	 * 
-	 * @param id
-	 */
-	public void setId(Long id)
-	{
-		this.id = id;
+		super();
 	}
 
 	/**
@@ -97,22 +73,15 @@ public class GroupMembers implements Serializable
 	 */
 	public boolean equals(Object _other)
 	{
-		if (_other == null) {
+		if (!super.equals(_other)) {
 			return false;
-		}
-		
-		if (_other == this) {
-			return true;
 		}
 		
 		if (!(_other instanceof GroupMembers)) {
 			return false;
 		}
 		
-		final GroupMembers _cast = (GroupMembers) _other;
-		if (id == null ? _cast.id != id : !id.equals( _cast.id )) {
-			return false;
-		}
+		/*final GroupMembers _cast = (GroupMembers) _other;
 		
 		if (username == null ? _cast.username != username : !username.equals( _cast.username )) {
 			return false;
@@ -120,7 +89,7 @@ public class GroupMembers implements Serializable
 		
 		if (groupId == null ? _cast.groupId != groupId : !groupId.equals( _cast.groupId )) {
 			return false;
-		}
+		}*/
 		
 		return true;
 	}
@@ -132,18 +101,15 @@ public class GroupMembers implements Serializable
 	 */
 	public int hashCode()
 	{
-		int _hashCode = 0;
-		if (id != null) {
-			_hashCode = 29 * _hashCode + id.hashCode();
-		}
+		int _hashCode = super.hashCode();
 		
-		if (username != null) {
+		/*if (username != null) {
 			_hashCode = 29 * _hashCode + username.hashCode();
 		}
 		
 		if (groupId != null) {
 			_hashCode = 29 * _hashCode + groupId.hashCode();
-		}
+		}*/
 		
 		return _hashCode;
 	}
@@ -166,8 +132,8 @@ public class GroupMembers implements Serializable
 	public String toString()
 	{
 		StringBuffer ret = new StringBuffer();
-		ret.append( "com.sharifpro.eurb.dto.GroupMembers: " );
-		ret.append( "id=" + id );
+		ret.append( "model.GroupMembers: " );
+		ret.append( super.toString() );
 		ret.append( ", username=" + username );
 		ret.append( ", groupId=" + groupId );
 		return ret.toString();

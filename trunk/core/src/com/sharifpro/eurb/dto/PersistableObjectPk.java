@@ -95,7 +95,7 @@ public class PersistableObjectPk implements Serializable
 	public String toString()
 	{
 //		StringBuffer ret = new StringBuffer();
-//		ret.append( "com.sharifpro.eurb.dto.PersistableObjectPk: " );
+//		ret.append( "model.PersistableObjectPk: " );
 //		ret.append( "id=" + id );
 //		return ret.toString();
 		return "id=" + id;

@@ -2,14 +2,9 @@ package com.sharifpro.eurb.dto;
 
 import java.io.Serializable;
 
-public class TableMapping implements Serializable
+public class TableMapping extends PersistableObject implements Serializable
 {
 	private static final long serialVersionUID = 8016638670642078075L;
-
-	/** 
-	 * This attribute maps to the column id in the table_mapping table.
-	 */
-	protected Long id;
 
 	/** 
 	 * This attribute maps to the column db_config_id in the table_mapping table.
@@ -47,26 +42,7 @@ public class TableMapping implements Serializable
 	 */
 	public TableMapping()
 	{
-	}
-
-	/**
-	 * Method 'getId'
-	 * 
-	 * @return Long
-	 */
-	public Long getId()
-	{
-		return id;
-	}
-
-	/**
-	 * Method 'setId'
-	 * 
-	 * @param id
-	 */
-	public void setId(Long id)
-	{
-		this.id = id;
+		super();
 	}
 
 	/**
@@ -197,22 +173,15 @@ public class TableMapping implements Serializable
 	 */
 	public boolean equals(Object _other)
 	{
-		if (_other == null) {
+		if (!super.equals(_other)) {
 			return false;
-		}
-		
-		if (_other == this) {
-			return true;
 		}
 		
 		if (!(_other instanceof TableMapping)) {
 			return false;
 		}
 		
-		final TableMapping _cast = (TableMapping) _other;
-		if (id == null ? _cast.id != id : !id.equals( _cast.id )) {
-			return false;
-		}
+		/*final TableMapping _cast = (TableMapping) _other;
 		
 		if (dbConfigId == null ? _cast.dbConfigId != dbConfigId : !dbConfigId.equals( _cast.dbConfigId )) {
 			return false;
@@ -236,7 +205,7 @@ public class TableMapping implements Serializable
 		
 		if (activeForUser != _cast.activeForUser) {
 			return false;
-		}
+		}*/
 		
 		return true;
 	}
@@ -248,12 +217,9 @@ public class TableMapping implements Serializable
 	 */
 	public int hashCode()
 	{
-		int _hashCode = 0;
-		if (id != null) {
-			_hashCode = 29 * _hashCode + id.hashCode();
-		}
+		int _hashCode = super.hashCode();
 		
-		if (dbConfigId != null) {
+		/*if (dbConfigId != null) {
 			_hashCode = 29 * _hashCode + dbConfigId.hashCode();
 		}
 		
@@ -270,7 +236,7 @@ public class TableMapping implements Serializable
 		}
 		
 		_hashCode = 29 * _hashCode + (activeForManager ? 1 : 0);
-		_hashCode = 29 * _hashCode + (activeForUser ? 1 : 0);
+		_hashCode = 29 * _hashCode + (activeForUser ? 1 : 0);*/
 		return _hashCode;
 	}
 
@@ -292,8 +258,8 @@ public class TableMapping implements Serializable
 	public String toString()
 	{
 		StringBuffer ret = new StringBuffer();
-		ret.append( "com.sharifpro.eurb.dto.TableMapping: " );
-		ret.append( "id=" + id );
+		ret.append( "model.TableMapping: " );
+		ret.append( super.toString() );
 		ret.append( ", dbConfigId=" + dbConfigId );
 		ret.append( ", tableName=" + tableName );
 		ret.append( ", mappedName=" + mappedName );

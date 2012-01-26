@@ -2,14 +2,9 @@ package com.sharifpro.eurb.dto;
 
 import java.io.Serializable;
 
-public class ReportColumn implements Serializable
+public class ReportColumn extends PersistableObject implements Serializable
 {
 	private static final long serialVersionUID = 608566522317972974L;
-
-	/** 
-	 * This attribute maps to the column id in the report_column table.
-	 */
-	protected Long id;
 
 	/** 
 	 * This attribute maps to the column dataset_id in the report_column table.
@@ -97,26 +92,7 @@ public class ReportColumn implements Serializable
 	 */
 	public ReportColumn()
 	{
-	}
-
-	/**
-	 * Method 'getId'
-	 * 
-	 * @return Long
-	 */
-	public Long getId()
-	{
-		return id;
-	}
-
-	/**
-	 * Method 'setId'
-	 * 
-	 * @param id
-	 */
-	public void setId(Long id)
-	{
-		this.id = id;
+		super();
 	}
 
 	/**
@@ -447,12 +423,8 @@ public class ReportColumn implements Serializable
 	 */
 	public boolean equals(Object _other)
 	{
-		if (_other == null) {
+		if (!super.equals(_other)) {
 			return false;
-		}
-		
-		if (_other == this) {
-			return true;
 		}
 		
 		if (!(_other instanceof ReportColumn)) {
@@ -460,9 +432,6 @@ public class ReportColumn implements Serializable
 		}
 		
 		final ReportColumn _cast = (ReportColumn) _other;
-		if (id == null ? _cast.id != id : !id.equals( _cast.id )) {
-			return false;
-		}
 		
 		if (datasetId == null ? _cast.datasetId != datasetId : !datasetId.equals( _cast.datasetId )) {
 			return false;
@@ -476,7 +445,7 @@ public class ReportColumn implements Serializable
 			return false;
 		}
 		
-		if (colType == null ? _cast.colType != colType : !colType.equals( _cast.colType )) {
+		/*if (colType == null ? _cast.colType != colType : !colType.equals( _cast.colType )) {
 			return false;
 		}
 		
@@ -526,7 +495,7 @@ public class ReportColumn implements Serializable
 		
 		if (formula == null ? _cast.formula != formula : !formula.equals( _cast.formula )) {
 			return false;
-		}
+		}*/
 		
 		return true;
 	}
@@ -538,10 +507,7 @@ public class ReportColumn implements Serializable
 	 */
 	public int hashCode()
 	{
-		int _hashCode = 0;
-		if (id != null) {
-			_hashCode = 29 * _hashCode + id.hashCode();
-		}
+		int _hashCode = super.hashCode();
 		
 		if (datasetId != null) {
 			_hashCode = 29 * _hashCode + datasetId.hashCode();
@@ -555,7 +521,7 @@ public class ReportColumn implements Serializable
 			_hashCode = 29 * _hashCode + designVersionId.hashCode();
 		}
 		
-		if (colType != null) {
+		/*if (colType != null) {
 			_hashCode = 29 * _hashCode + colType.hashCode();
 		}
 		
@@ -599,7 +565,7 @@ public class ReportColumn implements Serializable
 		_hashCode = 29 * _hashCode + (isCustom ? 1 : 0);
 		if (formula != null) {
 			_hashCode = 29 * _hashCode + formula.hashCode();
-		}
+		}*/
 		
 		return _hashCode;
 	}
@@ -622,8 +588,8 @@ public class ReportColumn implements Serializable
 	public String toString()
 	{
 		StringBuffer ret = new StringBuffer();
-		ret.append( "com.sharifpro.eurb.dto.ReportColumn: " );
-		ret.append( "id=" + id );
+		ret.append( "model.ReportColumn: " );
+		ret.append( super.toString() );
 		ret.append( ", datasetId=" + datasetId );
 		ret.append( ", designId=" + designId );
 		ret.append( ", designVersionId=" + designVersionId );

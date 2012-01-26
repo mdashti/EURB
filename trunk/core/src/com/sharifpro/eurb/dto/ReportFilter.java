@@ -2,14 +2,9 @@ package com.sharifpro.eurb.dto;
 
 import java.io.Serializable;
 
-public class ReportFilter implements Serializable
+public class ReportFilter extends PersistableObject implements Serializable
 {
 	private static final long serialVersionUID = -5852320298976109788L;
-
-	/** 
-	 * This attribute maps to the column id in the report_filter table.
-	 */
-	protected Long id;
 
 	/** 
 	 * This attribute maps to the column report_column_id in the report_filter table.
@@ -82,26 +77,7 @@ public class ReportFilter implements Serializable
 	 */
 	public ReportFilter()
 	{
-	}
-
-	/**
-	 * Method 'getId'
-	 * 
-	 * @return Long
-	 */
-	public Long getId()
-	{
-		return id;
-	}
-
-	/**
-	 * Method 'setId'
-	 * 
-	 * @param id
-	 */
-	public void setId(Long id)
-	{
-		this.id = id;
+		super();
 	}
 
 	/**
@@ -372,22 +348,15 @@ public class ReportFilter implements Serializable
 	 */
 	public boolean equals(Object _other)
 	{
-		if (_other == null) {
+		if (!super.equals(_other)) {
 			return false;
-		}
-		
-		if (_other == this) {
-			return true;
 		}
 		
 		if (!(_other instanceof ReportFilter)) {
 			return false;
 		}
 		
-		final ReportFilter _cast = (ReportFilter) _other;
-		if (id == null ? _cast.id != id : !id.equals( _cast.id )) {
-			return false;
-		}
+		/*final ReportFilter _cast = (ReportFilter) _other;
 		
 		if (reportColumnId == null ? _cast.reportColumnId != reportColumnId : !reportColumnId.equals( _cast.reportColumnId )) {
 			return false;
@@ -439,7 +408,7 @@ public class ReportFilter implements Serializable
 		
 		if (operand1ColumnDesignId == null ? _cast.operand1ColumnDesignId != operand1ColumnDesignId : !operand1ColumnDesignId.equals( _cast.operand1ColumnDesignId )) {
 			return false;
-		}
+		}*/
 		
 		return true;
 	}
@@ -451,12 +420,9 @@ public class ReportFilter implements Serializable
 	 */
 	public int hashCode()
 	{
-		int _hashCode = 0;
-		if (id != null) {
-			_hashCode = 29 * _hashCode + id.hashCode();
-		}
+		int _hashCode = super.hashCode();
 		
-		if (reportColumnId != null) {
+		/*if (reportColumnId != null) {
 			_hashCode = 29 * _hashCode + reportColumnId.hashCode();
 		}
 		
@@ -506,7 +472,7 @@ public class ReportFilter implements Serializable
 		
 		if (operand1ColumnDesignId != null) {
 			_hashCode = 29 * _hashCode + operand1ColumnDesignId.hashCode();
-		}
+		}*/
 		
 		return _hashCode;
 	}
@@ -529,8 +495,8 @@ public class ReportFilter implements Serializable
 	public String toString()
 	{
 		StringBuffer ret = new StringBuffer();
-		ret.append( "com.sharifpro.eurb.dto.ReportFilter: " );
-		ret.append( "id=" + id );
+		ret.append( "model.ReportFilter: " );
+		ret.append( super.toString() );
 		ret.append( ", reportColumnId=" + reportColumnId );
 		ret.append( ", reportColumnDatasetId=" + reportColumnDatasetId );
 		ret.append( ", reportColumnDesignId=" + reportColumnDesignId );

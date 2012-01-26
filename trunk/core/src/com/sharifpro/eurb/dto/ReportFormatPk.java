@@ -5,13 +5,11 @@ import java.io.Serializable;
 /** 
  * This class represents the primary key of the report_format table.
  */
-public class ReportFormatPk implements Serializable
+public class ReportFormatPk extends PersistableObjectPk implements Serializable
 {
 	private static final long serialVersionUID = 1457152642676471683L;
 
 	protected Long versionId;
-
-	protected Long id;
 
 	/** 
 	 * Sets the value of versionId
@@ -29,28 +27,13 @@ public class ReportFormatPk implements Serializable
 		return versionId;
 	}
 
-	/** 
-	 * Sets the value of id
-	 */
-	public void setId(Long id)
-	{
-		this.id = id;
-	}
-
-	/** 
-	 * Gets the value of id
-	 */
-	public Long getId()
-	{
-		return id;
-	}
-
 	/**
 	 * Method 'ReportFormatPk'
 	 * 
 	 */
 	public ReportFormatPk()
 	{
+		super();
 	}
 
 	/**
@@ -61,8 +44,8 @@ public class ReportFormatPk implements Serializable
 	 */
 	public ReportFormatPk(final Long versionId, final Long id)
 	{
+		super(id);
 		this.versionId = versionId;
-		this.id = id;
 	}
 
 	/**
@@ -73,12 +56,8 @@ public class ReportFormatPk implements Serializable
 	 */
 	public boolean equals(Object _other)
 	{
-		if (_other == null) {
+		if (!super.equals(_other)) {
 			return false;
-		}
-		
-		if (_other == this) {
-			return true;
 		}
 		
 		if (!(_other instanceof ReportFormatPk)) {
@@ -87,10 +66,6 @@ public class ReportFormatPk implements Serializable
 		
 		final ReportFormatPk _cast = (ReportFormatPk) _other;
 		if (versionId == null ? _cast.versionId != versionId : !versionId.equals( _cast.versionId )) {
-			return false;
-		}
-		
-		if (id == null ? _cast.id != id : !id.equals( _cast.id )) {
 			return false;
 		}
 		
@@ -104,13 +79,9 @@ public class ReportFormatPk implements Serializable
 	 */
 	public int hashCode()
 	{
-		int _hashCode = 0;
+		int _hashCode = super.hashCode();
 		if (versionId != null) {
 			_hashCode = 29 * _hashCode + versionId.hashCode();
-		}
-		
-		if (id != null) {
-			_hashCode = 29 * _hashCode + id.hashCode();
 		}
 		
 		return _hashCode;
@@ -124,9 +95,9 @@ public class ReportFormatPk implements Serializable
 	public String toString()
 	{
 		StringBuffer ret = new StringBuffer();
-		ret.append( "com.sharifpro.eurb.dto.ReportFormatPk: " );
-		ret.append( "versionId=" + versionId );
-		ret.append( ", id=" + id );
+		ret.append( "model.ReportFormatPk: " );
+		ret.append( super.toString() );
+		ret.append( ", versionId=" + versionId );
 		return ret.toString();
 	}
 

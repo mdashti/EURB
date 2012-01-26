@@ -2,7 +2,7 @@ package com.sharifpro.eurb.dto;
 
 import java.io.Serializable;
 
-public class GroupAuthorities implements Serializable
+public class GroupAuthorities extends PersistableObject implements Serializable
 {
 	private static final long serialVersionUID = -744855063749823823L;
 
@@ -22,6 +22,7 @@ public class GroupAuthorities implements Serializable
 	 */
 	public GroupAuthorities()
 	{
+		super();
 	}
 
 	/**
@@ -123,7 +124,7 @@ public class GroupAuthorities implements Serializable
 	public String toString()
 	{
 		StringBuffer ret = new StringBuffer();
-		ret.append( "com.sharifpro.eurb.dto.GroupAuthorities: " );
+		ret.append( "model.GroupAuthorities: " );
 		ret.append( "groupId=" + groupId );
 		ret.append( ", authority=" + authority );
 		return ret.toString();

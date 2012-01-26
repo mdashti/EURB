@@ -2,14 +2,9 @@ package com.sharifpro.eurb.dto;
 
 import java.io.Serializable;
 
-public class Users implements Serializable
+public class Users extends PersistableObject implements Serializable
 {
 	private static final long serialVersionUID = -4846712694892480891L;
-
-	/** 
-	 * This attribute maps to the column id in the users table.
-	 */
-	protected Long id;
 
 	/** 
 	 * This attribute maps to the column username in the users table.
@@ -32,26 +27,7 @@ public class Users implements Serializable
 	 */
 	public Users()
 	{
-	}
-
-	/**
-	 * Method 'getId'
-	 * 
-	 * @return Long
-	 */
-	public Long getId()
-	{
-		return id;
-	}
-
-	/**
-	 * Method 'setId'
-	 * 
-	 * @param id
-	 */
-	public void setId(Long id)
-	{
-		this.id = id;
+		super();
 	}
 
 	/**
@@ -122,12 +98,8 @@ public class Users implements Serializable
 	 */
 	public boolean equals(Object _other)
 	{
-		if (_other == null) {
+		if (!super.equals(_other)) {
 			return false;
-		}
-		
-		if (_other == this) {
-			return true;
 		}
 		
 		if (!(_other instanceof Users)) {
@@ -135,21 +107,18 @@ public class Users implements Serializable
 		}
 		
 		final Users _cast = (Users) _other;
-		if (id == null ? _cast.id != id : !id.equals( _cast.id )) {
-			return false;
-		}
 		
 		if (username == null ? _cast.username != username : !username.equals( _cast.username )) {
 			return false;
 		}
 		
-		if (password == null ? _cast.password != password : !password.equals( _cast.password )) {
+		/*if (password == null ? _cast.password != password : !password.equals( _cast.password )) {
 			return false;
 		}
 		
 		if (enabled != _cast.enabled) {
 			return false;
-		}
+		}*/
 		
 		return true;
 	}
@@ -161,20 +130,17 @@ public class Users implements Serializable
 	 */
 	public int hashCode()
 	{
-		int _hashCode = 0;
-		if (id != null) {
-			_hashCode = 29 * _hashCode + id.hashCode();
-		}
+		int _hashCode = super.hashCode();
 		
 		if (username != null) {
 			_hashCode = 29 * _hashCode + username.hashCode();
 		}
 		
-		if (password != null) {
+		/*if (password != null) {
 			_hashCode = 29 * _hashCode + password.hashCode();
 		}
 		
-		_hashCode = 29 * _hashCode + (enabled ? 1 : 0);
+		_hashCode = 29 * _hashCode + (enabled ? 1 : 0);*/
 		return _hashCode;
 	}
 
@@ -185,7 +151,7 @@ public class Users implements Serializable
 	 */
 	public UsersPk createPk()
 	{
-		return new UsersPk(username);
+		return new UsersPk(username, id);
 	}
 
 	/**
@@ -196,8 +162,8 @@ public class Users implements Serializable
 	public String toString()
 	{
 		StringBuffer ret = new StringBuffer();
-		ret.append( "com.sharifpro.eurb.dto.Users: " );
-		ret.append( "id=" + id );
+		ret.append( "model.Users: " );
+		ret.append( super.toString() );
 		ret.append( ", username=" + username );
 		ret.append( ", password=" + password );
 		ret.append( ", enabled=" + enabled );

@@ -5,7 +5,7 @@ import java.io.Serializable;
 /** 
  * This class represents the primary key of the authorities table.
  */
-public class AuthoritiesPk implements Serializable
+public class AuthoritiesPk extends PersistableObjectPk implements Serializable
 {
 	private static final long serialVersionUID = -3818159220097967583L;
 
@@ -124,7 +124,7 @@ public class AuthoritiesPk implements Serializable
 	public String toString()
 	{
 		StringBuffer ret = new StringBuffer();
-		ret.append( "com.sharifpro.eurb.dto.AuthoritiesPk: " );
+		ret.append( "model.AuthoritiesPk: " );
 		ret.append( "username=" + username );
 		ret.append( ", authority=" + authority );
 		return ret.toString();

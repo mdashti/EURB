@@ -2,14 +2,9 @@ package com.sharifpro.eurb.dto;
 
 import java.io.Serializable;
 
-public class ReportCategory implements Serializable
+public class ReportCategory extends PersistableObject implements Serializable
 {
 	private static final long serialVersionUID = -6872414545571485755L;
-
-	/** 
-	 * This attribute maps to the column id in the report_category table.
-	 */
-	protected Long id;
 
 	/** 
 	 * This attribute maps to the column name in the report_category table.
@@ -27,26 +22,7 @@ public class ReportCategory implements Serializable
 	 */
 	public ReportCategory()
 	{
-	}
-
-	/**
-	 * Method 'getId'
-	 * 
-	 * @return Long
-	 */
-	public Long getId()
-	{
-		return id;
-	}
-
-	/**
-	 * Method 'setId'
-	 * 
-	 * @param id
-	 */
-	public void setId(Long id)
-	{
-		this.id = id;
+		super();
 	}
 
 	/**
@@ -97,22 +73,15 @@ public class ReportCategory implements Serializable
 	 */
 	public boolean equals(Object _other)
 	{
-		if (_other == null) {
+		if (!super.equals(_other)) {
 			return false;
-		}
-		
-		if (_other == this) {
-			return true;
 		}
 		
 		if (!(_other instanceof ReportCategory)) {
 			return false;
 		}
 		
-		final ReportCategory _cast = (ReportCategory) _other;
-		if (id == null ? _cast.id != id : !id.equals( _cast.id )) {
-			return false;
-		}
+		/*final ReportCategory _cast = (ReportCategory) _other;
 		
 		if (name == null ? _cast.name != name : !name.equals( _cast.name )) {
 			return false;
@@ -120,7 +89,7 @@ public class ReportCategory implements Serializable
 		
 		if (description == null ? _cast.description != description : !description.equals( _cast.description )) {
 			return false;
-		}
+		}*/
 		
 		return true;
 	}
@@ -132,18 +101,15 @@ public class ReportCategory implements Serializable
 	 */
 	public int hashCode()
 	{
-		int _hashCode = 0;
-		if (id != null) {
-			_hashCode = 29 * _hashCode + id.hashCode();
-		}
+		int _hashCode = super.hashCode();
 		
-		if (name != null) {
+		/*if (name != null) {
 			_hashCode = 29 * _hashCode + name.hashCode();
 		}
 		
 		if (description != null) {
 			_hashCode = 29 * _hashCode + description.hashCode();
-		}
+		}*/
 		
 		return _hashCode;
 	}
@@ -166,8 +132,8 @@ public class ReportCategory implements Serializable
 	public String toString()
 	{
 		StringBuffer ret = new StringBuffer();
-		ret.append( "com.sharifpro.eurb.dto.ReportCategory: " );
-		ret.append( "id=" + id );
+		ret.append( "model.ReportCategory: " );
+		ret.append( super.toString() );
 		ret.append( ", name=" + name );
 		ret.append( ", description=" + description );
 		return ret.toString();

@@ -5,31 +5,13 @@ import java.io.Serializable;
 /** 
  * This class represents the primary key of the report_dataset table.
  */
-public class ReportDatasetPk implements Serializable
+public class ReportDatasetPk extends PersistableObjectPk implements Serializable
 {
 	private static final long serialVersionUID = -7675029193501887771L;
-
-	protected Long id;
 
 	protected Long designId;
 
 	protected Long designVersionId;
-
-	/** 
-	 * Sets the value of id
-	 */
-	public void setId(Long id)
-	{
-		this.id = id;
-	}
-
-	/** 
-	 * Gets the value of id
-	 */
-	public Long getId()
-	{
-		return id;
-	}
 
 	/** 
 	 * Sets the value of designId
@@ -69,6 +51,7 @@ public class ReportDatasetPk implements Serializable
 	 */
 	public ReportDatasetPk()
 	{
+		super();
 	}
 
 	/**
@@ -80,7 +63,7 @@ public class ReportDatasetPk implements Serializable
 	 */
 	public ReportDatasetPk(final Long id, final Long designId, final Long designVersionId)
 	{
-		this.id = id;
+		super(id);
 		this.designId = designId;
 		this.designVersionId = designVersionId;
 	}
@@ -93,12 +76,8 @@ public class ReportDatasetPk implements Serializable
 	 */
 	public boolean equals(Object _other)
 	{
-		if (_other == null) {
+		if (!super.equals(_other)) {
 			return false;
-		}
-		
-		if (_other == this) {
-			return true;
 		}
 		
 		if (!(_other instanceof ReportDatasetPk)) {
@@ -106,9 +85,6 @@ public class ReportDatasetPk implements Serializable
 		}
 		
 		final ReportDatasetPk _cast = (ReportDatasetPk) _other;
-		if (id == null ? _cast.id != id : !id.equals( _cast.id )) {
-			return false;
-		}
 		
 		if (designId == null ? _cast.designId != designId : !designId.equals( _cast.designId )) {
 			return false;
@@ -128,10 +104,7 @@ public class ReportDatasetPk implements Serializable
 	 */
 	public int hashCode()
 	{
-		int _hashCode = 0;
-		if (id != null) {
-			_hashCode = 29 * _hashCode + id.hashCode();
-		}
+		int _hashCode = super.hashCode();
 		
 		if (designId != null) {
 			_hashCode = 29 * _hashCode + designId.hashCode();
@@ -152,8 +125,8 @@ public class ReportDatasetPk implements Serializable
 	public String toString()
 	{
 		StringBuffer ret = new StringBuffer();
-		ret.append( "com.sharifpro.eurb.dto.ReportDatasetPk: " );
-		ret.append( "id=" + id );
+		ret.append( "model.ReportDatasetPk: " );
+		ret.append( super.toString() );
 		ret.append( ", designId=" + designId );
 		ret.append( ", designVersionId=" + designVersionId );
 		return ret.toString();

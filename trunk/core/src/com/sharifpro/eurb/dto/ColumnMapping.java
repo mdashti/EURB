@@ -62,6 +62,7 @@ public class ColumnMapping extends PersistableObject implements Serializable
 	 */
 	public ColumnMapping()
 	{
+		super();
 	}
 
 
@@ -273,22 +274,15 @@ public class ColumnMapping extends PersistableObject implements Serializable
 	 */
 	public boolean equals(Object _other)
 	{
-		if (_other == null) {
+		if(!super.equals(_other)){
 			return false;
-		}
-		
-		if (_other == this) {
-			return true;
 		}
 		
 		if (!(_other instanceof ColumnMapping)) {
 			return false;
 		}
 		
-		final ColumnMapping _cast = (ColumnMapping) _other;
-		if (id == null ? _cast.id != id : !id.equals( _cast.id )) {
-			return false;
-		}
+		/*final ColumnMapping _cast = (ColumnMapping) _other;
 		
 		if (tableMappingId == null ? _cast.tableMappingId != tableMappingId : !tableMappingId.equals( _cast.tableMappingId )) {
 			return false;
@@ -328,7 +322,7 @@ public class ColumnMapping extends PersistableObject implements Serializable
 		
 		if (referencedValueCol == null ? _cast.referencedValueCol != referencedValueCol : !referencedValueCol.equals( _cast.referencedValueCol )) {
 			return false;
-		}
+		}*/
 		
 		return true;
 	}
@@ -340,12 +334,9 @@ public class ColumnMapping extends PersistableObject implements Serializable
 	 */
 	public int hashCode()
 	{
-		int _hashCode = 0;
-		if (id != null) {
-			_hashCode = 29 * _hashCode + id.hashCode();
-		}
+		int _hashCode = super.hashCode();
 		
-		if (tableMappingId != null) {
+		/*if (tableMappingId != null) {
 			_hashCode = 29 * _hashCode + tableMappingId.hashCode();
 		}
 		
@@ -383,7 +374,7 @@ public class ColumnMapping extends PersistableObject implements Serializable
 		
 		if (referencedValueCol != null) {
 			_hashCode = 29 * _hashCode + referencedValueCol.hashCode();
-		}
+		}*/
 		
 		return _hashCode;
 	}
@@ -406,8 +397,8 @@ public class ColumnMapping extends PersistableObject implements Serializable
 	public String toString()
 	{
 		StringBuffer ret = new StringBuffer();
-		ret.append( "com.sharifpro.eurb.dto.ColumnMapping: " );
-		ret.append( "id=" + id );
+		ret.append( "model.ColumnMapping: " );
+		ret.append( super.toString() );
 		ret.append( ", tableMappingId=" + tableMappingId );
 		ret.append( ", columnName=" + columnName );
 		ret.append( ", mappedName=" + mappedName );

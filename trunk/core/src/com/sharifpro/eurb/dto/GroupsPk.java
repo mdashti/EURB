@@ -5,26 +5,9 @@ import java.io.Serializable;
 /** 
  * This class represents the primary key of the groups table.
  */
-public class GroupsPk implements Serializable
+public class GroupsPk extends PersistableObjectPk implements Serializable
 {
 	private static final long serialVersionUID = 444358832111560554L;
-	protected Long id;
-
-	/** 
-	 * Sets the value of id
-	 */
-	public void setId(Long id)
-	{
-		this.id = id;
-	}
-
-	/** 
-	 * Gets the value of id
-	 */
-	public Long getId()
-	{
-		return id;
-	}
 
 	/**
 	 * Method 'GroupsPk'
@@ -32,6 +15,7 @@ public class GroupsPk implements Serializable
 	 */
 	public GroupsPk()
 	{
+		super();
 	}
 
 	/**
@@ -41,7 +25,7 @@ public class GroupsPk implements Serializable
 	 */
 	public GroupsPk(final Long id)
 	{
-		this.id = id;
+		super(id);
 	}
 
 	/**
@@ -52,39 +36,15 @@ public class GroupsPk implements Serializable
 	 */
 	public boolean equals(Object _other)
 	{
-		if (_other == null) {
+		if (!super.equals(_other)) {
 			return false;
-		}
-		
-		if (_other == this) {
-			return true;
 		}
 		
 		if (!(_other instanceof GroupsPk)) {
 			return false;
 		}
 		
-		final GroupsPk _cast = (GroupsPk) _other;
-		if (id == null ? _cast.id != id : !id.equals( _cast.id )) {
-			return false;
-		}
-		
 		return true;
-	}
-
-	/**
-	 * Method 'hashCode'
-	 * 
-	 * @return int
-	 */
-	public int hashCode()
-	{
-		int _hashCode = 0;
-		if (id != null) {
-			_hashCode = 29 * _hashCode + id.hashCode();
-		}
-		
-		return _hashCode;
 	}
 
 	/**
@@ -95,8 +55,8 @@ public class GroupsPk implements Serializable
 	public String toString()
 	{
 		StringBuffer ret = new StringBuffer();
-		ret.append( "com.sharifpro.eurb.dto.GroupsPk: " );
-		ret.append( "id=" + id );
+		ret.append( "model.GroupsPk: " );
+		ret.append( super.toString() );
 		return ret.toString();
 	}
 
