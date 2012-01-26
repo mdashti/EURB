@@ -34,7 +34,7 @@ DROP TABLE IF EXISTS `eurb`.`persistable_object` ;
 
 CREATE  TABLE IF NOT EXISTS `eurb`.`persistable_object` (
   `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT ,
-  `type` INT UNSIGNED NOT NULL ,
+  `obj_type` INT UNSIGNED NOT NULL ,
   `creator` VARCHAR(50) NOT NULL ,
   `create_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
   `modifier` VARCHAR(50) NULL ,
@@ -88,7 +88,7 @@ CREATE  TABLE IF NOT EXISTS `eurb`.`table_mapping` (
   `db_config_id` BIGINT UNSIGNED NOT NULL ,
   `table_name` VARCHAR(255) NOT NULL ,
   `mapped_name` VARCHAR(255) NOT NULL ,
-  `type` INT NOT NULL DEFAULT 0 ,
+  `mapped_type` INT NOT NULL DEFAULT 0 ,
   `active_for_manager` TINYINT(1) NOT NULL DEFAULT 1 ,
   `active_for_user` TINYINT(1) NOT NULL DEFAULT 0 ,
   PRIMARY KEY (`id`) ,
@@ -117,7 +117,7 @@ CREATE  TABLE IF NOT EXISTS `eurb`.`column_mapping` (
   `table_mapping_id` BIGINT UNSIGNED NOT NULL ,
   `column_name` VARCHAR(255) NOT NULL ,
   `mapped_name` VARCHAR(255) NOT NULL ,
-  `type` VARCHAR(45) NOT NULL ,
+  `col_type` VARCHAR(45) NOT NULL ,
   `format_pattern` VARCHAR(255) NULL ,
   `static_mapping` LONGTEXT NULL ,
   `referenced_table` VARCHAR(255) NULL ,
@@ -361,7 +361,7 @@ CREATE  TABLE IF NOT EXISTS `eurb`.`report_dataset` (
   `table_mapping_id` BIGINT UNSIGNED NULL ,
   `base_report_id` BIGINT UNSIGNED NULL ,
   `base_report_version_id` BIGINT UNSIGNED NULL ,
-  `order` INT UNSIGNED NOT NULL ,
+  `rpt_order` INT UNSIGNED NOT NULL ,
   `operator` INT UNSIGNED NOT NULL DEFAULT 0 ,
   PRIMARY KEY (`id`, `design_id`, `design_version_id`) ,
   INDEX `fk_report_dataset_report_design_base_rpt` (`base_report_id` ASC, `base_report_version_id` ASC) ,
@@ -400,10 +400,10 @@ CREATE  TABLE IF NOT EXISTS `eurb`.`report_column` (
   `dataset_id` BIGINT UNSIGNED NOT NULL ,
   `design_id` BIGINT UNSIGNED NOT NULL ,
   `design_version_id` BIGINT UNSIGNED NOT NULL ,
-  `type` INT UNSIGNED NOT NULL ,
+  `rpt_type` INT UNSIGNED NOT NULL ,
   `column_mapping_id` BIGINT UNSIGNED NULL ,
   `report_column_id` BIGINT UNSIGNED NULL ,
-  `order` INT NOT NULL DEFAULT 0 ,
+  `rpt_order` INT NOT NULL DEFAULT 0 ,
   `sort_order` INT NOT NULL DEFAULT 0 ,
   `sort_type` TINYINT(1) NOT NULL DEFAULT 0 ,
   `group_level` INT NULL ,
@@ -494,7 +494,7 @@ CREATE  TABLE IF NOT EXISTS `eurb`.`report_filter` (
   `suffix` VARCHAR(45) NULL ,
   `operand1` VARCHAR(255) NULL ,
   `operand2` VARCHAR(255) NULL ,
-  `type` INT NULL ,
+  `filter_type` INT NULL ,
   `operand1_column_id` BIGINT UNSIGNED NULL ,
   `operand1_column_dataset_id` BIGINT UNSIGNED NULL ,
   `operand1_column_design_id` BIGINT UNSIGNED NULL ,
@@ -562,8 +562,8 @@ CREATE  TABLE IF NOT EXISTS `eurb`.`report_format` (
   `report_design_id` BIGINT UNSIGNED NULL ,
   `report_design_version_id` BIGINT UNSIGNED NULL ,
   PRIMARY KEY (`version_id`, `id`) ,
-  INDEX `fk_report_format_report_design1` (`report_design_id` ASC, `report_design_version_id` ASC) ,
-  INDEX `fk_report_format_persistable_object1` (`id` ASC) ,
+  INDEX `fk_report_format_report_design` (`report_design_id` ASC, `report_design_version_id` ASC) ,
+  INDEX `fk_report_format_persistable_object` (`id` ASC) ,
   CONSTRAINT `fk_report_format_report_design1`
     FOREIGN KEY (`report_design_id` , `report_design_version_id` )
     REFERENCES `eurb`.`report_design` (`id` , `version_id` )
@@ -600,10 +600,10 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `eurb`;
-INSERT INTO `eurb`.`persistable_object` (`id`, `type`, `creator`, `create_date`, `modifier`, `modify_date`) VALUES (100, 100, 'dashti', NULL, NULL, NULL);
-INSERT INTO `eurb`.`persistable_object` (`id`, `type`, `creator`, `create_date`, `modifier`, `modify_date`) VALUES (101, 100, 'dashti', NULL, NULL, NULL);
-INSERT INTO `eurb`.`persistable_object` (`id`, `type`, `creator`, `create_date`, `modifier`, `modify_date`) VALUES (102, 100, 'dashti', NULL, NULL, NULL);
-INSERT INTO `eurb`.`persistable_object` (`id`, `type`, `creator`, `create_date`, `modifier`, `modify_date`) VALUES (103, 100, 'dashti', NULL, NULL, NULL);
+INSERT INTO `eurb`.`persistable_object` (`id`, `obj_type`, `creator`, `create_date`, `modifier`, `modify_date`) VALUES (100, 100, 'dashti', NULL, NULL, NULL);
+INSERT INTO `eurb`.`persistable_object` (`id`, `obj_type`, `creator`, `create_date`, `modifier`, `modify_date`) VALUES (101, 100, 'dashti', NULL, NULL, NULL);
+INSERT INTO `eurb`.`persistable_object` (`id`, `obj_type`, `creator`, `create_date`, `modifier`, `modify_date`) VALUES (102, 100, 'dashti', NULL, NULL, NULL);
+INSERT INTO `eurb`.`persistable_object` (`id`, `obj_type`, `creator`, `create_date`, `modifier`, `modify_date`) VALUES (103, 100, 'dashti', NULL, NULL, NULL);
 
 COMMIT;
 SET FOREIGN_KEY_CHECKS = 1;
