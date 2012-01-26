@@ -24,6 +24,26 @@
 		<property name="password" value="mohamad" />
 	</bean>
 	
+	<bean id="userDetailsService" class="org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl">
+		<property name="dataSource" ref="EURBDataSource"/>
+		<property name="enableGroups" value="true"/>
+		<property name="enableAuthorities" value="false"/>
+	</bean>
+	
+	<bean class="org.springframework.security.authentication.dao.ReflectionSaltSource" id="saltSource">
+		<property name="userPropertyToUse" value="username"/>
+	</bean>
+
+	<bean class="org.springframework.security.authentication.encoding.ShaPasswordEncoder" id="passwordEncoder"/>
+             
+	<security:authentication-manager alias="authManager">
+		<security:authentication-provider user-service-ref="userDetailsService">
+			<security:password-encoder ref="passwordEncoder"> 
+				<security:salt-source ref="saltSource"/>
+			</security:password-encoder>
+		</security:authentication-provider>
+	</security:authentication-manager>
+	
 	<tx:annotation-driven transaction-manager="txManager" />
 	
 	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager" >
@@ -131,7 +151,7 @@
 	<bean id="TableMappingDao" class="com.sharifpro.eurb.management.mapping.dao.impl.TableMappingDaoImpl" scope="singleton">
 		<property name="dataSource" ref="EURBDataSource" />
 	</bean>
-	<bean id="UsersDao" class="com.sharifpro.eurb.management.security.dao.impl.UsersDaoImpl" scope="singleton">
+	<bean id="UsersDao" class="com.sharifpro.eurb.management.security.dao.impl.UserDaoImpl" scope="singleton">
 		<property name="dataSource" ref="EURBDataSource" />
 	</bean>
 </beans>

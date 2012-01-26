@@ -16,7 +16,7 @@ import com.sharifpro.eurb.management.security.dao.AuthoritiesDao;
 import com.sharifpro.eurb.management.security.dao.GroupAuthoritiesDao;
 import com.sharifpro.eurb.management.security.dao.GroupMembersDao;
 import com.sharifpro.eurb.management.security.dao.GroupsDao;
-import com.sharifpro.eurb.management.security.dao.UsersDao;
+import com.sharifpro.eurb.management.security.dao.UserDao;
 import com.sharifpro.util.SharifProApplicationContext;
 
 public class DaoFactory
@@ -186,9 +186,9 @@ public class DaoFactory
 	 * 
 	 * @return UsersDao
 	 */
-	public static UsersDao createUsersDao()
+	public static UserDao createUsersDao()
 	{
-		return (UsersDao) SharifProApplicationContext.getApplicationContext().getBean( "UsersDao" );
+		return (UserDao) SharifProApplicationContext.getApplicationContext().getBean( "UsersDao" );
 	}
 
 }

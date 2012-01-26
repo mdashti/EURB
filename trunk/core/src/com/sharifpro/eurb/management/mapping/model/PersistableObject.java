@@ -3,6 +3,8 @@ package com.sharifpro.eurb.management.mapping.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.sharifpro.eurb.management.security.model.User;
+
 public class PersistableObject implements Serializable
 {
 	private static final long serialVersionUID = -8510014065738364759L;
@@ -72,7 +74,11 @@ public class PersistableObject implements Serializable
 	 */
 	public Integer getObjectType()
 	{
-		return objectType;
+		if(this instanceof User) {
+			return 100;
+		} else {
+			return -1;
+		}
 	}
 
 	/**
@@ -266,7 +272,7 @@ public class PersistableObject implements Serializable
 	public String toString()
 	{
 		StringBuffer ret = new StringBuffer();
-		ret.append( "model.PersistableObject: " );
+		//ret.append( "model.PersistableObject: " );
 		ret.append( "id=" + id );
 		ret.append( ", type=" + objectType );
 		ret.append( ", creator=" + creator );

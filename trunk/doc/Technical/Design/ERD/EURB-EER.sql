@@ -589,10 +589,7 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 SET FOREIGN_KEY_CHECKS = 0;
 START TRANSACTION;
 USE `eurb`;
-INSERT INTO `eurb`.`users` (`id`, `username`, `password`, `enabled`) VALUES (100, 'dashti', 'mohamad', 1);
-INSERT INTO `eurb`.`users` (`id`, `username`, `password`, `enabled`) VALUES (101, 'sadeghi', 'alireza', 1);
-INSERT INTO `eurb`.`users` (`id`, `username`, `password`, `enabled`) VALUES (102, 'keshavarz', 'behrouz', 1);
-INSERT INTO `eurb`.`users` (`id`, `username`, `password`, `enabled`) VALUES (103, 'farahani', 'farahani', 1);
+INSERT INTO `eurb`.`users` (`id`, `username`, `password`, `enabled`) VALUES (100, 'admin', 'a0a287a0fcdad714fa244b1f2071c4337cffb888', 1); -- admin/mohamad
 
 COMMIT;
 
@@ -601,10 +598,51 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `eurb`;
-INSERT INTO `eurb`.`persistable_object` (`id`, `obj_type`, `creator`, `create_date`, `modifier`, `modify_date`) VALUES (100, 100, 'dashti', NULL, NULL, NULL);
-INSERT INTO `eurb`.`persistable_object` (`id`, `obj_type`, `creator`, `create_date`, `modifier`, `modify_date`) VALUES (101, 100, 'dashti', NULL, NULL, NULL);
-INSERT INTO `eurb`.`persistable_object` (`id`, `obj_type`, `creator`, `create_date`, `modifier`, `modify_date`) VALUES (102, 100, 'dashti', NULL, NULL, NULL);
-INSERT INTO `eurb`.`persistable_object` (`id`, `obj_type`, `creator`, `create_date`, `modifier`, `modify_date`) VALUES (103, 100, 'dashti', NULL, NULL, NULL);
+INSERT INTO `eurb`.`persistable_object` (`id`, `obj_type`, `creator`, `create_date`, `modifier`, `modify_date`) VALUES (100, 100, 'admin', NULL, NULL, NULL);
+INSERT INTO `eurb`.`persistable_object` (`id`, `obj_type`, `creator`, `create_date`, `modifier`, `modify_date`) VALUES (200, 200, 'admin', NULL, NULL, NULL);
+INSERT INTO `eurb`.`persistable_object` (`id`, `obj_type`, `creator`, `create_date`, `modifier`, `modify_date`) VALUES (201, 200, 'admin', NULL, NULL, NULL);
+INSERT INTO `eurb`.`persistable_object` (`id`, `obj_type`, `creator`, `create_date`, `modifier`, `modify_date`) VALUES (202, 200, 'admin', NULL, NULL, NULL);
 
 COMMIT;
 SET FOREIGN_KEY_CHECKS = 1;
+-- -----------------------------------------------------
+-- Data for table `eurb`.`authorities`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `eurb`;
+INSERT INTO `eurb`.`authorities` (`username`, `authority`) VALUES ('admin', 'REPORT_LIST');
+
+COMMIT;
+
+-- -----------------------------------------------------
+-- Data for table `eurb`.`groups`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `eurb`;
+INSERT INTO `eurb`.`groups` (`id`, `group_name`) VALUES (200, 'مدیران');
+INSERT INTO `eurb`.`groups` (`id`, `group_name`) VALUES (201, 'کاربران گزاش ساز');
+INSERT INTO `eurb`.`groups` (`id`, `group_name`) VALUES (202, 'کاربران گزارش گیر');
+
+COMMIT;
+
+-- -----------------------------------------------------
+-- Data for table `eurb`.`group_authorities`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `eurb`;
+INSERT INTO `eurb`.`group_authorities` (`group_id`, `authority`) VALUES (200, 'DB_LIST');
+INSERT INTO `eurb`.`group_authorities` (`group_id`, `authority`) VALUES (201, 'REPORT_LIST');
+INSERT INTO `eurb`.`group_authorities` (`group_id`, `authority`) VALUES (202, 'REPORT_LIST');
+
+COMMIT;
+
+-- -----------------------------------------------------
+-- Data for table `eurb`.`group_members`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `eurb`;
+INSERT INTO `eurb`.`group_members` (`id`, `username`, `group_id`) VALUES (1, 'admin', 200);
+INSERT INTO `eurb`.`group_members` (`id`, `username`, `group_id`) VALUES (2, 'admin', 201);
+INSERT INTO `eurb`.`group_members` (`id`, `username`, `group_id`) VALUES (3, 'admin', 202);
+
+COMMIT;

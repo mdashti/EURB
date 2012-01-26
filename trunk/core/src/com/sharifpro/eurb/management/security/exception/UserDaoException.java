@@ -2,27 +2,27 @@ package com.sharifpro.eurb.management.security.exception;
 
 import com.sharifpro.eurb.management.mapping.exception.PersistableObjectDaoException;
 
-public class UsersDaoException extends PersistableObjectDaoException
+public class UserDaoException extends PersistableObjectDaoException
 {
 	private static final long serialVersionUID = -7970981304156363006L;
 
 	/**
-	 * Method 'UsersDaoException'
+	 * Method 'UserDaoException'
 	 * 
 	 * @param message
 	 */
-	public UsersDaoException(String message)
+	public UserDaoException(String message)
 	{
 		super(message);
 	}
 
 	/**
-	 * Method 'UsersDaoException'
+	 * Method 'UserDaoException'
 	 * 
 	 * @param message
 	 * @param cause
 	 */
-	public UsersDaoException(String message, Throwable cause)
+	public UserDaoException(String message, Throwable cause)
 	{
 		super(message, cause);
 	}

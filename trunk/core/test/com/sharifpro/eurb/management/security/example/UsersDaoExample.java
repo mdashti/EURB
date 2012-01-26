@@ -3,8 +3,8 @@ package com.sharifpro.eurb.management.security.example;
 import java.util.List;
 
 import com.sharifpro.eurb.DaoFactory;
-import com.sharifpro.eurb.management.security.dao.UsersDao;
-import com.sharifpro.eurb.management.security.model.Users;
+import com.sharifpro.eurb.management.security.dao.UserDao;
+import com.sharifpro.eurb.management.security.model.User;
 
 public class UsersDaoExample
 {
@@ -33,9 +33,9 @@ public class UsersDaoExample
 	 */
 	public static void findAll() throws Exception
 	{
-		UsersDao dao = DaoFactory.createUsersDao();
-		List<Users> _result = dao.findAll();
-		for (Users dto : _result) {
+		UserDao dao = DaoFactory.createUsersDao();
+		List<User> _result = dao.findAll();
+		for (User dto : _result) {
 			display(dto);
 		}
 		
@@ -49,9 +49,9 @@ public class UsersDaoExample
 	 */
 	public static void findByPersistableObject(Long id) throws Exception
 	{
-		UsersDao dao = DaoFactory.createUsersDao();
-		List<Users> _result = dao.findByPersistableObject(id);
-		for (Users dto : _result) {
+		UserDao dao = DaoFactory.createUsersDao();
+		List<User> _result = dao.findByPersistableObject(id);
+		for (User dto : _result) {
 			display(dto);
 		}
 		
@@ -65,9 +65,9 @@ public class UsersDaoExample
 	 */
 	public static void findWhereIdEquals(Long id) throws Exception
 	{
-		UsersDao dao = DaoFactory.createUsersDao();
-		List<Users> _result = dao.findWhereIdEquals(id);
-		for (Users dto : _result) {
+		UserDao dao = DaoFactory.createUsersDao();
+		List<User> _result = dao.findWhereIdEquals(id);
+		for (User dto : _result) {
 			display(dto);
 		}
 		
@@ -81,9 +81,9 @@ public class UsersDaoExample
 	 */
 	public static void findWhereUsernameEquals(String username) throws Exception
 	{
-		UsersDao dao = DaoFactory.createUsersDao();
-		List<Users> _result = dao.findWhereUsernameEquals(username);
-		for (Users dto : _result) {
+		UserDao dao = DaoFactory.createUsersDao();
+		List<User> _result = dao.findWhereUsernameEquals(username);
+		for (User dto : _result) {
 			display(dto);
 		}
 		
@@ -97,9 +97,9 @@ public class UsersDaoExample
 	 */
 	public static void findWherePasswordEquals(String password) throws Exception
 	{
-		UsersDao dao = DaoFactory.createUsersDao();
-		List<Users> _result = dao.findWherePasswordEquals(password);
-		for (Users dto : _result) {
+		UserDao dao = DaoFactory.createUsersDao();
+		List<User> _result = dao.findWherePasswordEquals(password);
+		for (User dto : _result) {
 			display(dto);
 		}
 		
@@ -113,9 +113,9 @@ public class UsersDaoExample
 	 */
 	public static void findWhereEnabledEquals(Short enabled) throws Exception
 	{
-		UsersDao dao = DaoFactory.createUsersDao();
-		List<Users> _result = dao.findWhereEnabledEquals(enabled);
-		for (Users dto : _result) {
+		UserDao dao = DaoFactory.createUsersDao();
+		List<User> _result = dao.findWhereEnabledEquals(enabled);
+		for (User dto : _result) {
 			display(dto);
 		}
 		
@@ -126,7 +126,7 @@ public class UsersDaoExample
 	 * 
 	 * @param dto
 	 */
-	public static void display(Users dto)
+	public static void display(User dto)
 	{
 		StringBuffer buf = new StringBuffer();
 		buf.append( dto.getId() );

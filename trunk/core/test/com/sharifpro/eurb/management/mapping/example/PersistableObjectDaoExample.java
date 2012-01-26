@@ -38,7 +38,7 @@ public class PersistableObjectDaoExample
 	public static void findAll() throws Exception
 	{
 		PersistableObjectDao dao = DaoFactory.createPersistableObjectDao();
-		List<PersistableObject> _result = dao.findAll();
+		List<PersistableObject> _result = dao.findAllObjects();
 		for (PersistableObject dto : _result) {
 			display(dto);
 		}
@@ -54,7 +54,7 @@ public class PersistableObjectDaoExample
 	public static void findByUsers(String creator) throws Exception
 	{
 		PersistableObjectDao dao = DaoFactory.createPersistableObjectDao();
-		List<PersistableObject> _result = dao.findByUsers(creator);
+		List<PersistableObject> _result = dao.findByCreator(creator);
 		for (PersistableObject dto : _result) {
 			display(dto);
 		}
@@ -70,7 +70,7 @@ public class PersistableObjectDaoExample
 	public static void findByUsers2(String modifier) throws Exception
 	{
 		PersistableObjectDao dao = DaoFactory.createPersistableObjectDao();
-		List<PersistableObject> _result = dao.findByUsers2(modifier);
+		List<PersistableObject> _result = dao.findByModifier(modifier);
 		for (PersistableObject dto : _result) {
 			display(dto);
 		}
@@ -86,7 +86,7 @@ public class PersistableObjectDaoExample
 	public static void findWhereIdEquals(Long id) throws Exception
 	{
 		PersistableObjectDao dao = DaoFactory.createPersistableObjectDao();
-		List<PersistableObject> _result = dao.findWhereIdEquals(id);
+		List<PersistableObject> _result = dao.findWhereObjectIdEquals(id);
 		for (PersistableObject dto : _result) {
 			display(dto);
 		}

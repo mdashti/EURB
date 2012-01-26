@@ -16,17 +16,17 @@ public interface PersistableObjectDao
 	 * @param dto
 	 * @return PersistableObjectPk
 	 */
-	public PersistableObjectPk insert(PersistableObject dto);
+	public PersistableObjectPk insert(PersistableObject dto, PersistableObjectPk emptyPK);
 
 	/** 
 	 * Updates a single row in the persistable_object table.
 	 */
-	public void update(PersistableObjectPk pk, PersistableObject dto) throws PersistableObjectDaoException;
+	public void update(PersistableObjectPk pk, PersistableObject dto);
 
 	/** 
 	 * Deletes a single row in the persistable_object table.
 	 */
-	public void delete(PersistableObjectPk pk) throws PersistableObjectDaoException;
+	public void delete(PersistableObjectPk pk);
 
 	/** 
 	 * Returns all rows from the persistable_object table that match the criteria 'id = :id'.
@@ -36,22 +36,22 @@ public interface PersistableObjectDao
 	/** 
 	 * Returns all rows from the persistable_object table that match the criteria ''.
 	 */
-	public List<PersistableObject> findAll() throws PersistableObjectDaoException;
+	public List<PersistableObject> findAllObjects() throws PersistableObjectDaoException;
 
 	/** 
 	 * Returns all rows from the persistable_object table that match the criteria 'creator = :creator'.
 	 */
-	public List<PersistableObject> findByUsers(String creator) throws PersistableObjectDaoException;
+	public List<PersistableObject> findByCreator(String creator) throws PersistableObjectDaoException;
 
 	/** 
 	 * Returns all rows from the persistable_object table that match the criteria 'modifier = :modifier'.
 	 */
-	public List<PersistableObject> findByUsers2(String modifier) throws PersistableObjectDaoException;
+	public List<PersistableObject> findByModifier(String modifier) throws PersistableObjectDaoException;
 
 	/** 
 	 * Returns all rows from the persistable_object table that match the criteria 'id = :id'.
 	 */
-	public List<PersistableObject> findWhereIdEquals(Long id) throws PersistableObjectDaoException;
+	public List<PersistableObject> findWhereObjectIdEquals(Long id) throws PersistableObjectDaoException;
 
 	/** 
 	 * Returns all rows from the persistable_object table that match the criteria 'type = :objectType'.

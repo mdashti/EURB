@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import com.sharifpro.eurb.management.mapping.model.PersistableObject;
 
-public class Users extends PersistableObject implements Serializable
+public class User extends PersistableObject implements Serializable
 {
 	private static final long serialVersionUID = -4846712694892480891L;
 
@@ -27,7 +27,7 @@ public class Users extends PersistableObject implements Serializable
 	 * Method 'Users'
 	 * 
 	 */
-	public Users()
+	public User()
 	{
 		super();
 	}
@@ -104,11 +104,11 @@ public class Users extends PersistableObject implements Serializable
 			return false;
 		}
 		
-		if (!(_other instanceof Users)) {
+		if (!(_other instanceof User)) {
 			return false;
 		}
 		
-		final Users _cast = (Users) _other;
+		final User _cast = (User) _other;
 		
 		if (username == null ? _cast.username != username : !username.equals( _cast.username )) {
 			return false;
@@ -151,9 +151,9 @@ public class Users extends PersistableObject implements Serializable
 	 * 
 	 * @return UsersPk
 	 */
-	public UsersPk createPk()
+	public UserPk createPk()
 	{
-		return new UsersPk(username, id);
+		return new UserPk(username, id);
 	}
 
 	/**
@@ -164,7 +164,7 @@ public class Users extends PersistableObject implements Serializable
 	public String toString()
 	{
 		StringBuffer ret = new StringBuffer();
-		ret.append( "model.Users: " );
+		ret.append( "model.User: " );
 		ret.append( super.toString() );
 		ret.append( ", username=" + username );
 		ret.append( ", password=" + password );

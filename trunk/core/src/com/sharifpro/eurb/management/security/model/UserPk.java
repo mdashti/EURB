@@ -7,7 +7,7 @@ import com.sharifpro.eurb.management.mapping.model.PersistableObjectPk;
 /** 
  * This class represents the primary key of the users table.
  */
-public class UsersPk extends PersistableObjectPk implements Serializable
+public class UserPk extends PersistableObjectPk implements Serializable
 {
 	private static final long serialVersionUID = -2572395260394655158L;
 	protected String username;
@@ -32,7 +32,7 @@ public class UsersPk extends PersistableObjectPk implements Serializable
 	 * Method 'UsersPk'
 	 * 
 	 */
-	public UsersPk()
+	public UserPk()
 	{
 		super();
 	}
@@ -42,7 +42,7 @@ public class UsersPk extends PersistableObjectPk implements Serializable
 	 * 
 	 * @param username
 	 */
-	public UsersPk(final String username, final Long id)
+	public UserPk(final String username, final Long id)
 	{
 		super(id);
 		this.username = username;
@@ -60,11 +60,11 @@ public class UsersPk extends PersistableObjectPk implements Serializable
 			return false;
 		}
 		
-		if (!(_other instanceof UsersPk)) {
+		if (!(_other instanceof UserPk)) {
 			return false;
 		}
 		
-		final UsersPk _cast = (UsersPk) _other;
+		final UserPk _cast = (UserPk) _other;
 		if (username == null ? _cast.username != username : !username.equals( _cast.username )) {
 			return false;
 		}
@@ -96,7 +96,7 @@ public class UsersPk extends PersistableObjectPk implements Serializable
 	public String toString()
 	{
 		StringBuffer ret = new StringBuffer();
-		ret.append( "model.UsersPk: " );
+		ret.append( "model.UserPk: " );
 		ret.append( super.toString() );
 		ret.append( ", username=" + username );
 		return ret.toString();
