@@ -1,4 +1,4 @@
-package com.sharifpro.eurb.example;
+package com.sharifpro.eurb.management.mapping.example;
 
 import java.util.List;
 

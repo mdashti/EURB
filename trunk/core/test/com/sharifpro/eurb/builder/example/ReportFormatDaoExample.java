@@ -1,12 +1,12 @@
-package com.sharifpro.eurb.example;
+package com.sharifpro.eurb.builder.example;
 
 import java.util.List;
 
 import com.sharifpro.eurb.DaoFactory;
-import com.sharifpro.eurb.builder.dao.ReportExecutionHistoryDao;
-import com.sharifpro.eurb.builder.model.ReportExecutionHistory;
+import com.sharifpro.eurb.builder.dao.ReportFormatDao;
+import com.sharifpro.eurb.builder.model.ReportFormat;
 
-public class ReportExecutionHistoryDaoExample
+public class ReportFormatDaoExample
 {
 	/**
 	 * Method 'main'
@@ -23,7 +23,7 @@ public class ReportExecutionHistoryDaoExample
 		// findByPersistableObject(null);
 		// findWhereIdEquals(null);
 		// findWhereVersionIdEquals(null);
-		// findWhereExecutionResultEquals("");
+		// findWhereFormatFileEquals("");
 		// findWhereIsCurrentEquals(null);
 		// findWhereRecordStatusEquals("");
 		// findWhereReportDesignIdEquals(null);
@@ -37,9 +37,9 @@ public class ReportExecutionHistoryDaoExample
 	 */
 	public static void findAll() throws Exception
 	{
-		ReportExecutionHistoryDao dao = DaoFactory.createReportExecutionHistoryDao();
-		List<ReportExecutionHistory> _result = dao.findAll();
-		for (ReportExecutionHistory dto : _result) {
+		ReportFormatDao dao = DaoFactory.createReportFormatDao();
+		List<ReportFormat> _result = dao.findAll();
+		for (ReportFormat dto : _result) {
 			display(dto);
 		}
 		
@@ -54,9 +54,9 @@ public class ReportExecutionHistoryDaoExample
 	 */
 	public static void findByReportDesign(Long reportDesignId, Long reportDesignVersionId) throws Exception
 	{
-		ReportExecutionHistoryDao dao = DaoFactory.createReportExecutionHistoryDao();
-		List<ReportExecutionHistory> _result = dao.findByReportDesign(reportDesignId, reportDesignVersionId);
-		for (ReportExecutionHistory dto : _result) {
+		ReportFormatDao dao = DaoFactory.createReportFormatDao();
+		List<ReportFormat> _result = dao.findByReportDesign(reportDesignId, reportDesignVersionId);
+		for (ReportFormat dto : _result) {
 			display(dto);
 		}
 		
@@ -70,9 +70,9 @@ public class ReportExecutionHistoryDaoExample
 	 */
 	public static void findByPersistableObject(Long id) throws Exception
 	{
-		ReportExecutionHistoryDao dao = DaoFactory.createReportExecutionHistoryDao();
-		List<ReportExecutionHistory> _result = dao.findByPersistableObject(id);
-		for (ReportExecutionHistory dto : _result) {
+		ReportFormatDao dao = DaoFactory.createReportFormatDao();
+		List<ReportFormat> _result = dao.findByPersistableObject(id);
+		for (ReportFormat dto : _result) {
 			display(dto);
 		}
 		
@@ -86,9 +86,9 @@ public class ReportExecutionHistoryDaoExample
 	 */
 	public static void findWhereIdEquals(Long id) throws Exception
 	{
-		ReportExecutionHistoryDao dao = DaoFactory.createReportExecutionHistoryDao();
-		List<ReportExecutionHistory> _result = dao.findWhereIdEquals(id);
-		for (ReportExecutionHistory dto : _result) {
+		ReportFormatDao dao = DaoFactory.createReportFormatDao();
+		List<ReportFormat> _result = dao.findWhereIdEquals(id);
+		for (ReportFormat dto : _result) {
 			display(dto);
 		}
 		
@@ -102,25 +102,25 @@ public class ReportExecutionHistoryDaoExample
 	 */
 	public static void findWhereVersionIdEquals(Long versionId) throws Exception
 	{
-		ReportExecutionHistoryDao dao = DaoFactory.createReportExecutionHistoryDao();
-		List<ReportExecutionHistory> _result = dao.findWhereVersionIdEquals(versionId);
-		for (ReportExecutionHistory dto : _result) {
+		ReportFormatDao dao = DaoFactory.createReportFormatDao();
+		List<ReportFormat> _result = dao.findWhereVersionIdEquals(versionId);
+		for (ReportFormat dto : _result) {
 			display(dto);
 		}
 		
 	}
 
 	/**
-	 * Method 'findWhereExecutionResultEquals'
+	 * Method 'findWhereFormatFileEquals'
 	 * 
-	 * @param executionResult
+	 * @param formatFile
 	 * @throws Exception
 	 */
-	public static void findWhereExecutionResultEquals(String executionResult) throws Exception
+	public static void findWhereFormatFileEquals(String formatFile) throws Exception
 	{
-		ReportExecutionHistoryDao dao = DaoFactory.createReportExecutionHistoryDao();
-		List<ReportExecutionHistory> _result = dao.findWhereExecutionResultEquals(executionResult);
-		for (ReportExecutionHistory dto : _result) {
+		ReportFormatDao dao = DaoFactory.createReportFormatDao();
+		List<ReportFormat> _result = dao.findWhereFormatFileEquals(formatFile);
+		for (ReportFormat dto : _result) {
 			display(dto);
 		}
 		
@@ -134,9 +134,9 @@ public class ReportExecutionHistoryDaoExample
 	 */
 	public static void findWhereIsCurrentEquals(Short isCurrent) throws Exception
 	{
-		ReportExecutionHistoryDao dao = DaoFactory.createReportExecutionHistoryDao();
-		List<ReportExecutionHistory> _result = dao.findWhereIsCurrentEquals(isCurrent);
-		for (ReportExecutionHistory dto : _result) {
+		ReportFormatDao dao = DaoFactory.createReportFormatDao();
+		List<ReportFormat> _result = dao.findWhereIsCurrentEquals(isCurrent);
+		for (ReportFormat dto : _result) {
 			display(dto);
 		}
 		
@@ -150,9 +150,9 @@ public class ReportExecutionHistoryDaoExample
 	 */
 	public static void findWhereRecordStatusEquals(String recordStatus) throws Exception
 	{
-		ReportExecutionHistoryDao dao = DaoFactory.createReportExecutionHistoryDao();
-		List<ReportExecutionHistory> _result = dao.findWhereRecordStatusEquals(recordStatus);
-		for (ReportExecutionHistory dto : _result) {
+		ReportFormatDao dao = DaoFactory.createReportFormatDao();
+		List<ReportFormat> _result = dao.findWhereRecordStatusEquals(recordStatus);
+		for (ReportFormat dto : _result) {
 			display(dto);
 		}
 		
@@ -166,9 +166,9 @@ public class ReportExecutionHistoryDaoExample
 	 */
 	public static void findWhereReportDesignIdEquals(Long reportDesignId) throws Exception
 	{
-		ReportExecutionHistoryDao dao = DaoFactory.createReportExecutionHistoryDao();
-		List<ReportExecutionHistory> _result = dao.findWhereReportDesignIdEquals(reportDesignId);
-		for (ReportExecutionHistory dto : _result) {
+		ReportFormatDao dao = DaoFactory.createReportFormatDao();
+		List<ReportFormat> _result = dao.findWhereReportDesignIdEquals(reportDesignId);
+		for (ReportFormat dto : _result) {
 			display(dto);
 		}
 		
@@ -182,9 +182,9 @@ public class ReportExecutionHistoryDaoExample
 	 */
 	public static void findWhereReportDesignVersionIdEquals(Long reportDesignVersionId) throws Exception
 	{
-		ReportExecutionHistoryDao dao = DaoFactory.createReportExecutionHistoryDao();
-		List<ReportExecutionHistory> _result = dao.findWhereReportDesignVersionIdEquals(reportDesignVersionId);
-		for (ReportExecutionHistory dto : _result) {
+		ReportFormatDao dao = DaoFactory.createReportFormatDao();
+		List<ReportFormat> _result = dao.findWhereReportDesignVersionIdEquals(reportDesignVersionId);
+		for (ReportFormat dto : _result) {
 			display(dto);
 		}
 		
@@ -195,16 +195,16 @@ public class ReportExecutionHistoryDaoExample
 	 * 
 	 * @param dto
 	 */
-	public static void display(ReportExecutionHistory dto)
+	public static void display(ReportFormat dto)
 	{
 		StringBuffer buf = new StringBuffer();
 		buf.append( dto.getId() );
 		buf.append( ", " );
 		buf.append( dto.getVersionId() );
 		buf.append( ", " );
-		buf.append( dto.getExecutionResult() );
+		buf.append( dto.getFormatFile() );
 		buf.append( ", " );
-		buf.append( dto.isCurrent() );
+		buf.append( dto.isIsCurrent() );
 		buf.append( ", " );
 		buf.append( dto.getRecordStatus() );
 		buf.append( ", " );

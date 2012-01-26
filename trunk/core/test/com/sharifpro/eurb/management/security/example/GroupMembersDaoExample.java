@@ -1,4 +1,4 @@
-package com.sharifpro.eurb.example;
+package com.sharifpro.eurb.management.security.example;
 
 import java.util.List;
 
