@@ -5,6 +5,7 @@ import com.sharifpro.eurb.management.security.dao.AuthoritiesDao;
 import com.sharifpro.eurb.management.security.exception.AuthoritiesDaoException;
 import com.sharifpro.eurb.management.security.model.Authorities;
 import com.sharifpro.eurb.management.security.model.AuthoritiesPk;
+import com.sharifpro.util.PropertyProvider;
 
 import java.util.List;
 import java.sql.ResultSet;
@@ -82,7 +83,7 @@ public class AuthoritiesDaoImpl extends AbstractDAO implements ParameterizedRowM
 			return list.size() == 0 ? null : list.get(0);
 		}
 		catch (Exception e) {
-			throw new AuthoritiesDaoException("Query failed", e);
+			throw new AuthoritiesDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -97,7 +98,7 @@ public class AuthoritiesDaoImpl extends AbstractDAO implements ParameterizedRowM
 			return jdbcTemplate.query("SELECT username, authority FROM " + getTableName() + " ORDER BY username, authority", this);
 		}
 		catch (Exception e) {
-			throw new AuthoritiesDaoException("Query failed", e);
+			throw new AuthoritiesDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -112,7 +113,7 @@ public class AuthoritiesDaoImpl extends AbstractDAO implements ParameterizedRowM
 			return jdbcTemplate.query("SELECT username, authority FROM " + getTableName() + " WHERE username = ?", this,username);
 		}
 		catch (Exception e) {
-			throw new AuthoritiesDaoException("Query failed", e);
+			throw new AuthoritiesDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -127,7 +128,7 @@ public class AuthoritiesDaoImpl extends AbstractDAO implements ParameterizedRowM
 			return jdbcTemplate.query("SELECT username, authority FROM " + getTableName() + " WHERE username = ? ORDER BY username", this,username);
 		}
 		catch (Exception e) {
-			throw new AuthoritiesDaoException("Query failed", e);
+			throw new AuthoritiesDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -142,7 +143,7 @@ public class AuthoritiesDaoImpl extends AbstractDAO implements ParameterizedRowM
 			return jdbcTemplate.query("SELECT username, authority FROM " + getTableName() + " WHERE authority = ? ORDER BY authority", this,authority);
 		}
 		catch (Exception e) {
-			throw new AuthoritiesDaoException("Query failed", e);
+			throw new AuthoritiesDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}

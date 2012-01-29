@@ -1,9 +1,11 @@
 package com.sharifpro.eurb.management.mapping.dao.impl;
 
+import com.sharifpro.eurb.DaoFactory;
 import com.sharifpro.eurb.management.mapping.dao.ColumnMappingDao;
 import com.sharifpro.eurb.management.mapping.exception.ColumnMappingDaoException;
 import com.sharifpro.eurb.management.mapping.model.ColumnMapping;
 import com.sharifpro.eurb.management.mapping.model.ColumnMappingPk;
+import com.sharifpro.util.PropertyProvider;
 
 import java.util.List;
 import java.sql.ResultSet;
@@ -13,6 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements ParameterizedRowMapper<ColumnMapping>, ColumnMappingDao
 {
+	private final static String QUERY_FROM_COLUMNS = "o.table_mapping_id, o.column_name, o.mapped_name, o.col_type, o.col_order, o.format_pattern, o.static_mapping, o.referenced_table, o.referenced_id_col, o.referenced_value_col";
+
+	private final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL_AND_JOIN;
+
 	/**
 	 * Method 'insert'
 	 * 
@@ -22,7 +28,9 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 	@Transactional
 	public ColumnMappingPk insert(ColumnMapping dto)
 	{
-		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, table_mapping_id, column_name, mapped_name, col_type, col_order, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",dto.getId(),dto.getTableMappingId(),dto.getColumnName(),dto.getMappedName(),dto.getColType(),dto.getColOrder(),dto.getFormatPattern(),dto.getStaticMapping(),dto.getReferencedTable(),dto.getReferencedIdCol(),dto.getReferencedValueCol());
+		ColumnMappingPk pk = new ColumnMappingPk();
+		DaoFactory.createPersistableObjectDao().insert(dto, pk);
+		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, table_mapping_id, column_name, mapped_name, col_type, col_order, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",pk.getId(),dto.getTableMappingId(),dto.getColumnName(),dto.getMappedName(),dto.getColType(),dto.getColOrder(),dto.getFormatPattern(),dto.getStaticMapping(),dto.getReferencedTable(),dto.getReferencedIdCol(),dto.getReferencedValueCol());
 		return dto.createPk();
 	}
 
@@ -32,6 +40,7 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 	@Transactional
 	public void update(ColumnMappingPk pk, ColumnMapping dto) throws ColumnMappingDaoException
 	{
+		DaoFactory.createPersistableObjectDao().update(pk, dto);
 		jdbcTemplate.update("UPDATE " + getTableName() + " SET id = ?, table_mapping_id = ?, column_name = ?, mapped_name = ?, col_type = ?, col_order = ?, format_pattern = ?, static_mapping = ?, referenced_table = ?, referenced_id_col = ?, referenced_value_col = ? WHERE id = ?",dto.getId(),dto.getTableMappingId(),dto.getColumnName(),dto.getMappedName(),dto.getColType(),dto.getColOrder(),dto.getFormatPattern(),dto.getStaticMapping(),dto.getReferencedTable(),dto.getReferencedIdCol(),dto.getReferencedValueCol(),pk.getId());
 	}
 
@@ -42,6 +51,7 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 	public void delete(ColumnMappingPk pk) throws ColumnMappingDaoException
 	{
 		jdbcTemplate.update("DELETE FROM " + getTableName() + " WHERE id = ?",pk.getId());
+		DaoFactory.createPersistableObjectDao().delete(pk);
 	}
 
 	/**
@@ -55,17 +65,18 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 	public ColumnMapping mapRow(ResultSet rs, int row) throws SQLException
 	{
 		ColumnMapping dto = new ColumnMapping();
-		dto.setId( new Long( rs.getLong(1) ) );
-		dto.setTableMappingId( new Long( rs.getLong(2) ) );
-		dto.setColumnName( rs.getString( 3 ) );
-		dto.setMappedName( rs.getString( 4 ) );
-		dto.setColType( rs.getString( 5 ) );
-		dto.setColOrder( rs.getString( 6 ) );
-		dto.setFormatPattern( rs.getString( 7 ) );
-		dto.setStaticMapping( rs.getString( 8 ) );
-		dto.setReferencedTable( rs.getString( 9 ) );
-		dto.setReferencedIdCol( rs.getString( 10 ) );
-		dto.setReferencedValueCol( rs.getString( 11 ) );
+		PersistableObjectDaoImpl.PERSISTABLE_OBJECT_MAPPER.mapRow(rs, row, dto);
+		int i = PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS_COUNT;
+		dto.setTableMappingId( new Long( rs.getLong(++i) ) );
+		dto.setColumnName( rs.getString( ++i ) );
+		dto.setMappedName( rs.getString( ++i ) );
+		dto.setColType( rs.getString( ++i ) );
+		dto.setColOrder( rs.getString( ++i ) );
+		dto.setFormatPattern( rs.getString( ++i ) );
+		dto.setStaticMapping( rs.getString( ++i ) );
+		dto.setReferencedTable( rs.getString( ++i ) );
+		dto.setReferencedIdCol( rs.getString( ++i ) );
+		dto.setReferencedValueCol( rs.getString( ++i ) );
 		return dto;
 	}
 
@@ -86,11 +97,11 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 	public ColumnMapping findByPrimaryKey(Long id) throws ColumnMappingDaoException
 	{
 		try {
-			List<ColumnMapping> list = jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, col_type, col_order, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE id = ?", this,id);
+			List<ColumnMapping> list = jdbcTemplate.query(QUERY_SELECT_PART + " WHERE id = ?", this,id);
 			return list.size() == 0 ? null : list.get(0);
 		}
 		catch (Exception e) {
-			throw new ColumnMappingDaoException("Query failed", e);
+			throw new ColumnMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -102,10 +113,10 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 	public List<ColumnMapping> findAll() throws ColumnMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, col_type, col_order, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " ORDER BY id", this);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " ORDER BY id", this);
 		}
 		catch (Exception e) {
-			throw new ColumnMappingDaoException("Query failed", e);
+			throw new ColumnMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -117,10 +128,10 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 	public List<ColumnMapping> findByPersistableObject(Long id) throws ColumnMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, col_type, col_order, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE id = ?", this,id);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE id = ?", this,id);
 		}
 		catch (Exception e) {
-			throw new ColumnMappingDaoException("Query failed", e);
+			throw new ColumnMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -132,10 +143,10 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 	public List<ColumnMapping> findByTableMapping(Long tableMappingId) throws ColumnMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, col_type, col_order, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE table_mapping_id = ?", this,tableMappingId);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE table_mapping_id = ?", this,tableMappingId);
 		}
 		catch (Exception e) {
-			throw new ColumnMappingDaoException("Query failed", e);
+			throw new ColumnMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -147,10 +158,10 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 	public List<ColumnMapping> findWhereIdEquals(Long id) throws ColumnMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, col_type, col_order, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE id = ? ORDER BY id", this,id);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE id = ? ORDER BY id", this,id);
 		}
 		catch (Exception e) {
-			throw new ColumnMappingDaoException("Query failed", e);
+			throw new ColumnMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -162,10 +173,10 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 	public List<ColumnMapping> findWhereTableMappingIdEquals(Long tableMappingId) throws ColumnMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, col_type, col_order, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE table_mapping_id = ? ORDER BY table_mapping_id", this,tableMappingId);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE table_mapping_id = ? ORDER BY table_mapping_id", this,tableMappingId);
 		}
 		catch (Exception e) {
-			throw new ColumnMappingDaoException("Query failed", e);
+			throw new ColumnMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -177,10 +188,10 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 	public List<ColumnMapping> findWhereColumnNameEquals(String columnName) throws ColumnMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, col_type, col_order, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE column_name = ? ORDER BY column_name", this,columnName);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE column_name = ? ORDER BY column_name", this,columnName);
 		}
 		catch (Exception e) {
-			throw new ColumnMappingDaoException("Query failed", e);
+			throw new ColumnMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -192,10 +203,10 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 	public List<ColumnMapping> findWhereMappedNameEquals(String mappedName) throws ColumnMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, col_type, col_order, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE mapped_name = ? ORDER BY mapped_name", this,mappedName);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE mapped_name = ? ORDER BY mapped_name", this,mappedName);
 		}
 		catch (Exception e) {
-			throw new ColumnMappingDaoException("Query failed", e);
+			throw new ColumnMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -207,10 +218,10 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 	public List<ColumnMapping> findWhereColTypeEquals(String colType) throws ColumnMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, col_type, col_order, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE col_type = ? ORDER BY col_type", this,colType);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE col_type = ? ORDER BY col_type", this,colType);
 		}
 		catch (Exception e) {
-			throw new ColumnMappingDaoException("Query failed", e);
+			throw new ColumnMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -222,10 +233,10 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 	public List<ColumnMapping> findWhereColOrderEquals(String colOrder) throws ColumnMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, col_type, col_order, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE col_order = ? ORDER BY col_order", this,colOrder);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE col_order = ? ORDER BY col_order", this,colOrder);
 		}
 		catch (Exception e) {
-			throw new ColumnMappingDaoException("Query failed", e);
+			throw new ColumnMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -237,10 +248,10 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 	public List<ColumnMapping> findWhereFormatPatternEquals(String formatPattern) throws ColumnMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, col_type, col_order, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE format_pattern = ? ORDER BY format_pattern", this,formatPattern);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE format_pattern = ? ORDER BY format_pattern", this,formatPattern);
 		}
 		catch (Exception e) {
-			throw new ColumnMappingDaoException("Query failed", e);
+			throw new ColumnMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -252,10 +263,10 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 	public List<ColumnMapping> findWhereStaticMappingEquals(String staticMapping) throws ColumnMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, col_type, col_order, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE static_mapping = ? ORDER BY static_mapping", this,staticMapping);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE static_mapping = ? ORDER BY static_mapping", this,staticMapping);
 		}
 		catch (Exception e) {
-			throw new ColumnMappingDaoException("Query failed", e);
+			throw new ColumnMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -267,10 +278,10 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 	public List<ColumnMapping> findWhereReferencedTableEquals(String referencedTable) throws ColumnMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, col_type, col_order, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE referenced_table = ? ORDER BY referenced_table", this,referencedTable);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE referenced_table = ? ORDER BY referenced_table", this,referencedTable);
 		}
 		catch (Exception e) {
-			throw new ColumnMappingDaoException("Query failed", e);
+			throw new ColumnMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -282,10 +293,10 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 	public List<ColumnMapping> findWhereReferencedIdColEquals(String referencedIdCol) throws ColumnMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, col_type, col_order, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE referenced_id_col = ? ORDER BY referenced_id_col", this,referencedIdCol);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE referenced_id_col = ? ORDER BY referenced_id_col", this,referencedIdCol);
 		}
 		catch (Exception e) {
-			throw new ColumnMappingDaoException("Query failed", e);
+			throw new ColumnMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -297,10 +308,10 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 	public List<ColumnMapping> findWhereReferencedValueColEquals(String referencedValueCol) throws ColumnMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, table_mapping_id, column_name, mapped_name, col_type, col_order, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col FROM " + getTableName() + " WHERE referenced_value_col = ? ORDER BY referenced_value_col", this,referencedValueCol);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE referenced_value_col = ? ORDER BY referenced_value_col", this,referencedValueCol);
 		}
 		catch (Exception e) {
-			throw new ColumnMappingDaoException("Query failed", e);
+			throw new ColumnMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}

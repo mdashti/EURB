@@ -4,6 +4,7 @@ import com.sharifpro.eurb.management.mapping.dao.PersistableObjectDao;
 import com.sharifpro.eurb.management.mapping.exception.PersistableObjectDaoException;
 import com.sharifpro.eurb.management.mapping.model.PersistableObject;
 import com.sharifpro.eurb.management.mapping.model.PersistableObjectPk;
+import com.sharifpro.util.PropertyProvider;
 import com.sharifpro.util.SessionManager;
 
 import java.util.Date;
@@ -105,7 +106,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 			return list.size() == 0 ? null : list.get(0);
 		}
 		catch (Exception e) {
-			throw new PersistableObjectDaoException("Query failed", e);
+			throw new PersistableObjectDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -120,7 +121,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 			return jdbcTemplate.query("SELECT " + PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + " FROM persistable_object ORDER BY id", new PersistableObjectRowMapper());
 		}
 		catch (Exception e) {
-			throw new PersistableObjectDaoException("Query failed", e);
+			throw new PersistableObjectDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -135,7 +136,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 			return jdbcTemplate.query("SELECT " + PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + " FROM persistable_object WHERE creator = ?", new PersistableObjectRowMapper(),creator);
 		}
 		catch (Exception e) {
-			throw new PersistableObjectDaoException("Query failed", e);
+			throw new PersistableObjectDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -150,7 +151,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 			return jdbcTemplate.query("SELECT " + PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + " FROM persistable_object WHERE modifier = ?", new PersistableObjectRowMapper(),modifier);
 		}
 		catch (Exception e) {
-			throw new PersistableObjectDaoException("Query failed", e);
+			throw new PersistableObjectDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -165,7 +166,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 			return jdbcTemplate.query("SELECT " + PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + " FROM persistable_object WHERE id = ? ORDER BY id", new PersistableObjectRowMapper(),id);
 		}
 		catch (Exception e) {
-			throw new PersistableObjectDaoException("Query failed", e);
+			throw new PersistableObjectDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -180,7 +181,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 			return jdbcTemplate.query("SELECT " + PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + " FROM persistable_object WHERE obj_type = ? ORDER BY obj_type", new PersistableObjectRowMapper(),objectType);
 		}
 		catch (Exception e) {
-			throw new PersistableObjectDaoException("Query failed", e);
+			throw new PersistableObjectDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -195,7 +196,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 			return jdbcTemplate.query("SELECT " + PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + " FROM persistable_object WHERE creator = ? ORDER BY creator", new PersistableObjectRowMapper(),creator);
 		}
 		catch (Exception e) {
-			throw new PersistableObjectDaoException("Query failed", e);
+			throw new PersistableObjectDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -210,7 +211,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 			return jdbcTemplate.query("SELECT " + PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + " FROM persistable_object WHERE create_date = ? ORDER BY create_date", new PersistableObjectRowMapper(),createDate);
 		}
 		catch (Exception e) {
-			throw new PersistableObjectDaoException("Query failed", e);
+			throw new PersistableObjectDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -225,7 +226,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 			return jdbcTemplate.query("SELECT " + PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + " FROM persistable_object WHERE modifier = ? ORDER BY modifier", new PersistableObjectRowMapper(),modifier);
 		}
 		catch (Exception e) {
-			throw new PersistableObjectDaoException("Query failed", e);
+			throw new PersistableObjectDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -240,7 +241,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 			return jdbcTemplate.query("SELECT " + PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + " FROM persistable_object WHERE modify_date = ? ORDER BY modify_date", new PersistableObjectRowMapper(),modifyDate);
 		}
 		catch (Exception e) {
-			throw new PersistableObjectDaoException("Query failed", e);
+			throw new PersistableObjectDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}

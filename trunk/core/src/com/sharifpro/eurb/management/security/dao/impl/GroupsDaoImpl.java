@@ -7,6 +7,7 @@ import com.sharifpro.eurb.management.security.dao.GroupsDao;
 import com.sharifpro.eurb.management.security.exception.GroupsDaoException;
 import com.sharifpro.eurb.management.security.model.Groups;
 import com.sharifpro.eurb.management.security.model.GroupsPk;
+import com.sharifpro.util.PropertyProvider;
 
 import java.util.List;
 import java.sql.ResultSet;
@@ -93,7 +94,7 @@ public class GroupsDaoImpl extends AbstractDAO implements ParameterizedRowMapper
 			return list.size() == 0 ? null : list.get(0);
 		}
 		catch (Exception e) {
-			throw new GroupsDaoException("Query failed", e);
+			throw new GroupsDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -108,7 +109,7 @@ public class GroupsDaoImpl extends AbstractDAO implements ParameterizedRowMapper
 			return jdbcTemplate.query(QUERY_SELECT_PART + " ORDER BY id", this);
 		}
 		catch (Exception e) {
-			throw new GroupsDaoException("Query failed", e);
+			throw new GroupsDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -123,7 +124,7 @@ public class GroupsDaoImpl extends AbstractDAO implements ParameterizedRowMapper
 			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE id = ?", this,id);
 		}
 		catch (Exception e) {
-			throw new GroupsDaoException("Query failed", e);
+			throw new GroupsDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -138,7 +139,7 @@ public class GroupsDaoImpl extends AbstractDAO implements ParameterizedRowMapper
 			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE id = ? ORDER BY id", this,id);
 		}
 		catch (Exception e) {
-			throw new GroupsDaoException("Query failed", e);
+			throw new GroupsDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -153,7 +154,7 @@ public class GroupsDaoImpl extends AbstractDAO implements ParameterizedRowMapper
 			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE group_name = ? ORDER BY group_name", this,groupName);
 		}
 		catch (Exception e) {
-			throw new GroupsDaoException("Query failed", e);
+			throw new GroupsDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}

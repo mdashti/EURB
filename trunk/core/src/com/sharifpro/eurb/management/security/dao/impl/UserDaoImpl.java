@@ -7,6 +7,7 @@ import com.sharifpro.eurb.management.security.dao.UserDao;
 import com.sharifpro.eurb.management.security.exception.UserDaoException;
 import com.sharifpro.eurb.management.security.model.User;
 import com.sharifpro.eurb.management.security.model.UserPk;
+import com.sharifpro.util.PropertyProvider;
 import com.sharifpro.util.SecurityUtil;
 
 import java.util.List;
@@ -117,7 +118,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 			return list.size() == 0 ? null : list.get(0);
 		}
 		catch (Exception e) {
-			throw new UserDaoException("Query failed", e);
+			throw new UserDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -132,7 +133,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 			return jdbcTemplate.query(QUERY_SELECT_PART + " ORDER BY username", this);
 		}
 		catch (Exception e) {
-			throw new UserDaoException("Query failed", e);
+			throw new UserDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -147,7 +148,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE id = ?", this,id);
 		}
 		catch (Exception e) {
-			throw new UserDaoException("Query failed", e);
+			throw new UserDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -162,7 +163,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE id = ? ORDER BY id", this,id);
 		}
 		catch (Exception e) {
-			throw new UserDaoException("Query failed", e);
+			throw new UserDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -177,7 +178,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE username = ? ORDER BY username", this,username);
 		}
 		catch (Exception e) {
-			throw new UserDaoException("Query failed", e);
+			throw new UserDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -192,7 +193,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE password = ? ORDER BY password", this,password);
 		}
 		catch (Exception e) {
-			throw new UserDaoException("Query failed", e);
+			throw new UserDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -207,7 +208,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE enabled = ? ORDER BY enabled", this,enabled);
 		}
 		catch (Exception e) {
-			throw new UserDaoException("Query failed", e);
+			throw new UserDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}

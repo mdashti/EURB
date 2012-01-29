@@ -5,6 +5,7 @@ import com.sharifpro.eurb.management.security.dao.GroupMembersDao;
 import com.sharifpro.eurb.management.security.exception.GroupMembersDaoException;
 import com.sharifpro.eurb.management.security.model.GroupMembers;
 import com.sharifpro.eurb.management.security.model.GroupMembersPk;
+import com.sharifpro.util.PropertyProvider;
 
 import java.util.List;
 import java.sql.ResultSet;
@@ -85,7 +86,7 @@ public class GroupMembersDaoImpl extends AbstractDAO implements ParameterizedRow
 			return list.size() == 0 ? null : list.get(0);
 		}
 		catch (Exception e) {
-			throw new GroupMembersDaoException("Query failed", e);
+			throw new GroupMembersDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -100,7 +101,7 @@ public class GroupMembersDaoImpl extends AbstractDAO implements ParameterizedRow
 			return jdbcTemplate.query("SELECT id, username, group_id FROM " + getTableName() + " ORDER BY id", this);
 		}
 		catch (Exception e) {
-			throw new GroupMembersDaoException("Query failed", e);
+			throw new GroupMembersDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -115,7 +116,7 @@ public class GroupMembersDaoImpl extends AbstractDAO implements ParameterizedRow
 			return jdbcTemplate.query("SELECT id, username, group_id FROM " + getTableName() + " WHERE group_id = ?", this,groupId);
 		}
 		catch (Exception e) {
-			throw new GroupMembersDaoException("Query failed", e);
+			throw new GroupMembersDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -130,7 +131,7 @@ public class GroupMembersDaoImpl extends AbstractDAO implements ParameterizedRow
 			return jdbcTemplate.query("SELECT id, username, group_id FROM " + getTableName() + " WHERE id = ? ORDER BY id", this,id);
 		}
 		catch (Exception e) {
-			throw new GroupMembersDaoException("Query failed", e);
+			throw new GroupMembersDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -145,7 +146,7 @@ public class GroupMembersDaoImpl extends AbstractDAO implements ParameterizedRow
 			return jdbcTemplate.query("SELECT id, username, group_id FROM " + getTableName() + " WHERE username = ? ORDER BY username", this,username);
 		}
 		catch (Exception e) {
-			throw new GroupMembersDaoException("Query failed", e);
+			throw new GroupMembersDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -160,7 +161,7 @@ public class GroupMembersDaoImpl extends AbstractDAO implements ParameterizedRow
 			return jdbcTemplate.query("SELECT id, username, group_id FROM " + getTableName() + " WHERE group_id = ? ORDER BY group_id", this,groupId);
 		}
 		catch (Exception e) {
-			throw new GroupMembersDaoException("Query failed", e);
+			throw new GroupMembersDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}

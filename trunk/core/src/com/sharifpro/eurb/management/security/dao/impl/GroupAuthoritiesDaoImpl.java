@@ -4,6 +4,7 @@ import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
 import com.sharifpro.eurb.management.security.dao.GroupAuthoritiesDao;
 import com.sharifpro.eurb.management.security.exception.GroupAuthoritiesDaoException;
 import com.sharifpro.eurb.management.security.model.GroupAuthorities;
+import com.sharifpro.util.PropertyProvider;
 
 import java.util.List;
 import java.sql.ResultSet;
@@ -60,7 +61,7 @@ public class GroupAuthoritiesDaoImpl extends AbstractDAO implements Parameterize
 			return jdbcTemplate.query("SELECT group_id, authority FROM " + getTableName() + "", this);
 		}
 		catch (Exception e) {
-			throw new GroupAuthoritiesDaoException("Query failed", e);
+			throw new GroupAuthoritiesDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -75,7 +76,7 @@ public class GroupAuthoritiesDaoImpl extends AbstractDAO implements Parameterize
 			return jdbcTemplate.query("SELECT group_id, authority FROM " + getTableName() + " WHERE group_id = ?", this,groupId);
 		}
 		catch (Exception e) {
-			throw new GroupAuthoritiesDaoException("Query failed", e);
+			throw new GroupAuthoritiesDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -90,7 +91,7 @@ public class GroupAuthoritiesDaoImpl extends AbstractDAO implements Parameterize
 			return jdbcTemplate.query("SELECT group_id, authority FROM " + getTableName() + " WHERE group_id = ? ORDER BY group_id", this,groupId);
 		}
 		catch (Exception e) {
-			throw new GroupAuthoritiesDaoException("Query failed", e);
+			throw new GroupAuthoritiesDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -105,7 +106,7 @@ public class GroupAuthoritiesDaoImpl extends AbstractDAO implements Parameterize
 			return jdbcTemplate.query("SELECT group_id, authority FROM " + getTableName() + " WHERE authority = ? ORDER BY authority", this,authority);
 		}
 		catch (Exception e) {
-			throw new GroupAuthoritiesDaoException("Query failed", e);
+			throw new GroupAuthoritiesDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
