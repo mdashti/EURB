@@ -41,7 +41,7 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 	public void update(ColumnMappingPk pk, ColumnMapping dto) throws ColumnMappingDaoException
 	{
 		DaoFactory.createPersistableObjectDao().update(pk, dto);
-		jdbcTemplate.update("UPDATE " + getTableName() + " SET id = ?, table_mapping_id = ?, column_name = ?, mapped_name = ?, col_type = ?, col_order = ?, format_pattern = ?, static_mapping = ?, referenced_table = ?, referenced_id_col = ?, referenced_value_col = ? WHERE id = ?",dto.getId(),dto.getTableMappingId(),dto.getColumnName(),dto.getMappedName(),dto.getColType(),dto.getColOrder(),dto.getFormatPattern(),dto.getStaticMapping(),dto.getReferencedTable(),dto.getReferencedIdCol(),dto.getReferencedValueCol(),pk.getId());
+		jdbcTemplate.update("UPDATE " + getTableName() + " SET table_mapping_id = ?, column_name = ?, mapped_name = ?, col_type = ?, col_order = ?, format_pattern = ?, static_mapping = ?, referenced_table = ?, referenced_id_col = ?, referenced_value_col = ? WHERE id = ?",dto.getTableMappingId(),dto.getColumnName(),dto.getMappedName(),dto.getColType(),dto.getColOrder(),dto.getFormatPattern(),dto.getStaticMapping(),dto.getReferencedTable(),dto.getReferencedIdCol(),dto.getReferencedValueCol(),pk.getId());
 	}
 
 	/** 

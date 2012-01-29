@@ -2,6 +2,8 @@ package com.sharifpro.eurb.management.mapping.model;
 
 import java.io.Serializable;
 
+import com.sharifpro.eurb.info.RecordStatus;
+
 public class DbConfig extends PersistableObject implements Serializable
 {
 	private static final long serialVersionUID = 4348520185323565243L;
@@ -36,6 +38,11 @@ public class DbConfig extends PersistableObject implements Serializable
 	 */
 	protected String testQuery;
 
+	/** 
+	 * This attribute maps to the column record_status in the db_config table.
+	 */
+	protected RecordStatus recordStatus = RecordStatus.ACTIVE;
+	
 	/**
 	 * Method 'DbConfig'
 	 * 
@@ -166,6 +173,42 @@ public class DbConfig extends PersistableObject implements Serializable
 	}
 
 	/**
+	 * Method 'getRecordStatus'
+	 * 
+	 * @return RecordStatus
+	 */
+	public RecordStatus getRecordStatus() {
+		return recordStatus;
+	}
+
+	/**
+	 * Method 'getRecordStatusString'
+	 * 
+	 * @return String
+	 */
+	public String getRecordStatusString() {
+		return recordStatus == null ? "A" : recordStatus.getId();
+	}
+
+	/**
+	 * Method 'setRecordStatus'
+	 * 
+	 * @param recordStatus
+	 */
+	public void setRecordStatus(RecordStatus recordStatus) {
+		this.recordStatus = recordStatus;
+	}
+	
+	/**
+	 * Method 'setRecordStatus'
+	 * 
+	 * @param recordStatusString
+	 */
+	public void setRecordStatus(String recordStatusString) {
+		this.recordStatus = RecordStatus.get(recordStatusString);
+	}
+
+	/**
 	 * Method 'equals'
 	 * 
 	 * @param _other
@@ -272,6 +315,7 @@ public class DbConfig extends PersistableObject implements Serializable
 		ret.append( ", username=" + username );
 		ret.append( ", password=" + password );
 		ret.append( ", testQuery=" + testQuery );
+		ret.append( ", recordStatus=" + recordStatus.getId() );
 		return ret.toString();
 	}
 

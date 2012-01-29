@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapper<DbConfig>, DbConfigDao
 {
-	private final static String QUERY_FROM_COLUMNS = "o.name, o.driver_class, o.driver_url, o.username, o.password, o.test_query";
+	private final static String QUERY_FROM_COLUMNS = "o.name, o.driver_class, o.driver_url, o.username, o.password, o.test_query, o.record_status";
 
 	private final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL_AND_JOIN;
 
@@ -30,7 +30,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	{
 		DbConfigPk pk = new DbConfigPk();
 		DaoFactory.createPersistableObjectDao().insert(dto, pk);
-		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, name, driver_class, driver_url, username, password, test_query ) VALUES ( ?, ?, ?, ?, ?, ?, ? )",pk.getId(),dto.getName(),dto.getDriverClass(),dto.getDriverUrl(),dto.getUsername(),dto.getPassword(),dto.getTestQuery());
+		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, name, driver_class, driver_url, username, password, test_query, record_status ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )",pk.getId(),dto.getName(),dto.getDriverClass(),dto.getDriverUrl(),dto.getUsername(),dto.getPassword(),dto.getTestQuery(), dto.getRecordStatusString());
 		return dto.createPk();
 	}
 
@@ -41,7 +41,27 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public void update(DbConfigPk pk, DbConfig dto) throws DbConfigDaoException
 	{
 		DaoFactory.createPersistableObjectDao().update(pk, dto);
-		jdbcTemplate.update("UPDATE " + getTableName() + " SET id = ?, name = ?, driver_class = ?, driver_url = ?, username = ?, password = ?, test_query = ? WHERE id = ?",dto.getId(),dto.getName(),dto.getDriverClass(),dto.getDriverUrl(),dto.getUsername(),dto.getPassword(),dto.getTestQuery(),pk.getId());
+		jdbcTemplate.update("UPDATE " + getTableName() + " SET name = ?, driver_class = ?, driver_url = ?, username = ?, password = ?, test_query = ?, record_status = A WHERE id = ?",dto.getName(),dto.getDriverClass(),dto.getDriverUrl(),dto.getUsername(),dto.getPassword(),dto.getTestQuery(),pk.getId());
+	}
+	
+	/** 
+	 * Activates a single row in the db_config table.
+	 */
+	@Transactional
+	public void activate(DbConfigPk pk, DbConfig dto) throws DbConfigDaoException
+	{
+		DaoFactory.createPersistableObjectDao().update(pk, dto);
+		jdbcTemplate.update("UPDATE " + getTableName() + " SET record_status = 'A' WHERE id = ?",pk.getId());
+	}
+	
+	/** 
+	 * Deactivates a single row in the db_config table.
+	 */
+	@Transactional
+	public void deactivate(DbConfigPk pk, DbConfig dto) throws DbConfigDaoException
+	{
+		DaoFactory.createPersistableObjectDao().update(pk, dto);
+		jdbcTemplate.update("UPDATE " + getTableName() + " SET record_status = 'P' WHERE id = ?",pk.getId());
 	}
 
 	/** 
@@ -73,6 +93,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 		dto.setUsername( rs.getString( ++i ) );
 		dto.setPassword( rs.getString( ++i ) );
 		dto.setTestQuery( rs.getString( ++i ) );
+		dto.setRecordStatus( rs.getString( ++i ) );
 		return dto;
 	}
 
@@ -110,6 +131,21 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	{
 		try {
 			return jdbcTemplate.query(QUERY_SELECT_PART + " ORDER BY id", this);
+		}
+		catch (Exception e) {
+			throw new DbConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+		
+	}
+
+	/** 
+	 * Returns all active rows from the db_config table that match the criteria ''.
+	 */
+	@Transactional
+	public List<DbConfig> findAllActive() throws DbConfigDaoException
+	{
+		try {
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE is_current='A' ORDER BY id", this);
 		}
 		catch (Exception e) {
 			throw new DbConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);

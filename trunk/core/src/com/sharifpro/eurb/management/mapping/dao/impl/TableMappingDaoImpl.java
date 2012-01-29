@@ -41,7 +41,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	public void update(TableMappingPk pk, TableMapping dto) throws TableMappingDaoException
 	{
 		DaoFactory.createPersistableObjectDao().update(pk, dto);
-		jdbcTemplate.update("UPDATE " + getTableName() + " SET id = ?, db_config_id = ?, table_name = ?, mapped_name = ?, mapped_type = ?, active_for_manager = ?, active_for_user = ? WHERE id = ?",dto.getId(),dto.getDbConfigId(),dto.getTableName(),dto.getMappedName(),dto.getMappedType(),dto.isActiveForManager(),dto.isActiveForUser(),pk.getId());
+		jdbcTemplate.update("UPDATE " + getTableName() + " SET db_config_id = ?, table_name = ?, mapped_name = ?, mapped_type = ?, active_for_manager = ?, active_for_user = ? WHERE id = ?",dto.getDbConfigId(),dto.getTableName(),dto.getMappedName(),dto.getMappedType(),dto.isActiveForManager(),dto.isActiveForUser(),pk.getId());
 	}
 
 	/** 

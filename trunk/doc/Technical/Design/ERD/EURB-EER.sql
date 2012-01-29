@@ -68,6 +68,7 @@ CREATE  TABLE IF NOT EXISTS `eurb`.`db_config` (
   `username` VARCHAR(255) NOT NULL ,
   `password` VARCHAR(255) NULL ,
   `test_query` VARCHAR(1024) NULL ,
+  `record_status` VARCHAR(1) NULL ,
   PRIMARY KEY (`id`) ,
   INDEX `fk_db_config_persistable_object` (`id` ASC) ,
   CONSTRAINT `fk_db_config_persistable_object`
@@ -610,7 +611,7 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `eurb`;
-INSERT INTO `eurb`.`authorities` (`username`, `authority`) VALUES ('admin', 'REPORT_LIST');
+INSERT INTO `eurb`.`authorities` (`username`, `authority`) VALUES ('admin', 'MAPPING_MANAGEMENT_DB_LIST');
 
 COMMIT;
 
@@ -630,9 +631,7 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `eurb`;
-INSERT INTO `eurb`.`group_authorities` (`group_id`, `authority`) VALUES (200, 'DB_LIST');
-INSERT INTO `eurb`.`group_authorities` (`group_id`, `authority`) VALUES (201, 'REPORT_LIST');
-INSERT INTO `eurb`.`group_authorities` (`group_id`, `authority`) VALUES (202, 'REPORT_LIST');
+INSERT INTO `eurb`.`group_authorities` (`group_id`, `authority`) VALUES (200, 'MAPPING_MANAGEMENT_DB_LIST');
 
 COMMIT;
 

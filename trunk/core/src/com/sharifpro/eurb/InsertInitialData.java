@@ -9,12 +9,13 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.sharifpro.eurb.DaoFactory;
+import com.sharifpro.eurb.info.AuthorityType;
+import com.sharifpro.eurb.info.RecordStatus;
 import com.sharifpro.eurb.management.mapping.dao.DbConfigDao;
 import com.sharifpro.eurb.management.mapping.exception.DbConfigDaoException;
 import com.sharifpro.eurb.management.mapping.exception.PersistableObjectDaoException;
 import com.sharifpro.eurb.management.mapping.model.DbConfig;
 import com.sharifpro.eurb.management.mapping.model.DbConfigPk;
-import com.sharifpro.eurb.management.security.AuthorityType;
 import com.sharifpro.eurb.management.security.dao.GroupAuthoritiesDao;
 import com.sharifpro.eurb.management.security.dao.GroupMembersDao;
 import com.sharifpro.eurb.management.security.dao.GroupsDao;
@@ -253,10 +254,11 @@ public class InsertInitialData {
 		dbConf = new DbConfig();
 		dbConf.setName("پایگاه داده داخلی ارب");
 		dbConf.setDriverClass("com.mysql.jdbc.Driver");
-		dbConf.setDriverUrl("jdbc:mysql://localhost/eurb?useUnicode=yes&amp;characterEncoding=UTF-8");
+		dbConf.setDriverUrl("jdbc:mysql://localhost/eurb?useUnicode=yes&characterEncoding=UTF-8");
 		dbConf.setUsername("root");
 		dbConf.setPassword("mohamad");
 		dbConf.setTestQuery("select 1 from dual");
+		dbConf.setRecordStatus(RecordStatus.ACTIVE);
 		
 		DbConfigDao dao = DaoFactory.createDbConfigDao();
 

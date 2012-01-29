@@ -1,4 +1,4 @@
-package com.sharifpro.eurb.management.security;
+package com.sharifpro.eurb.info;
 
 public class AuthorityType {
 	public final static String MAPPING_MANAGEMENT = "MAPPING_MANAGEMENT";
