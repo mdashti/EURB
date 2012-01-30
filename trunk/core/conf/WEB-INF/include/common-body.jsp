@@ -42,10 +42,10 @@
 		<%-- ExtJS Grid Search Plugin --%>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/gridsearch/js/Ext.ux.util.js"></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/gridsearch/js/Ext.ux.form.ThemeCombo.js"></script>
-		<script type="text/javascript" src="<%=resourcesUrl%>/js/gridsearch/js/Ext.ux.menu.IconMenu.js"></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/gridsearch/js/Ext.ux.Toast.js"></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/gridsearch/js/Ext.ux.grid.Search.js"></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/gridsearch/js/Ext.ux.grid.RowActions.js"></script>
+		<script type="text/javascript" src="<%=resourcesUrl%>/js/gridsearch/js/Ext.ux.grid.RecordForm.js"></script>
 
 		<script src="<%=resourcesUrl%>/js/extjs/locale/ext-lang-fa.js"></script>
 		
@@ -66,8 +66,15 @@
 		EURB.search = '<spring:message code="eurb.search" />';
 		EURB.addRecord = '<spring:message code="eurb.addRecord" />';
 		EURB.delRecord = '<spring:message code="eurb.delRecord" />';
+		EURB.editRecord = '<spring:message code="eurb.editRecord" />';
 		EURB.unknownError = '<spring:message code="eurb.unknownError" />';
 		EURB.unableToDecodeJSON = '<spring:message code="eurb.unableToDecodeJSON" />';
+		EURB.areYouSureToDelTitle = '<spring:message code="eurb.areYouSureToDelTitle" />';
+		EURB.areYouSureToDelete = '<spring:message code="eurb.areYouSureToDelete" />';
+		EURB.addEdit = '<spring:message code="eurb.addEdit" />';
+		
+		EURB.appMenu = {};
+		EURB.appMenu.dbConfig = '<spring:message code="eurb.app.menu.management.db" />';
 		
 		EURB.showError = function(msg, title) {
 			Ext.Msg.show({
@@ -103,6 +110,10 @@
 		<script type="text/javascript">
 		Ext.onReady(function(){
 			Ext.QuickTips.init();
+//			var tip = Ext.QuickTips.getQuickTip();
+//			Ext.apply(tip, {
+//				autoHide:false
+//			});
 			/*var item1 = new Ext.Panel({
 		        title: '<spring:message code="eurb.app.menu.management" />',
 		        html: '&lt;empty panel&gt;',
@@ -124,7 +135,7 @@
 		    	html:'<div class="urbangreymenu">'+
 		    	'<h3 class="headerbar"><a href="'+EURB.baseURL+'"><spring:message code="eurb.app.menu.management" /></a></h3>'+
 		    	'<ul class="submenu">'+
-		    	'<li><a href="'+EURB.baseURL+'/management/mapping"><spring:message code="eurb.app.menu.management.db" /></a></li>'+
+		    	'<li><a href="'+EURB.baseURL+'/management/mapping">'+EURB.appMenu.dbConfig+'</a></li>'+
 		    	'<li><a href="'+EURB.baseURL+'"><spring:message code="eurb.app.menu.management.mapping" /></a></li>'+
 		    	'<li><a href="'+EURB.baseURL+'"><spring:message code="eurb.app.menu.management.users" /></a></li>'+
 		    	'</ul>'+

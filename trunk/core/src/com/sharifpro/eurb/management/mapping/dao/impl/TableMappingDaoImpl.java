@@ -31,7 +31,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 		TableMappingPk pk = new TableMappingPk();
 		DaoFactory.createPersistableObjectDao().insert(dto, pk);
 		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, db_config_id, table_name, mapped_name, mapped_type, active_for_manager, active_for_user ) VALUES ( ?, ?, ?, ?, ?, ?, ? )",dto.getId(),dto.getDbConfigId(),dto.getTableName(),dto.getMappedName(),dto.getMappedType(),dto.isActiveForManager(),dto.isActiveForUser());
-		return dto.createPk();
+		return pk;
 	}
 
 	/** 

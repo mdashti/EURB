@@ -1,7 +1,6 @@
 package com.sharifpro.eurb.management.mapping.web;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,9 +12,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sharifpro.eurb.management.mapping.dao.DbConfigDao;
 import com.sharifpro.eurb.management.mapping.model.DbConfig;
-import com.sharifpro.sample.model.Contact;
-import com.sharifpro.sample.service.ContactService;
-import com.sharifpro.util.CollectionUtil;
+import com.sharifpro.eurb.management.mapping.model.DbConfigPk;
+import com.sharifpro.util.json.JsonUtil;
 
 /**
  * Controller - Spring
@@ -26,47 +24,46 @@ import com.sharifpro.util.CollectionUtil;
 public class DBConfigController {
 
 	private DbConfigDao dbConfigDao;
+	
+	private JsonUtil jsonUtil;
 
 	@RequestMapping(value="/management/mapping/dbconfigSearch.spy")
-	public @ResponseBody Map<String,? extends Object> view() throws Exception {
+	public @ResponseBody Map<String,? extends Object> search() throws Exception {
 
 		try{
 			List<DbConfig> dbConfigs = dbConfigDao.findAll();
 
-			return CollectionUtil.getSuccessfulMap(dbConfigs);
+			return JsonUtil.getSuccessfulMap(dbConfigs);
 
 		} catch (Exception e) {
 
-			return CollectionUtil.getModelMapError("Error retrieving Contacts from database.");
+			return JsonUtil.getModelMapError("Error retrieving Contacts from database.");
 		}
 	}
 
-	/*@RequestMapping(value="/sample/create.action")
-	public @ResponseBody Map<String,? extends Object> create(@RequestParam Object data) throws Exception {
-
-		try{
-
-			List<Contact> contacts = contactService.create(data);
-
-			return CollectionUtil.getSuccessfulMap(contacts);
-
-		} catch (Exception e) {
-
-			return CollectionUtil.getModelMapError("Error trying to create contact.");
-		}
-	}*/
-
 	@RequestMapping(value="/management/mapping/dbconfigStore.spy")
-	public @ResponseBody Map<String,? extends Object> update(@RequestParam Object data) throws Exception {
+	public @ResponseBody Map<String,? extends Object> store(@RequestParam Object data) throws Exception {
 		try{
 
-			List<DbConfig> dbConfigs = new ArrayList<DbConfig>(); //contactService.update(data);
-
-			return CollectionUtil.getSuccessfulMap(dbConfigs);
+			List<DbConfig> dbConfigs = jsonUtil.getListFromRequest(data, DbConfig.class);
+			
+			List<Long> insertIds = new ArrayList<Long>(dbConfigs.size());
+			DbConfigPk pk;
+			for(DbConfig dbConf : dbConfigs) {
+				if(dbConf.isNewRecord()) {
+					pk = dbConfigDao.insert(dbConf);
+				} else {
+					pk = dbConf.createPk();
+					dbConfigDao.update(pk,dbConf);
+				}
+				insertIds.add(pk.getId());
+			}
+			
+			return JsonUtil.getSuccessfulMapAfterStore(insertIds);
 
 		} catch (Exception e) {
-
-			return CollectionUtil.getModelMapError("Error trying to update contact.");
+			e.printStackTrace();
+			return JsonUtil.getModelMapError("Error trying to update contact.");
 		}
 	}
 
@@ -94,4 +91,8 @@ public class DBConfigController {
 		this.dbConfigDao = dbConfigDao;
 	}
 
+	@Autowired
+	public void setJsonUtil(JsonUtil jsonUtil) {
+		this.jsonUtil = jsonUtil;
+	}
 }

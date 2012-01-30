@@ -31,7 +31,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 		DbConfigPk pk = new DbConfigPk();
 		DaoFactory.createPersistableObjectDao().insert(dto, pk);
 		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, name, driver_class, driver_url, username, password, test_query, record_status ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )",pk.getId(),dto.getName(),dto.getDriverClass(),dto.getDriverUrl(),dto.getUsername(),dto.getPassword(),dto.getTestQuery(), dto.getRecordStatusString());
-		return dto.createPk();
+		return pk;
 	}
 
 	/** 
@@ -41,7 +41,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public void update(DbConfigPk pk, DbConfig dto) throws DbConfigDaoException
 	{
 		DaoFactory.createPersistableObjectDao().update(pk, dto);
-		jdbcTemplate.update("UPDATE " + getTableName() + " SET name = ?, driver_class = ?, driver_url = ?, username = ?, password = ?, test_query = ?, record_status = A WHERE id = ?",dto.getName(),dto.getDriverClass(),dto.getDriverUrl(),dto.getUsername(),dto.getPassword(),dto.getTestQuery(),pk.getId());
+		jdbcTemplate.update("UPDATE " + getTableName() + " SET name = ?, driver_class = ?, driver_url = ?, username = ?, password = ?, test_query = ?, record_status = 'A' WHERE id = ?",dto.getName(),dto.getDriverClass(),dto.getDriverUrl(),dto.getUsername(),dto.getPassword(),dto.getTestQuery(),pk.getId());
 	}
 	
 	/** 

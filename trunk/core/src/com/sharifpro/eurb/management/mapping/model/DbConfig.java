@@ -2,8 +2,11 @@ package com.sharifpro.eurb.management.mapping.model;
 
 import java.io.Serializable;
 
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+
 import com.sharifpro.eurb.info.RecordStatus;
 
+@JsonAutoDetect
 public class DbConfig extends PersistableObject implements Serializable
 {
 	private static final long serialVersionUID = 4348520185323565243L;

@@ -277,5 +277,14 @@ public class PersistableObject implements Serializable
 		ret.append( ", modifyDate=" + modifyDate );
 		return ret.toString();
 	}
+	
+	private boolean newRecord;
 
+	public boolean isNewRecord() {
+		return newRecord;
+	}
+
+	public void setNewRecord(boolean newRecord) {
+		this.newRecord = newRecord;
+	}
 }
