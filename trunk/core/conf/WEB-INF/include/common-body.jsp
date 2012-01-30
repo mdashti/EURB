@@ -37,7 +37,18 @@
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/swfupload.swfobject.js"></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/AwesomeUploader.js"></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/CascadeWindows.js"></script>--%>
-	
+
+		<%-- ExtJS Grid Search Plugin --%>
+		<script type="text/javascript" src="<%=resourcesUrl%>/js/gridsearch/js/Ext.ux.util.js"></script>
+		<script type="text/javascript" src="<%=resourcesUrl%>/js/gridsearch/js/WebPage.js"></script>
+		<script type="text/javascript" src="<%=resourcesUrl%>/js/gridsearch/js/Ext.ux.form.ThemeCombo.js"></script>
+		<script type="text/javascript" src="<%=resourcesUrl%>/js/gridsearch/js/Ext.ux.menu.IconMenu.js"></script>
+		<script type="text/javascript" src="<%=resourcesUrl%>/js/gridsearch/js/Ext.ux.Toast.js"></script>
+		<script type="text/javascript" src="<%=resourcesUrl%>/js/gridsearch/js/Ext.ux.grid.Search.js"></script>
+		<script type="text/javascript" src="<%=resourcesUrl%>/js/gridsearch/js/Ext.ux.grid.RowActions.js"></script>
+		<script type="text/javascript" src="<%=resourcesUrl%>/js/gridsearch/js/Ext.ux.form.DateTime.js"></script>
+		<script type="text/javascript" src="<%=resourcesUrl%>/js/gridsearch/gridsearch.js"></script>
+
 		<!-- App Menu -->
 		<script type="text/javascript">
 		Ext.BLANK_IMAGE_URL = '<%=resourcesUrl%>/js/extjs/resources/images/default/s.gif';

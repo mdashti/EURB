@@ -7,7 +7,6 @@
 		<link rel="stylesheet" type="text/css" href="<%=resourcesUrl%>/css/reset.css" />
 		<link rel="stylesheet" type="text/css" href="<%=resourcesUrl%>/js/extjs/resources/css/ext-all.css" />
 		<link rel="stylesheet" type="text/css" href="<%=resourcesUrl%>/js/extjs/resources/css/extjs_rtl.css" />
-		<link rel="stylesheet" type="text/css" href="<%=resourcesUrl%>/css/eurb-reports.css" />
 		<!-- Row Editor plugin css -->
 		<link rel="stylesheet" type="text/css" href="<%=resourcesUrl%>/js/extjs/resources/css/rowEditorCustom.css" />
 		<link rel="stylesheet" type="text/css" href="<%=resourcesUrl%>/css/shared.css" />
@@ -17,3 +16,11 @@
 		<link rel="stylesheet" type="text/css" href="<%=resourcesUrl%>/js/extjs/resources/css/Select.css"/>
 		<link rel="stylesheet" type="text/css" href="<%=resourcesUrl%>/js/extjs/resources/css/Ext.ux.form.FileUploadField.css" />
 		<link rel="stylesheet" type="text/css" href="<%=resourcesUrl%>/js/extjs/resources/css/AwesomeUploader.css" />
+
+		<link rel="stylesheet" type="text/css" href="<%=resourcesUrl%>/js/gridsearch/css/icons.css">
+		<link rel="stylesheet" type="text/css" href="<%=resourcesUrl%>/js/gridsearch/css/Ext.ux.grid.RowActions.css">
+		<link rel="stylesheet" type="text/css" href="<%=resourcesUrl%>/js/gridsearch/css/empty.css" id="theme">
+		<link rel="stylesheet" type="text/css" href="<%=resourcesUrl%>/js/gridsearch/css/webpage.css">
+		<link rel="stylesheet" type="text/css" href="<%=resourcesUrl%>/js/gridsearch/css/gridsearch.css">
+		
+		<link rel="stylesheet" type="text/css" href="<%=resourcesUrl%>/css/eurb-reports.css" />
