@@ -16,6 +16,7 @@
 		<link rel="stylesheet" type="text/css" href="<%=resourcesUrl%>/js/extjs/resources/css/Select.css"/>
 		<link rel="stylesheet" type="text/css" href="<%=resourcesUrl%>/js/extjs/resources/css/Ext.ux.form.FileUploadField.css" />
 		<link rel="stylesheet" type="text/css" href="<%=resourcesUrl%>/js/extjs/resources/css/AwesomeUploader.css" />
+		<link rel="stylesheet" type="text/css" href="<%=resourcesUrl%>/js/extjs/examples/ux/statusbar/css/statusbar.css" />
 
 		<link rel="stylesheet" type="text/css" href="<%=resourcesUrl%>/js/gridsearch/css/icons.css">
 		<link rel="stylesheet" type="text/css" href="<%=resourcesUrl%>/js/gridsearch/css/Ext.ux.grid.RowActions.css">

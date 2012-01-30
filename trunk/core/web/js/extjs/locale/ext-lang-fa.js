@@ -277,9 +277,17 @@ if(Ext.app.SearchField) {
 	});
 }
 
-if(Ext.ux.grid && Ext.ux.grid.RecordForm) {
-	Ext.apply(Ext.ux.grid.RecordForm.prototype, {
-		okText : "تأیید",
-		cancelText: "لغو"
-	})
+if(Ext.ux.grid) {
+	if(Ext.ux.grid.RecordForm) {
+		Ext.apply(Ext.ux.grid.RecordForm.prototype, {
+			okText : "تأیید",
+			cancelText: "لغو"
+		})
+	}
+	
+	if(Ext.ux.grid.Search) {
+		Ext.apply(Ext.ux.grid.Search.prototype, {
+		searchText            : "جستجو"
+	});
+	}
 }

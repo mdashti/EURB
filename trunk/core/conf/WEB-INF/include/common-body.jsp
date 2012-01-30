@@ -1,3 +1,4 @@
+<%@page import="com.sharifpro.util.SessionManager"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <% String resourcesUrl = request.getParameter("resourcesUrl"); %>
 <% String baseUrl = request.getParameter("baseUrl"); %>
@@ -12,7 +13,6 @@
 		<script src="<%=resourcesUrl%>/js/extjs/adapter/ext/ext-base-debug.js"></script>
 		<script src="<%=resourcesUrl%>/js/extjs/ext-all-debug.js"></script>
 		<script src="<%=resourcesUrl%>/js/extjs/extjs_rtl.js"></script>
-		<script src="<%=resourcesUrl%>/js/extjs/locale/ext-lang-fa.js"></script>
 		<!-- Row Editor plugin js -->
 		<script src="<%=resourcesUrl%>/js/extjs/plugins/roweditor/RowEditor.js"></script>
 		
@@ -31,6 +31,7 @@
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/Ext.ux.grid.RowActions.js"></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/Ext.ux.grid.RecordForm.js"></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/Select.js"></script>
+		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/examples/ux/statusbar/StatusBar.js"></script>
 		<%--<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/Ext.ux.form.FileUploadField.js"></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/Ext.ux.XHRUpload.js"></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/swfupload.js"></script>
@@ -46,15 +47,39 @@
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/gridsearch/js/Ext.ux.grid.Search.js"></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/gridsearch/js/Ext.ux.grid.RowActions.js"></script>
 
-		<!-- App Menu -->
+		<script src="<%=resourcesUrl%>/js/extjs/locale/ext-lang-fa.js"></script>
+		
 		<script type="text/javascript">
 		Ext.BLANK_IMAGE_URL = '<%=resourcesUrl%>/js/extjs/resources/images/default/s.gif';
 		EURB = {};
 		EURB.baseURL = '<%=baseUrl%>';
 		EURB.resourcesURL = '<%=resourcesUrl%>';
-		EURB.loading = '<spring:message code="eurb.loading" />';
+		EURB.currentUser = '<%=SessionManager.getCurrentUserName()%>';
+		EURB.currentIpAddress = '<%=request.getRemoteAddr()%>';
 		
+		EURB.defaultPageLimit = 15;
+		
+		EURB.loading = '<spring:message code="eurb.loading" />';
+		EURB.user = '<spring:message code="eurb.user" />';
+		EURB.ipAddress = '<spring:message code="eurb.ipAddress" />';
+		EURB.logout = '<spring:message code="eurb.logout" />';
+		EURB.search = '<spring:message code="eurb.search" />';
+		EURB.addRecord = '<spring:message code="eurb.addRecord" />';
+		EURB.delRecord = '<spring:message code="eurb.delRecord" />';
+		EURB.unknownError = '<spring:message code="eurb.unknownError" />';
+		EURB.unableToDecodeJSON = '<spring:message code="eurb.unableToDecodeJSON" />';
+		
+		EURB.showError = function(msg, title) {
+			Ext.Msg.show({
+				 title:title || 'Error'
+				,msg:Ext.util.Format.ellipsis(msg, 2000)
+				,icon:Ext.Msg.ERROR
+				,buttons:Ext.Msg.OK
+				,minWidth:1200 > String(msg).length ? 360 : 600
+			});
+		};
 		</script>
+		<!-- App Menu -->
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/app/menu/jquery.min.js"></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/app/menu/ddaccordion.js">
 		
@@ -77,6 +102,7 @@
 		<div id="main"></div>
 		<script type="text/javascript">
 		Ext.onReady(function(){
+			Ext.QuickTips.init();
 			/*var item1 = new Ext.Panel({
 		        title: '<spring:message code="eurb.app.menu.management" />',
 		        html: '&lt;empty panel&gt;',
