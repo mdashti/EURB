@@ -20,7 +20,5 @@
 		<link rel="stylesheet" type="text/css" href="<%=resourcesUrl%>/js/gridsearch/css/icons.css">
 		<link rel="stylesheet" type="text/css" href="<%=resourcesUrl%>/js/gridsearch/css/Ext.ux.grid.RowActions.css">
 		<link rel="stylesheet" type="text/css" href="<%=resourcesUrl%>/js/gridsearch/css/empty.css" id="theme">
-		<link rel="stylesheet" type="text/css" href="<%=resourcesUrl%>/js/gridsearch/css/webpage.css">
-		<link rel="stylesheet" type="text/css" href="<%=resourcesUrl%>/js/gridsearch/css/gridsearch.css">
 		
 		<link rel="stylesheet" type="text/css" href="<%=resourcesUrl%>/css/eurb-reports.css" />

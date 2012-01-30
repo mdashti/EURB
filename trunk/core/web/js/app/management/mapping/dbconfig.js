@@ -1,36 +1,13 @@
-// vim: sw=4:ts=4:nu:nospell:fdc=4
-/**
- * Ext.ux.grid.Search Plugin Example Application
- *
- * @author    Ing. Jozef Sakáloš
- * @copyright (c) 2008, by Ing. Jozef Sakáloš
- * @date      5. April 2008
- * @version   $Id: gridsearch.js 127 2009-02-13 21:26:31Z jozo $
- *
- * @license gridsearch.js is licensed under the terms of the Open Source
- * LGPL 3.0 license. Commercial use is permitted to the extent that the 
- * code/component(s) do NOT become part of another Open Source or Commercially
- * licensed development library or toolkit without explicit permission.
- * 
- * License details: http://www.gnu.org/licenses/lgpl.html
- */
- 
-/*global Ext, Example, WebPage, window */
- 
-Ext.ns('Example', 'WebPage');
-Ext.BLANK_IMAGE_URL = 'ext31/resources/images/default/s.gif';
 Ext.state.Manager.setProvider(new Ext.state.CookieProvider());
-Example.version = '1.1';
+EURB.DBConfig.version = '1.1';
  
 // {{{
-Example.Grid1 = Ext.extend(Ext.grid.EditorGridPanel, {
+EURB.DBConfig.DBGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 	// defaults - can be changed from outside
 	 layout:'fit'
 	,border:false
 	,stateful:false
-	,url:'process-request.php'
-	,objName:'company'
-	,idName:'compID'
+	,idName:'id'
 
 	// {{{
 	,initComponent:function() {
@@ -51,126 +28,79 @@ Example.Grid1 = Ext.extend(Ext.grid.EditorGridPanel, {
 			// {{{
 			store:new Ext.data.Store({
 				reader:new Ext.data.JsonReader({
-					 id:'compID'
+					 id:'id'
 					,totalProperty:'totalCount'
-					,root:'rows'
+					,root:'data'
 					,fields:[
-						 {name:'compID', type:'int'}
-						,{name:'company', type:'string'}
-						,{name:'price', type:'float'}
-						,{name:'change', type:'float'}
-						,{name:'pctChange', type:'float'}
-						,{name:'lastChange', type:'date', dateFormat:'n/j/Y'}
-						,{name:'industry', type:'string'}
-//						,{name:'action1', type:'string'}
-//						,{name:'qtip1', type:'string'}
-//						,{name:'action2', type:'string'}
-//						,{name:'qtip2', type:'string'}
-//						,{name:'action3', type:'string'}
-//						,{name:'qtip3', type:'string'}
-						,{name:'note', type:'string'}
+						 {name:'id', type:'int'}
+						,{name:'name', type:'string'}
+						,{name:'driverClass', type:'string'}
+						,{name:'driverUrl', type:'string'}
+						,{name:'username', type:'string'}
+						,{name:'password', type:'string'}
+						,{name:'testQuery', type:'string'}
 					]
 				})
-				,proxy:new Ext.data.HttpProxy({url:this.url})
-				,baseParams:{cmd:'getData', objName:this.objName}
+				,proxy:new Ext.data.HttpProxy({
+					url:EURB.DBConfig.searchAction,
+			        listeners: {
+			        	'exception' : function(proxy, type, action, options, res) {
+			    	    	Ext.Msg.show({
+			    	    		title: 'ERROR',
+			    	    		msg: Ext.util.JSON.decode(res.responseText).message,
+			    	    		icon: Ext.MessageBox.ERROR,
+			    	    		buttons: Ext.Msg.OK
+			    	    	});
+			    	    }
+			        }
+			    })
+				,baseParams:{}
 				,remoteSort:true
 			})
 			// }}}
 			// {{{
 			,columns:[{
-				 header:'Company'
-				,id:'company'
-				,dataIndex:'company'
+				 header:'Name'
+				,id:'name'
+				,dataIndex:'name'
 				,width:160
 				,sortable:true
 				,editor:new Ext.form.TextField({
 					allowBlank:false
 				})
 			},{
-				 header:'Price'
-				,dataIndex:'price'
-				,width:40
+				 header:'Driver Class'
+				,id:'driverClass'
+				,dataIndex:'driverClass'
+				,width:160
 				,sortable:true
-				,align:'right'
-				,editor:new Ext.form.NumberField({
-					 allowBlank:false
-					,decimalPrecision:2
-					,selectOnFocus:true
+				,editor:new Ext.form.TextField({
+					allowBlank:false
 				})
 			},{
-				 header:'Change'
-				,dataIndex:'change'
-				,width:40
+				 header:'Driver URL'
+				,id:'driverUrl'
+				,dataIndex:'driverUrl'
+				,width:160
 				,sortable:true
-				,align:'right'
-				,editor:new Ext.form.NumberField({
-					 allowBlank:false
-					,decimalPrecision:2
-					,selectOnFocus:true
+				,editor:new Ext.form.TextField({
+					allowBlank:false
 				})
 			},{
-				 header:'Change [%]'
-				,dataIndex:'pctChange'
-				,width:50
+				 header:'Username'
+				,id:'username'
+				,dataIndex:'username'
+				,width:160
 				,sortable:true
-				,align:'right'
-				,editor:new Ext.form.NumberField({
-					 allowBlank:false
-					,decimalPrecision:2
-					,selectOnFocus:true
-				})
-			},{
-				 header:'Last Updated'
-				,dataIndex:'lastChange'
-				,width:70
-				,sortable:true
-				,align:'right'
-				,editor:new Ext.form.DateField({
-				})
-//				,renderer:Ext.util.Format.dateRenderer('n/j/Y')
-				,renderer:Ext.util.Format.dateRenderer('m/d/Y h:i A T')
-			},{
-				 header:'Industry'
-				,dataIndex:'industry'
-				,width:75
-				,sortable:true
-				,editor:new Ext.form.ComboBox({
-					store:new Ext.data.SimpleStore({
-						 id:0
-						,fields:['industry']
-						,data:[
-							 ['Automotive']
-							,['Computer']
-							,['Finance']
-							,['Food']
-							,['Manufacturing']
-							,['Medical']
-							,['Retail']
-							,['Services']
-						]
-					})
-					,displayField:'industry'
-					,valueField:'industry'
-					,triggerAction:'all'
-					,mode:'local'
-					,editable:false
-					,lazyRender:true
-					,forceSelection:true
-				})
-			},{
-				 header:'Note'
-				,dataIndex:'note'
-				,width:75
-				,sortable:true
-				,editor:new Ext.form.TextArea({
-					grow:true
+				,editor:new Ext.form.TextField({
+					allowBlank:false
 				})
 			}, this.rowActions]
 			// }}}
 			,plugins:[new Ext.ux.grid.Search({
 				iconCls:'icon-zoom'
-				,readonlyIndexes:['note']
-				,disableIndexes:['pctChange']
+				,readonlyIndexes:['testQuery']
+				,disableIndexes:['testQuery']
 				,minChars:2
 				,autoFocus:true
 //				,menuStyle:'radio'
@@ -212,13 +142,13 @@ Example.Grid1 = Ext.extend(Ext.grid.EditorGridPanel, {
 		});
 
 		// call parent
-		Example.Grid1.superclass.initComponent.apply(this, arguments);
+		EURB.DBConfig.DBGrid.superclass.initComponent.apply(this, arguments);
 	} // eo function initComponent
 	// }}}
 	// {{{
 	,onRender:function() {
 		// call parent
-		Example.Grid1.superclass.onRender.apply(this, arguments);
+		EURB.DBConfig.DBGrid.superclass.onRender.apply(this, arguments);
 
 		this.bbar2 = new Ext.Toolbar({
 			renderTo:this.bbar
@@ -239,7 +169,7 @@ Example.Grid1 = Ext.extend(Ext.grid.EditorGridPanel, {
 	// }}}
 	// {{{
 	,afterRender:function() {
-		Example.Grid1.superclass.afterRender.apply(this, arguments);
+		EURB.DBConfig.DBGrid.superclass.afterRender.apply(this, arguments);
 		this.getBottomToolbar().add({text:'A test button',iconCls:'icon-info'});
 	} // eo function afterRender
 	// }}}
@@ -271,14 +201,12 @@ Example.Grid1 = Ext.extend(Ext.grid.EditorGridPanel, {
 			data.push(r.data);
 		}, this);
 		var o = {
-			 url:this.url
+			 url:EURB.DBConfig.storeAction
 			,method:'post'
 			,callback:this.requestCallback
 			,scope:this
 			,params:{
-				 cmd:'saveData'
-				,objName:this.objName
-				,data:Ext.encode(data)
+				 data:Ext.encode(data)
 			}
 		};
 		Ext.Ajax.request(o);
@@ -351,7 +279,7 @@ Example.Grid1 = Ext.extend(Ext.grid.EditorGridPanel, {
 }); // eo extend
 
 // register xtype
-Ext.reg('examplegrid1', Example.Grid1);
+Ext.reg('dbconfig.dbgrid', EURB.DBConfig.DBGrid);
 // }}}
 
 // application main entry point
@@ -361,45 +289,8 @@ Ext.onReady(function() {
 //	Ext.apply(tip, {
 //		autoHide:false
 //	});
-
-	var adsenseHost = 
-		   'gridsearch.localhost' === window.location.host
-		|| 'gridsearch.extjs.eu' === window.location.host
-	;
-	var page = new WebPage({
-		 version:Example.version
-		,westContent:'west-content'
-		,centerContent:'center-content'
-		,adRowContent:adsenseHost ? 'adrow-content' : undefined
-	});
-
-	var ads = Ext.getBody().select('div.adsense');
-	if(adsenseHost) {
-		ads.removeClass('x-hidden');
-	}
-	else {
-		ads.remove();
-	}
-
-	// create and show window
-	var win = new Ext.Window({
-		 id:'gswin'
-        ,title:Ext.get('page-title').dom.innerHTML
-		,iconCls:'icon-grid'
-		,width:700
-		,height:400
-//		,stateful:false
-		,x:320
-		,y:82
-		,plain:true
-		,layout:'fit'
-		,closable:false
-		,border:false
-		,maximizable:true
-		,items:{xtype:'examplegrid1', id:'examplegrid1'}
-		,plugins:[new Ext.ux.menu.IconMenu()]
-	});
-	win.show();
+	EURB.mainPanel.items.add(new EURB.DBConfig.DBGrid());
+    EURB.mainPanel.doLayout();
  
 }); // eo function onReady
  

@@ -40,14 +40,11 @@
 
 		<%-- ExtJS Grid Search Plugin --%>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/gridsearch/js/Ext.ux.util.js"></script>
-		<script type="text/javascript" src="<%=resourcesUrl%>/js/gridsearch/js/WebPage.js"></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/gridsearch/js/Ext.ux.form.ThemeCombo.js"></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/gridsearch/js/Ext.ux.menu.IconMenu.js"></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/gridsearch/js/Ext.ux.Toast.js"></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/gridsearch/js/Ext.ux.grid.Search.js"></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/gridsearch/js/Ext.ux.grid.RowActions.js"></script>
-		<script type="text/javascript" src="<%=resourcesUrl%>/js/gridsearch/js/Ext.ux.form.DateTime.js"></script>
-		<script type="text/javascript" src="<%=resourcesUrl%>/js/gridsearch/gridsearch.js"></script>
 
 		<!-- App Menu -->
 		<script type="text/javascript">
@@ -101,7 +98,7 @@
 		    	html:'<div class="urbangreymenu">'+
 		    	'<h3 class="headerbar"><a href="'+EURB.baseURL+'"><spring:message code="eurb.app.menu.management" /></a></h3>'+
 		    	'<ul class="submenu">'+
-		    	'<li><a href="'+EURB.baseURL+'"><spring:message code="eurb.app.menu.management.db" /></a></li>'+
+		    	'<li><a href="'+EURB.baseURL+'/management/mapping"><spring:message code="eurb.app.menu.management.db" /></a></li>'+
 		    	'<li><a href="'+EURB.baseURL+'"><spring:message code="eurb.app.menu.management.mapping" /></a></li>'+
 		    	'<li><a href="'+EURB.baseURL+'"><spring:message code="eurb.app.menu.management.users" /></a></li>'+
 		    	'</ul>'+
