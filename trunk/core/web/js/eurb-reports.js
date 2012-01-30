@@ -54,44 +54,17 @@ Ext.onReady(function(){
 
     Ext.QuickTips.init();
 
-    var item1 = new Ext.Panel({
-        title: 'Accordion Item 1',
-        html: '&lt;empty panel&gt;',
-        cls:'empty'
-    });
-
-    var item2 = new Ext.Panel({
-        title: 'Accordion Item 2',
-        html: '&lt;empty panel&gt;',
-        cls:'empty'
-    });
-
-    var item3 = new Ext.Panel({
-        title: 'Accordion Item 3',
-        html: '&lt;empty panel&gt;',
-        cls:'empty'
-    });
-
-    var item4 = new Ext.Panel({
-        title: 'Accordion Item 4',
-        html: '&lt;empty panel&gt;',
-        cls:'empty'
-    });
-
-    var item5 = new Ext.Panel({
-        title: 'Accordion Item 5',
-        html: '&lt;empty panel&gt;',
-        cls:'empty'
-    });
-
     var api = new Ext.Panel({
         region:'east',
         margins:'5 0 5 5',
         split:true,
-        width: 210,
-        layout:'accordion',
-        items: [item1, item2, item3, item4, item5]
+        width: 210
+        //,layout:'accordion',
+        //,items: []
+        //,html: ''
     });
+    
+    EURB.mainMenu = api;
     
     var mainPanel = new MainPanel();
 
