@@ -74,6 +74,17 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 		DaoFactory.createPersistableObjectDao().delete(pk);
 	}
 
+	/** 
+	 * Deletes a single row in the db_config table.
+	 */
+	@Transactional
+	public void deleteAll(List<DbConfigPk> pkList) throws DbConfigDaoException
+	{
+		for(DbConfigPk pk : pkList) {
+			delete(pk);
+		}
+	}
+	
 	/**
 	 * Method 'mapRow'
 	 * 

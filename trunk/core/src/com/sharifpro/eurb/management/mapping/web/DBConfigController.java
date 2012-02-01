@@ -37,7 +37,7 @@ public class DBConfigController {
 
 		} catch (Exception e) {
 
-			return JsonUtil.getModelMapError("Error retrieving Contacts from database.");
+			return JsonUtil.getModelMapError("Error retrieving DbConfig from database.");
 		}
 	}
 
@@ -63,27 +63,30 @@ public class DBConfigController {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			return JsonUtil.getModelMapError("Error trying to update contact.");
+			return JsonUtil.getModelMapError("Error trying to update DbConfig.");
 		}
 	}
 
-	/*@RequestMapping(value="/sample/delete.action")
+	@RequestMapping(value="/management/mapping/dbconfigRemove.spy")
 	public @ResponseBody Map<String,? extends Object> delete(@RequestParam Object data) throws Exception {
 
 		try{
 
-			contactService.delete(data);
-
-			Map<String,Object> modelMap = new HashMap<String,Object>(3);
-			modelMap.put("success", true);
-
-			return modelMap;
+			//dbConfigDao.delete(data);
+			List<Integer> deleteIds = jsonUtil.getListFromRequest(data, Integer.class);
+			List<DbConfigPk> pkList = new ArrayList<DbConfigPk>(deleteIds.size());
+			for(Integer id : deleteIds) {
+				pkList.add(new DbConfigPk(new Long(id)));
+			}
+			dbConfigDao.deleteAll(pkList);
+			
+			return JsonUtil.getSuccessfulMapAfterStore(deleteIds);
 
 		} catch (Exception e) {
 
-			return getModelMapError("Error trying to delete contact.");
+			return JsonUtil.getModelMapError("Error trying to delete DbConfig.");
 		}
-	}*/
+	}
 
 
 	@Autowired

@@ -26,6 +26,7 @@
 			EURB.DBConfig = {};
 			EURB.DBConfig.searchAction = 'dbconfigSearch.spy';
 			EURB.DBConfig.storeAction = 'dbconfigStore.spy';
+			EURB.DBConfig.removeAction = 'dbconfigRemove.spy';
 		</script>
 		<script src="${resourcesUrl}/js/app/management/mapping/dbconfig.js"></script>
 	</body>

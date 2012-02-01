@@ -79,6 +79,10 @@ if(Ext.MessageBox){
       yes    : "بله",
       no     : "خیر"
    };
+   
+   Ext.MessageBox.title = {
+      warning     : "اخطار"
+   };
 }
 
 if(Ext.util.Format){

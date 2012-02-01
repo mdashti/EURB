@@ -79,6 +79,7 @@ EURB.DBConfig.cols = [{
 		,allowBlank:false
 		,inputType:'password'
 	}
+	,hidden:true
 	,renderer: function() {return '';}
 },{
 	 header:'Test Query'
@@ -89,6 +90,7 @@ EURB.DBConfig.cols = [{
 	,editor:new Ext.form.TextField({
 		allowBlank:true
 	})
+	,hidden:true
 }];
 
 EURB.DBConfig.DBGrid = Ext.extend(Ext.grid.GridPanel, {
@@ -152,6 +154,13 @@ EURB.DBConfig.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 				,listeners:{
 					 scope:this
 					,click:{fn:this.addRecord,buffer:200}
+				}
+			},{
+				 text:EURB.delRecord
+				,iconCls:'icon-minus'
+				,listeners:{
+					 scope:this
+					,click:{fn:this.deleteSelectedRecords,buffer:200}
 				}
 			}]
 		};
@@ -268,14 +277,28 @@ EURB.DBConfig.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 			break;
 
 			case 'deleteData':
+				if(o.affectedIds) {
+					for(var i=0; i<o.affectedIds.length; i++) {
+						this.store.removeAt(this.store.indexOfId(o.affectedIds[i]));
+					}
+				}
 			break;
 		}
 	}
 	,showError:EURB.showError
 	,deleteRecord:function(record) {
+		this.getSelectionModel().selectRecords([record]);
+		this.deleteSelectedRecords();
+	}
+	,deleteSelectedRecords:function() {
+		var records = this.getSelectionModel().getSelections();
+		if(!records.length) {
+			Ext.Msg.alert(Ext.MessageBox.title.warning, EURB.selectAtLeastOneRecordFisrt).setIcon(Ext.Msg.INFO).minWidth = 120;
+			return;
+		}
 		Ext.Msg.show({
 			 title:EURB.areYouSureToDelTitle
-			,msg:String.format(EURB.areYouSureToDelete, record.get('name'))
+			,msg:String.format(EURB.areYouSureToDelete, records.length == 1 ? records[0].get('name') : "records")
 			,icon:Ext.Msg.QUESTION
 			,buttons:Ext.Msg.YESNO
 			,scope:this
@@ -283,6 +306,21 @@ EURB.DBConfig.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 				if('yes' !== response) {
 					return;
 				}
+				var data = [];
+				Ext.each(records, function(r, i) {
+					data.push(r.get(this.idName));
+				}, this);
+				var o = {
+					 url:EURB.DBConfig.removeAction
+					,method:'post'
+					,callback:this.requestCallback
+					,scope:this
+					,params:{
+						cmd: 'deleteData',
+						data:Ext.encode(data)
+					}
+				};
+				Ext.Ajax.request(o);
 			}
 		});
 	}

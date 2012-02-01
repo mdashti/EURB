@@ -71,6 +71,7 @@
 		EURB.unableToDecodeJSON = '<spring:message code="eurb.unableToDecodeJSON" />';
 		EURB.areYouSureToDelTitle = '<spring:message code="eurb.areYouSureToDelTitle" />';
 		EURB.areYouSureToDelete = '<spring:message code="eurb.areYouSureToDelete" />';
+		EURB.selectAtLeastOneRecordFisrt = '<spring:message code="eurb.selectAtLeastOneRecordFisrt" />';
 		EURB.addEdit = '<spring:message code="eurb.addEdit" />';
 		
 		EURB.appMenu = {};

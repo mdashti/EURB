@@ -26,6 +26,11 @@ public interface DbConfigDao
 	 * Deletes a single row in the db_config table.
 	 */
 	public void delete(DbConfigPk pk) throws DbConfigDaoException;
+	
+	/** 
+	 * Deletes a single row in the db_config table.
+	 */
+	public void deleteAll(List<DbConfigPk> pkList) throws DbConfigDaoException;
 
 	/** 
 	 * Returns all rows from the db_config table that match the criteria 'id = :id'.
