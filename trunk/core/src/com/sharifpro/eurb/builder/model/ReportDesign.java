@@ -2,6 +2,7 @@ package com.sharifpro.eurb.builder.model;
 
 import java.io.Serializable;
 
+import com.sharifpro.eurb.info.RecordStatus;
 import com.sharifpro.eurb.management.mapping.model.PersistableObject;
 
 public class ReportDesign extends PersistableObject implements Serializable
@@ -51,12 +52,12 @@ public class ReportDesign extends PersistableObject implements Serializable
 	/** 
 	 * This attribute maps to the column is_current in the report_design table.
 	 */
-	protected boolean isCurrent;
+	protected boolean isCurrent = true;
 
 	/** 
 	 * This attribute maps to the column record_status in the report_design table.
 	 */
-	protected String recordStatus;
+	protected RecordStatus recordStatus = RecordStatus.ACTIVE;
 
 	/**
 	 * Method 'ReportDesign'
@@ -250,11 +251,21 @@ public class ReportDesign extends PersistableObject implements Serializable
 	/**
 	 * Method 'getRecordStatus'
 	 * 
-	 * @return String
+	 * @return RecordStatus
 	 */
-	public String getRecordStatus()
+	public RecordStatus getRecordStatus()
 	{
 		return recordStatus;
+	}
+	
+	/**
+	 * Method 'getRecordStatusString
+	 * 
+	 * @return String
+	 */
+	public String getRecordStatusString()
+	{
+		return recordStatus == null ? RecordStatus.ACTIVE.getId() : recordStatus.getId();
 	}
 
 	/**
@@ -262,9 +273,13 @@ public class ReportDesign extends PersistableObject implements Serializable
 	 * 
 	 * @param recordStatus
 	 */
-	public void setRecordStatus(String recordStatus)
+	public void setRecordStatus(RecordStatus recordStatus)
 	{
 		this.recordStatus = recordStatus;
+	}
+	
+	public void setRecordStatusString(String recordStatus){
+		this.recordStatus = RecordStatus.get(recordStatus);
 	}
 
 	/**
@@ -406,7 +421,7 @@ public class ReportDesign extends PersistableObject implements Serializable
 		ret.append( ", resultData=" + resultData );
 		ret.append( ", formatFile=" + formatFile );
 		ret.append( ", isCurrent=" + isCurrent );
-		ret.append( ", recordStatus=" + recordStatus );
+		ret.append( ", recordStatus=" + recordStatus.getId() );
 		return ret.toString();
 	}
 

@@ -1,48 +1,106 @@
 package com.sharifpro.eurb.builder.dao.impl;
 
+import com.sharifpro.eurb.DaoFactory;
 import com.sharifpro.eurb.builder.dao.ReportDesignDao;
 import com.sharifpro.eurb.builder.exception.ReportDesignDaoException;
 import com.sharifpro.eurb.builder.model.ReportDesign;
 import com.sharifpro.eurb.builder.model.ReportDesignPk;
+import com.sharifpro.eurb.info.RecordStatus;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
+import com.sharifpro.eurb.management.mapping.dao.impl.PersistableObjectDaoImpl;
 
 import java.util.List;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import javax.naming.OperationNotSupportedException;
+
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.transaction.annotation.Transactional;
 
 public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRowMapper<ReportDesign>, ReportDesignDao
 {
+	private final static String QUERY_FROM_COLUMNS = "o.version_id, o.name, o.description, o.query_text, o.select_part, o.result_data, o.format_file, o.is_current, o.record_status ";
+
+	private final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL_AND_JOIN;
+	
 	/**
 	 * Method 'insert'
 	 * 
 	 * @param dto
 	 * @return ReportDesignPk
 	 */
-	@Transactional
+	@Transactional(readOnly = false)
 	public ReportDesignPk insert(ReportDesign dto)
 	{
-		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, version_id, name, description, category_id, query_text, select_part, result_data, format_file, is_current, record_status ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",dto.getId(),dto.getVersionId(),dto.getName(),dto.getDescription(),dto.getCategoryId(),dto.getQueryText(),dto.getSelectPart(),dto.getResultData(),dto.getFormatFile(),dto.isIsCurrent(),dto.getRecordStatus());
-		return dto.createPk();
+		ReportDesignPk pk = new ReportDesignPk(); 
+		DaoFactory.createPersistableObjectDao().insert(dto, pk);
+		dto.setVersionId(pk.getId());
+		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, version_id, name, description, category_id, query_text, select_part, result_data, format_file, is_current, record_status ) " +
+				"VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",pk.getId(),dto.getVersionId(),dto.getName(),dto.getDescription(),dto.getCategoryId(),dto.getQueryText(),dto.getSelectPart(),dto.getResultData(),dto.getFormatFile(),dto.isIsCurrent(),dto.getRecordStatusString());
+		pk.setVersionId(dto.getVersionId());
+		return pk;
 	}
 
 	/** 
 	 * Updates a single row in the report_design table.
 	 */
-	@Transactional
+	@Transactional(readOnly = false)
 	public void update(ReportDesignPk pk, ReportDesign dto) throws ReportDesignDaoException
 	{
-		jdbcTemplate.update("UPDATE " + getTableName() + " SET id = ?, version_id = ?, name = ?, description = ?, category_id = ?, query_text = ?, select_part = ?, result_data = ?, format_file = ?, is_current = ?, record_status = ? WHERE id = ? AND version_id = ?",dto.getId(),dto.getVersionId(),dto.getName(),dto.getDescription(),dto.getCategoryId(),dto.getQueryText(),dto.getSelectPart(),dto.getResultData(),dto.getFormatFile(),dto.isIsCurrent(),dto.getRecordStatus(),pk.getId(),pk.getVersionId());
+		Long lastVersion = pk.getVersionId();
+		jdbcTemplate.update("UPDATE " + getTableName() + " SET is_current = 0 WHERE id = ? AND version_id = ?", pk.getId(), pk.getVersionId());
+		DaoFactory.createPersistableObjectDao().update(pk, dto);
+		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, version_id, name, description, category_id, query_text, select_part, result_data, format_file, is_current, record_status ) " +
+				"VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",pk.getId(),++lastVersion,dto.getName(),dto.getDescription(),dto.getCategoryId(),dto.getQueryText(),dto.getSelectPart(),dto.getResultData(),dto.getFormatFile(),dto.isIsCurrent(),dto.getRecordStatusString());
+		pk.setVersionId(lastVersion);
+
 	}
+	
+	/**
+	 * Sets result data for a given report design in database
+	 * Is it really necessary???
+	 * */
+	@Transactional(readOnly = false)
+	public void setResultData(ReportDesignPk pk, ReportDesign dto)
+	{
+		DaoFactory.createPersistableObjectDao().update(pk, dto);
+		jdbcTemplate.update("UPDATE " + getTableName() + " SET result_data = ? WHERE id = ? and version_id = ?", dto.getResultData(), pk.getId(), pk.getVersionId());
+	}
+	
+	/**
+	 * Activates a single row in database
+	 * @param pk
+	 * @param dto
+	 */
+	@Transactional(readOnly = false)
+	public void activate(ReportDesignPk pk, ReportDesign dto)
+	{
+		DaoFactory.createPersistableObjectDao().update(pk, dto);
+		jdbcTemplate.update("UPDATE " + getTableName() + " SET record_status = ? WHERE id = ? ", RecordStatus.ACTIVE.getId(), pk.getId());
+	}
+	
+	/**
+	 * Dectivates a single row in database
+	 * @param pk
+	 * @param dto
+	 */
+	@Transactional(readOnly = false)
+	public void deactivate(ReportDesignPk pk, ReportDesign dto)
+	{
+		DaoFactory.createPersistableObjectDao().update(pk, dto);
+		jdbcTemplate.update("UPDATE " + getTableName() + " SET record_status = ? WHERE id = ? ", RecordStatus.PASSIVE.getId(), pk.getId());
+	}
+	
 
 	/** 
 	 * Deletes a single row in the report_design table.
 	 */
-	@Transactional
-	public void delete(ReportDesignPk pk) throws ReportDesignDaoException
+	@Transactional(readOnly = false)
+	public void delete(ReportDesignPk pk, ReportDesign dto) throws ReportDesignDaoException
 	{
-		jdbcTemplate.update("DELETE FROM " + getTableName() + " WHERE id = ? AND version_id = ?",pk.getId(),pk.getVersionId());
+		DaoFactory.createPersistableObjectDao().update(pk, dto);
+		jdbcTemplate.update("UPDATE " + getTableName() + " SET record_status = ? WHERE id = ?", RecordStatus.DELETED.getId() ,pk.getId());
 	}
 
 	/**
@@ -56,21 +114,23 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	public ReportDesign mapRow(ResultSet rs, int row) throws SQLException
 	{
 		ReportDesign dto = new ReportDesign();
-		dto.setId( new Long( rs.getLong(1) ) );
-		dto.setVersionId( new Long( rs.getLong(2) ) );
-		dto.setName( rs.getString( 3 ) );
-		dto.setDescription( rs.getString( 4 ) );
-		dto.setCategoryId( new Long( rs.getLong(5) ) );
+		PersistableObjectDaoImpl.PERSISTABLE_OBJECT_MAPPER.mapRow(rs, row, dto);
+		int i = PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS_COUNT;
+		dto.setId( new Long( rs.getLong(++i) ) );
+		dto.setVersionId( new Long( rs.getLong(++i) ) );
+		dto.setName( rs.getString( ++i ) );
+		dto.setDescription( rs.getString( ++i ) );
+		dto.setCategoryId( new Long( rs.getLong(++i) ) );
 		if (rs.wasNull()) {
 			dto.setCategoryId( null );
 		}
 		
-		dto.setQueryText( rs.getString( 6 ) );
-		dto.setSelectPart( rs.getString( 7 ) );
-		dto.setResultData( rs.getString( 8 ) );
-		dto.setFormatFile( rs.getString( 9 ) );
-		dto.setIsCurrent( rs.getBoolean( 10 ) );
-		dto.setRecordStatus( rs.getString( 11 ) );
+		dto.setQueryText( rs.getString( ++i ) );
+		dto.setSelectPart( rs.getString( ++i ) );
+		dto.setResultData( rs.getString( ++i ) );
+		dto.setFormatFile( rs.getString( ++i ) );
+		dto.setIsCurrent( rs.getBoolean( ++i ) );
+		dto.setRecordStatusString( rs.getString( ++i ) );
 		return dto;
 	}
 
@@ -85,13 +145,13 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	}
 
 	/** 
-	 * Returns all rows from the report_design table that match the criteria 'id = :id AND version_id = :versionId'.
+	 * Returns current row from the report_design table that match the criteria 'id = :id '.
 	 */
-	@Transactional
-	public ReportDesign findByPrimaryKey(Long id, Long versionId) throws ReportDesignDaoException
+	@Transactional(readOnly = true)
+	public ReportDesign findByPrimaryKey(Long id) throws ReportDesignDaoException
 	{
 		try {
-			List<ReportDesign> list = jdbcTemplate.query("SELECT id, version_id, name, description, category_id, query_text, select_part, result_data, format_file, is_current, record_status FROM " + getTableName() + " WHERE id = ? AND version_id = ?", this,id,versionId);
+			List<ReportDesign> list = jdbcTemplate.query(QUERY_SELECT_PART + " WHERE id = ? AND is_current = 1", this,id);
 			return list.size() == 0 ? null : list.get(0);
 		}
 		catch (Exception e) {
@@ -99,11 +159,25 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 		}
 		
 	}
+	
+	@Transactional(readOnly = true)
+	public ReportDesign findByPrimaryKey(Long id, Long versionId) throws ReportDesignDaoException
+	{
+		try {
+			List<ReportDesign> list = jdbcTemplate.query(QUERY_SELECT_PART + " WHERE id = ? AND version_id = ?", this,id, versionId);
+			return list.size() == 0 ? null : list.get(0);
+		}
+		catch (Exception e) {
+			throw new ReportDesignDaoException("Query failed", e);
+		}
+		
+	}
+	
 
 	/** 
 	 * Returns all rows from the report_design table that match the criteria ''.
 	 */
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<ReportDesign> findAll() throws ReportDesignDaoException
 	{
 		try {

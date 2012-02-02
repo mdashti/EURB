@@ -1,10 +1,12 @@
 package com.sharifpro.eurb.builder.dao.impl;
 
+import com.sharifpro.eurb.DaoFactory;
 import com.sharifpro.eurb.builder.dao.ReportCategoryDao;
 import com.sharifpro.eurb.builder.exception.ReportCategoryDaoException;
 import com.sharifpro.eurb.builder.model.ReportCategory;
 import com.sharifpro.eurb.builder.model.ReportCategoryPk;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
+import com.sharifpro.eurb.management.mapping.dao.impl.PersistableObjectDaoImpl;
 
 import java.util.List;
 import java.sql.ResultSet;
@@ -14,35 +16,45 @@ import org.springframework.transaction.annotation.Transactional;
 
 public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedRowMapper<ReportCategory>, ReportCategoryDao
 {
+	
+	private final static String QUERY_FROM_COLUMNS = "o.name, o.description";
+
+	private final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL_AND_JOIN;
+
 	/**
 	 * Method 'insert'
 	 * 
 	 * @param dto
 	 * @return ReportCategoryPk
 	 */
-	@Transactional
+	@Transactional(readOnly = false)
 	public ReportCategoryPk insert(ReportCategory dto)
 	{
-		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, name, description ) VALUES ( ?, ?, ? )",dto.getId(),dto.getName(),dto.getDescription());
-		return dto.createPk();
+		ReportCategoryPk pk = new ReportCategoryPk();
+		DaoFactory.createPersistableObjectDao().insert(dto, pk);
+		
+		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, name, description ) VALUES ( ?, ?, ? )",pk.getId(),dto.getName(),dto.getDescription());
+		return pk;
 	}
 
 	/** 
 	 * Updates a single row in the report_category table.
 	 */
-	@Transactional
+	@Transactional(readOnly = false)
 	public void update(ReportCategoryPk pk, ReportCategory dto) throws ReportCategoryDaoException
 	{
-		jdbcTemplate.update("UPDATE " + getTableName() + " SET id = ?, name = ?, description = ? WHERE id = ?",dto.getId(),dto.getName(),dto.getDescription(),pk.getId());
+		DaoFactory.createPersistableObjectDao().update(pk, dto);
+		jdbcTemplate.update("UPDATE " + getTableName() + " SET name = ?, description = ? WHERE id = ?",dto.getName(),dto.getDescription(),pk.getId());
 	}
 
 	/** 
 	 * Deletes a single row in the report_category table.
 	 */
-	@Transactional
+	@Transactional(readOnly = false)
 	public void delete(ReportCategoryPk pk) throws ReportCategoryDaoException
 	{
 		jdbcTemplate.update("DELETE FROM " + getTableName() + " WHERE id = ?",pk.getId());
+		DaoFactory.createPersistableObjectDao().delete(pk);
 	}
 
 	/**
@@ -56,9 +68,10 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	public ReportCategory mapRow(ResultSet rs, int row) throws SQLException
 	{
 		ReportCategory dto = new ReportCategory();
-		dto.setId( new Long( rs.getLong(1) ) );
-		dto.setName( rs.getString( 2 ) );
-		dto.setDescription( rs.getString( 3 ) );
+		PersistableObjectDaoImpl.PERSISTABLE_OBJECT_MAPPER.mapRow(rs, row, dto);
+		int i = PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS_COUNT;
+		dto.setName( rs.getString(++i) );
+		dto.setDescription( rs.getString(++i) );
 		return dto;
 	}
 
@@ -75,11 +88,11 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	/** 
 	 * Returns all rows from the report_category table that match the criteria 'id = :id'.
 	 */
-	@Transactional
+	@Transactional(readOnly = true)
 	public ReportCategory findByPrimaryKey(Long id) throws ReportCategoryDaoException
 	{
 		try {
-			List<ReportCategory> list = jdbcTemplate.query("SELECT id, name, description FROM " + getTableName() + " WHERE id = ?", this,id);
+			List<ReportCategory> list = jdbcTemplate.query(QUERY_SELECT_PART + " WHERE id = ?", this,id);
 			return list.size() == 0 ? null : list.get(0);
 		}
 		catch (Exception e) {
@@ -91,11 +104,11 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	/** 
 	 * Returns all rows from the report_category table that match the criteria ''.
 	 */
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<ReportCategory> findAll() throws ReportCategoryDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, name, description FROM " + getTableName() + " ORDER BY id", this);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " ORDER BY id", this);
 		}
 		catch (Exception e) {
 			throw new ReportCategoryDaoException("Query failed", e);
@@ -106,11 +119,11 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	/** 
 	 * Returns all rows from the report_category table that match the criteria 'id = :id'.
 	 */
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<ReportCategory> findByPersistableObject(Long id) throws ReportCategoryDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, name, description FROM " + getTableName() + " WHERE id = ?", this,id);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE id = ?", this,id);
 		}
 		catch (Exception e) {
 			throw new ReportCategoryDaoException("Query failed", e);
@@ -121,11 +134,11 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	/** 
 	 * Returns all rows from the report_category table that match the criteria 'id = :id'.
 	 */
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<ReportCategory> findWhereIdEquals(Long id) throws ReportCategoryDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, name, description FROM " + getTableName() + " WHERE id = ? ORDER BY id", this,id);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE id = ? ORDER BY id", this,id);
 		}
 		catch (Exception e) {
 			throw new ReportCategoryDaoException("Query failed", e);
@@ -136,11 +149,11 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	/** 
 	 * Returns all rows from the report_category table that match the criteria 'name = :name'.
 	 */
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<ReportCategory> findWhereNameEquals(String name) throws ReportCategoryDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, name, description FROM " + getTableName() + " WHERE name = ? ORDER BY name", this,name);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE name = ? ORDER BY name", this,name);
 		}
 		catch (Exception e) {
 			throw new ReportCategoryDaoException("Query failed", e);
@@ -148,20 +161,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 		
 	}
 
-	/** 
-	 * Returns all rows from the report_category table that match the criteria 'description = :description'.
-	 */
-	@Transactional
-	public List<ReportCategory> findWhereDescriptionEquals(String description) throws ReportCategoryDaoException
-	{
-		try {
-			return jdbcTemplate.query("SELECT id, name, description FROM " + getTableName() + " WHERE description = ? ORDER BY description", this,description);
-		}
-		catch (Exception e) {
-			throw new ReportCategoryDaoException("Query failed", e);
-		}
-		
-	}
+	
 
 	/** 
 	 * Returns the rows from the report_category table that matches the specified primary-key value.

@@ -105,11 +105,11 @@ public class ReportCategory extends PersistableObject implements Serializable
 	{
 		int _hashCode = super.hashCode();
 		
-		/*if (name != null) {
+		if (name != null) {
 			_hashCode = 29 * _hashCode + name.hashCode();
 		}
 		
-		if (description != null) {
+		/*if (description != null) {
 			_hashCode = 29 * _hashCode + description.hashCode();
 		}*/
 		

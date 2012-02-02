@@ -51,11 +51,7 @@ public interface ReportCategoryDao
 	 */
 	public List<ReportCategory> findWhereNameEquals(String name) throws ReportCategoryDaoException;
 
-	/** 
-	 * Returns all rows from the report_category table that match the criteria 'description = :description'.
-	 */
-	public List<ReportCategory> findWhereDescriptionEquals(String description) throws ReportCategoryDaoException;
-
+	
 	/** 
 	 * Returns the rows from the report_category table that matches the specified primary-key value.
 	 */

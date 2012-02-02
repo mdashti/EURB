@@ -24,10 +24,16 @@ public interface ReportDesignDao
 	/** 
 	 * Deletes a single row in the report_design table.
 	 */
-	public void delete(ReportDesignPk pk) throws ReportDesignDaoException;
+	public void delete(ReportDesignPk pk, ReportDesign dto) throws ReportDesignDaoException;
 
 	/** 
-	 * Returns all rows from the report_design table that match the criteria 'id = :id AND version_id = :versionId'.
+	 * Returns current row from the report_design table that match the criteria 'id = :id'.
+	 */
+	public ReportDesign findByPrimaryKey(Long id) throws ReportDesignDaoException;
+
+	
+	/** 
+	 * Returns all rows from the report_design table that match the criteria 'id = :id, version_id = versionId'.
 	 */
 	public ReportDesign findByPrimaryKey(Long id, Long versionId) throws ReportDesignDaoException;
 
