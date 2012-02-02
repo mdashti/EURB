@@ -104,10 +104,10 @@ public class JsonUtil {
 	 * @param contacts
 	 * @return
 	 */
-	public static Map<String,Object> getSuccessfulMap(List<? extends Object> objList){
+	public static Map<String,Object> getSuccessfulMap(List<? extends Object> objList, int total){
 
 		Map<String,Object> modelMap = new HashMap<String,Object>(3);
-		modelMap.put("total", objList.size());
+		modelMap.put("totalCount", total);
 		modelMap.put("data", objList);
 		modelMap.put("success", true);
 

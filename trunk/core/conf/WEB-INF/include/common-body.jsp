@@ -1,4 +1,5 @@
-<%@page import="com.sharifpro.util.SessionManager"%>
+<%@page import="com.sharifpro.util.SessionManager,
+				com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <% String resourcesUrl = request.getParameter("resourcesUrl"); %>
 <% String baseUrl = request.getParameter("baseUrl"); %>
@@ -57,7 +58,7 @@
 		EURB.currentUser = '<%=SessionManager.getCurrentUserName()%>';
 		EURB.currentIpAddress = '<%=request.getRemoteAddr()%>';
 		
-		EURB.defaultPageLimit = 15;
+		EURB.defaultPageLimit = <%=AbstractDAO.DEFAULT_PAGE_SIZE%>;
 		
 		EURB.loading = '<spring:message code="eurb.loading" />';
 		EURB.user = '<spring:message code="eurb.user" />';
@@ -67,12 +68,16 @@
 		EURB.addRecord = '<spring:message code="eurb.addRecord" />';
 		EURB.delRecord = '<spring:message code="eurb.delRecord" />';
 		EURB.editRecord = '<spring:message code="eurb.editRecord" />';
+		EURB.copyRecord = '<spring:message code="eurb.copyRecord" />';
+		EURB.disableRecord = '<spring:message code="eurb.disableRecord" />';
+		EURB.enableRecord = '<spring:message code="eurb.enableRecord" />';
 		EURB.unknownError = '<spring:message code="eurb.unknownError" />';
 		EURB.unableToDecodeJSON = '<spring:message code="eurb.unableToDecodeJSON" />';
 		EURB.areYouSureToDelTitle = '<spring:message code="eurb.areYouSureToDelTitle" />';
 		EURB.areYouSureToDelete = '<spring:message code="eurb.areYouSureToDelete" />';
 		EURB.selectAtLeastOneRecordFisrt = '<spring:message code="eurb.selectAtLeastOneRecordFisrt" />';
 		EURB.addEdit = '<spring:message code="eurb.addEdit" />';
+		EURB.records = '<spring:message code="eurb.records" />';
 		
 		EURB.appMenu = {};
 		EURB.appMenu.dbConfig = '<spring:message code="eurb.app.menu.management.db" />';

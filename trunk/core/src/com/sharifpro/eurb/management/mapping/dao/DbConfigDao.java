@@ -41,6 +41,26 @@ public interface DbConfigDao
 	 * Returns all rows from the db_config table that match the criteria ''.
 	 */
 	public List<DbConfig> findAll() throws DbConfigDaoException;
+	
+	/** 
+	 * Counts all rows from the db_config table that match the criteria ''.
+	 */
+	public int countAll() throws DbConfigDaoException;
+	
+	/** 
+	 * Returns all rows from the db_config table that match the criteria '' limited by start and limit.
+	 */
+	public List<DbConfig> findAll(Integer start, Integer limit) throws DbConfigDaoException;
+	
+	/** 
+	 * Returns all rows from the db_config table that match the like query in onFields fields limited by start and limit.
+	 */
+	public List<DbConfig> findAll(String query, List<String> onFields, Integer start, Integer limit) throws DbConfigDaoException;
+	
+	/** 
+	 * Counts all rows from the db_config table that match the like query in onFields fields.
+	 */
+	public int countAll(String query, List<String> onFields) throws DbConfigDaoException;
 
 	/** 
 	 * Returns all rows from the db_config table that match the criteria 'id = :id'.

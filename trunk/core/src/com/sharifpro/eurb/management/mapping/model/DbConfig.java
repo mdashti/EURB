@@ -1,10 +1,18 @@
 package com.sharifpro.eurb.management.mapping.model;
 
 import java.io.Serializable;
+import java.sql.Connection;
+import java.util.Properties;
 
+import javax.sql.DataSource;
+
+import org.apache.commons.dbcp.BasicDataSourceFactory;
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 
 import com.sharifpro.eurb.info.RecordStatus;
+import com.sharifpro.util.db.DataSourceFactory;
 
 @JsonAutoDetect
 public class DbConfig extends PersistableObject implements Serializable
@@ -322,4 +330,25 @@ public class DbConfig extends PersistableObject implements Serializable
 		return ret.toString();
 	}
 
+	public String getTestCon() {
+		if(StringUtils.isEmpty(driverClass) || StringUtils.isEmpty(driverUrl)) {
+			return "dbconf-incompletedata";
+		}
+		DataSourceFactory factory = new DataSourceFactory();
+		Properties props = new Properties();
+		props.put("username", username);
+		props.put("password", password);
+		props.put("driverClassName", driverClass);
+		props.put("url", driverUrl/*.replaceAll("&", "&amp;")*/);
+		try {
+			DataSource ds = factory.createDataSource(props);
+			Connection con = ds.getConnection();
+			con.setReadOnly(true);
+			con.close();
+			return "dbconf-valid";
+		} catch (Exception e) {
+			Logger.getLogger(DbConfig.class).error("Connection did not established!", e);
+			return "dbconf-invalidcon";
+		}
+	}
 }

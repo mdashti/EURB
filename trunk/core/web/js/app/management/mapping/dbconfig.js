@@ -7,6 +7,7 @@ EURB.DBConfig.store = new Ext.data.Store({
 		,root:'data'
 		,fields:[
 			 {name:'id', type:'int'}
+			,{name:'testCon', type:'string'}
 			,{name:'name', type:'string'}
 			,{name:'driverClass', type:'string'}
 			,{name:'driverUrl', type:'string'}
@@ -17,7 +18,7 @@ EURB.DBConfig.store = new Ext.data.Store({
 	})
 	,proxy:new Ext.data.HttpProxy({
 		url:EURB.DBConfig.searchAction
-        /*,listeners: {
+        ,listeners: {
         	'exception' : function(proxy, type, action, options, res) {
     	    	Ext.Msg.show({
     	    		title: 'ERROR',
@@ -26,7 +27,7 @@ EURB.DBConfig.store = new Ext.data.Store({
     	    		buttons: Ext.Msg.OK
     	    	});
     	    }
-        }*/
+        }
     })
 	//,baseParams:{}
 	,remoteSort:true
@@ -105,7 +106,7 @@ EURB.DBConfig.DBGrid = Ext.extend(Ext.grid.GridPanel, {
              title:EURB.addEdit+' '+EURB.appMenu.dbConfig
             ,iconCls:'icon-edit-record'
             ,columnCount:1
-            ,ignoreFields:{id:true}
+            ,ignoreFields:{id:true, testCon:true}
             //,readonlyFields:{password:true}
             //,disabledFields:{name:true}
             ,formConfig:{
@@ -116,6 +117,13 @@ EURB.DBConfig.DBGrid = Ext.extend(Ext.grid.GridPanel, {
             ,afterUpdateRecord: function(rec) {
             	EURB.DBConfig.dbConfigGrid.commitChanges();
             }
+            , getRowClass:function(record) {
+				if(record.get('newRecord')) {
+					return this.newRowCls;
+				}
+				
+				return record.get('testCon');
+			}
         });
 
 		// create row actions
@@ -127,6 +135,9 @@ EURB.DBConfig.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 			},{
                  iconCls:'icon-edit-record'
                 ,qtip:EURB.editRecord
+            },{
+                 iconCls:'icon-copy'
+                ,qtip:EURB.copyRecord
             }]
             ,widthIntercept:Ext.isSafari ? 4 : 2
             ,id:'actions'
@@ -142,7 +153,7 @@ EURB.DBConfig.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 			,plugins:[new Ext.ux.grid.Search({
 				iconCls:'icon-zoom'
 				//,readonlyIndexes:['name']
-				//,disableIndexes:['driverUrl']
+				,disableIndexes:['password']
 				//,minChars:2
 				,autoFocus:true
 			//				,menuStyle:'radio'
@@ -161,6 +172,20 @@ EURB.DBConfig.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 				,listeners:{
 					 scope:this
 					,click:{fn:this.deleteSelectedRecords,buffer:200}
+				}
+			},{
+				 text:EURB.enableRecord
+				,iconCls:'icon-activate'
+				,listeners:{
+					 scope:this
+					,click:{fn:this.activateSelectedRecords,buffer:200}
+				}
+			},{
+				 text:EURB.disableRecord
+				,iconCls:'icon-deactivate'
+				,listeners:{
+					 scope:this
+					,click:{fn:this.deactivateSelectedRecords,buffer:200}
 				}
 			}]
 		};
@@ -184,7 +209,7 @@ EURB.DBConfig.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 		EURB.DBConfig.DBGrid.superclass.onRender.apply(this, arguments);
 
 		// load store
-		this.store.load({params:{start:0,limit:EURB.defaultPageLimit}});
+		this.store.load();
 
 	}
 	,afterRender:function() {
@@ -213,6 +238,10 @@ EURB.DBConfig.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 
             case 'icon-edit-record':
                 this.recordForm.show(record, grid.getView().getCell(row, col));
+            break;
+
+            case 'icon-copy':
+                this.copyRecord(record);
             break;
         }
     }
@@ -265,7 +294,8 @@ EURB.DBConfig.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 				var records = this.store.getModifiedRecords();
 				Ext.each(records, function(r, i) {
 					if(o.affectedIds && o.affectedIds[i]) {
-						r.set(this.idName, o.affectedIds[i]);
+						r.set(this.idName, o.affectedIds[i][0]);
+						r.set("testCon", o.affectedIds[i][1]);
 						delete(r.data.newRecord);
 					}
 				});
@@ -273,6 +303,7 @@ EURB.DBConfig.DBGrid = Ext.extend(Ext.grid.GridPanel, {
                     r.commit();
                 });
                 this.store.modified = [];
+				this.onRender();
 //              this.store.commitChanges();
 			break;
 
@@ -286,6 +317,25 @@ EURB.DBConfig.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 		}
 	}
 	,showError:EURB.showError
+	,copyRecord: function(record) {
+		var store = this.store;
+        if(store.recordType) {
+            var rec = new store.recordType({newRecord:true});
+            rec.fields.each(function(f) {
+            	if(f.name != this.idName && f.name != "name") {
+                	rec.data[f.name] = record.data[f.name];
+            	} else {
+            		rec.data[f.name] = '';
+            	}
+            });
+            store.add(rec);
+            this.onRowAction(this, rec, 'icon-edit-record', 0, 0);
+            //this.bbar.pageSize++;
+            this.bbar.doLayout();
+            return rec;
+        }
+        return false;
+	}
 	,deleteRecord:function(record) {
 		this.getSelectionModel().selectRecords([record]);
 		this.deleteSelectedRecords();
@@ -298,7 +348,7 @@ EURB.DBConfig.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 		}
 		Ext.Msg.show({
 			 title:EURB.areYouSureToDelTitle
-			,msg:String.format(EURB.areYouSureToDelete, records.length == 1 ? records[0].get('name') : "records")
+			,msg:String.format(EURB.areYouSureToDelete, records.length == 1 ? records[0].get('name') : EURB.records)
 			,icon:Ext.Msg.QUESTION
 			,buttons:Ext.Msg.YESNO
 			,scope:this

@@ -291,7 +291,8 @@ if(Ext.ux.grid) {
 	
 	if(Ext.ux.grid.Search) {
 		Ext.apply(Ext.ux.grid.Search.prototype, {
-		searchText            : "جستجو"
+		searchText            : "جستجو",
+		selectAllText         : "انتخاب همه"
 	});
 	}
 }

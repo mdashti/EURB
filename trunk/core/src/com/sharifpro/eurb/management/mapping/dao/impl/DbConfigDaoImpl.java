@@ -7,6 +7,7 @@ import com.sharifpro.eurb.management.mapping.model.DbConfig;
 import com.sharifpro.eurb.management.mapping.model.DbConfigPk;
 import com.sharifpro.util.PropertyProvider;
 
+import java.util.Arrays;
 import java.util.List;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,6 +19,8 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	private final static String QUERY_FROM_COLUMNS = "o.name, o.driver_class, o.driver_url, o.username, o.password, o.test_query, o.record_status";
 
 	private final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL_AND_JOIN;
+	
+	private final static String COUNT_QUERY = "SELECT count(distinct(o.id)) FROM " + getTableName() + " o WHERE o.record_status IN ('A', 'P')";
 
 	/**
 	 * Method 'insert'
@@ -141,12 +144,91 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public List<DbConfig> findAll() throws DbConfigDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " ORDER BY id", this);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE record_status IN ('A', 'P') ORDER BY id", this);
 		}
 		catch (Exception e) {
 			throw new DbConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
+	}
+	
+	@Transactional
+	public int countAll() throws DbConfigDaoException
+	{
+		try {
+			return jdbcTemplate.queryForInt(COUNT_QUERY);
+		}
+		catch (Exception e) {
+			throw new DbConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+		
+	}
+
+	/** 
+	 * Returns all rows from the db_config table that match the criteria '' limited by start and limit.
+	 */
+	@Transactional
+	public List<DbConfig> findAll(Integer start, Integer limit) throws DbConfigDaoException
+	{
+		try {
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.record_status IN ('A', 'P') ORDER BY id limit ?, ?", this, start, limit);
+		}
+		catch (Exception e) {
+			throw new DbConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+		
+	}
+
+	/** 
+	 * Returns all rows from the db_config table that match the criteria like query in onFields fields limited by start and limit.
+	 */
+	@Transactional
+	public List<DbConfig> findAll(String query, List<String> onFields, Integer start, Integer limit) throws DbConfigDaoException
+	{
+		try {
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.record_status IN ('A', 'P') AND (" + getMultipleFieldWhereClause(query, onFields) + ") ORDER BY id limit ?, ?", this, start, limit);
+		}
+		catch (Exception e) {
+			throw new DbConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+		
+	}
+	
+	@Transactional
+	public int countAll(String query, List<String> onFields) throws DbConfigDaoException
+	{
+		try {
+			return jdbcTemplate.queryForInt(COUNT_QUERY + " AND (" + getMultipleFieldWhereClause(query, onFields) + ")");
+		}
+		catch (Exception e) {
+			throw new DbConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+		
+	}
+
+	private static String getMultipleFieldWhereClause(String txt, List<String> fields) {
+		StringBuilder query = new StringBuilder();
+		String likeQuery = " LIKE '%"+txt+"%' OR ";
+		if(fields.contains("name")) {
+			query.append("o.name").append(likeQuery);
+		}
+		if(fields.contains("driverClass")) {
+			query.append("o.driver_class").append(likeQuery);
+		}
+		if(fields.contains("driverUrl")) {
+			query.append("o.driver_url").append(likeQuery);
+		}
+		if(fields.contains("username")) {
+			query.append("o.username").append(likeQuery);
+		}
+		if(fields.contains("testQuery")) {
+			query.append("o.test_query").append(likeQuery);
+		}
+		if(query.length() > 0) {
+			return query.substring(0,query.length()-3);
+		} else {
+			return "";
+		}
 	}
 
 	/** 

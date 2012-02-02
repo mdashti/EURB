@@ -14,6 +14,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
  */
 public class AbstractDAO
 {
+	public final static int DEFAULT_PAGE_SIZE=15;
+	public final static String DEFAULT_PAGE_SIZE_STR=DEFAULT_PAGE_SIZE+"";
+	
 	protected JdbcTemplate jdbcTemplate;
 
 	protected DataSource dataSource;

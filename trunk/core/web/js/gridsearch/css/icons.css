@@ -346,6 +346,11 @@
 	cursor:pointer;
 }
 
-
+.icon-activate {
+	background-image:url(../../../img/icon/activate.png) ! important;
+}
+.icon-deactivate {
+	background-image:url(../../../img/icon/deactivate.png) ! important;
+}
 /*  Icon Classes end */
 
