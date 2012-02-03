@@ -24,7 +24,7 @@
 			background:#fb717e;
 		}
 		
-		.dbconf-disabledcon{
+		.dbconf-inactive{
 			background:#ffc873;
 		}
 		</style>
@@ -40,6 +40,8 @@
 			EURB.DBConfig.searchAction = 'dbconfigSearch.spy';
 			EURB.DBConfig.storeAction = 'dbconfigStore.spy';
 			EURB.DBConfig.removeAction = 'dbconfigRemove.spy';
+			EURB.DBConfig.activateAction = 'dbconfigActivate.spy';
+			EURB.DBConfig.deactivateAction = 'dbconfigDeactivate.spy';
 		</script>
 		<script src="${resourcesUrl}/js/app/management/mapping/dbconfig.js"></script>
 	</body>

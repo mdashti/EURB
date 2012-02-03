@@ -290,29 +290,9 @@ EURB.DBConfig.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 		}
 
 		switch(options.params.cmd) {
-			case 'storeData':
-				var records = this.store.getModifiedRecords();
-				Ext.each(records, function(r, i) {
-					if(o.affectedIds && o.affectedIds[i]) {
-						r.set(this.idName, o.affectedIds[i][0]);
-						r.set("testCon", o.affectedIds[i][1]);
-						delete(r.data.newRecord);
-					}
-				});
-				this.store.each(function(r) {
-                    r.commit();
-                });
-                this.store.modified = [];
-				this.onRender();
-//              this.store.commitChanges();
-			break;
-
-			case 'deleteData':
-				if(o.affectedIds) {
-					for(var i=0; i<o.affectedIds.length; i++) {
-						this.store.removeAt(this.store.indexOfId(o.affectedIds[i]));
-					}
-				}
+			default:
+				this.store.reload();
+				this.getSelectionModel().clearSelections();
 			break;
 		}
 	}
@@ -343,7 +323,7 @@ EURB.DBConfig.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 	,deleteSelectedRecords:function() {
 		var records = this.getSelectionModel().getSelections();
 		if(!records.length) {
-			Ext.Msg.alert(Ext.MessageBox.title.warning, EURB.selectAtLeastOneRecordFisrt).setIcon(Ext.Msg.INFO).minWidth = 120;
+			Ext.Msg.alert(Ext.MessageBox.title.warning, EURB.selectAtLeastOneRecordFisrt).setIcon(Ext.Msg.INFO);
 			return;
 		}
 		Ext.Msg.show({
@@ -373,6 +353,50 @@ EURB.DBConfig.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 				Ext.Ajax.request(o);
 			}
 		});
+	}
+	,activateSelectedRecords:function() {
+		var records = this.getSelectionModel().getSelections();
+		if(!records.length) {
+			Ext.Msg.alert(Ext.MessageBox.title.warning, EURB.selectAtLeastOneRecordFisrt).setIcon(Ext.Msg.INFO);
+			return;
+		}
+		var data = [];
+		Ext.each(records, function(r, i) {
+			data.push(r.get(this.idName));
+		}, this);
+		var o = {
+			 url:EURB.DBConfig.activateAction
+			,method:'post'
+			,callback:this.requestCallback
+			,scope:this
+			,params:{
+				cmd: 'activateData',
+				data:Ext.encode(data)
+			}
+		};
+		Ext.Ajax.request(o);
+	}
+	,deactivateSelectedRecords:function() {
+		var records = this.getSelectionModel().getSelections();
+		if(!records.length) {
+			Ext.Msg.alert(Ext.MessageBox.title.warning, EURB.selectAtLeastOneRecordFisrt).setIcon(Ext.Msg.INFO);
+			return;
+		}
+		var data = [];
+		Ext.each(records, function(r, i) {
+			data.push(r.get(this.idName));
+		}, this);
+		var o = {
+			 url:EURB.DBConfig.deactivateAction
+			,method:'post'
+			,callback:this.requestCallback
+			,scope:this
+			,params:{
+				cmd: 'deactivateData',
+				data:Ext.encode(data)
+			}
+		};
+		Ext.Ajax.request(o);
 	}
 	,listeners: {
 		dblclick : function() {

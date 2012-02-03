@@ -81,7 +81,7 @@ public class DBConfigController {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			return JsonUtil.getModelMapError("Error trying to update DbConfig.");
+			return JsonUtil.getModelMapError(e.getMessage());
 		}
 	}
 
@@ -89,8 +89,6 @@ public class DBConfigController {
 	public @ResponseBody Map<String,? extends Object> delete(@RequestParam Object data) throws Exception {
 
 		try{
-
-			//dbConfigDao.delete(data);
 			List<Integer> deleteIds = jsonUtil.getListFromRequest(data, Integer.class);
 			List<DbConfigPk> pkList = new ArrayList<DbConfigPk>(deleteIds.size());
 			for(Integer id : deleteIds) {
@@ -102,7 +100,45 @@ public class DBConfigController {
 
 		} catch (Exception e) {
 
-			return JsonUtil.getModelMapError("Error trying to delete DbConfig.");
+			return JsonUtil.getModelMapError(e.getMessage());
+		}
+	}
+	
+	@RequestMapping(value="/dbconfigActivate.spy")
+	public @ResponseBody Map<String,? extends Object> activate(@RequestParam Object data) throws Exception {
+		try{
+
+			List<Integer> activateIds = jsonUtil.getListFromRequest(data, Integer.class);
+			List<DbConfigPk> pkList = new ArrayList<DbConfigPk>(activateIds.size());
+			for(Integer id : activateIds) {
+				pkList.add(new DbConfigPk(new Long(id)));
+			}
+			dbConfigDao.activateAll(pkList);
+			
+			return JsonUtil.getSuccessfulMapAfterStore(activateIds);
+
+		} catch (Exception e) {
+
+			return JsonUtil.getModelMapError(e.getMessage());
+		}
+	}
+	
+	@RequestMapping(value="/dbconfigDeactivate.spy")
+	public @ResponseBody Map<String,? extends Object> deactivate(@RequestParam Object data) throws Exception {
+		try{
+
+			List<Integer> deactivateIds = jsonUtil.getListFromRequest(data, Integer.class);
+			List<DbConfigPk> pkList = new ArrayList<DbConfigPk>(deactivateIds.size());
+			for(Integer id : deactivateIds) {
+				pkList.add(new DbConfigPk(new Long(id)));
+			}
+			dbConfigDao.deactivateAll(pkList);
+			
+			return JsonUtil.getSuccessfulMapAfterStore(deactivateIds);
+
+		} catch (Exception e) {
+
+			return JsonUtil.getModelMapError(e.getMessage());
 		}
 	}
 

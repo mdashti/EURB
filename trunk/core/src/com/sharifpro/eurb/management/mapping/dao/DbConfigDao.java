@@ -1,11 +1,14 @@
 package com.sharifpro.eurb.management.mapping.dao;
 
+import com.sharifpro.eurb.DaoFactory;
 import com.sharifpro.eurb.management.mapping.dao.DbConfigDao;
 import com.sharifpro.eurb.management.mapping.exception.DbConfigDaoException;
 import com.sharifpro.eurb.management.mapping.model.DbConfig;
 import com.sharifpro.eurb.management.mapping.model.DbConfigPk;
 
 import java.util.List;
+
+import org.springframework.transaction.annotation.Transactional;
 
 public interface DbConfigDao
 {
@@ -22,6 +25,26 @@ public interface DbConfigDao
 	 */
 	public void update(DbConfigPk pk, DbConfig dto) throws DbConfigDaoException;
 
+	/** 
+	 * Activates a single row in the db_config table.
+	 */
+	public void activate(DbConfigPk pk) throws DbConfigDaoException;
+	
+	/** 
+	 * Activates multiple rows in the db_config table.
+	 */
+	public void activateAll(List<DbConfigPk> pkList) throws DbConfigDaoException;
+	
+	/** 
+	 * Deactivates a single row in the db_config table.
+	 */
+	public void deactivate(DbConfigPk pk) throws DbConfigDaoException;
+	
+	/** 
+	 * Deactivates multiple rows in the db_config table.
+	 */
+	public void deactivateAll(List<DbConfigPk> pkList) throws DbConfigDaoException;
+	
 	/** 
 	 * Deletes a single row in the db_config table.
 	 */

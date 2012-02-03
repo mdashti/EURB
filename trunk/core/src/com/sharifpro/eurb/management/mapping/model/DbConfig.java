@@ -331,6 +331,9 @@ public class DbConfig extends PersistableObject implements Serializable
 	}
 
 	public String getTestCon() {
+		if(!isActive()) {
+			return "dbconf-inactive";
+		}
 		if(StringUtils.isEmpty(driverClass) || StringUtils.isEmpty(driverUrl)) {
 			return "dbconf-incompletedata";
 		}
@@ -350,5 +353,9 @@ public class DbConfig extends PersistableObject implements Serializable
 			Logger.getLogger(DbConfig.class).error("Connection did not established!", e);
 			return "dbconf-invalidcon";
 		}
+	}
+	
+	public boolean isActive(){
+		return RecordStatus.ACTIVE.equals(getRecordStatus());
 	}
 }
