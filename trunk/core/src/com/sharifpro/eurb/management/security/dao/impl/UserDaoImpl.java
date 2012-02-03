@@ -54,7 +54,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 	@Transactional(readOnly=false)
 	public void setEnabled(UserPk pk, User dto)
 	{
-		DaoFactory.createPersistableObjectDao().update(pk, dto);
+		DaoFactory.createPersistableObjectDao().update(pk);
 		jdbcTemplate.update("UPDATE " + getTableName() + " SET enabled = ? WHERE username = ?", dto.isEnabled(), pk.getUsername());
 	}
 	
@@ -64,7 +64,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 	@Transactional(readOnly=false)
 	public void setPassword(UserPk pk, User dto)
 	{
-		DaoFactory.createPersistableObjectDao().update(pk, dto);
+		DaoFactory.createPersistableObjectDao().update(pk);
 		jdbcTemplate.update("UPDATE " + getTableName() + " SET password = ? WHERE username = ?", SecurityUtil.generatePassword(dto.getPassword(), dto.getUsername()), pk.getUsername());
 	}
 

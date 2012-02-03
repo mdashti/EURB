@@ -42,7 +42,7 @@ public class GroupsDaoImpl extends AbstractDAO implements ParameterizedRowMapper
 	@Transactional
 	public void update(GroupsPk pk, Groups dto) throws GroupsDaoException
 	{
-		DaoFactory.createPersistableObjectDao().update(pk, dto);
+		DaoFactory.createPersistableObjectDao().update(pk);
 		jdbcTemplate.update("UPDATE " + getTableName() + " SET id = ?, group_name = ? WHERE id = ?",dto.getId(),dto.getGroupName(),pk.getId());
 	}
 

@@ -21,7 +21,7 @@ public interface PersistableObjectDao
 	/** 
 	 * Updates a single row in the persistable_object table.
 	 */
-	public void update(PersistableObjectPk pk, PersistableObject dto);
+	public void update(PersistableObjectPk pk);
 
 	/** 
 	 * Deletes a single row in the persistable_object table.

@@ -43,7 +43,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	@Transactional
 	public void update(DbConfigPk pk, DbConfig dto) throws DbConfigDaoException
 	{
-		DaoFactory.createPersistableObjectDao().update(pk, dto);
+		DaoFactory.createPersistableObjectDao().update(pk);
 		jdbcTemplate.update("UPDATE " + getTableName() + " SET name = ?, driver_class = ?, driver_url = ?, username = ?, password = ?, test_query = ?, record_status = 'A' WHERE id = ?",dto.getName(),dto.getDriverClass(),dto.getDriverUrl(),dto.getUsername(),dto.getPassword(),dto.getTestQuery(),pk.getId());
 	}
 	
@@ -51,20 +51,42 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	 * Activates a single row in the db_config table.
 	 */
 	@Transactional
-	public void activate(DbConfigPk pk, DbConfig dto) throws DbConfigDaoException
+	public void activate(DbConfigPk pk) throws DbConfigDaoException
 	{
-		DaoFactory.createPersistableObjectDao().update(pk, dto);
+		DaoFactory.createPersistableObjectDao().update(pk);
 		jdbcTemplate.update("UPDATE " + getTableName() + " SET record_status = 'A' WHERE id = ?",pk.getId());
+	}
+	
+	/** 
+	 * Activates multiple rows in the db_config table.
+	 */
+	@Transactional
+	public void activateAll(List<DbConfigPk> pkList) throws DbConfigDaoException
+	{
+		for(DbConfigPk pk : pkList) {
+			activate(pk);
+		}
 	}
 	
 	/** 
 	 * Deactivates a single row in the db_config table.
 	 */
 	@Transactional
-	public void deactivate(DbConfigPk pk, DbConfig dto) throws DbConfigDaoException
+	public void deactivate(DbConfigPk pk) throws DbConfigDaoException
 	{
-		DaoFactory.createPersistableObjectDao().update(pk, dto);
+		DaoFactory.createPersistableObjectDao().update(pk);
 		jdbcTemplate.update("UPDATE " + getTableName() + " SET record_status = 'P' WHERE id = ?",pk.getId());
+	}
+	
+	/** 
+	 * Deactivates multiple rows in the db_config table.
+	 */
+	@Transactional
+	public void deactivateAll(List<DbConfigPk> pkList) throws DbConfigDaoException
+	{
+		for(DbConfigPk pk : pkList) {
+			deactivate(pk);
+		}
 	}
 
 	/** 
@@ -78,7 +100,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	}
 
 	/** 
-	 * Deletes a single row in the db_config table.
+	 * Deletes multiple rows in the db_config table.
 	 */
 	@Transactional
 	public void deleteAll(List<DbConfigPk> pkList) throws DbConfigDaoException

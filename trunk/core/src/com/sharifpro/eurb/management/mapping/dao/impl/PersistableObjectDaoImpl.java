@@ -69,7 +69,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 	 * Updates a single row in the persistable_object table.
 	 */
 	@Transactional
-	public void update(PersistableObjectPk pk, PersistableObject dto)
+	public void update(PersistableObjectPk pk)
 	{
 		jdbcTemplate.update("UPDATE persistable_object SET modifier = ?, modify_date = ? WHERE id = ?", SessionManager.getCurrentUserNameNotNull(),new Timestamp(new Date().getTime()),pk.getId());
 	}

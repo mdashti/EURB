@@ -43,7 +43,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	@Transactional(readOnly = false)
 	public void update(ReportCategoryPk pk, ReportCategory dto) throws ReportCategoryDaoException
 	{
-		DaoFactory.createPersistableObjectDao().update(pk, dto);
+		DaoFactory.createPersistableObjectDao().update(pk);
 		jdbcTemplate.update("UPDATE " + getTableName() + " SET name = ?, description = ? WHERE id = ?",dto.getName(),dto.getDescription(),pk.getId());
 	}
 

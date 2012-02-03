@@ -50,7 +50,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	{
 		Long lastVersion = pk.getVersionId();
 		jdbcTemplate.update("UPDATE " + getTableName() + " SET is_current = 0 WHERE id = ? AND version_id = ?", pk.getId(), pk.getVersionId());
-		DaoFactory.createPersistableObjectDao().update(pk, dto);
+		DaoFactory.createPersistableObjectDao().update(pk);
 		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, version_id, name, description, category_id, query_text, select_part, result_data, format_file, is_current, record_status ) " +
 				"VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",pk.getId(),++lastVersion,dto.getName(),dto.getDescription(),dto.getCategoryId(),dto.getQueryText(),dto.getSelectPart(),dto.getResultData(),dto.getFormatFile(),dto.isIsCurrent(),dto.getRecordStatusString());
 		pk.setVersionId(lastVersion);
@@ -64,7 +64,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	@Transactional(readOnly = false)
 	public void setResultData(ReportDesignPk pk, ReportDesign dto)
 	{
-		DaoFactory.createPersistableObjectDao().update(pk, dto);
+		DaoFactory.createPersistableObjectDao().update(pk);
 		jdbcTemplate.update("UPDATE " + getTableName() + " SET result_data = ? WHERE id = ? and version_id = ?", dto.getResultData(), pk.getId(), pk.getVersionId());
 	}
 	
@@ -74,9 +74,9 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	 * @param dto
 	 */
 	@Transactional(readOnly = false)
-	public void activate(ReportDesignPk pk, ReportDesign dto)
+	public void activate(ReportDesignPk pk)
 	{
-		DaoFactory.createPersistableObjectDao().update(pk, dto);
+		DaoFactory.createPersistableObjectDao().update(pk);
 		jdbcTemplate.update("UPDATE " + getTableName() + " SET record_status = ? WHERE id = ? ", RecordStatus.ACTIVE.getId(), pk.getId());
 	}
 	
@@ -86,9 +86,9 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	 * @param dto
 	 */
 	@Transactional(readOnly = false)
-	public void deactivate(ReportDesignPk pk, ReportDesign dto)
+	public void deactivate(ReportDesignPk pk)
 	{
-		DaoFactory.createPersistableObjectDao().update(pk, dto);
+		DaoFactory.createPersistableObjectDao().update(pk);
 		jdbcTemplate.update("UPDATE " + getTableName() + " SET record_status = ? WHERE id = ? ", RecordStatus.PASSIVE.getId(), pk.getId());
 	}
 	
@@ -97,9 +97,9 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	 * Deletes a single row in the report_design table.
 	 */
 	@Transactional(readOnly = false)
-	public void delete(ReportDesignPk pk, ReportDesign dto) throws ReportDesignDaoException
+	public void delete(ReportDesignPk pk) throws ReportDesignDaoException
 	{
-		DaoFactory.createPersistableObjectDao().update(pk, dto);
+		DaoFactory.createPersistableObjectDao().update(pk);
 		jdbcTemplate.update("UPDATE " + getTableName() + " SET record_status = ? WHERE id = ?", RecordStatus.DELETED.getId() ,pk.getId());
 	}
 

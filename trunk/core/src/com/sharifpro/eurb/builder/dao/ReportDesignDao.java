@@ -24,7 +24,7 @@ public interface ReportDesignDao
 	/** 
 	 * Deletes a single row in the report_design table.
 	 */
-	public void delete(ReportDesignPk pk, ReportDesign dto) throws ReportDesignDaoException;
+	public void delete(ReportDesignPk pk) throws ReportDesignDaoException;
 
 	/** 
 	 * Returns current row from the report_design table that match the criteria 'id = :id'.
