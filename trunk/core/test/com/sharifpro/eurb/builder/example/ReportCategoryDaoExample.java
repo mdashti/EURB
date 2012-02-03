@@ -89,22 +89,6 @@ public class ReportCategoryDaoExample
 	}
 
 	/**
-	 * Method 'findWhereDescriptionEquals'
-	 * 
-	 * @param description
-	 * @throws Exception
-	 */
-	public static void findWhereDescriptionEquals(String description) throws Exception
-	{
-		ReportCategoryDao dao = DaoFactory.createReportCategoryDao();
-		List<ReportCategory> _result = dao.findWhereDescriptionEquals(description);
-		for (ReportCategory dto : _result) {
-			display(dto);
-		}
-		
-	}
-
-	/**
 	 * Method 'display'
 	 * 
 	 * @param dto
