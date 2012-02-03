@@ -8,7 +8,6 @@ import com.sharifpro.eurb.management.mapping.model.DbConfig;
 import com.sharifpro.eurb.management.mapping.model.DbConfigPk;
 import com.sharifpro.util.PropertyProvider;
 
-import java.util.Arrays;
 import java.util.List;
 import java.sql.ResultSet;
 import java.sql.SQLException;

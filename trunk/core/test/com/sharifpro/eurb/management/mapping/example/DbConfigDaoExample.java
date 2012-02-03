@@ -1,9 +1,14 @@
 package com.sharifpro.eurb.management.mapping.example;
 
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 import com.sharifpro.eurb.DaoFactory;
 import com.sharifpro.eurb.management.mapping.dao.DbConfigDao;
+import com.sharifpro.eurb.management.mapping.exception.DbConfigDaoException;
 import com.sharifpro.eurb.management.mapping.model.DbConfig;
 
 public class DbConfigDaoExample
@@ -18,6 +23,7 @@ public class DbConfigDaoExample
 	{
 		// Uncomment one of the lines below to test the generated code
 		
+		findMetaDataForFirstActive();
 		// findAll();
 		// findByPersistableObject(null);
 		// findWhereIdEquals(null);
@@ -27,6 +33,23 @@ public class DbConfigDaoExample
 		// findWhereUsernameEquals("");
 		// findWherePasswordEquals("");
 		// findWhereTestQueryEquals("");
+	}
+	
+	public static void findMetaDataForFirstActive() throws DbConfigDaoException {
+		DbConfigDao dao = DaoFactory.createDbConfigDao();
+		List<DbConfig> _result = dao.findAllActive();
+		for (DbConfig dto : _result) {
+			if(dto.isActive() && dto.isValidTestCon()) {
+				try {
+					System.out.println("Catalogs = " + dto.getCatalogs());
+					System.out.println("Tables = " + dto.getTables());
+					System.out.println("Views = " + dto.getViews());
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				return;
+			}
+		}
 	}
 
 	/**

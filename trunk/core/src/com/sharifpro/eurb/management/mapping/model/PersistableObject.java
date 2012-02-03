@@ -3,6 +3,8 @@ package com.sharifpro.eurb.management.mapping.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import com.sharifpro.eurb.PersistableObjectType;
 
 public class PersistableObject implements Serializable
@@ -72,6 +74,7 @@ public class PersistableObject implements Serializable
 	 * 
 	 * @return Integer
 	 */
+	@JsonIgnore
 	public Integer getObjectType()
 	{
 		return PersistableObjectType.getObjectTypeFor(getClass());
@@ -92,6 +95,7 @@ public class PersistableObject implements Serializable
 	 * 
 	 * @return String
 	 */
+	@JsonIgnore
 	public String getCreator()
 	{
 		return creator;
@@ -112,6 +116,7 @@ public class PersistableObject implements Serializable
 	 * 
 	 * @return Date
 	 */
+	@JsonIgnore
 	public Date getCreateDate()
 	{
 		return createDate;
@@ -132,6 +137,7 @@ public class PersistableObject implements Serializable
 	 * 
 	 * @return String
 	 */
+	@JsonIgnore
 	public String getModifier()
 	{
 		return modifier;
@@ -152,6 +158,7 @@ public class PersistableObject implements Serializable
 	 * 
 	 * @return Date
 	 */
+	@JsonIgnore
 	public Date getModifyDate()
 	{
 		return modifyDate;

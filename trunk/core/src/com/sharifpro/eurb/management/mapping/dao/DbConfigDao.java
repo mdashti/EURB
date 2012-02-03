@@ -1,14 +1,11 @@
 package com.sharifpro.eurb.management.mapping.dao;
 
-import com.sharifpro.eurb.DaoFactory;
 import com.sharifpro.eurb.management.mapping.dao.DbConfigDao;
 import com.sharifpro.eurb.management.mapping.exception.DbConfigDaoException;
 import com.sharifpro.eurb.management.mapping.model.DbConfig;
 import com.sharifpro.eurb.management.mapping.model.DbConfigPk;
 
 import java.util.List;
-
-import org.springframework.transaction.annotation.Transactional;
 
 public interface DbConfigDao
 {
@@ -74,6 +71,11 @@ public interface DbConfigDao
 	 * Returns all rows from the db_config table that match the criteria '' limited by start and limit.
 	 */
 	public List<DbConfig> findAll(Integer start, Integer limit) throws DbConfigDaoException;
+
+	/** 
+	 * Returns all active rows from the db_config table that match the criteria ''.
+	 */
+	public List<DbConfig> findAllActive() throws DbConfigDaoException;
 	
 	/** 
 	 * Returns all rows from the db_config table that match the like query in onFields fields limited by start and limit.

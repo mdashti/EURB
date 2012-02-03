@@ -13,8 +13,6 @@ import java.util.List;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import javax.naming.OperationNotSupportedException;
-
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.transaction.annotation.Transactional;
 

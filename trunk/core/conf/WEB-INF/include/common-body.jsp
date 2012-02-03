@@ -55,7 +55,7 @@
 		EURB = {};
 		EURB.baseURL = '<%=baseUrl%>';
 		EURB.resourcesURL = '<%=resourcesUrl%>';
-		EURB.currentUser = '<%=SessionManager.getCurrentUserName()%>';
+		EURB.currentUser = '<%=SessionManager.getCurrentUserName() == null ? "admin" : SessionManager.getCurrentUserName() %>';
 		EURB.currentIpAddress = '<%=request.getRemoteAddr()%>';
 		
 		EURB.defaultPageLimit = <%=AbstractDAO.DEFAULT_PAGE_SIZE%>;
