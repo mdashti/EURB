@@ -15,19 +15,6 @@
 		</jsp:include>
 		<!-- App custom css -->
 		<link rel="stylesheet" type="text/css" href="${resourcesUrl}/css/app/management/mapping/dbconfig.css" />
-		<style type="text/css">
-		.dbconf-valid{
-			background:#8eec6a;
-		}
-		
-		.dbconf-invalidcon{
-			background:#fb717e;
-		}
-		
-		.dbconf-inactive{
-			background:#ffc873;
-		}
-		</style>
 	</head>
 	<body scroll="no" id="docs" style="direction: rtl">
 		<jsp:include page="/WEB-INF/include/common-body.jsp">
@@ -37,11 +24,18 @@
 		<!-- App js -->
 		<script type="text/javascript">
 			EURB.DBConfig = {};
-			EURB.DBConfig.searchAction = 'dbconfigSearch.spy';
-			EURB.DBConfig.storeAction = 'dbconfigStore.spy';
-			EURB.DBConfig.removeAction = 'dbconfigRemove.spy';
-			EURB.DBConfig.activateAction = 'dbconfigActivate.spy';
-			EURB.DBConfig.deactivateAction = 'dbconfigDeactivate.spy';
+			EURB.DBConfig.searchAction = '${baseUrl}management/mapping/dbconfig/dbconfigSearch.spa';
+			EURB.DBConfig.storeAction = '${baseUrl}management/mapping/dbconfig/dbconfigStore.spa';
+			EURB.DBConfig.removeAction = '${baseUrl}management/mapping/dbconfig/dbconfigRemove.spa';
+			EURB.DBConfig.activateAction = '${baseUrl}management/mapping/dbconfig/dbconfigActivate.spa';
+			EURB.DBConfig.deactivateAction = '${baseUrl}management/mapping/dbconfig/dbconfigDeactivate.spa';
+			
+			EURB.DBConfig.name = '<spring:message code="eurb.app.management.dbconfig.name" />';
+			EURB.DBConfig.driverClass = '<spring:message code="eurb.app.management.dbconfig.driverClass" />';
+			EURB.DBConfig.driverUrl = '<spring:message code="eurb.app.management.dbconfig.driverUrl" />';
+			EURB.DBConfig.username = '<spring:message code="eurb.app.management.dbconfig.username" />';
+			EURB.DBConfig.password = '<spring:message code="eurb.app.management.dbconfig.password" />';
+			EURB.DBConfig.testQuery = '<spring:message code="eurb.app.management.dbconfig.testQuery" />';
 		</script>
 		<script src="${resourcesUrl}/js/app/management/mapping/dbconfig.js"></script>
 	</body>

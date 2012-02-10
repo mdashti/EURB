@@ -6,7 +6,11 @@ public class PropertyProvider {
 
 	public static final AbstractMessageSource MESSAGES = (AbstractMessageSource) SharifProApplicationContext.getApplicationContext().getBean("messageSource");
 
-	public static String get(String key, String defaultMessage, String[] args){
+	public static String get(String key, Object... args){
+		return MESSAGES.getMessage(key, args, key, null);
+	}
+	
+	public static String get(String key, String defaultMessage, Object... args){
 		return MESSAGES.getMessage(key, args, defaultMessage, null);
 	}
 	

@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements ParameterizedRowMapper<ColumnMapping>, ColumnMappingDao
 {
-	private final static String QUERY_FROM_COLUMNS = "o.table_mapping_id, o.column_name, o.mapped_name, o.col_type, o.col_order, o.format_pattern, o.static_mapping, o.referenced_table, o.referenced_id_col, o.referenced_value_col";
+	private final static String QUERY_FROM_COLUMNS = "o.table_mapping_id, o.column_name, o.mapped_name, o.col_type_name, o.col_data_type, o.col_order, o.format_pattern, o.static_mapping, o.referenced_table, o.referenced_id_col, o.referenced_value_col";
 
 	private final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL_AND_JOIN;
 
@@ -30,7 +30,7 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 	{
 		ColumnMappingPk pk = new ColumnMappingPk();
 		DaoFactory.createPersistableObjectDao().insert(dto, pk);
-		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, table_mapping_id, column_name, mapped_name, col_type, col_order, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",pk.getId(),dto.getTableMappingId(),dto.getColumnName(),dto.getMappedName(),dto.getColType(),dto.getColOrder(),dto.getFormatPattern(),dto.getStaticMapping(),dto.getReferencedTable(),dto.getReferencedIdCol(),dto.getReferencedValueCol());
+		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, table_mapping_id, column_name, mapped_name, col_type_name, col_data_type, col_order, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",pk.getId(),dto.getTableMappingId(),dto.getColumnName(),dto.getMappedName(),dto.getColTypeName(),dto.getColDataType(),dto.getColOrder(),dto.getFormatPattern(),dto.getStaticMapping(),dto.getReferencedTable(),dto.getReferencedIdCol(),dto.getReferencedValueCol());
 		return pk;
 	}
 
@@ -41,7 +41,7 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 	public void update(ColumnMappingPk pk, ColumnMapping dto) throws ColumnMappingDaoException
 	{
 		DaoFactory.createPersistableObjectDao().update(pk);
-		jdbcTemplate.update("UPDATE " + getTableName() + " SET table_mapping_id = ?, column_name = ?, mapped_name = ?, col_type = ?, col_order = ?, format_pattern = ?, static_mapping = ?, referenced_table = ?, referenced_id_col = ?, referenced_value_col = ? WHERE id = ?",dto.getTableMappingId(),dto.getColumnName(),dto.getMappedName(),dto.getColType(),dto.getColOrder(),dto.getFormatPattern(),dto.getStaticMapping(),dto.getReferencedTable(),dto.getReferencedIdCol(),dto.getReferencedValueCol(),pk.getId());
+		jdbcTemplate.update("UPDATE " + getTableName() + " SET table_mapping_id = ?, column_name = ?, mapped_name = ?, col_type_name = ?, col_data_type = ?, col_order = ?, format_pattern = ?, static_mapping = ?, referenced_table = ?, referenced_id_col = ?, referenced_value_col = ? WHERE id = ?",dto.getTableMappingId(),dto.getColumnName(),dto.getMappedName(),dto.getColTypeName(),dto.getColDataType(),dto.getColOrder(),dto.getFormatPattern(),dto.getStaticMapping(),dto.getReferencedTable(),dto.getReferencedIdCol(),dto.getReferencedValueCol(),pk.getId());
 	}
 
 	/** 
@@ -70,7 +70,8 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 		dto.setTableMappingId( new Long( rs.getLong(++i) ) );
 		dto.setColumnName( rs.getString( ++i ) );
 		dto.setMappedName( rs.getString( ++i ) );
-		dto.setColType( rs.getString( ++i ) );
+		dto.setColTypeName( rs.getString( ++i ) );
+		dto.setColDataType( rs.getInt( ++i ) );
 		dto.setColOrder( rs.getString( ++i ) );
 		dto.setFormatPattern( rs.getString( ++i ) );
 		dto.setStaticMapping( rs.getString( ++i ) );
@@ -212,13 +213,28 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 	}
 
 	/** 
-	 * Returns all rows from the column_mapping table that match the criteria 'col_type = :colType'.
+	 * Returns all rows from the column_mapping table that match the criteria 'col_type_name = :colTypeName'.
 	 */
 	@Transactional
-	public List<ColumnMapping> findWhereColTypeEquals(String colType) throws ColumnMappingDaoException
+	public List<ColumnMapping> findWhereColTypeEquals(String colTypeName) throws ColumnMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE col_type = ? ORDER BY col_type", this,colType);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE col_type_name = ? ORDER BY col_type_name", this,colTypeName);
+		}
+		catch (Exception e) {
+			throw new ColumnMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+		
+	}
+
+	/** 
+	 * Returns all rows from the column_mapping table that match the criteria 'col_data_type = :colDataType'.
+	 */
+	@Transactional
+	public List<ColumnMapping> findWhereColDataTypeEquals(int colDataType) throws ColumnMappingDaoException
+	{
+		try {
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE col_data_type = ? ORDER BY col_data_type", this,colDataType);
 		}
 		catch (Exception e) {
 			throw new ColumnMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);

@@ -87,8 +87,10 @@ DROP TABLE IF EXISTS `eurb`.`table_mapping` ;
 CREATE  TABLE IF NOT EXISTS `eurb`.`table_mapping` (
   `id` BIGINT UNSIGNED NOT NULL ,
   `db_config_id` BIGINT UNSIGNED NOT NULL ,
+  `catalog` VARCHAR(255) NULL ,
+  `schema` VARCHAR(255) NULL ,
   `table_name` VARCHAR(255) NOT NULL ,
-  `mapped_name` VARCHAR(255) NOT NULL ,
+  `mapped_name` VARCHAR(255) NULL ,
   `mapped_type` INT NOT NULL DEFAULT 0 ,
   `active_for_manager` TINYINT(1) NOT NULL DEFAULT 1 ,
   `active_for_user` TINYINT(1) NOT NULL DEFAULT 0 ,
@@ -118,7 +120,8 @@ CREATE  TABLE IF NOT EXISTS `eurb`.`column_mapping` (
   `table_mapping_id` BIGINT UNSIGNED NOT NULL ,
   `column_name` VARCHAR(255) NOT NULL ,
   `mapped_name` VARCHAR(255) NOT NULL ,
-  `col_type` VARCHAR(45) NOT NULL ,
+  `col_type_name` VARCHAR(100) NOT NULL ,
+  `col_data_type` INT NOT NULL ,
   `col_order` VARCHAR(45) NOT NULL ,
   `format_pattern` VARCHAR(255) NULL ,
   `static_mapping` LONGTEXT NULL ,
@@ -601,8 +604,6 @@ START TRANSACTION;
 USE `eurb`;
 INSERT INTO `eurb`.`persistable_object` (`id`, `obj_type`, `creator`, `create_date`, `modifier`, `modify_date`) VALUES (100, 100, 'admin', NULL, NULL, NULL);
 INSERT INTO `eurb`.`persistable_object` (`id`, `obj_type`, `creator`, `create_date`, `modifier`, `modify_date`) VALUES (200, 200, 'admin', NULL, NULL, NULL);
-INSERT INTO `eurb`.`persistable_object` (`id`, `obj_type`, `creator`, `create_date`, `modifier`, `modify_date`) VALUES (201, 200, 'admin', NULL, NULL, NULL);
-INSERT INTO `eurb`.`persistable_object` (`id`, `obj_type`, `creator`, `create_date`, `modifier`, `modify_date`) VALUES (202, 200, 'admin', NULL, NULL, NULL);
 
 COMMIT;
 SET FOREIGN_KEY_CHECKS = 1;
@@ -621,8 +622,6 @@ COMMIT;
 START TRANSACTION;
 USE `eurb`;
 INSERT INTO `eurb`.`groups` (`id`, `group_name`) VALUES (200, 'مدیران');
-INSERT INTO `eurb`.`groups` (`id`, `group_name`) VALUES (201, 'کاربران گزاش‌ساز');
-INSERT INTO `eurb`.`groups` (`id`, `group_name`) VALUES (202, 'کاربران گزارش‌گیر');
 
 COMMIT;
 
@@ -641,7 +640,5 @@ COMMIT;
 START TRANSACTION;
 USE `eurb`;
 INSERT INTO `eurb`.`group_members` (`id`, `username`, `group_id`) VALUES (1, 'admin', 200);
-INSERT INTO `eurb`.`group_members` (`id`, `username`, `group_id`) VALUES (2, 'admin', 201);
-INSERT INTO `eurb`.`group_members` (`id`, `username`, `group_id`) VALUES (3, 'admin', 202);
 
 COMMIT;

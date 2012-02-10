@@ -34,7 +34,7 @@ EURB.DBConfig.store = new Ext.data.Store({
 });
 
 EURB.DBConfig.cols = [{
-	 header:'Name'
+	 header:EURB.DBConfig.name
 	,id:'name'
 	,dataIndex:'name'
 	,width:50
@@ -43,7 +43,7 @@ EURB.DBConfig.cols = [{
 		allowBlank:false
 	})
 },{
-	 header:'Driver Class'
+	 header:EURB.DBConfig.driverClass
 	,id:'driverClass'
 	,dataIndex:'driverClass'
 	,width:100
@@ -52,7 +52,7 @@ EURB.DBConfig.cols = [{
 		allowBlank:false
 	})
 },{
-	 header:'Driver URL'
+	 header:EURB.DBConfig.driverUrl
 	,id:'driverUrl'
 	,dataIndex:'driverUrl'
 	,width:200
@@ -61,7 +61,7 @@ EURB.DBConfig.cols = [{
 		allowBlank:false
 	})
 },{
-	 header:'Username'
+	 header:EURB.DBConfig.username
 	,id:'username'
 	,dataIndex:'username'
 	,width:40
@@ -70,7 +70,7 @@ EURB.DBConfig.cols = [{
 		allowBlank:false
 	})
 },{
-	 header:'Password'
+	 header:EURB.DBConfig.password
 	,id:'password'
 	,dataIndex:'password'
 	,width:40
@@ -83,7 +83,7 @@ EURB.DBConfig.cols = [{
 	,hidden:true
 	,renderer: function() {return '';}
 },{
-	 header:'Test Query'
+	 header:EURB.DBConfig.testQuery
 	,id:'testQuery'
 	,dataIndex:'testQuery'
 	,width:100
@@ -110,7 +110,7 @@ EURB.DBConfig.DBGrid = Ext.extend(Ext.grid.GridPanel, {
             //,readonlyFields:{password:true}
             //,disabledFields:{name:true}
             ,formConfig:{
-                 labelWidth:80
+                 labelWidth:90
                 ,buttonAlign:'right'
                 ,bodyStyle:'padding-top:10px'
             }
@@ -252,12 +252,11 @@ EURB.DBConfig.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 		}
 		var data = [];
 		Ext.each(records, function(r, i) {
-//            var o = r.getChanges();
-//            if(r.data.newRecord) {
-//                o.newRecord = true;
-//            }
-//            o[this.idName] = r.get(this.idName);
-//            data.push(o);
+			if(r.data.newRecord) {
+				r.data.newRecord = true;
+			} else {
+				r.data.newRecord = false;
+			}
 			data.push(r.data);
 		}, this);
 		var o = {

@@ -170,7 +170,7 @@ public class ReportColumn extends PersistableObject implements Serializable
 	/**
 	 * Method 'setColType'
 	 * 
-	 * @param colType
+	 * @param colTypeName
 	 */
 	public void setColType(Integer colType)
 	{
@@ -447,7 +447,7 @@ public class ReportColumn extends PersistableObject implements Serializable
 			return false;
 		}
 		
-		/*if (colType == null ? _cast.colType != colType : !colType.equals( _cast.colType )) {
+		/*if (colTypeName == null ? _cast.colType != colTypeName : !colTypeName.equals( _cast.colType )) {
 			return false;
 		}
 		
@@ -523,8 +523,8 @@ public class ReportColumn extends PersistableObject implements Serializable
 			_hashCode = 29 * _hashCode + designVersionId.hashCode();
 		}
 		
-		/*if (colType != null) {
-			_hashCode = 29 * _hashCode + colType.hashCode();
+		/*if (colTypeName != null) {
+			_hashCode = 29 * _hashCode + colTypeName.hashCode();
 		}
 		
 		if (columnMappingId != null) {
@@ -595,7 +595,7 @@ public class ReportColumn extends PersistableObject implements Serializable
 		ret.append( ", datasetId=" + datasetId );
 		ret.append( ", designId=" + designId );
 		ret.append( ", designVersionId=" + designVersionId );
-		ret.append( ", colType=" + colType );
+		ret.append( ", colTypeName=" + colType );
 		ret.append( ", columnMappingId=" + columnMappingId );
 		ret.append( ", reportColumnId=" + reportColumnId );
 		ret.append( ", colOrder=" + colOrder );

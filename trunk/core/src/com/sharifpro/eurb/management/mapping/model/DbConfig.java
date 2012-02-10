@@ -2,11 +2,7 @@ package com.sharifpro.eurb.management.mapping.model;
 
 import java.io.Serializable;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -16,6 +12,15 @@ import org.apache.log4j.Logger;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
+import com.sharifpro.db.exception.ValidationException;
+import com.sharifpro.db.meta.ISQLConnection;
+import com.sharifpro.db.meta.ISQLDatabaseMetaData;
+import com.sharifpro.db.meta.ISQLDriver;
+import com.sharifpro.db.meta.ITableInfo;
+import com.sharifpro.db.meta.SQLConnection;
+import com.sharifpro.db.meta.SQLDriver;
+import com.sharifpro.db.meta.SQLDriverPropertyCollection;
+import com.sharifpro.db.meta.TableColumnInfo;
 import com.sharifpro.eurb.info.RecordStatus;
 import com.sharifpro.util.db.DataSourceFactory;
 
@@ -59,6 +64,7 @@ public class DbConfig extends PersistableObject implements Serializable
 	 */
 	protected RecordStatus recordStatus = RecordStatus.ACTIVE;
 	
+	protected DataSource dataSource;
 	/**
 	 * Method 'DbConfig'
 	 * 
@@ -354,7 +360,7 @@ public class DbConfig extends PersistableObject implements Serializable
 	@JsonIgnore
 	public boolean isValidTestCon(){
 		try {
-			Connection con = getConnection();
+			ISQLConnection con = getConnection();
 			con.setReadOnly(true);
 			con.close();
 			return true;
@@ -368,69 +374,84 @@ public class DbConfig extends PersistableObject implements Serializable
 	public boolean isActive(){
 		return RecordStatus.ACTIVE.equals(getRecordStatus());
 	}
+
+	public void resetDataSource() {
+		this.dataSource = null;
+	}
 	
 	@JsonIgnore
 	public DataSource getDataSource() {
-		Properties props = new Properties();
-		props.put("username", username);
-		props.put("password", password);
-		props.put("driverClassName", driverClass);
-		props.put("url", driverUrl/*.replaceAll("&", "&amp;")*/);
+		if(dataSource == null) {
+			Properties props = new Properties();
+			props.put("username", username);
+			props.put("password", password);
+			props.put("driverClassName", driverClass);
+			props.put("url", driverUrl/*.replaceAll("&", "&amp;")*/);
+
+			try {
+				dataSource = DataSourceFactory.createDataSource(props);
+			} catch (Exception e) {
+				Logger.getLogger(DbConfig.class).error("DbConfig.getDataSource: could not get DS", e);
+				dataSource = null;
+			}
+		}
+		return dataSource;
+	}
+	
+	@JsonIgnore
+	public ISQLDriver getDriver() throws ValidationException {
+		SQLDriver driver = new SQLDriver();
+		driver.setIdentifier(getId());
+		driver.setDriverClassName(getDriverClass());
+		driver.setName(getName());
+		driver.setUrl(getDriverUrl());
+		return driver;
+	}
+	
+	@JsonIgnore
+	public ISQLConnection getConnection() throws SQLException {
 		try {
-			return DataSourceFactory.createDataSource(props);
+			ISQLDriver driver = getDriver();
+			Connection conn =  getDataSource().getConnection();
+			SQLDriverPropertyCollection connProps = new SQLDriverPropertyCollection();
+			SQLConnection sqlConn = new SQLConnection(conn, connProps, driver);
+			
+			return sqlConn;
 		} catch (Exception e) {
-			Logger.getLogger(DbConfig.class).error("DbConfig.getDataSource: could not get DS", e);
 			return null;
 		}
 	}
 	
 	@JsonIgnore
-	public Connection getConnection() throws SQLException {
-		return getDataSource().getConnection();
+	public ISQLDatabaseMetaData getMetaData(ISQLConnection conn) throws SQLException {
+		return conn.getSQLMetaData();
 	}
 	
 	@JsonIgnore
-	public List<String> getCatalogs() throws SQLException{
-		Connection con = getConnection();
-		DatabaseMetaData metaData = con.getMetaData();
-		ResultSet rs = metaData.getCatalogs();
-		
-		List<String> result = new LinkedList<String>();
-		while(rs.next()) {
-			result.add(rs.getString(1));
-		}
-		
-		con.close();
-		return result;
+	public String[] getCatalogs(ISQLConnection conn) throws SQLException{
+		ISQLDatabaseMetaData metaData = getMetaData(conn);
+		String[] catalogs = metaData.getCatalogs();
+		return catalogs;
 	}
 	
 	@JsonIgnore
-	public List<String> getTables() throws SQLException{
-		Connection con = getConnection();
-		DatabaseMetaData metaData = con.getMetaData();
-		ResultSet rs = metaData.getTables(null, null, null, new String[]{"TABLE"});
-		
-		List<String> result = new LinkedList<String>();
-		while(rs.next()) {
-			result.add(rs.getString(1));
-		}
-		
-		con.close();
-		return result;
+	public ITableInfo[] getTables(ISQLConnection conn) throws SQLException{
+		ISQLDatabaseMetaData metaData = getMetaData(conn);
+		ITableInfo[] tables = metaData.getTables(null, null, null, new String[]{"TABLE"});
+		return tables;
 	}
 	
 	@JsonIgnore
-	public List<String> getViews() throws SQLException{
-		Connection con = getConnection();
-		DatabaseMetaData metaData = con.getMetaData();
-		ResultSet rs = metaData.getTables(null, null, null, new String[]{"VIEW"});
-		
-		List<String> result = new LinkedList<String>();
-		while(rs.next()) {
-			result.add(rs.getString(1));
-		}
-		
-		con.close();
-		return result;
+	public ITableInfo[] getViews(ISQLConnection conn) throws SQLException{
+		ISQLDatabaseMetaData metaData = getMetaData(conn);
+		ITableInfo[] views = metaData.getTables(null, null, null, new String[]{"VIEW"});
+		return views;
+	}
+	
+	@JsonIgnore
+	public TableColumnInfo[] getColumns(ISQLConnection conn, ITableInfo tableInfo) throws SQLException{
+		ISQLDatabaseMetaData metaData = getMetaData(conn);
+		TableColumnInfo[] cols = metaData.getColumnInfo(tableInfo);
+		return cols;
 	}
 }

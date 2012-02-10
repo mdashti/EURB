@@ -376,3 +376,8 @@ x-btn-mc em.x-btn-arrow
 {
 	background-image: url( "../images/default/tree/elbow-line-rtl.gif" );
 }
+
+.x-grid-group-hd div.x-grid-group-title {
+    padding: 4px 25px 4px 17px;
+    background-position: 99% 3px;
+}

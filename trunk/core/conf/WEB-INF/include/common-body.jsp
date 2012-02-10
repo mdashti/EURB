@@ -78,9 +78,12 @@
 		EURB.selectAtLeastOneRecordFisrt = '<spring:message code="eurb.selectAtLeastOneRecordFisrt" />';
 		EURB.addEdit = '<spring:message code="eurb.addEdit" />';
 		EURB.records = '<spring:message code="eurb.records" />';
+		EURB.item = '<spring:message code="eurb.item" />';
+		EURB.containing = '<spring:message code="eurb.containing" />';
 		
 		EURB.appMenu = {};
 		EURB.appMenu.dbConfig = '<spring:message code="eurb.app.menu.management.db" />';
+		EURB.appMenu.table = '<spring:message code="eurb.app.menu.management.mapping" />';
 		
 		EURB.showError = function(msg, title) {
 			Ext.Msg.show({
@@ -141,8 +144,8 @@
 		    	html:'<div class="urbangreymenu">'+
 		    	'<h3 class="headerbar"><a href="'+EURB.baseURL+'"><spring:message code="eurb.app.menu.management" /></a></h3>'+
 		    	'<ul class="submenu">'+
-		    	'<li><a href="'+EURB.baseURL+'/management/mapping">'+EURB.appMenu.dbConfig+'</a></li>'+
-		    	'<li><a href="'+EURB.baseURL+'"><spring:message code="eurb.app.menu.management.mapping" /></a></li>'+
+		    	'<li><a href="'+EURB.baseURL+'management/mapping/dbconfig.spy">'+EURB.appMenu.dbConfig+'</a></li>'+
+		    	'<li><a href="'+EURB.baseURL+'management/mapping/table.spy">'+EURB.appMenu.table+'</a></li>'+
 		    	'<li><a href="'+EURB.baseURL+'"><spring:message code="eurb.app.menu.management.users" /></a></li>'+
 		    	'</ul>'+
 		    	'<h3 class="headerbar"><a href="'+EURB.baseURL+'"><spring:message code="eurb.app.menu.reportbuilder" /></a></h3>'+

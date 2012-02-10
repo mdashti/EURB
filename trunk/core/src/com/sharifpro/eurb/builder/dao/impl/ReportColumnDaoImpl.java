@@ -250,7 +250,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	}
 
 	/** 
-	 * Returns all rows from the report_column table that match the criteria 'col_type = :colType'.
+	 * Returns all rows from the report_column table that match the criteria 'col_type = :colTypeName'.
 	 */
 	@Transactional
 	public List<ReportColumn> findWhereColTypeEquals(Integer colType) throws ReportColumnDaoException

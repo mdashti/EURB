@@ -15,7 +15,6 @@ import com.sharifpro.eurb.management.mapping.dao.DbConfigDao;
 import com.sharifpro.eurb.management.mapping.exception.DbConfigDaoException;
 import com.sharifpro.eurb.management.mapping.exception.PersistableObjectDaoException;
 import com.sharifpro.eurb.management.mapping.model.DbConfig;
-import com.sharifpro.eurb.management.mapping.model.DbConfigPk;
 import com.sharifpro.eurb.management.security.dao.GroupAuthoritiesDao;
 import com.sharifpro.eurb.management.security.dao.GroupMembersDao;
 import com.sharifpro.eurb.management.security.dao.GroupsDao;
@@ -273,8 +272,28 @@ public class InsertInitialData {
 			dbConf = dbConfList.get(0);
 			System.out.println("DB Exists.");
 		} else {
-			DbConfigPk pk = dao.insert(dbConf);
-			dbConf.setId(pk.getId());
+			dao.insert(dbConf);
+			System.out.println("DB Added.");
+		}
+		
+		
+		
+		DbConfig dbConf = new DbConfig();
+		dbConf.setName("پایگاه داده پژوهشی");
+		dbConf.setDriverClass("com.mysql.jdbc.Driver");
+		dbConf.setDriverUrl("jdbc:mysql://localhost/crud?useUnicode=yes&characterEncoding=UTF-8");
+		dbConf.setUsername("root");
+		dbConf.setPassword("mohamad");
+		dbConf.setTestQuery("select 1 from dual");
+		dbConf.setRecordStatus(RecordStatus.ACTIVE);
+		
+		dbConfList = dao.findWhereNameEquals(dbConf.getName());
+		
+		if(dbConfList.size() > 0) {
+			dbConf = dbConfList.get(0);
+			System.out.println("DB Exists.");
+		} else {
+			dao.insert(dbConf);
 			System.out.println("DB Added.");
 		}
 	}

@@ -66,20 +66,14 @@
 	<!-- misc -->
 	<bean id="viewResolver"
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<property name="viewClass"
-			value="org.springframework.web.servlet.view.JstlView" />
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
 		<property name="suffix" value=".jsp" />
 	</bean>
 
 	<!-- Forwards requests to the "/" resource to the "welcome" view -->
 	<mvc:view-controller path="/" view-name="index"/>
 
-	<!-- Resolves view names to protected .jsp resources within the /WEB-INF/views directory -->
-	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<property name="prefix" value="/"/>
-		<property name="suffix" value=".action"/>
-	</bean>
-	<!-- Configures Handler Interceptors -->	
+	<!-- Configures Handler Interceptors -->
 	<!-- mvc:interceptors>
 			<!- Changes the locale when a 'locale' request parameter is sent; e.g. /?locale=de ->
 			<bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" />
@@ -95,12 +89,6 @@
 	<!-- bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
 			<property name="basename" value="/WEB-INF/messages/messages" />
 			<property name="cacheSeconds" value="0" />
-		</bean-->
-
-	<!-- Resolves view names to protected .jsp resources within the /WEB-INF/views directory -->
-	<!-- bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-			<property name="prefix" value="/"/>
-			<property name="suffix" value=".jsp"/>
 		</bean-->
 		
 	<bean id="AuthoritiesDao" class="com.sharifpro.eurb.management.security.dao.impl.AuthoritiesDaoImpl" scope="singleton">

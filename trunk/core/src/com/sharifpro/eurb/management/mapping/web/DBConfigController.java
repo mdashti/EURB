@@ -23,14 +23,14 @@ import com.sharifpro.util.json.JsonUtil;
  * @author Mohammad Dashti (m_dashti [at] ce.sharif.edu)
  */
 @Controller
-@RequestMapping(value="/management/mapping/*")
+@RequestMapping(value="/management/mapping/dbconfig/*")
 public class DBConfigController {
 
 	private DbConfigDao dbConfigDao;
 	
 	private JsonUtil jsonUtil;
 
-	@RequestMapping(value="/dbconfigSearch.spy")
+	@RequestMapping(value="/dbconfigSearch.spa")
 	public @ResponseBody Map<String,? extends Object> search(@RequestParam(defaultValue="", required=false) String query
 			,@RequestParam(defaultValue="[]", required=false) String fields
 			,@RequestParam(defaultValue="0", required=false) String start
@@ -58,7 +58,7 @@ public class DBConfigController {
 		}
 	}
 
-	@RequestMapping(value="/dbconfigStore.spy")
+	@RequestMapping(value="/dbconfigStore.spa")
 	public @ResponseBody Map<String,? extends Object> store(@RequestParam Object data) throws Exception {
 		try{
 
@@ -84,7 +84,7 @@ public class DBConfigController {
 		}
 	}
 
-	@RequestMapping(value="/dbconfigRemove.spy")
+	@RequestMapping(value="/dbconfigRemove.spa")
 	public @ResponseBody Map<String,? extends Object> delete(@RequestParam Object data) throws Exception {
 
 		try{
@@ -103,7 +103,7 @@ public class DBConfigController {
 		}
 	}
 	
-	@RequestMapping(value="/dbconfigActivate.spy")
+	@RequestMapping(value="/dbconfigActivate.spa")
 	public @ResponseBody Map<String,? extends Object> activate(@RequestParam Object data) throws Exception {
 		try{
 
@@ -122,7 +122,7 @@ public class DBConfigController {
 		}
 	}
 	
-	@RequestMapping(value="/dbconfigDeactivate.spy")
+	@RequestMapping(value="/dbconfigDeactivate.spa")
 	public @ResponseBody Map<String,? extends Object> deactivate(@RequestParam Object data) throws Exception {
 		try{
 

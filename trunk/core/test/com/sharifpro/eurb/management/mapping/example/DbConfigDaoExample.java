@@ -1,11 +1,12 @@
 package com.sharifpro.eurb.management.mapping.example;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 
+import com.sharifpro.db.meta.ISQLConnection;
+import com.sharifpro.db.meta.ITableInfo;
+import com.sharifpro.db.meta.TableColumnInfo;
 import com.sharifpro.eurb.DaoFactory;
 import com.sharifpro.eurb.management.mapping.dao.DbConfigDao;
 import com.sharifpro.eurb.management.mapping.exception.DbConfigDaoException;
@@ -38,16 +39,82 @@ public class DbConfigDaoExample
 	public static void findMetaDataForFirstActive() throws DbConfigDaoException {
 		DbConfigDao dao = DaoFactory.createDbConfigDao();
 		List<DbConfig> _result = dao.findAllActive();
+		TableColumnInfo[] colsInfo;
+		ISQLConnection conn = null;
 		for (DbConfig dto : _result) {
+			System.out.println("===================================================");
 			if(dto.isActive() && dto.isValidTestCon()) {
 				try {
-					System.out.println("Catalogs = " + dto.getCatalogs());
-					System.out.println("Tables = " + dto.getTables());
-					System.out.println("Views = " + dto.getViews());
+					conn = dto.getConnection();
+					System.out.println("Catalogs = " + Arrays.toString(dto.getCatalogs(conn)));
+					ITableInfo[] tables = dto.getTables(conn);
+					System.out.println("Tables = " + Arrays.toString(tables));
+					for(ITableInfo tbl : tables) {
+						System.out.println("---------------------------------");
+						System.out.println("Catalog: " + tbl.getCatalogName());
+						System.out.println("Remarks: " + tbl.getRemarks());
+						System.out.println("Schema: " + tbl.getSchemaName());
+						System.out.println("Simple Name: " + tbl.getSimpleName());
+						System.out.println("Type: " + tbl.getType());
+						System.out.println("Child Tables: " + tbl.getChildTables());
+						System.out.println("Database Object Type: " + tbl.getDatabaseObjectType());
+						colsInfo = dto.getColumns(conn,tbl);
+						System.out.println("Cols = " + Arrays.toString(colsInfo));
+						for(TableColumnInfo col : colsInfo) {
+							System.out.println("++++++++++++++++++++++++++++++");
+							System.out.println("\tCatalog: " + col.getCatalogName());
+							System.out.println("\tColumn Name: " + col.getColumnName());
+							System.out.println("\tColumn Size: " + col.getColumnSize());
+							System.out.println("\tData Type: " + col.getDataType());
+							System.out.println("\tDecimal Digits: " + col.getDecimalDigits());
+							System.out.println("\tDefault Value: " + col.getDefaultValue());
+							System.out.println("\tOctet Length: " + col.getOctetLength());
+							System.out.println("\tOrdinal Position: " + col.getOrdinalPosition());
+							System.out.println("\tRadix: " + col.getRadix());
+							System.out.println("\tRemarks: " + col.getRemarks());
+							System.out.println("\tSchema Name: " + col.getSchemaName());
+							System.out.println("\tSimple Name: " + col.getSimpleName());
+							System.out.println("\tTable Name: " + col.getTableName());
+							System.out.println("\tType Name: " + col.getTypeName());
+							System.out.println("\tDatabase Object Type: " + col.getDatabaseObjectType());
+							//System.out.println("++++++++++++++++++++++++++++++");
+						}
+						System.out.println("---------------------------------");
+					}
+					/*ITableInfo[] views = dto.getViews(conn);
+					System.out.println("Views = " + Arrays.toString(views));
+					for(ITableInfo tbl : views) {
+						System.out.println("---------------------------------");
+						System.out.println("Catalog: " + tbl.getCatalogName());
+						System.out.println("Remarks: " + tbl.getRemarks());
+						System.out.println("Schema: " + tbl.getSchemaName());
+						System.out.println("Simple Name: " + tbl.getSimpleName());
+						System.out.println("Type: " + tbl.getType());
+						System.out.println("Child Tables: " + tbl.getChildTables());
+						System.out.println("Database Object Type: " + tbl.getDatabaseObjectType());
+						System.out.println("---------------------------------");
+					}
+					
+					DatabaseMetaData md = dto.getDataSource().getConnection().getMetaData();
+					ResultSet tabResult = md.getTables(null, null, null, new String[]{"TABLE"});
+					while (tabResult != null && tabResult.next())
+					{
+						List<String> tblList =
+							Arrays.asList(tabResult.getString(1), tabResult.getString(2), tabResult.getString(3),
+								tabResult.getString(4), tabResult.getString(5));
+						System.out.println(tblList);
+						
+					}*/
 				} catch (SQLException e) {
 					e.printStackTrace();
+				} finally {
+					try {
+						if(conn != null) {
+							conn.close();
+						}
+					} catch (SQLException e) {
+					}
 				}
-				return;
 			}
 		}
 	}

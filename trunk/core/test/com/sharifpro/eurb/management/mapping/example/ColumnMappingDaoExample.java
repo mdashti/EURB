@@ -256,7 +256,9 @@ public class ColumnMappingDaoExample
 		buf.append( ", " );
 		buf.append( dto.getMappedName() );
 		buf.append( ", " );
-		buf.append( dto.getColType() );
+		buf.append( dto.getColTypeName() );
+		buf.append( ", " );
+		buf.append( dto.getColDataType() );
 		buf.append( ", " );
 		buf.append( dto.getColOrder() );
 		buf.append( ", " );

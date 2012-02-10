@@ -201,6 +201,10 @@ public class TableMappingDaoExample
 		buf.append( ", " );
 		buf.append( dto.getDbConfigId() );
 		buf.append( ", " );
+		buf.append( dto.getCatalog() );
+		buf.append( ", " );
+		buf.append( dto.getSchema() );
+		buf.append( ", " );
 		buf.append( dto.getTableName() );
 		buf.append( ", " );
 		buf.append( dto.getMappedName() );

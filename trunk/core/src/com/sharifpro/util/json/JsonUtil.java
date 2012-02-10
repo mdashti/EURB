@@ -114,6 +114,10 @@ public class JsonUtil {
 		return modelMap;
 	}
 	
+	public static Map<String,Object> getSuccessfulMap(List<? extends Object> objList){
+		return getSuccessfulMap(objList, objList.size());
+	}
+	
 	public static Map<String,Object> getSuccessfulMapAfterStore(List<? extends Object> affectedIds){
 
 		Map<String,Object> modelMap = new HashMap<String,Object>(2);

@@ -34,6 +34,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 		DbConfigPk pk = new DbConfigPk();
 		DaoFactory.createPersistableObjectDao().insert(dto, pk);
 		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, name, driver_class, driver_url, username, password, test_query, record_status ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )",pk.getId(),dto.getName(),dto.getDriverClass(),dto.getDriverUrl(),dto.getUsername(),dto.getPassword(),dto.getTestQuery(), dto.getRecordStatusString());
+		dto.resetDataSource();
 		return pk;
 	}
 
@@ -45,6 +46,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	{
 		DaoFactory.createPersistableObjectDao().update(pk);
 		jdbcTemplate.update("UPDATE " + getTableName() + " SET name = ?, driver_class = ?, driver_url = ?, username = ?, password = ?, test_query = ?, record_status = 'A' WHERE id = ?",dto.getName(),dto.getDriverClass(),dto.getDriverUrl(),dto.getUsername(),dto.getPassword(),dto.getTestQuery(),pk.getId());
+		dto.resetDataSource();
 	}
 	
 	/** 
@@ -150,7 +152,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public DbConfig findByPrimaryKey(Long id) throws DbConfigDaoException
 	{
 		try {
-			List<DbConfig> list = jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.id = ? and ", this,id);
+			List<DbConfig> list = jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.id = ?", this,id);
 			return list.size() == 0 ? null : list.get(0);
 		}
 		catch (Exception e) {

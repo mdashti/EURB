@@ -32,7 +32,7 @@ public class AbstractDAO
 		jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 
-    public byte[] getBlobColumn(ResultSet rs, int columnIndex)
+    public static byte[] getBlobColumn(ResultSet rs, int columnIndex)
             throws SQLException
     {
         try {
@@ -62,7 +62,7 @@ public class AbstractDAO
         }
     }
 
-    public void setBlobColumn(PreparedStatement stmt, int parameterIndex, byte[] value)
+    public static void setBlobColumn(PreparedStatement stmt, int parameterIndex, byte[] value)
             throws SQLException
     {
         if (value == null) {
@@ -73,7 +73,7 @@ public class AbstractDAO
         }
     }
 
-    public String getClobColumn(ResultSet rs, int columnIndex)
+    public static String getClobColumn(ResultSet rs, int columnIndex)
         throws SQLException
     {
         try {
@@ -103,7 +103,7 @@ public class AbstractDAO
         }
     }
 
-    public void setClobColumn(PreparedStatement stmt, int parameterIndex, String value)
+    public static void setClobColumn(PreparedStatement stmt, int parameterIndex, String value)
         throws SQLException
     {
         if (value == null) {

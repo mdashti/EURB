@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRowMapper<TableMapping>, TableMappingDao
 {
-	private final static String QUERY_FROM_COLUMNS = "o.db_config_id, o.table_name, o.mapped_name, o.mapped_type, o.active_for_manager, o.active_for_user";
+	private final static String QUERY_FROM_COLUMNS = "o.db_config_id, o.catalog, o.schema, o.table_name, o.mapped_name, o.mapped_type, o.active_for_manager, o.active_for_user";
 
 	private final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL_AND_JOIN;
 
@@ -30,7 +30,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	{
 		TableMappingPk pk = new TableMappingPk();
 		DaoFactory.createPersistableObjectDao().insert(dto, pk);
-		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, db_config_id, table_name, mapped_name, mapped_type, active_for_manager, active_for_user ) VALUES ( ?, ?, ?, ?, ?, ?, ? )",dto.getId(),dto.getDbConfigId(),dto.getTableName(),dto.getMappedName(),dto.getMappedType(),dto.isActiveForManager(),dto.isActiveForUser());
+		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, db_config_id, catalog, schema, table_name, mapped_name, mapped_type, active_for_manager, active_for_user ) VALUES ( ?, ?, ?, ?, ?, ?, ? )",dto.getId(),dto.getDbConfigId(),dto.getCatalog(),dto.getSchema(),dto.getTableName(),dto.getMappedName(),dto.getMappedType(),dto.isActiveForManager(),dto.isActiveForUser());
 		return pk;
 	}
 
@@ -41,7 +41,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	public void update(TableMappingPk pk, TableMapping dto) throws TableMappingDaoException
 	{
 		DaoFactory.createPersistableObjectDao().update(pk);
-		jdbcTemplate.update("UPDATE " + getTableName() + " SET db_config_id = ?, table_name = ?, mapped_name = ?, mapped_type = ?, active_for_manager = ?, active_for_user = ? WHERE id = ?",dto.getDbConfigId(),dto.getTableName(),dto.getMappedName(),dto.getMappedType(),dto.isActiveForManager(),dto.isActiveForUser(),pk.getId());
+		jdbcTemplate.update("UPDATE " + getTableName() + " SET db_config_id = ?, catalog = ?, schema = ?, table_name = ?, mapped_name = ?, mapped_type = ?, active_for_manager = ?, active_for_user = ? WHERE id = ?",dto.getDbConfigId(),dto.getCatalog(),dto.getSchema(),dto.getTableName(),dto.getMappedName(),dto.getMappedType(),dto.isActiveForManager(),dto.isActiveForUser(),pk.getId());
 	}
 
 	/** 
@@ -68,6 +68,8 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 		PersistableObjectDaoImpl.PERSISTABLE_OBJECT_MAPPER.mapRow(rs, row, dto);
 		int i = PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS_COUNT;
 		dto.setDbConfigId( new Long( rs.getLong(++i) ) );
+		dto.setCatalog( rs.getString( ++i ) );
+		dto.setSchema( rs.getString( ++i ) );
 		dto.setTableName( rs.getString( ++i ) );
 		dto.setMappedName( rs.getString( ++i ) );
 		dto.setMappedType( new Integer( rs.getInt(++i) ) );

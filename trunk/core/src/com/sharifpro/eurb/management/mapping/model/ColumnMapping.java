@@ -8,6 +8,14 @@ public class ColumnMapping extends PersistableObject implements Serializable
 
 	/** 
 	 * This attribute maps to the column table_mapping_id in the column_mapping table.
+	 * 
+	 * Should include:
+	 * + Column Size
+	 * + Decimal Digits
+	 * + (Default Value)
+	 * + Radix
+	 * + Remarks
+	 * + isNullable
 	 */
 	protected Long tableMappingId;
 
@@ -23,11 +31,22 @@ public class ColumnMapping extends PersistableObject implements Serializable
 
 	/** 
 	 * This attribute maps to the column col_type in the column_mapping table.
+	 * 
+	 * Type Name
 	 */
-	protected String colType;
+	protected String colTypeName;
+
+	/** 
+	 * This attribute maps to the column col_data_type in the column_mapping table.
+	 * 
+	 * Data Type
+	 */
+	protected int colDataType;
 
 	/** 
 	 * This attribute maps to the column col_order in the column_mapping table.
+	 * 
+	 * Ordinal Position
 	 */
 	protected String colOrder;
 
@@ -127,23 +146,43 @@ public class ColumnMapping extends PersistableObject implements Serializable
 	}
 
 	/**
-	 * Method 'getColType'
+	 * Method 'getColTypeName'
 	 * 
 	 * @return String
 	 */
-	public String getColType()
+	public String getColTypeName()
 	{
-		return colType;
+		return colTypeName;
 	}
 
 	/**
-	 * Method 'setColType'
+	 * Method 'setColTypeName'
 	 * 
-	 * @param colType
+	 * @param colTypeName
 	 */
-	public void setColType(String colType)
+	public void setColTypeName(String colType)
 	{
-		this.colType = colType;
+		this.colTypeName = colType;
+	}
+
+	/**
+	 * Method 'getColDataType'
+	 * 
+	 * @return int
+	 */
+	public int getColDataType()
+	{
+		return colDataType;
+	}
+
+	/**
+	 * Method 'setColDataType'
+	 * 
+	 * @param colTypeName
+	 */
+	public void setColDataType(int colDataType)
+	{
+		this.colDataType = colDataType;
 	}
 
 	/**
@@ -296,7 +335,7 @@ public class ColumnMapping extends PersistableObject implements Serializable
 			return false;
 		}
 		
-		if (colType == null ? _cast.colType != colType : !colType.equals( _cast.colType )) {
+		if (colTypeName == null ? _cast.colType != colTypeName : !colTypeName.equals( _cast.colType )) {
 			return false;
 		}
 		
@@ -348,8 +387,8 @@ public class ColumnMapping extends PersistableObject implements Serializable
 			_hashCode = 29 * _hashCode + mappedName.hashCode();
 		}
 		
-		if (colType != null) {
-			_hashCode = 29 * _hashCode + colType.hashCode();
+		if (colTypeName != null) {
+			_hashCode = 29 * _hashCode + colTypeName.hashCode();
 		}
 		
 		if (colOrder != null) {
@@ -402,7 +441,8 @@ public class ColumnMapping extends PersistableObject implements Serializable
 		ret.append( ", tableMappingId=" + tableMappingId );
 		ret.append( ", columnName=" + columnName );
 		ret.append( ", mappedName=" + mappedName );
-		ret.append( ", colType=" + colType );
+		ret.append( ", colTypeName=" + colTypeName );
+		ret.append( ", colDataType=" + colDataType );
 		ret.append( ", colOrder=" + colOrder );
 		ret.append( ", formatPattern=" + formatPattern );
 		ret.append( ", staticMapping=" + staticMapping );

@@ -8,7 +8,6 @@
 	<classpathentry kind="lib" path="core/lib/commons-codec.jar"/>
 	<classpathentry kind="lib" path="core/lib/commons-discovery.jar"/>
 	<classpathentry kind="lib" path="core/lib/commons-httpclient.jar"/>
-	<classpathentry kind="lib" path="core/lib/fw.jar"/>
 	<classpathentry kind="lib" path="core/lib/icu4j.jar"/>
 	<classpathentry kind="lib" path="core/lib/jxl.jar"/>
 	<classpathentry kind="lib" path="core/lib/log4j.jar"/>
@@ -72,5 +71,9 @@
 	<classpathentry kind="lib" path="core/lib/asm-all-4.0.jar"/>
 	<classpathentry kind="lib" path="core/lib/cglib-nodep-2.2.2.jar"/>
 	<classpathentry kind="lib" path="core/conf"/>
+	<classpathentry kind="lib" path="core/lib/hibernate-annotations.jar"/>
+	<classpathentry kind="lib" path="core/lib/hibernate-commons-annotations.jar"/>
+	<classpathentry kind="lib" path="core/lib/hibernate-entitymanager.jar"/>
+	<classpathentry kind="lib" path="core/lib/hibernate.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
