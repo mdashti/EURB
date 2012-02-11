@@ -19,9 +19,9 @@
 
 	<bean id="EURBDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<property name="url" value="jdbc:mysql://localhost/eurb?useUnicode=yes&amp;characterEncoding=UTF-8" />
+		<property name="url" value="jdbc:mysql://127.0.0.1:3306/eurb?useUnicode=yes&amp;characterEncoding=UTF-8" />
 		<property name="username" value="root" />
-		<property name="password" value="mohamad" />
+		<property name="password" value="ROOT" />
 	</bean>
 	
 	<bean id="userDetailsService" class="org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl">

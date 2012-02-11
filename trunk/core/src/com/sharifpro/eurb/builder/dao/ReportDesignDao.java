@@ -43,9 +43,19 @@ public interface ReportDesignDao
 	public List<ReportDesign> findAll() throws ReportDesignDaoException;
 
 	/** 
+	 * Returns all active rows from the report_design table that match the criteria ''.
+	 */
+	public List<ReportDesign> findAllActive() throws ReportDesignDaoException;
+
+	/** 
 	 * Returns all rows from the report_design table that match the criteria 'id = :id'.
 	 */
 	public List<ReportDesign> findByPersistableObject(Long id) throws ReportDesignDaoException;
+
+	/** 
+	 * Returns all rows from the report_design table that match the criteria 'id = :id and version_id = :versionId'.
+	 */
+	public List<ReportDesign> findByPersistableObject(Long id, Long versionId) throws ReportDesignDaoException;
 
 	/** 
 	 * Returns all rows from the report_design table that match the criteria 'category_id = :categoryId'.
@@ -60,7 +70,7 @@ public interface ReportDesignDao
 	/** 
 	 * Returns all rows from the report_design table that match the criteria 'version_id = :versionId'.
 	 */
-	public List<ReportDesign> findWhereVersionIdEquals(Long versionId) throws ReportDesignDaoException;
+	public List<ReportDesign> findWhereIdAndVersionIdEquals(Long id, Long versionId) throws ReportDesignDaoException;
 
 	/** 
 	 * Returns all rows from the report_design table that match the criteria 'name = :name'.
@@ -97,11 +107,7 @@ public interface ReportDesignDao
 	 */
 	public List<ReportDesign> findWhereFormatFileEquals(String formatFile) throws ReportDesignDaoException;
 
-	/** 
-	 * Returns all rows from the report_design table that match the criteria 'is_current = :isCurrent'.
-	 */
-	public List<ReportDesign> findWhereIsCurrentEquals(Short isCurrent) throws ReportDesignDaoException;
-
+	
 	/** 
 	 * Returns all rows from the report_design table that match the criteria 'record_status = :recordStatus'.
 	 */

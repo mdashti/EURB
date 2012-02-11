@@ -1,10 +1,10 @@
 package com.sharifpro.eurb.builder.dao;
 
-import com.sharifpro.eurb.builder.dao.ReportCategoryDao;
+import java.util.List;
+
 import com.sharifpro.eurb.builder.exception.ReportCategoryDaoException;
 import com.sharifpro.eurb.builder.model.ReportCategory;
 import com.sharifpro.eurb.builder.model.ReportCategoryPk;
-import java.util.List;
 
 public interface ReportCategoryDao
 {
@@ -25,6 +25,12 @@ public interface ReportCategoryDao
 	 * Deletes a single row in the report_category table.
 	 */
 	public void delete(ReportCategoryPk pk) throws ReportCategoryDaoException;
+	
+	/** 
+	 * Deletes all given rows in the report_category table.
+	 */
+	public void deleteAll(List<ReportCategoryPk> pkList) throws ReportCategoryDaoException;
+
 
 	/** 
 	 * Returns all rows from the report_category table that match the criteria 'id = :id'.
@@ -35,6 +41,29 @@ public interface ReportCategoryDao
 	 * Returns all rows from the report_category table that match the criteria ''.
 	 */
 	public List<ReportCategory> findAll() throws ReportCategoryDaoException;
+	
+	/** 
+	 * Counts all rows from the report_category table that match the criteria ''.
+	 */
+	public int countAll() throws ReportCategoryDaoException;
+	
+	/** 
+	 * Returns all rows from the report_category table that match the criteria '' limited by start and limit.
+	 */
+	public List<ReportCategory> findAll(Integer start, Integer limit) throws ReportCategoryDaoException;
+	
+	/** 
+	 * Returns all rows from the report_category table that match the like query in onFields fields limited by start and limit.
+	 */
+	public List<ReportCategory> findAll(String query, List<String> onFields, Integer start, Integer limit) throws ReportCategoryDaoException;
+
+	
+	/** 
+	 * Counts all rows from the report_category table that match the like query in onFields fields.
+	 */
+	public int countAll(String query, List<String> onFields) throws ReportCategoryDaoException;
+
+
 
 	/** 
 	 * Returns all rows from the report_category table that match the criteria 'id = :id'.

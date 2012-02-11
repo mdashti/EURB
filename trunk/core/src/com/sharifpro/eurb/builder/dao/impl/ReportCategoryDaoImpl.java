@@ -1,5 +1,12 @@
 package com.sharifpro.eurb.builder.dao.impl;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+
+import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.sharifpro.eurb.DaoFactory;
 import com.sharifpro.eurb.builder.dao.ReportCategoryDao;
 import com.sharifpro.eurb.builder.exception.ReportCategoryDaoException;
@@ -7,12 +14,7 @@ import com.sharifpro.eurb.builder.model.ReportCategory;
 import com.sharifpro.eurb.builder.model.ReportCategoryPk;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
 import com.sharifpro.eurb.management.mapping.dao.impl.PersistableObjectDaoImpl;
-
-import java.util.List;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
-import org.springframework.transaction.annotation.Transactional;
+import com.sharifpro.util.PropertyProvider;
 
 public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedRowMapper<ReportCategory>, ReportCategoryDao
 {
@@ -20,6 +22,8 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	private final static String QUERY_FROM_COLUMNS = "o.name, o.description";
 
 	private final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL_AND_JOIN;
+	
+	private final static String COUNT_QUERY = "SELECT count(distinct(o.id)) FROM " + getTableName() + " o ";
 
 	/**
 	 * Method 'insert'
@@ -56,6 +60,18 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 		jdbcTemplate.update("DELETE FROM " + getTableName() + " WHERE id = ?",pk.getId());
 		DaoFactory.createPersistableObjectDao().delete(pk);
 	}
+	
+	/** 
+	 * Deletes multiple rows in the report_category table.
+	 */
+	@Transactional
+	public void deleteAll(List<ReportCategoryPk> pkList) throws ReportCategoryDaoException
+	{
+		for(ReportCategoryPk pk : pkList) {
+			delete(pk);
+		}
+	}
+	
 
 	/**
 	 * Method 'mapRow'
@@ -92,11 +108,11 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	public ReportCategory findByPrimaryKey(Long id) throws ReportCategoryDaoException
 	{
 		try {
-			List<ReportCategory> list = jdbcTemplate.query(QUERY_SELECT_PART + " WHERE id = ?", this,id);
+			List<ReportCategory> list = jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.id = ?", this,id);
 			return list.size() == 0 ? null : list.get(0);
 		}
 		catch (Exception e) {
-			throw new ReportCategoryDaoException("Query failed", e);
+			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -108,13 +124,68 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	public List<ReportCategory> findAll() throws ReportCategoryDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " ORDER BY id", this);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " ORDER BY o.id", this);
 		}
 		catch (Exception e) {
-			throw new ReportCategoryDaoException("Query failed", e);
+			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
+	
+	@Transactional
+	public int countAll() throws ReportCategoryDaoException
+	{
+		try {
+			return jdbcTemplate.queryForInt(COUNT_QUERY);
+		}
+		catch (Exception e) {
+			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+		
+	}
+	
+	
+	/** 
+	 * Returns all rows from the report_category table that match the criteria '' limited by start and limit.
+	 */
+	@Transactional
+	public List<ReportCategory> findAll(Integer start, Integer limit) throws ReportCategoryDaoException{
+		try {
+			return jdbcTemplate.query(QUERY_SELECT_PART + " ORDER BY o.id limit ?, ?", this, start, limit);
+		}
+		catch (Exception e) {
+			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+	}
+	
+	/** 
+	 * Returns all rows from the db_config table that match the criteria like query in onFields fields limited by start and limit.
+	 */
+	@Transactional
+	public List<ReportCategory> findAll(String query, List<String> onFields, Integer start, Integer limit) throws ReportCategoryDaoException
+	{
+		try {
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE (" + getMultipleFieldWhereClause(query, onFields) + ") ORDER BY o.id limit ?, ?", this, start, limit);
+		}
+		catch (Exception e) {
+			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+		
+	}
+	
+	@Transactional
+	public int countAll(String query, List<String> onFields) throws ReportCategoryDaoException
+	{
+		try {
+			return jdbcTemplate.queryForInt(COUNT_QUERY + " WHERE (" + getMultipleFieldWhereClause(query, onFields) + ")");
+		}
+		catch (Exception e) {
+			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+		
+	}
+	
+
 
 	/** 
 	 * Returns all rows from the report_category table that match the criteria 'id = :id'.
@@ -123,10 +194,10 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	public List<ReportCategory> findByPersistableObject(Long id) throws ReportCategoryDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE id = ?", this,id);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.id = ?", this,id);
 		}
 		catch (Exception e) {
-			throw new ReportCategoryDaoException("Query failed", e);
+			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -138,10 +209,10 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	public List<ReportCategory> findWhereIdEquals(Long id) throws ReportCategoryDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE id = ? ORDER BY id", this,id);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.id = ? ORDER BY id", this,id);
 		}
 		catch (Exception e) {
-			throw new ReportCategoryDaoException("Query failed", e);
+			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -153,10 +224,10 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	public List<ReportCategory> findWhereNameEquals(String name) throws ReportCategoryDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE name = ? ORDER BY name", this,name);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.name = ? ORDER BY name", this,name);
 		}
 		catch (Exception e) {
-			throw new ReportCategoryDaoException("Query failed", e);
+			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
 	}
@@ -169,6 +240,24 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	public ReportCategory findByPrimaryKey(ReportCategoryPk pk) throws ReportCategoryDaoException
 	{
 		return findByPrimaryKey( pk.getId() );
+	}
+	
+
+	
+	private static String getMultipleFieldWhereClause(String txt, List<String> fields) {
+		StringBuilder query = new StringBuilder();
+		String likeQuery = " LIKE '%"+txt+"%' OR ";
+		if(fields.contains("name")) {
+			query.append("o.name").append(likeQuery);
+		}
+		if(fields.contains("description")) {
+			query.append("o.description").append(likeQuery);
+		}
+		if(query.length() > 0) {
+			return query.substring(0,query.length()-3);
+		} else {
+			return "";
+		}
 	}
 
 }

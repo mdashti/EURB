@@ -97,21 +97,7 @@ public class ReportDesignDaoExample
 		
 	}
 
-	/**
-	 * Method 'findWhereVersionIdEquals'
-	 * 
-	 * @param versionId
-	 * @throws Exception
-	 */
-	public static void findWhereVersionIdEquals(Long versionId) throws Exception
-	{
-		ReportDesignDao dao = DaoFactory.createReportDesignDao();
-		List<ReportDesign> _result = dao.findWhereVersionIdEquals(versionId);
-		for (ReportDesign dto : _result) {
-			display(dto);
-		}
-		
-	}
+	
 
 	/**
 	 * Method 'findWhereNameEquals'
@@ -219,22 +205,6 @@ public class ReportDesignDaoExample
 	{
 		ReportDesignDao dao = DaoFactory.createReportDesignDao();
 		List<ReportDesign> _result = dao.findWhereFormatFileEquals(formatFile);
-		for (ReportDesign dto : _result) {
-			display(dto);
-		}
-		
-	}
-
-	/**
-	 * Method 'findWhereIsCurrentEquals'
-	 * 
-	 * @param isCurrent
-	 * @throws Exception
-	 */
-	public static void findWhereIsCurrentEquals(Short isCurrent) throws Exception
-	{
-		ReportDesignDao dao = DaoFactory.createReportDesignDao();
-		List<ReportDesign> _result = dao.findWhereIsCurrentEquals(isCurrent);
 		for (ReportDesign dto : _result) {
 			display(dto);
 		}

@@ -84,6 +84,7 @@
 		EURB.appMenu = {};
 		EURB.appMenu.dbConfig = '<spring:message code="eurb.app.menu.management.db" />';
 		EURB.appMenu.table = '<spring:message code="eurb.app.menu.management.mapping" />';
+		EURB.appMenu.category = '<spring:message code="eurb.app.menu.builder.category" />';
 		
 		EURB.showError = function(msg, title) {
 			Ext.Msg.show({
@@ -151,6 +152,7 @@
 		    	'<h3 class="headerbar"><a href="'+EURB.baseURL+'"><spring:message code="eurb.app.menu.reportbuilder" /></a></h3>'+
 		    	'<ul class="submenu">'+
 		    	'<li><a href="'+EURB.baseURL+'" ><spring:message code="eurb.app.menu.reportbuilder.reports" /></a></li>'+
+		    	'<li><a href="'+EURB.baseURL+'/builder/category">'+EURB.appMenu.category+'</a></li>'+
 		    	'</ul>'+
 		    	'<h3 class="headerbar"><a href="'+EURB.baseURL+'"><spring:message code="eurb.app.menu.sample" /></a></h3>'+
 		    	'<ul class="submenu">'+
