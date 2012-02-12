@@ -24,11 +24,11 @@
 		<!-- App js -->
 		<script type="text/javascript">
 			EURB.DBConfig = {};
-			EURB.DBConfig.searchAction = '${baseUrl}management/mapping/dbconfig/dbconfigSearch.spy';
-			EURB.DBConfig.storeAction = '${baseUrl}management/mapping/dbconfig/dbconfigStore.spy';
-			EURB.DBConfig.removeAction = '${baseUrl}management/mapping/dbconfig/dbconfigRemove.spy';
-			EURB.DBConfig.activateAction = '${baseUrl}management/mapping/dbconfig/dbconfigActivate.spy';
-			EURB.DBConfig.deactivateAction = '${baseUrl}management/mapping/dbconfig/dbconfigDeactivate.spy';
+			EURB.DBConfig.searchAction = '<spring:url value="/management/mapping/dbconfig/dbconfigSearch.spy" />';
+			EURB.DBConfig.storeAction = '<spring:url value="/management/mapping/dbconfig/dbconfigStore.spy" />';
+			EURB.DBConfig.removeAction = '<spring:url value="/management/mapping/dbconfig/dbconfigRemove.spy" />';
+			EURB.DBConfig.activateAction = '<spring:url value="/management/mapping/dbconfig/dbconfigActivate.spy" />';
+			EURB.DBConfig.deactivateAction = '<spring:url value="/management/mapping/dbconfig/dbconfigDeactivate.spy" />';
 			
 			EURB.DBConfig.name = '<spring:message code="eurb.app.management.dbconfig.name" />';
 			EURB.DBConfig.driverClass = '<spring:message code="eurb.app.management.dbconfig.driverClass" />';

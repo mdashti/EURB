@@ -156,18 +156,18 @@
 		    	html:'<div class="urbangreymenu">'+
 		    	'<h3 class="headerbar"><a href="'+EURB.baseURL+'"><spring:message code="eurb.app.menu.management" /></a></h3>'+
 		    	'<ul class="submenu">'+
-		    	'<li><a href="'+EURB.baseURL+'management/mapping/dbconfig.spy">'+EURB.appMenu.dbConfig+'</a></li>'+
-		    	'<li><a href="'+EURB.baseURL+'management/mapping/table.spy">'+EURB.appMenu.table+'</a></li>'+
+		    	'<li><a href="<spring:url value="/management/mapping/dbconfig.spy" />">'+EURB.appMenu.dbConfig+'</a></li>'+
+		    	'<li><a href="<spring:url value="/management/mapping/table.spy" />">'+EURB.appMenu.table+'</a></li>'+
 		    	'<li><a href="'+EURB.baseURL+'"><spring:message code="eurb.app.menu.management.users" /></a></li>'+
 		    	'</ul>'+
 		    	'<h3 class="headerbar"><a href="'+EURB.baseURL+'"><spring:message code="eurb.app.menu.reportbuilder" /></a></h3>'+
 		    	'<ul class="submenu">'+
 		    	'<li><a href="'+EURB.baseURL+'" ><spring:message code="eurb.app.menu.reportbuilder.reports" /></a></li>'+
-		    	'<li><a href="'+EURB.baseURL+'builder/category">'+EURB.appMenu.category+'</a></li>'+
+		    	'<li><a href="<spring:url value="/builder/category" />">'+EURB.appMenu.category+'</a></li>'+
 		    	'</ul>'+
 		    	'<h3 class="headerbar"><a href="'+EURB.baseURL+'"><spring:message code="eurb.app.menu.sample" /></a></h3>'+
 		    	'<ul class="submenu">'+
-		    	'<li><a href="'+EURB.baseURL+'/sample" ><spring:message code="eurb.app.menu.sample.samplepage" /></a></li>'+	
+		    	'<li><a href="<spring:url value="/sample" />" ><spring:message code="eurb.app.menu.sample.samplepage" /></a></li>'+	
 		    	'</ul>'+
 		    	'</div>'});
 		    EURB.mainMenu.doLayout();

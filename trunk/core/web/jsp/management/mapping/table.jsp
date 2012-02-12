@@ -30,11 +30,11 @@
 			<% 
 			String selectedDbConfig = (String) request.getAttribute("dbconfig");
 			%>
-			EURB.Table.searchAction = '${baseUrl}management/mapping/table/tableSearch.spy';
-			EURB.Table.storeAction = '${baseUrl}management/mapping/table/tableStore.spy';
-			EURB.Table.removeAction = '${baseUrl}management/mapping/table/tableRemove.spy';
-			EURB.Table.activateAction = '${baseUrl}management/mapping/table/tableActivate.spy';
-			EURB.Table.deactivateAction = '${baseUrl}management/mapping/table/tableDeactivate.spy';
+			EURB.Table.searchAction = '<spring:url value="/management/mapping/table/tableSearch.spy" />';
+			EURB.Table.storeAction = '<spring:url value="/management/mapping/table/tableStore.spy" />';
+			EURB.Table.removeAction = '<spring:url value="/management/mapping/table/tableRemove.spy" />';
+			EURB.Table.activateAction = '<spring:url value="/management/mapping/table/tableActivate.spy" />';
+			EURB.Table.deactivateAction = '<spring:url value="/management/mapping/table/tableDeactivate.spy" />';
 
 			EURB.Table.catalog = '<spring:message code="eurb.app.management.table.catalog" />';
 			EURB.Table.tableName = '<spring:message code="eurb.app.management.table.tableName" />';
