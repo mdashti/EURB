@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,6 +90,10 @@ public class JsonUtil {
 		return idList;
 	}
 	
+	public String getJSONFromObject(Object obj) throws JsonGenerationException, JsonMappingException, IOException {
+		return objectMapper.writeValueAsString(obj);
+	}
+	
 	@Autowired
 	public void setSharifProObjectMapper(SharifProObjectMapper sharifProObjectMapper) {
 		this.objectMapper = sharifProObjectMapper;
@@ -141,4 +146,6 @@ public class JsonUtil {
 
 		return modelMap;
 	}
+	
+	
 }

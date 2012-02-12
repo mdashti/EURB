@@ -2,6 +2,7 @@ package com.sharifpro.eurb.management.mapping.dao;
 
 import com.sharifpro.eurb.management.mapping.dao.TableMappingDao;
 import com.sharifpro.eurb.management.mapping.exception.TableMappingDaoException;
+import com.sharifpro.eurb.management.mapping.model.DbConfig;
 import com.sharifpro.eurb.management.mapping.model.TableMapping;
 import com.sharifpro.eurb.management.mapping.model.TableMappingPk;
 
@@ -86,5 +87,15 @@ public interface TableMappingDao
 	 * Returns the rows from the table_mapping table that matches the specified primary-key value.
 	 */
 	public TableMapping findByPrimaryKey(TableMappingPk pk) throws TableMappingDaoException;
+
+	public void deleteAll(List<TableMappingPk> pkList) throws TableMappingDaoException;
+
+	public void activateAll(List<TableMappingPk> pkList, String target) throws TableMappingDaoException;
+
+	public void deactivateAll(List<TableMappingPk> pkList, String target) throws TableMappingDaoException;
+
+	public List<TableMapping> findAll(DbConfig dbConf, String query, List<String> onFields) throws TableMappingDaoException;
+
+	public List<TableMapping> findAll(DbConfig dbConf) throws TableMappingDaoException;
 
 }

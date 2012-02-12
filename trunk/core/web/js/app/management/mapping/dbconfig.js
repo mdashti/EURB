@@ -19,14 +19,7 @@ EURB.DBConfig.store = new Ext.data.Store({
 	,proxy:new Ext.data.HttpProxy({
 		url:EURB.DBConfig.searchAction
         ,listeners: {
-        	'exception' : function(proxy, type, action, options, res) {
-    	    	Ext.Msg.show({
-    	    		title: 'ERROR',
-    	    		msg: Ext.util.JSON.decode(res.responseText).message,
-    	    		icon: Ext.MessageBox.ERROR,
-    	    		buttons: Ext.Msg.OK
-    	    	});
-    	    }
+        	'exception' : EURB.proxyExceptionHandler
         }
     })
 	//,baseParams:{}
@@ -138,6 +131,9 @@ EURB.DBConfig.DBGrid = Ext.extend(Ext.grid.GridPanel, {
             },{
                  iconCls:'icon-copy'
                 ,qtip:EURB.copyRecord
+            },{
+                 iconCls:'icon-grid'
+                 ,qtip:EURB.DBConfig.editTables
             }]
             ,widthIntercept:Ext.isSafari ? 4 : 2
             ,id:'actions'
@@ -243,6 +239,10 @@ EURB.DBConfig.DBGrid = Ext.extend(Ext.grid.GridPanel, {
             case 'icon-copy':
                 this.copyRecord(record);
             break;
+                
+            case 'icon-grid':
+            	window.location.href = EURB.baseURL+'management/mapping/db'+record.get(this.idName)+'-table.spy';
+            break;
         }
     }
 	,commitChanges:function() {
@@ -290,6 +290,7 @@ EURB.DBConfig.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 
 		switch(options.params.cmd) {
 			default:
+				this.store.commitChanges();
 				this.store.reload();
 				this.getSelectionModel().clearSelections();
 			break;

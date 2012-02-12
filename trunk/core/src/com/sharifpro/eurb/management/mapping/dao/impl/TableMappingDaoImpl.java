@@ -3,13 +3,17 @@ package com.sharifpro.eurb.management.mapping.dao.impl;
 import com.sharifpro.eurb.DaoFactory;
 import com.sharifpro.eurb.management.mapping.dao.TableMappingDao;
 import com.sharifpro.eurb.management.mapping.exception.TableMappingDaoException;
+import com.sharifpro.eurb.management.mapping.model.DbConfig;
 import com.sharifpro.eurb.management.mapping.model.TableMapping;
 import com.sharifpro.eurb.management.mapping.model.TableMappingPk;
 import com.sharifpro.util.PropertyProvider;
 
 import java.util.List;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,7 +34,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	{
 		TableMappingPk pk = new TableMappingPk();
 		DaoFactory.createPersistableObjectDao().insert(dto, pk);
-		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, db_config_id, catalog, schema, table_name, mapped_name, mapped_type, active_for_manager, active_for_user ) VALUES ( ?, ?, ?, ?, ?, ?, ? )",dto.getId(),dto.getDbConfigId(),dto.getCatalog(),dto.getSchema(),dto.getTableName(),dto.getMappedName(),dto.getMappedType(),dto.isActiveForManager(),dto.isActiveForUser());
+		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, db_config_id, `catalog`, `schema`, table_name, mapped_name, mapped_type, active_for_manager, active_for_user ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )",dto.getId(),dto.getDbConfigId(),dto.getCatalog(),dto.getSchema(),dto.getTableName(),dto.getMappedName(),dto.getMappedType(),dto.isActiveForManager(),dto.isActiveForUser());
 		return pk;
 	}
 
@@ -41,7 +45,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	public void update(TableMappingPk pk, TableMapping dto) throws TableMappingDaoException
 	{
 		DaoFactory.createPersistableObjectDao().update(pk);
-		jdbcTemplate.update("UPDATE " + getTableName() + " SET db_config_id = ?, catalog = ?, schema = ?, table_name = ?, mapped_name = ?, mapped_type = ?, active_for_manager = ?, active_for_user = ? WHERE id = ?",dto.getDbConfigId(),dto.getCatalog(),dto.getSchema(),dto.getTableName(),dto.getMappedName(),dto.getMappedType(),dto.isActiveForManager(),dto.isActiveForUser(),pk.getId());
+		jdbcTemplate.update("UPDATE " + getTableName() + " SET db_config_id = ?, `catalog` = ?, `schema` = ?, table_name = ?, mapped_name = ?, mapped_type = ?, active_for_manager = ?, active_for_user = ? WHERE id = ?",dto.getDbConfigId(),dto.getCatalog(),dto.getSchema(),dto.getTableName(),dto.getMappedName(),dto.getMappedType(),dto.isActiveForManager(),dto.isActiveForUser(),pk.getId());
 	}
 
 	/** 
@@ -260,6 +264,102 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	public TableMapping findByPrimaryKey(TableMappingPk pk) throws TableMappingDaoException
 	{
 		return findByPrimaryKey( pk.getId() );
+	}
+
+	@Transactional
+	public void deleteAll(List<TableMappingPk> pkList) throws TableMappingDaoException {
+		for(TableMappingPk pk : pkList) {
+			delete(pk);
+		}
+	}
+
+	@Transactional
+	public void activateAll(final List<TableMappingPk> pkList, String target)
+			throws TableMappingDaoException {
+		final String field = "user".equals(target) ? "active_for_user" : "active_for_manager";
+		jdbcTemplate
+				.batchUpdate(
+						"UPDATE " + getTableName() + " SET "+field+" = 1 WHERE id = ?",
+						new BatchPreparedStatementSetter() {
+							public void setValues(PreparedStatement ps, int i)
+									throws SQLException {
+								ps.setLong(1, pkList.get(i).getId());
+							}
+
+							public int getBatchSize() {
+								return pkList.size();
+							}
+						});
+	}
+
+	@Transactional
+	public void deactivateAll(final List<TableMappingPk> pkList, String target)
+			throws TableMappingDaoException {
+		final String field = "user".equals(target) ? "active_for_user" : "active_for_manager";
+		jdbcTemplate
+				.batchUpdate(
+						"UPDATE " + getTableName() + " SET "+field+" = 0 WHERE id = ?",
+						new BatchPreparedStatementSetter() {
+							public void setValues(PreparedStatement ps, int i)
+									throws SQLException {
+								ps.setLong(1, pkList.get(i).getId());
+							}
+
+							public int getBatchSize() {
+								return pkList.size();
+							}
+						});
+	}
+
+	@Transactional
+	public List<TableMapping> findAll(DbConfig dbConf, String query, List<String> onFields) throws TableMappingDaoException {
+		try {
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.db_config_id=? AND (" + getMultipleFieldWhereClause(query, onFields) + ") ORDER BY o.id", this, dbConf.getId());
+		}
+		catch (Exception e) {
+			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+	}
+
+	private String getMultipleFieldWhereClause(String txt, List<String> fields) {
+		StringBuilder query = new StringBuilder();
+		String likeQuery = " LIKE '%"+txt+"%' OR ";
+		if(fields.contains("catalog")) {
+			query.append("o.catalog").append(likeQuery);
+		}
+		if(fields.contains("schema")) {
+			query.append("o.schema").append(likeQuery);
+		}
+		if(fields.contains("tableName")) {
+			query.append("o.table_name").append(likeQuery);
+		}
+		if(fields.contains("mappedName")) {
+			query.append("o.mapped_name").append(likeQuery);
+		}
+		if(fields.contains("mappedTypeName")) {
+			if(PropertyProvider.get("eurb.table").contains(txt)) {
+				query.append("o.mapped_type=").append(TableMapping.MAPPED_TYPE_TABLE).append(" OR ");
+			}
+			if(PropertyProvider.get("eurb.view").contains(txt)) {
+				query.append("o.mapped_type=").append(TableMapping.MAPPED_TYPE_VIEW).append(" OR ");
+			}
+		}
+		if(query.length() > 0) {
+			return query.substring(0,query.length()-3);
+		} else {
+			return "";
+		}
+	}
+
+	@Transactional
+	public List<TableMapping> findAll(DbConfig dbConf)
+			throws TableMappingDaoException {
+		try {
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.db_config_id=? ORDER BY id", this, dbConf.getId());
+		}
+		catch (Exception e) {
+			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
 	}
 
 }

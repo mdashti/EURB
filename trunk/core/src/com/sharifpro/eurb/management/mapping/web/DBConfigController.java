@@ -15,6 +15,7 @@ import com.sharifpro.eurb.management.mapping.dao.DbConfigDao;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
 import com.sharifpro.eurb.management.mapping.model.DbConfig;
 import com.sharifpro.eurb.management.mapping.model.DbConfigPk;
+import com.sharifpro.eurb.management.mapping.model.PersistableObject;
 import com.sharifpro.util.json.JsonUtil;
 
 /**
@@ -23,18 +24,19 @@ import com.sharifpro.util.json.JsonUtil;
  * @author Mohammad Dashti (m_dashti [at] ce.sharif.edu)
  */
 @Controller
-@RequestMapping(value="/management/mapping/dbconfig/*")
 public class DBConfigController {
 
 	private DbConfigDao dbConfigDao;
 	
 	private JsonUtil jsonUtil;
 
-	@RequestMapping(value="/dbconfigSearch.spa")
+	@RequestMapping(value="/management/mapping/dbconfig/dbconfigSearch.spy")
 	public @ResponseBody Map<String,? extends Object> search(@RequestParam(defaultValue="", required=false) String query
 			,@RequestParam(defaultValue="[]", required=false) String fields
 			,@RequestParam(defaultValue="0", required=false) String start
-			,@RequestParam(defaultValue=AbstractDAO.DEFAULT_PAGE_SIZE_STR, required=false) String limit) throws Exception {
+			,@RequestParam(defaultValue=AbstractDAO.DEFAULT_PAGE_SIZE_STR, required=false) String limit
+			,@RequestParam(defaultValue=PersistableObject.IDENTIFIER_FIELD, required=false) String sort
+			,@RequestParam(defaultValue=AbstractDAO.ASCENDING_SORT_ORDER, required=false) String dir) throws Exception {
 		
 		try{
 			List<DbConfig> dbConfigs;
@@ -43,10 +45,10 @@ public class DBConfigController {
 			Integer limitBy = StringUtils.isEmpty(limit) ? AbstractDAO.DEFAULT_PAGE_SIZE : Integer.parseInt(limit);
 			List<String> onFields = jsonUtil.getListFromRequest(fields, String.class);
 			if(StringUtils.isEmpty(query) || onFields == null || onFields.isEmpty()) {
-				dbConfigs = dbConfigDao.findAll(startBy, limitBy);
+				dbConfigs = dbConfigDao.findAll(startBy, limitBy, sort, dir);
 				totalCount = dbConfigDao.countAll();
 			} else {
-				dbConfigs = dbConfigDao.findAll(query, onFields, startBy, limitBy);
+				dbConfigs = dbConfigDao.findAll(query, onFields, startBy, limitBy, sort, dir);
 				totalCount = dbConfigDao.countAll(query, onFields);
 			}
 
@@ -58,7 +60,7 @@ public class DBConfigController {
 		}
 	}
 
-	@RequestMapping(value="/dbconfigStore.spa")
+	@RequestMapping(value="/management/mapping/dbconfig/dbconfigStore.spy")
 	public @ResponseBody Map<String,? extends Object> store(@RequestParam Object data) throws Exception {
 		try{
 
@@ -84,7 +86,7 @@ public class DBConfigController {
 		}
 	}
 
-	@RequestMapping(value="/dbconfigRemove.spa")
+	@RequestMapping(value="/management/mapping/dbconfig/dbconfigRemove.spy")
 	public @ResponseBody Map<String,? extends Object> delete(@RequestParam Object data) throws Exception {
 
 		try{
@@ -103,7 +105,7 @@ public class DBConfigController {
 		}
 	}
 	
-	@RequestMapping(value="/dbconfigActivate.spa")
+	@RequestMapping(value="/management/mapping/dbconfig/dbconfigActivate.spy")
 	public @ResponseBody Map<String,? extends Object> activate(@RequestParam Object data) throws Exception {
 		try{
 
@@ -122,7 +124,7 @@ public class DBConfigController {
 		}
 	}
 	
-	@RequestMapping(value="/dbconfigDeactivate.spa")
+	@RequestMapping(value="/management/mapping/dbconfig/dbconfigDeactivate.spy")
 	public @ResponseBody Map<String,? extends Object> deactivate(@RequestParam Object data) throws Exception {
 		try{
 

@@ -20,19 +20,14 @@ EURB.Table.store = new Ext.data.GroupingStore({
 	,proxy:new Ext.data.HttpProxy({
 		url:EURB.Table.searchAction
         ,listeners: {
-        	'exception' : function(proxy, type, action, options, res) {
-    	    	Ext.Msg.show({
-    	    		title: 'ERROR',
-    	    		msg: Ext.util.JSON.decode(res.responseText).message,
-    	    		icon: Ext.MessageBox.ERROR,
-    	    		buttons: Ext.Msg.OK
-    	    	});
-    	    }
+        	'exception' : EURB.proxyExceptionHandler
         }
     })
-	//,baseParams:{}
+	,baseParams:{
+		dbconfig: EURB.Table.selectedDbConfig
+	}
 	,remoteSort:true
-	,sortInfo:{field: 'tableName', direction: "ASC"}
+	,sortInfo:{field: 'catalog', direction: "ASC"}
 	,groupField:'catalog'
 });
 
@@ -78,6 +73,7 @@ EURB.Table.cols = [{
 	,width:25
 	,sortable:true
 	,editor:new Ext.form.Checkbox()
+	,renderer: function(value, element, record, rowIndex , colIndex) {return value ? '<a href="javascript:EURB.Table.tableGrid.deactivateForManagerInRow('+rowIndex+')"><img src="'+EURB.resourcesURL+'/img/icon/ok16.png" /></a>' : '<a href="javascript:EURB.Table.tableGrid.activateForManagerInRow('+rowIndex+')"><img src="'+EURB.resourcesURL+'/img/icon/cancel16.png" /></a>';}
 },{
 	 header:EURB.Table.activeForUser
 	,id:'activeForUser'
@@ -85,6 +81,7 @@ EURB.Table.cols = [{
 	,width:25
 	,sortable:true
 	,editor:new Ext.form.Checkbox()
+	,renderer: function(value, element, record, rowIndex , colIndex) {return value ? '<a href="javascript:EURB.Table.tableGrid.deactivateForUserInRow('+rowIndex+')"><img src="'+EURB.resourcesURL+'/img/icon/ok16.png" /></a>' : '<a href="javascript:EURB.Table.tableGrid.activateForUserInRow('+rowIndex+')"><img src="'+EURB.resourcesURL+'/img/icon/cancel16.png" /></a>';}
 }];
 
 EURB.Table.DBGrid = Ext.extend(Ext.grid.GridPanel, {
@@ -111,7 +108,7 @@ EURB.Table.DBGrid = Ext.extend(Ext.grid.GridPanel, {
             	EURB.Table.tableGrid.commitChanges();
             }
             , getRowClass:function(record) {
-				if(record.get('newRecord')) {
+				if(!record.get('id')) {
 					return this.newRowCls;
 				}
 				
@@ -139,7 +136,7 @@ EURB.Table.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 			,plugins:[new Ext.ux.grid.Search({
 				iconCls:'icon-zoom'
 				//,readonlyIndexes:['name']
-				//,disableIndexes:['password']
+				,disableIndexes:['activeForManager','activeForUser']
 				//,minChars:2
 				,autoFocus:true
 			//				,menuStyle:'radio'
@@ -149,33 +146,48 @@ EURB.Table.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 	            enableGroupingMenu: false,
 	            groupTextTpl: '<b>{text}</b> {[EURB.containing]} {[values.rs.length]} {[EURB.item]}'
         	})
-			,tbar:[{
-				 text:EURB.addRecord
-				,iconCls:'icon-plus'
-				,listeners:{
-					 scope:this
-					,click:{fn:this.addRecord,buffer:200}
-				}
-			},{
+			,tbar:[EURB.Table.dbConfigCombo," ","-"," "/*,{
 				 text:EURB.delRecord
 				,iconCls:'icon-minus'
 				,listeners:{
 					 scope:this
 					,click:{fn:this.deleteSelectedRecords,buffer:200}
 				}
-			},{
-				 text:EURB.enableRecord
+			},"-"*/,{
+				 text:EURB.enableRecord + ' ' + EURB.Table.forManager
 				,iconCls:'icon-activate'
 				,listeners:{
 					 scope:this
-					,click:{fn:this.activateSelectedRecords,buffer:200}
+					,click:{fn:this.activateSelectedRecordsForManager,buffer:200}
 				}
 			},{
-				 text:EURB.disableRecord
+				 text:EURB.disableRecord + ' ' + EURB.Table.forManager
 				,iconCls:'icon-deactivate'
 				,listeners:{
 					 scope:this
-					,click:{fn:this.deactivateSelectedRecords,buffer:200}
+					,click:{fn:this.deactivateSelectedRecordsForManager,buffer:200}
+				}
+			},{
+				 text:EURB.enableRecord + ' ' + EURB.Table.forUser
+				,iconCls:'icon-activate'
+				,listeners:{
+					 scope:this
+					,click:{fn:this.activateSelectedRecordsForUser,buffer:200}
+				}
+			},{
+				 text:EURB.disableRecord + ' ' + EURB.Table.forUser
+				,iconCls:'icon-deactivate'
+				,listeners:{
+					 scope:this
+					,click:{fn:this.deactivateSelectedRecordsForUser,buffer:200}
+				}
+			},"->",{
+				 text:EURB.returnBack
+				,iconCls:'icon-doorout'
+				,listeners:{
+					click: function() {
+						window.location.href = EURB.baseURL+'management/mapping/dbconfig.spy';
+					}
 				}
 			}]
 		};
@@ -230,10 +242,10 @@ EURB.Table.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 		}
 		var data = [];
 		Ext.each(records, function(r, i) {
-			if(r.data.newRecord) {
-				r.data.newRecord = true;
-			} else {
+			if(r.data.id) {
 				r.data.newRecord = false;
+			} else {
+				r.data.newRecord = true;
 			}
 			data.push(r.data);
 		}, this);
@@ -268,42 +280,28 @@ EURB.Table.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 
 		switch(options.params.cmd) {
 			default:
+				this.store.commitChanges();
 				this.store.reload();
 				this.getSelectionModel().clearSelections();
 			break;
 		}
 	}
 	,showError:EURB.showError
-	,copyRecord: function(record) {
-		var store = this.store;
-        if(store.recordType) {
-            var rec = new store.recordType({newRecord:true});
-            rec.fields.each(function(f) {
-            	if(f.name != this.idName && f.name != "name") {
-                	rec.data[f.name] = record.data[f.name];
-            	} else {
-            		rec.data[f.name] = '';
-            	}
-            });
-            store.add(rec);
-            this.onRowAction(this, rec, 'icon-edit-record', 0, 0);
-            return rec;
-        }
-        return false;
-	}
-	,deleteRecord:function(record) {
-		this.getSelectionModel().selectRecords([record]);
-		this.deleteSelectedRecords();
-	}
 	,deleteSelectedRecords:function() {
-		var records = this.getSelectionModel().getSelections();
+		var selectedRecords = this.getSelectionModel().getSelections();
+		var records = [];
+		for(var i=0; i<selectedRecords.length; i++) {
+			if(selectedRecords[i].get('id')) {
+				records.push(selectedRecords[i]);
+			}
+		}
 		if(!records.length) {
-			Ext.Msg.alert(Ext.MessageBox.title.warning, EURB.selectAtLeastOneRecordFisrt).setIcon(Ext.Msg.INFO);
+			Ext.Msg.alert(Ext.MessageBox.title.warning, EURB.selectAtLeastOneSavedRecordFisrt).setIcon(Ext.Msg.INFO);
 			return;
 		}
 		Ext.Msg.show({
 			 title:EURB.areYouSureToDelTitle
-			,msg:String.format(EURB.areYouSureToDelete, records.length == 1 ? records[0].get('name') : EURB.records)
+			,msg:String.format(EURB.areYouSureToDelete, records.length == 1 ? records[0].get('tableName') : EURB.records)
 			,icon:Ext.Msg.QUESTION
 			,buttons:Ext.Msg.YESNO
 			,scope:this
@@ -329,10 +327,38 @@ EURB.Table.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 			}
 		});
 	}
-	,activateSelectedRecords:function() {
-		var records = this.getSelectionModel().getSelections();
+	,activateForUserInRow:function(row) {
+		this.getSelectionModel().selectRow(row);
+		this.activateSelectedRecordsForUser();
+	}
+	,deactivateForUserInRow:function(row) {
+		this.getSelectionModel().selectRow(row);
+		this.deactivateSelectedRecordsForUser();
+	}
+	,activateForManagerInRow:function(row) {
+		this.getSelectionModel().selectRow(row);
+		this.activateSelectedRecordsForManager();
+	}
+	,deactivateForManagerInRow:function(row) {
+		this.getSelectionModel().selectRow(row);
+		this.deactivateSelectedRecordsForManager();
+	}
+	,activateSelectedRecordsForManager:function() {
+		this.activateSelectedRecords('manager');
+	}
+	,activateSelectedRecordsForUser:function() {
+		this.activateSelectedRecords('user');
+	}
+	,activateSelectedRecords:function(target) {
+		var selectedRecords = this.getSelectionModel().getSelections();
+		var records = [];
+		for(var i=0; i<selectedRecords.length; i++) {
+			if(selectedRecords[i].get('id')) {
+				records.push(selectedRecords[i]);
+			}
+		}
 		if(!records.length) {
-			Ext.Msg.alert(Ext.MessageBox.title.warning, EURB.selectAtLeastOneRecordFisrt).setIcon(Ext.Msg.INFO);
+			Ext.Msg.alert(Ext.MessageBox.title.warning, EURB.selectAtLeastOneSavedRecordFisrt).setIcon(Ext.Msg.INFO);
 			return;
 		}
 		var data = [];
@@ -346,15 +372,28 @@ EURB.Table.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 			,scope:this
 			,params:{
 				cmd: 'activateData',
+				target: target,
 				data:Ext.encode(data)
 			}
 		};
 		Ext.Ajax.request(o);
 	}
-	,deactivateSelectedRecords:function() {
-		var records = this.getSelectionModel().getSelections();
+	,deactivateSelectedRecordsForManager:function() {
+		this.deactivateSelectedRecords('manager');
+	}
+	,deactivateSelectedRecordsForUser:function() {
+		this.deactivateSelectedRecords('user');
+	}
+	,deactivateSelectedRecords:function(target) {
+		var selectedRecords = this.getSelectionModel().getSelections();
+		var records = [];
+		for(var i=0; i<selectedRecords.length; i++) {
+			if(selectedRecords[i].get('id')) {
+				records.push(selectedRecords[i]);
+			}
+		}
 		if(!records.length) {
-			Ext.Msg.alert(Ext.MessageBox.title.warning, EURB.selectAtLeastOneRecordFisrt).setIcon(Ext.Msg.INFO);
+			Ext.Msg.alert(Ext.MessageBox.title.warning, EURB.selectAtLeastOneSavedRecordFisrt).setIcon(Ext.Msg.INFO);
 			return;
 		}
 		var data = [];
@@ -368,6 +407,7 @@ EURB.Table.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 			,scope:this
 			,params:{
 				cmd: 'deactivateData',
+				target: target,
 				data:Ext.encode(data)
 			}
 		};

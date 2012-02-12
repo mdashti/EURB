@@ -2,13 +2,15 @@ package com.sharifpro.eurb.management.mapping.model;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.sharifpro.db.meta.ITableInfo;
 import com.sharifpro.util.PropertyProvider;
 
 public class TableMapping extends PersistableObject implements Serializable
 {
 	public final static int MAPPED_TYPE_TABLE = 0;
-	public final static int MAPPED_TYPE_VIEW = 0;
+	public final static int MAPPED_TYPE_VIEW = 1;
 	
 	private static final long serialVersionUID = 8016638670642078075L;
 
@@ -135,7 +137,11 @@ public class TableMapping extends PersistableObject implements Serializable
 	 */
 	public void setSchema(String schema)
 	{
-		this.schema = schema;
+		if(StringUtils.isEmpty(schema)) {
+			this.schema = null;
+		} else {
+			this.schema = schema;
+		}
 	}
 
 	/**

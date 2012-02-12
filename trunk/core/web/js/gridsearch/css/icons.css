@@ -352,5 +352,9 @@
 .icon-deactivate {
 	background-image:url(../../../img/icon/deactivate.png) ! important;
 }
+
+.icon-doorout {
+    background-image:url(../../../img/icon/fam/door_out.png) !important;
+}
 /*  Icon Classes end */
 

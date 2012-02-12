@@ -192,10 +192,10 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	 * Returns all rows from the db_config table that match the criteria '' limited by start and limit.
 	 */
 	@Transactional
-	public List<DbConfig> findAll(Integer start, Integer limit) throws DbConfigDaoException
+	public List<DbConfig> findAll(Integer start, Integer limit, String sortBy, String sortDir) throws DbConfigDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.record_status IN ('A', 'P') ORDER BY o.id limit ?, ?", this, start, limit);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.record_status IN ('A', 'P') ORDER BY "+getSortClause(sortBy, sortDir)+" limit ?, ?", this, start, limit);
 		}
 		catch (Exception e) {
 			throw new DbConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -207,10 +207,10 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	 * Returns all rows from the db_config table that match the criteria like query in onFields fields limited by start and limit.
 	 */
 	@Transactional
-	public List<DbConfig> findAll(String query, List<String> onFields, Integer start, Integer limit) throws DbConfigDaoException
+	public List<DbConfig> findAll(String query, List<String> onFields, Integer start, Integer limit, String sortBy, String sortDir) throws DbConfigDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.record_status IN ('A', 'P') AND (" + getMultipleFieldWhereClause(query, onFields) + ") ORDER BY o.id limit ?, ?", this, start, limit);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.record_status IN ('A', 'P') AND (" + getMultipleFieldWhereClause(query, onFields) + ") ORDER BY "+getSortClause(sortBy, sortDir)+" limit ?, ?", this, start, limit);
 		}
 		catch (Exception e) {
 			throw new DbConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -253,6 +253,27 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 		} else {
 			return "";
 		}
+	}
+	
+	private static String getSortClause(String sortBy, String sortDir) {
+		StringBuilder result = new StringBuilder();
+		if("id".equals(sortBy)) {
+			result.append("o.id");
+		} else if("name".equals(sortBy)) {
+			result.append("o.name");
+		} else if("driverClass".equals(sortBy)) {
+			result.append("o.driver_class");
+		} else if("driverUrl".equals(sortBy)) {
+			result.append("o.driver_url");
+		} else if("username".equals(sortBy)) {
+			result.append("o.username");
+		} else if("testQuery".equals(sortBy)) {
+			result.append("o.testQuery");
+		} else {
+			result.append("o.id");
+		}
+		result.append(" ").append(AbstractDAO.DESCENDING_SORT_ORDER.equals(sortDir) ? AbstractDAO.DESCENDING_SORT_ORDER : AbstractDAO.ASCENDING_SORT_ORDER);
+		return result.toString();
 	}
 
 	/** 

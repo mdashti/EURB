@@ -23,14 +23,13 @@ import com.sharifpro.util.json.JsonUtil;
  * @author Alireza Sadeghipour
  */
 @Controller
-@RequestMapping(value="/builder/category/*")
 public class ReportCategoryController {
 
 	private ReportCategoryDao reportCategoryDao;
 	
 	private JsonUtil jsonUtil;
 
-	@RequestMapping(value="/reportCategorySearch.spy")
+	@RequestMapping(value="/builder/category/reportCategorySearch.spy")
 	public @ResponseBody Map<String,? extends Object> search(@RequestParam(defaultValue="", required=false) String query
 			,@RequestParam(defaultValue="[]", required=false) String fields
 			,@RequestParam(defaultValue="0", required=false) String start
@@ -58,7 +57,7 @@ public class ReportCategoryController {
 		}
 	}
 
-	@RequestMapping(value="/reportCategoryStore.spy")
+	@RequestMapping(value="/builder/category/reportCategoryStore.spy")
 	public @ResponseBody Map<String,? extends Object> store(@RequestParam Object data) throws Exception {
 		try{
 
@@ -83,7 +82,7 @@ public class ReportCategoryController {
 		}
 	}
 
-	@RequestMapping(value="/reportCategoryRemove.spy")
+	@RequestMapping(value="/builder/category/reportCategoryRemove.spy")
 	public @ResponseBody Map<String,? extends Object> delete(@RequestParam Object data) throws Exception {
 
 		try{

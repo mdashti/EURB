@@ -62,6 +62,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 				}
 			}, keyHolder);
 		emptyPK.setId( keyHolder.getKey().longValue() );
+		dto.setId(emptyPK.getId());
 		return emptyPK;
 	}
 

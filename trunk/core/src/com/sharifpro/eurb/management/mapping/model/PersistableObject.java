@@ -9,6 +9,7 @@ import com.sharifpro.eurb.PersistableObjectType;
 
 public class PersistableObject implements Serializable
 {
+	public final static String IDENTIFIER_FIELD = "id";
 	private static final long serialVersionUID = -8510014065738364759L;
 
 	/** 

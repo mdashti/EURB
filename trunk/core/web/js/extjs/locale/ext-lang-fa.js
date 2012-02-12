@@ -81,7 +81,8 @@ if(Ext.MessageBox){
    };
    
    Ext.MessageBox.title = {
-      warning     : "اخطار"
+      warning     : "اخطار",
+      error       : "خطا"
    };
 }
 

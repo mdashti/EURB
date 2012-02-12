@@ -24,11 +24,11 @@
 		<!-- App js -->
 		<script type="text/javascript">
 			EURB.DBConfig = {};
-			EURB.DBConfig.searchAction = '${baseUrl}management/mapping/dbconfig/dbconfigSearch.spa';
-			EURB.DBConfig.storeAction = '${baseUrl}management/mapping/dbconfig/dbconfigStore.spa';
-			EURB.DBConfig.removeAction = '${baseUrl}management/mapping/dbconfig/dbconfigRemove.spa';
-			EURB.DBConfig.activateAction = '${baseUrl}management/mapping/dbconfig/dbconfigActivate.spa';
-			EURB.DBConfig.deactivateAction = '${baseUrl}management/mapping/dbconfig/dbconfigDeactivate.spa';
+			EURB.DBConfig.searchAction = '${baseUrl}management/mapping/dbconfig/dbconfigSearch.spy';
+			EURB.DBConfig.storeAction = '${baseUrl}management/mapping/dbconfig/dbconfigStore.spy';
+			EURB.DBConfig.removeAction = '${baseUrl}management/mapping/dbconfig/dbconfigRemove.spy';
+			EURB.DBConfig.activateAction = '${baseUrl}management/mapping/dbconfig/dbconfigActivate.spy';
+			EURB.DBConfig.deactivateAction = '${baseUrl}management/mapping/dbconfig/dbconfigDeactivate.spy';
 			
 			EURB.DBConfig.name = '<spring:message code="eurb.app.management.dbconfig.name" />';
 			EURB.DBConfig.driverClass = '<spring:message code="eurb.app.management.dbconfig.driverClass" />';
@@ -36,6 +36,8 @@
 			EURB.DBConfig.username = '<spring:message code="eurb.app.management.dbconfig.username" />';
 			EURB.DBConfig.password = '<spring:message code="eurb.app.management.dbconfig.password" />';
 			EURB.DBConfig.testQuery = '<spring:message code="eurb.app.management.dbconfig.testQuery" />';
+			
+			EURB.DBConfig.editTables = '<spring:message code="eurb.app.management.dbconfig.editTables" />';
 		</script>
 		<script src="${resourcesUrl}/js/app/management/mapping/dbconfig.js"></script>
 	</body>

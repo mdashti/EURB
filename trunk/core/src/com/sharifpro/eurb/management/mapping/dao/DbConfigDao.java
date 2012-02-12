@@ -69,8 +69,10 @@ public interface DbConfigDao
 	
 	/** 
 	 * Returns all rows from the db_config table that match the criteria '' limited by start and limit.
+	 * @param dir 
+	 * @param sort 
 	 */
-	public List<DbConfig> findAll(Integer start, Integer limit) throws DbConfigDaoException;
+	public List<DbConfig> findAll(Integer start, Integer limit, String sort, String dir) throws DbConfigDaoException;
 
 	/** 
 	 * Returns all active rows from the db_config table that match the criteria ''.
@@ -79,8 +81,10 @@ public interface DbConfigDao
 	
 	/** 
 	 * Returns all rows from the db_config table that match the like query in onFields fields limited by start and limit.
+	 * @param dir 
+	 * @param sort 
 	 */
-	public List<DbConfig> findAll(String query, List<String> onFields, Integer start, Integer limit) throws DbConfigDaoException;
+	public List<DbConfig> findAll(String query, List<String> onFields, Integer start, Integer limit, String sort, String dir) throws DbConfigDaoException;
 	
 	/** 
 	 * Counts all rows from the db_config table that match the like query in onFields fields.

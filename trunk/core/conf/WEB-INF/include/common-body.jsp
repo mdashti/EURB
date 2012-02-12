@@ -76,10 +76,12 @@
 		EURB.areYouSureToDelTitle = '<spring:message code="eurb.areYouSureToDelTitle" />';
 		EURB.areYouSureToDelete = '<spring:message code="eurb.areYouSureToDelete" />';
 		EURB.selectAtLeastOneRecordFisrt = '<spring:message code="eurb.selectAtLeastOneRecordFisrt" />';
+		EURB.selectAtLeastOneSavedRecordFisrt = '<spring:message code="eurb.selectAtLeastOneSavedRecordFisrt" />';
 		EURB.addEdit = '<spring:message code="eurb.addEdit" />';
 		EURB.records = '<spring:message code="eurb.records" />';
 		EURB.item = '<spring:message code="eurb.item" />';
 		EURB.containing = '<spring:message code="eurb.containing" />';
+		EURB.returnBack = '<spring:message code="eurb.returnBack" />';
 		
 		EURB.appMenu = {};
 		EURB.appMenu.dbConfig = '<spring:message code="eurb.app.menu.management.db" />';
@@ -88,13 +90,22 @@
 		
 		EURB.showError = function(msg, title) {
 			Ext.Msg.show({
-				 title:title || 'Error'
+				 title:title || Ext.MessageBox.title.error
 				,msg:Ext.util.Format.ellipsis(msg, 2000)
 				,icon:Ext.Msg.ERROR
 				,buttons:Ext.Msg.OK
 				,minWidth:1200 > String(msg).length ? 360 : 600
 			});
 		};
+		
+		EURB.proxyExceptionHandler = function(proxy, type, action, options, res) {
+	    	Ext.Msg.show({
+	    		title: Ext.MessageBox.title.error,
+	    		msg: Ext.util.JSON.decode(res.responseText).message,
+	    		icon: Ext.MessageBox.ERROR,
+	    		buttons: Ext.Msg.OK
+	    	});
+	    }
 		</script>
 		<!-- App Menu -->
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/app/menu/jquery.min.js"></script>
