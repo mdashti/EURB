@@ -222,6 +222,7 @@ EURB.ReportCategory.CategoryGrid = Ext.extend(Ext.grid.GridPanel, {
 
 		switch(options.params.cmd) {
 			default:
+				this.store.commitChanges();
 				this.store.reload();
 				this.getSelectionModel().clearSelections();
 			break;
