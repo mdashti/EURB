@@ -94,7 +94,7 @@ CREATE  TABLE IF NOT EXISTS `eurb`.`table_mapping` (
   `mapped_type` INT NOT NULL DEFAULT 0 ,
   `active_for_manager` TINYINT(1) NOT NULL DEFAULT 1 ,
   `active_for_user` TINYINT(1) NOT NULL DEFAULT 0 ,
-  PRIMARY KEY (`id`) ,
+  PRIMARY KEY (`id`, `db_config_id`) ,
   INDEX `fk_table_mapping_persistable_object` (`id` ASC) ,
   INDEX `fk_table_mapping_db_config` (`db_config_id` ASC) ,
   CONSTRAINT `fk_table_mapping_persistable_object`
@@ -118,6 +118,7 @@ DROP TABLE IF EXISTS `eurb`.`column_mapping` ;
 CREATE  TABLE IF NOT EXISTS `eurb`.`column_mapping` (
   `id` BIGINT UNSIGNED NOT NULL ,
   `table_mapping_id` BIGINT UNSIGNED NOT NULL ,
+  `db_config_id` BIGINT UNSIGNED NOT NULL ,
   `column_name` VARCHAR(255) NOT NULL ,
   `mapped_name` VARCHAR(255) NOT NULL ,
   `col_type_name` VARCHAR(100) NOT NULL ,
@@ -128,9 +129,10 @@ CREATE  TABLE IF NOT EXISTS `eurb`.`column_mapping` (
   `referenced_table` VARCHAR(255) NULL ,
   `referenced_id_col` VARCHAR(255) NULL ,
   `referenced_value_col` VARCHAR(255) NULL ,
-  PRIMARY KEY (`id`) ,
+  PRIMARY KEY (`id`, `table_mapping_id`, `db_config_id`) ,
   INDEX `fk_column_mapping_persistable_object` (`id` ASC) ,
   INDEX `fk_column_mapping_table_mapping` (`table_mapping_id` ASC) ,
+  INDEX `fk_column_mapping_db_config` (`db_config_id` ASC) ,
   CONSTRAINT `fk_column_mapping_persistable_object`
     FOREIGN KEY (`id` )
     REFERENCES `eurb`.`persistable_object` (`id` )
@@ -139,6 +141,11 @@ CREATE  TABLE IF NOT EXISTS `eurb`.`column_mapping` (
   CONSTRAINT `fk_column_mapping_table_mapping`
     FOREIGN KEY (`table_mapping_id` )
     REFERENCES `eurb`.`table_mapping` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_column_mapping_db_config`
+    FOREIGN KEY (`db_config_id` )
+    REFERENCES `eurb`.`db_config` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;

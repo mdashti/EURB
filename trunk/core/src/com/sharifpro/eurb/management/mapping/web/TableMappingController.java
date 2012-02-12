@@ -214,7 +214,7 @@ public class TableMappingController {
 		}
 	}
 
-	@RequestMapping(value="/management/mapping/table.spy")
+	@RequestMapping(value="/management/mapping/db-table.spy")
 	public ModelAndView executeTableSpy() throws Exception {
 		return executeTableSpy(null);
 	}

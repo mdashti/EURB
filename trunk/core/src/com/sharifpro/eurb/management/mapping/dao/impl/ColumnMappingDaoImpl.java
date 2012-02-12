@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements ParameterizedRowMapper<ColumnMapping>, ColumnMappingDao
 {
-	private final static String QUERY_FROM_COLUMNS = "o.table_mapping_id, o.column_name, o.mapped_name, o.col_type_name, o.col_data_type, o.col_order, o.format_pattern, o.static_mapping, o.referenced_table, o.referenced_id_col, o.referenced_value_col";
+	private final static String QUERY_FROM_COLUMNS = "o.db_config_id, o.table_mapping_id, o.column_name, o.mapped_name, o.col_type_name, o.col_data_type, o.col_order, o.format_pattern, o.static_mapping, o.referenced_table, o.referenced_id_col, o.referenced_value_col";
 
 	private final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL_AND_JOIN;
 
@@ -30,7 +30,7 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 	{
 		ColumnMappingPk pk = new ColumnMappingPk();
 		DaoFactory.createPersistableObjectDao().insert(dto, pk);
-		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, table_mapping_id, column_name, mapped_name, col_type_name, col_data_type, col_order, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",pk.getId(),dto.getTableMappingId(),dto.getColumnName(),dto.getMappedName(),dto.getColTypeName(),dto.getColDataType(),dto.getColOrder(),dto.getFormatPattern(),dto.getStaticMapping(),dto.getReferencedTable(),dto.getReferencedIdCol(),dto.getReferencedValueCol());
+		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, db_config_id, table_mapping_id, column_name, mapped_name, col_type_name, col_data_type, col_order, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",pk.getId(),dto.getDbConfigId(),dto.getTableMappingId(),dto.getColumnName(),dto.getMappedName(),dto.getColTypeName(),dto.getColDataType(),dto.getColOrder(),dto.getFormatPattern(),dto.getStaticMapping(),dto.getReferencedTable(),dto.getReferencedIdCol(),dto.getReferencedValueCol());
 		return pk;
 	}
 
@@ -41,7 +41,7 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 	public void update(ColumnMappingPk pk, ColumnMapping dto) throws ColumnMappingDaoException
 	{
 		DaoFactory.createPersistableObjectDao().update(pk);
-		jdbcTemplate.update("UPDATE " + getTableName() + " SET table_mapping_id = ?, column_name = ?, mapped_name = ?, col_type_name = ?, col_data_type = ?, col_order = ?, format_pattern = ?, static_mapping = ?, referenced_table = ?, referenced_id_col = ?, referenced_value_col = ? WHERE id = ?",dto.getTableMappingId(),dto.getColumnName(),dto.getMappedName(),dto.getColTypeName(),dto.getColDataType(),dto.getColOrder(),dto.getFormatPattern(),dto.getStaticMapping(),dto.getReferencedTable(),dto.getReferencedIdCol(),dto.getReferencedValueCol(),pk.getId());
+		jdbcTemplate.update("UPDATE " + getTableName() + " SET db_config_id = ?, table_mapping_id = ?, column_name = ?, mapped_name = ?, col_type_name = ?, col_data_type = ?, col_order = ?, format_pattern = ?, static_mapping = ?, referenced_table = ?, referenced_id_col = ?, referenced_value_col = ? WHERE id = ?",dto.getDbConfigId(),dto.getTableMappingId(),dto.getColumnName(),dto.getMappedName(),dto.getColTypeName(),dto.getColDataType(),dto.getColOrder(),dto.getFormatPattern(),dto.getStaticMapping(),dto.getReferencedTable(),dto.getReferencedIdCol(),dto.getReferencedValueCol(),pk.getId());
 	}
 
 	/** 
@@ -67,6 +67,7 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 		ColumnMapping dto = new ColumnMapping();
 		PersistableObjectDaoImpl.PERSISTABLE_OBJECT_MAPPER.mapRow(rs, row, dto);
 		int i = PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS_COUNT;
+		dto.setDbConfigId( new Long( rs.getLong(++i) ) );
 		dto.setTableMappingId( new Long( rs.getLong(++i) ) );
 		dto.setColumnName( rs.getString( ++i ) );
 		dto.setMappedName( rs.getString( ++i ) );

@@ -157,7 +157,7 @@
 		    	'<h3 class="headerbar"><a href="'+EURB.baseURL+'"><spring:message code="eurb.app.menu.management" /></a></h3>'+
 		    	'<ul class="submenu">'+
 		    	'<li><a href="<spring:url value="/management/mapping/dbconfig.spy" />">'+EURB.appMenu.dbConfig+'</a></li>'+
-		    	'<li><a href="<spring:url value="/management/mapping/table.spy" />">'+EURB.appMenu.table+'</a></li>'+
+		    	'<li><a href="<spring:url value="/management/mapping/db-table.spy" />">'+EURB.appMenu.table+'</a></li>'+
 		    	'<li><a href="'+EURB.baseURL+'"><spring:message code="eurb.app.menu.management.users" /></a></li>'+
 		    	'</ul>'+
 		    	'<h3 class="headerbar"><a href="'+EURB.baseURL+'"><spring:message code="eurb.app.menu.reportbuilder" /></a></h3>'+

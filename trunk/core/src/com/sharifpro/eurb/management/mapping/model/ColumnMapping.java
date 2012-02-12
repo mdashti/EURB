@@ -5,17 +5,14 @@ import java.io.Serializable;
 public class ColumnMapping extends PersistableObject implements Serializable
 {
 	private static final long serialVersionUID = -2903512798099004237L;
+	
+	/** 
+	 * This attribute maps to the column db_config_id in the column_mapping table.
+	 */
+	protected Long dbConfigId;
 
 	/** 
 	 * This attribute maps to the column table_mapping_id in the column_mapping table.
-	 * 
-	 * Should include:
-	 * + Column Size
-	 * + Decimal Digits
-	 * + (Default Value)
-	 * + Radix
-	 * + Remarks
-	 * + isNullable
 	 */
 	protected Long tableMappingId;
 
@@ -52,6 +49,14 @@ public class ColumnMapping extends PersistableObject implements Serializable
 
 	/** 
 	 * This attribute maps to the column format_pattern in the column_mapping table.
+	 * 
+	 * Should include:
+	 * + Column Size
+	 * + Decimal Digits
+	 * + (Default Value)
+	 * + Radix
+	 * + Remarks
+	 * + isNullable
 	 */
 	protected String formatPattern;
 
@@ -82,6 +87,27 @@ public class ColumnMapping extends PersistableObject implements Serializable
 	public ColumnMapping()
 	{
 		super();
+	}
+
+
+	/**
+	 * Method 'getDbConfigId'
+	 * 
+	 * @return Long
+	 */
+	public Long getDbConfigId()
+	{
+		return dbConfigId;
+	}
+
+	/**
+	 * Method 'setDbConfigId'
+	 * 
+	 * @param dbConfigId
+	 */
+	public void setDbConfigId(Long dbConfigId)
+	{
+		this.dbConfigId = dbConfigId;
 	}
 
 
@@ -438,6 +464,7 @@ public class ColumnMapping extends PersistableObject implements Serializable
 		StringBuffer ret = new StringBuffer();
 		ret.append( "model.ColumnMapping: " );
 		ret.append( super.toString() );
+		ret.append( ", dbConfigId=" + dbConfigId );
 		ret.append( ", tableMappingId=" + tableMappingId );
 		ret.append( ", columnName=" + columnName );
 		ret.append( ", mappedName=" + mappedName );
