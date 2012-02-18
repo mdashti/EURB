@@ -12,7 +12,7 @@ public class ReportDesignPk extends PersistableObjectPk implements Serializable
 	private static final long serialVersionUID = 3685496952009516376L;
 
 	protected Long versionId;
-
+	
 	/** 
 	 * Sets the value of versionId
 	 */
@@ -48,6 +48,10 @@ public class ReportDesignPk extends PersistableObjectPk implements Serializable
 	{
 		super(id);
 		this.versionId = versionId;
+	}
+	
+	public ReportDesignPk(final Long id){
+		super(id);
 	}
 
 	/**

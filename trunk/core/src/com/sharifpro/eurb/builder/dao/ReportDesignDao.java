@@ -1,10 +1,10 @@
 package com.sharifpro.eurb.builder.dao;
 
-import com.sharifpro.eurb.builder.dao.ReportDesignDao;
+import java.util.List;
+
 import com.sharifpro.eurb.builder.exception.ReportDesignDaoException;
 import com.sharifpro.eurb.builder.model.ReportDesign;
 import com.sharifpro.eurb.builder.model.ReportDesignPk;
-import java.util.List;
 
 public interface ReportDesignDao
 {
@@ -25,6 +25,34 @@ public interface ReportDesignDao
 	 * Deletes a single row in the report_design table.
 	 */
 	public void delete(ReportDesignPk pk) throws ReportDesignDaoException;
+	
+	/**
+	 * Deletes multiple given rows form the report_design table.
+	 */
+	public void deleteAll(List<ReportDesignPk> pkList) throws ReportDesignDaoException;
+	
+	/**
+	 * Activates a single row in database
+	 */
+	public void activate(ReportDesignPk pk) throws ReportDesignDaoException;
+	
+	/**
+	 * Activates multiple given rows in the report_design table.
+	 */
+	public void activateAll(List<ReportDesignPk> pkList) throws ReportDesignDaoException;
+	
+	/**
+	 * Deactivates a single row in database
+	 */
+	public void deactivate(ReportDesignPk pk) throws ReportDesignDaoException;
+	
+	/**
+	 * Deactivates multiple given rows in the report_design table.
+	 */
+	public void deactivateAll(List<ReportDesignPk> pkList) throws ReportDesignDaoException;
+	
+	
+	
 
 	/** 
 	 * Returns current row from the report_design table that match the criteria 'id = :id'.
@@ -41,6 +69,28 @@ public interface ReportDesignDao
 	 * Returns all rows from the report_design table that match the criteria ''.
 	 */
 	public List<ReportDesign> findAll() throws ReportDesignDaoException;
+	
+	/** 
+	 * Counts all rows from the report_design table that match the criteria ''.
+	 */
+	public int countAll() throws ReportDesignDaoException;
+	
+	/** 
+	 * Returns all rows from the report_category table that match the criteria '' limited by start and limit.
+	 */
+	public List<ReportDesign> findAll(Integer start, Integer limit, String sort, String dir) throws ReportDesignDaoException;
+
+	/** 
+	 * Returns all rows from the report_category table that match the like query in onFields fields limited by start and limit.
+	 */
+	public List<ReportDesign> findAll(String query, List<String> onFields, Integer start, Integer limit, String sort, String dir) throws ReportDesignDaoException;
+
+	
+	/** 
+	 * Counts all rows from the report_category table that match the like query in onFields fields.
+	 */
+	public int countAll(String query, List<String> onFields) throws ReportDesignDaoException;
+	
 
 	/** 
 	 * Returns all active rows from the report_design table that match the criteria ''.
