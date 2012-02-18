@@ -2,6 +2,8 @@ package com.sharifpro.eurb.management.mapping.model;
 
 import java.io.Serializable;
 
+import com.sharifpro.db.meta.TableColumnInfo;
+
 public class ColumnMapping extends PersistableObject implements Serializable
 {
 	private static final long serialVersionUID = -2903512798099004237L;
@@ -45,7 +47,7 @@ public class ColumnMapping extends PersistableObject implements Serializable
 	 * 
 	 * Ordinal Position
 	 */
-	protected String colOrder;
+	protected int colOrder;
 
 	/** 
 	 * This attribute maps to the column format_pattern in the column_mapping table.
@@ -80,6 +82,16 @@ public class ColumnMapping extends PersistableObject implements Serializable
 	 */
 	protected String referencedValueCol;
 
+	/** 
+	 * This attribute maps to the column active_for_manager in the column_mapping table.
+	 */
+	protected boolean activeForManager;
+
+	/** 
+	 * This attribute maps to the column active_for_user in the column_mapping table.
+	 */
+	protected boolean activeForUser;
+
 	/**
 	 * Method 'ColumnMapping'
 	 * 
@@ -88,6 +100,24 @@ public class ColumnMapping extends PersistableObject implements Serializable
 	{
 		super();
 	}
+
+	
+
+	public ColumnMapping(Long dbConfigId, Long tableMappingId,
+			String columnName, String colTypeName, int colDataType,
+			int colOrder, String formatPattern) {
+		super();
+		this.dbConfigId = dbConfigId;
+		this.tableMappingId = tableMappingId;
+		this.columnName = columnName;
+		this.colTypeName = colTypeName;
+		this.colDataType = colDataType;
+		this.colOrder = colOrder;
+		this.formatPattern = formatPattern;
+		this.activeForManager = true;
+		this.activeForUser = true;
+	}
+
 
 
 	/**
@@ -214,9 +244,9 @@ public class ColumnMapping extends PersistableObject implements Serializable
 	/**
 	 * Method 'getColOrder'
 	 * 
-	 * @return String
+	 * @return int
 	 */
-	public String getColOrder()
+	public int getColOrder()
 	{
 		return colOrder;
 	}
@@ -226,7 +256,7 @@ public class ColumnMapping extends PersistableObject implements Serializable
 	 * 
 	 * @param colOrder
 	 */
-	public void setColOrder(String colOrder)
+	public void setColOrder(int colOrder)
 	{
 		this.colOrder = colOrder;
 	}
@@ -330,6 +360,46 @@ public class ColumnMapping extends PersistableObject implements Serializable
 	{
 		this.referencedValueCol = referencedValueCol;
 	}
+	
+	/**
+	 * Method 'isActiveForManager'
+	 * 
+	 * @return boolean
+	 */
+	public boolean isActiveForManager()
+	{
+		return activeForManager;
+	}
+
+	/**
+	 * Method 'setActiveForManager'
+	 * 
+	 * @param activeForManager
+	 */
+	public void setActiveForManager(boolean activeForManager)
+	{
+		this.activeForManager = activeForManager;
+	}
+
+	/**
+	 * Method 'isActiveForUser'
+	 * 
+	 * @return boolean
+	 */
+	public boolean isActiveForUser()
+	{
+		return activeForUser;
+	}
+
+	/**
+	 * Method 'setActiveForUser'
+	 * 
+	 * @param activeForUser
+	 */
+	public void setActiveForUser(boolean activeForUser)
+	{
+		this.activeForUser = activeForUser;
+	}
 
 	/**
 	 * Method 'equals'
@@ -339,12 +409,19 @@ public class ColumnMapping extends PersistableObject implements Serializable
 	 */
 	public boolean equals(Object _other)
 	{
-		if(!super.equals(_other)){
-			return false;
-		}
-		
-		if (!(_other instanceof ColumnMapping)) {
-			return false;
+		if(_other instanceof TableColumnInfo) {
+			TableColumnInfo _cast = (TableColumnInfo)_other;
+			if (columnName == null ? _cast.getColumnName() != columnName : !columnName.equals( _cast.getColumnName() )) {
+				return false;
+			}
+		} else {
+			if(!super.equals(_other)){
+				return false;
+			}
+			
+			if (!(_other instanceof ColumnMapping)) {
+				return false;
+			}
 		}
 		
 		/*final ColumnMapping _cast = (ColumnMapping) _other;
@@ -476,6 +553,8 @@ public class ColumnMapping extends PersistableObject implements Serializable
 		ret.append( ", referencedTable=" + referencedTable );
 		ret.append( ", referencedIdCol=" + referencedIdCol );
 		ret.append( ", referencedValueCol=" + referencedValueCol );
+		ret.append( ", activeForManager=" + activeForManager );
+		ret.append( ", activeForUser=" + activeForUser );
 		return ret.toString();
 	}
 

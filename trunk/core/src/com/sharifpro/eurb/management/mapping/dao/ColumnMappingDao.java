@@ -4,6 +4,7 @@ import com.sharifpro.eurb.management.mapping.dao.ColumnMappingDao;
 import com.sharifpro.eurb.management.mapping.exception.ColumnMappingDaoException;
 import com.sharifpro.eurb.management.mapping.model.ColumnMapping;
 import com.sharifpro.eurb.management.mapping.model.ColumnMappingPk;
+import com.sharifpro.eurb.management.mapping.model.TableMapping;
 
 import java.util.List;
 
@@ -106,5 +107,13 @@ public interface ColumnMappingDao
 	 * Returns the rows from the column_mapping table that matches the specified primary-key value.
 	 */
 	public ColumnMapping findByPrimaryKey(ColumnMappingPk pk) throws ColumnMappingDaoException;
+
+	public List<ColumnMapping> findAll(TableMapping tbl, String query, List<String> onFields) throws ColumnMappingDaoException;
+
+	public void deleteAll(List<ColumnMappingPk> pkList) throws ColumnMappingDaoException;
+
+	public void activateAll(List<ColumnMappingPk> pkList, String target) throws ColumnMappingDaoException;
+
+	public void deactivateAll(List<ColumnMappingPk> pkList, String target) throws ColumnMappingDaoException;
 
 }

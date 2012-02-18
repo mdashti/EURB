@@ -271,6 +271,10 @@ public class ColumnMappingDaoExample
 		buf.append( dto.getReferencedIdCol() );
 		buf.append( ", " );
 		buf.append( dto.getReferencedValueCol() );
+		buf.append( ", " );
+		buf.append( dto.isActiveForManager() );
+		buf.append( ", " );
+		buf.append( dto.isActiveForUser() );
 		System.out.println( buf.toString() );
 	}
 

@@ -454,4 +454,10 @@ public class DbConfig extends PersistableObject implements Serializable
 		TableColumnInfo[] cols = metaData.getColumnInfo(tableInfo);
 		return cols;
 	}
+	
+	@JsonIgnore
+	public TableColumnInfo[] getColumns(ISQLConnection conn, TableMapping tbl) throws SQLException{
+		ISQLDatabaseMetaData metaData = getMetaData(conn);
+		return metaData.getColumnInfo(tbl.getCatalog(), tbl.getSchema(), tbl.getTableName());
+	}
 }

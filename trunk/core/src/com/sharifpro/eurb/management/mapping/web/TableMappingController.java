@@ -139,12 +139,12 @@ public class TableMappingController {
 			
 			List<Long> insertIds = new ArrayList<Long>(tableMappings.size());
 			TableMappingPk pk;
-			for(TableMapping dbConf : tableMappings) {
-				if(dbConf.isNewRecord()) {
-					pk = tableMappingDao.insert(dbConf);
+			for(TableMapping tbl : tableMappings) {
+				if(tbl.isNewRecord()) {
+					pk = tableMappingDao.insert(tbl);
 				} else {
-					pk = dbConf.createPk();
-					tableMappingDao.update(pk,dbConf);
+					pk = tbl.createPk();
+					tableMappingDao.update(pk,tbl);
 				}
 				insertIds.add(pk.getId());
 			}

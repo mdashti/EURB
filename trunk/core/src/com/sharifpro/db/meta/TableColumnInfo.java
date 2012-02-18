@@ -1,5 +1,7 @@
 package com.sharifpro.db.meta;
 
+import com.sharifpro.eurb.management.mapping.model.ColumnMapping;
+
 public class TableColumnInfo extends DatabaseObjectInfo
 {
 	private static final long serialVersionUID = -8652919906000443133L;
@@ -126,5 +128,18 @@ public class TableColumnInfo extends DatabaseObjectInfo
 	public String isNullable()
 	{
 		return _isNullable;
+	}
+	
+	@Override
+	public boolean equals(Object _other) {
+		if(_other instanceof ColumnMapping) {
+			ColumnMapping _cast = (ColumnMapping)_other;
+			if (_cast.getColumnName() == null ? this.getColumnName() != _cast.getColumnName() : !_cast.getColumnName().equals( this.getColumnName() )) {
+				return false;
+			}
+		} else {
+			return super.equals(_other);
+		}
+		return true;
 	}
 }

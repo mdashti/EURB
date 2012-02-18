@@ -44,6 +44,8 @@
 			EURB.Table.activeForUser = '<spring:message code="eurb.app.management.table.activeForUser" />';
 			EURB.Table.forManager = '<spring:message code="eurb.app.management.table.forManager" />';
 			EURB.Table.forUser = '<spring:message code="eurb.app.management.table.forUser" />';
+			EURB.Table.editColumns = '<spring:message code="eurb.app.management.table.editColumns" />';
+			EURB.Table.youShouldSaveTheRecordFisrt = '<spring:message code="eurb.app.management.table.youShouldSaveTheRecordFisrt" />';
 			EURB.Table.selectedDbConfig = '<%=selectedDbConfig%>';
 			
 			// create the combo instance

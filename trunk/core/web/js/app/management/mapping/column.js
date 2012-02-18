@@ -1,6 +1,6 @@
 Ext.state.Manager.setProvider(new Ext.state.CookieProvider());
 
-EURB.Table.store = new Ext.data.GroupingStore({
+EURB.Column.store = new Ext.data.Store({
 	reader:new Ext.data.JsonReader({
 		 id:'id'
 		,totalProperty:'totalCount'
@@ -8,47 +8,55 @@ EURB.Table.store = new Ext.data.GroupingStore({
 		,fields:[
 			 {name:'id', type:'int'}
 			,{name:'dbConfigId', type:'int'}
-			,{name:'catalog', type:'string'}
-			,{name:'schema', type:'string'}
-			,{name:'tableName', type:'string'}
+			,{name:'tableMappingId', type:'int'}
+			,{name:'colOrder', type:'int'}
+			,{name:'colTypeName', type:'string'}
+			,{name:'columnName', type:'string'}
 			,{name:'mappedName', type:'string'}
-			,{name:'mappedTypeName', type:'string'}
 			,{name:'activeForManager', type:'boolean'}
 			,{name:'activeForUser', type:'boolean'}
+			,{name:'formatPattern', type:'string'}
+			,{name:'referencedIdCol', type:'string'}
+			,{name:'referencedTable', type:'string'}
+			,{name:'referencedValueCol', type:'string'}
+			,{name:'staticMapping', type:'string'}
+			,{name:'colDataType', type:'int'}
 		]
 	})
 	,proxy:new Ext.data.HttpProxy({
-		url:EURB.Table.searchAction
+		url:EURB.Column.searchAction
         ,listeners: {
         	'exception' : EURB.proxyExceptionHandler
         }
     })
 	,baseParams:{
-		dbconfig: EURB.Table.selectedDbConfig
+		dbconfig: EURB.Column.selectedDbConfig,
+		table: EURB.Column.selectedTable
 	}
 	,remoteSort:true
-	,sortInfo:{field: 'catalog', direction: "ASC"}
-	,groupField:'catalog'
+	,sortInfo:{field: 'colOrder', direction: "ASC"}
 });
 
-EURB.Table.cols = [{
-	 header:EURB.Table.catalog
-	,id:'catalog'
-	,dataIndex:'catalog'
-	,width:30
+EURB.Column.cols = [{
+	 header:EURB.Column.colOrder
+	,id:'colOrder'
+	,dataIndex:'colOrder'
+	,width:10
 	,sortable:true
-	,hidden:true
+	,editor:new Ext.form.NumberField({
+		allowBlank:false
+	})
 },{
-	 header:EURB.Table.tableName
-	,id:'tableName'
-	,dataIndex:'tableName'
+	 header:EURB.Column.columnName
+	,id:'columnName'
+	,dataIndex:'columnName'
 	,width:50
 	,sortable:true
 	,editor:new Ext.form.TextField({
 		allowBlank:false
 	})
 },{
-	 header:EURB.Table.mappedName
+	 header:EURB.Column.mappedName
 	,id:'mappedName'
 	,dataIndex:'mappedName'
 	,width:80
@@ -58,46 +66,46 @@ EURB.Table.cols = [{
 	})
 	,renderer: function(value, element, record, rowIndex , colIndex) {return Ext.isEmpty(value) ? '---' : value;}
 },{
-	 header:EURB.Table.mappedType
-	,id:'mappedTypeName'
-	,dataIndex:'mappedTypeName'
+	 header:EURB.Column.colTypeName
+	,id:'colTypeName'
+	,dataIndex:'colTypeName'
 	,width:25
 	,sortable:true
 	,editor:new Ext.form.TextField({
 		allowBlank:false
 	})
 },{
-	 header:EURB.Table.activeForManager
+	 header:EURB.Column.activeForManager
 	,id:'activeForManager'
 	,dataIndex:'activeForManager'
 	,width:25
 	,sortable:true
 	,editor:new Ext.form.Checkbox()
-	,renderer: function(value, element, record, rowIndex , colIndex) {return value ? '<a href="javascript:EURB.Table.tableGrid.deactivateForManagerInRow('+rowIndex+')"><img src="'+EURB.resourcesURL+'/img/icon/ok16.png" /></a>' : '<a href="javascript:EURB.Table.tableGrid.activateForManagerInRow('+rowIndex+')"><img src="'+EURB.resourcesURL+'/img/icon/cancel16.png" /></a>';}
+	,renderer: function(value, element, record, rowIndex , colIndex) {return value ? '<a href="javascript:EURB.Column.columnGrid.deactivateForManagerInRow('+rowIndex+')"><img src="'+EURB.resourcesURL+'/img/icon/ok16.png" /></a>' : '<a href="javascript:EURB.Column.columnGrid.activateForManagerInRow('+rowIndex+')"><img src="'+EURB.resourcesURL+'/img/icon/cancel16.png" /></a>';}
 },{
-	 header:EURB.Table.activeForUser
+	 header:EURB.Column.activeForUser
 	,id:'activeForUser'
 	,dataIndex:'activeForUser'
 	,width:25
 	,sortable:true
 	,editor:new Ext.form.Checkbox()
-	,renderer: function(value, element, record, rowIndex , colIndex) {return value ? '<a href="javascript:EURB.Table.tableGrid.deactivateForUserInRow('+rowIndex+')"><img src="'+EURB.resourcesURL+'/img/icon/ok16.png" /></a>' : '<a href="javascript:EURB.Table.tableGrid.activateForUserInRow('+rowIndex+')"><img src="'+EURB.resourcesURL+'/img/icon/cancel16.png" /></a>';}
+	,renderer: function(value, element, record, rowIndex , colIndex) {return value ? '<a href="javascript:EURB.Column.columnGrid.deactivateForUserInRow('+rowIndex+')"><img src="'+EURB.resourcesURL+'/img/icon/ok16.png" /></a>' : '<a href="javascript:EURB.Column.columnGrid.activateForUserInRow('+rowIndex+')"><img src="'+EURB.resourcesURL+'/img/icon/cancel16.png" /></a>';}
 }];
 
-EURB.Table.DBGrid = Ext.extend(Ext.grid.GridPanel, {
+EURB.Column.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 	// defaults - can be changed from outside
 	 layout:'fit'
 	,border:true
 	,stateful:false
 	,idName:'id'
-	,title: EURB.appMenu.table
+	,title: EURB.appMenu.column
 	,initComponent:function() {
         this.recordForm = new Ext.ux.grid.RecordForm({
-             title:EURB.addEdit+' '+EURB.appMenu.table
+             title:EURB.addEdit+' '+EURB.appMenu.column
             ,iconCls:'icon-edit-record'
             ,columnCount:1
-            ,ignoreFields:{id:true, dbConfigId:true, schema:true}
-            ,readonlyFields:{mappedTypeName:true, tableName: true, catalog:true}
+            ,ignoreFields:{id:true, dbConfigId:true, tableMappingId:true, formatPattern:true, referencedIdCol:true, referencedTable: true, referencedValueCol:true, staticMapping: true, colDataType:true}
+            ,readonlyFields:{colTypeName:true, columnName: true}
             //,disabledFields:{name:true}
             ,formConfig:{
                  labelWidth:90
@@ -105,7 +113,7 @@ EURB.Table.DBGrid = Ext.extend(Ext.grid.GridPanel, {
                 ,bodyStyle:'padding-top:10px'
             }
             ,afterUpdateRecord: function(rec) {
-            	EURB.Table.tableGrid.commitChanges();
+            	EURB.Column.columnGrid.commitChanges();
             }
             , getRowClass:function(record) {
 				if(!record.get('id')) {
@@ -119,35 +127,29 @@ EURB.Table.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 			 actions:[{
                  iconCls:'icon-edit-record'
                 ,qtip:EURB.editRecord
-            },{
-                 iconCls:'icon-grid'
-                 ,qtip:EURB.Table.editColumns
             }]
             ,widthIntercept:Ext.isSafari ? 4 : 2
             ,id:'actions'
             ,getEditor:Ext.emptyFn
 		});
 		this.rowActions.on('action', this.onRowAction, this);
-		EURB.Table.cols.push(this.rowActions);
+		EURB.Column.cols.push(this.rowActions);
 		
 		// hard coded - cannot be changed from outside
 		var config = {
-			store: EURB.Table.store
-			,columns:EURB.Table.cols
+			store: EURB.Column.store
+			,columns:EURB.Column.cols
 			,plugins:[new Ext.ux.grid.Search({
 				iconCls:'icon-zoom'
 				//,readonlyIndexes:['name']
 				,disableIndexes:['activeForManager','activeForUser']
 				//,minChars:2
 				,autoFocus:true
-			//				,menuStyle:'radio'
+			//	,menuStyle:'radio'
 			}), this.rowActions, this.recordForm]
-			,view: new Ext.grid.GroupingView({
-	            forceFit:true,
-	            enableGroupingMenu: false,
-	            groupTextTpl: '<b>{text}</b> {[EURB.containing]} {[values.rs.length]} {[EURB.item]}'
-        	})
-			,tbar:[EURB.Table.dbConfigCombo," ","-"," "/*,{
+			,viewConfig:{forceFit:true}
+			,tbar:[EURB.Column.dbConfigCombo," ","-"," "
+			,EURB.Column.tableCombo," ","-"," "/*,{
 				 text:EURB.delRecord
 				,iconCls:'icon-minus'
 				,listeners:{
@@ -155,28 +157,28 @@ EURB.Table.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 					,click:{fn:this.deleteSelectedRecords,buffer:200}
 				}
 			},"-"*/,{
-				 text:EURB.enableRecord + ' ' + EURB.Table.forManager
+				 text:EURB.enableRecord + ' ' + EURB.Column.forManager
 				,iconCls:'icon-activate'
 				,listeners:{
 					 scope:this
 					,click:{fn:this.activateSelectedRecordsForManager,buffer:200}
 				}
 			},{
-				 text:EURB.disableRecord + ' ' + EURB.Table.forManager
+				 text:EURB.disableRecord + ' ' + EURB.Column.forManager
 				,iconCls:'icon-deactivate'
 				,listeners:{
 					 scope:this
 					,click:{fn:this.deactivateSelectedRecordsForManager,buffer:200}
 				}
 			},{
-				 text:EURB.enableRecord + ' ' + EURB.Table.forUser
+				 text:EURB.enableRecord + ' ' + EURB.Column.forUser
 				,iconCls:'icon-activate'
 				,listeners:{
 					 scope:this
 					,click:{fn:this.activateSelectedRecordsForUser,buffer:200}
 				}
 			},{
-				 text:EURB.disableRecord + ' ' + EURB.Table.forUser
+				 text:EURB.disableRecord + ' ' + EURB.Column.forUser
 				,iconCls:'icon-deactivate'
 				,listeners:{
 					 scope:this
@@ -187,7 +189,7 @@ EURB.Table.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 				,iconCls:'icon-doorout'
 				,listeners:{
 					click: function() {
-						window.location.href = EURB.baseURL+'management/mapping/dbconfig.spy';
+						window.location.href = EURB.baseURL+'management/mapping/db'+EURB.Column.selectedDbConfig+'-table.spy';
 					}
 				}
 			}]
@@ -201,18 +203,18 @@ EURB.Table.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 		this.bbar = ['->'];
 
 		// call parent
-		EURB.Table.DBGrid.superclass.initComponent.apply(this, arguments);
+		EURB.Column.DBGrid.superclass.initComponent.apply(this, arguments);
 	}
 	,onRender:function() {
 		// call parent
-		EURB.Table.DBGrid.superclass.onRender.apply(this, arguments);
+		EURB.Column.DBGrid.superclass.onRender.apply(this, arguments);
 
 		// load store
 		this.store.load();
 
 	}
 	,afterRender:function() {
-		EURB.Table.DBGrid.superclass.afterRender.apply(this, arguments);
+		EURB.Column.DBGrid.superclass.afterRender.apply(this, arguments);
 		//this.getBottomToolbar().add({text:'A test button',iconCls:'icon-info'});
 	}
 	,addRecord:function() {
@@ -234,14 +236,6 @@ EURB.Table.DBGrid = Ext.extend(Ext.grid.GridPanel, {
             case 'icon-edit-record':
                 this.recordForm.show(record, grid.getView().getCell(row, col));
             break;
-                
-            case 'icon-grid':
-            	if(record.get(this.idName)) {
-            		window.location.href = EURB.baseURL+'management/mapping/db'+record.get('dbConfigId')+'-table'+record.get(this.idName)+'-column.spy';
-            	} else {
-            		Ext.Msg.alert(Ext.MessageBox.title.warning, EURB.Table.youShouldSaveTheRecordFisrt).setIcon(Ext.Msg.INFO);
-            	}
-            break;
         }
     }
 	,commitChanges:function() {
@@ -259,7 +253,7 @@ EURB.Table.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 			data.push(r.data);
 		}, this);
 		var o = {
-			 url:EURB.Table.storeAction
+			 url:EURB.Column.storeAction
 			,method:'post'
 			,callback:this.requestCallback
 			,scope:this
@@ -310,7 +304,7 @@ EURB.Table.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 		}
 		Ext.Msg.show({
 			 title:EURB.areYouSureToDelTitle
-			,msg:String.format(EURB.areYouSureToDelete, records.length == 1 ? records[0].get('tableName') : EURB.records)
+			,msg:String.format(EURB.areYouSureToDelete, records.length == 1 ? records[0].get('columnName') : EURB.records)
 			,icon:Ext.Msg.QUESTION
 			,buttons:Ext.Msg.YESNO
 			,scope:this
@@ -323,7 +317,7 @@ EURB.Table.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 					data.push(r.get(this.idName));
 				}, this);
 				var o = {
-					 url:EURB.Table.removeAction
+					 url:EURB.Column.removeAction
 					,method:'post'
 					,callback:this.requestCallback
 					,scope:this
@@ -375,7 +369,7 @@ EURB.Table.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 			data.push(r.get(this.idName));
 		}, this);
 		var o = {
-			 url:EURB.Table.activateAction
+			 url:EURB.Column.activateAction
 			,method:'post'
 			,callback:this.requestCallback
 			,scope:this
@@ -410,7 +404,7 @@ EURB.Table.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 			data.push(r.get(this.idName));
 		}, this);
 		var o = {
-			 url:EURB.Table.deactivateAction
+			 url:EURB.Column.deactivateAction
 			,method:'post'
 			,callback:this.requestCallback
 			,scope:this
@@ -435,10 +429,10 @@ EURB.Table.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 });
 
 // register xtype
-//Ext.reg('table.dbgrid', EURB.Table.DBGrid);
-EURB.Table.tableGrid = new EURB.Table.DBGrid();
+//Ext.reg('column.dbgrid', EURB.Column.DBGrid);
+EURB.Column.columnGrid = new EURB.Column.DBGrid();
 // application main entry point
 Ext.onReady(function() {
-	EURB.mainPanel.items.add(EURB.Table.tableGrid);
+	EURB.mainPanel.items.add(EURB.Column.columnGrid);
     EURB.mainPanel.doLayout(); 
 });

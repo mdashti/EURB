@@ -354,12 +354,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	@Transactional
 	public List<TableMapping> findAll(DbConfig dbConf)
 			throws TableMappingDaoException {
-		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.db_config_id=? ORDER BY id", this, dbConf.getId());
-		}
-		catch (Exception e) {
-			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
-		}
+		return findByDbConfig(dbConf.getId());
 	}
 
 }

@@ -76,8 +76,8 @@ public class TableMapping extends PersistableObject implements Serializable
 		this.tableName = tableName;
 		this.mappedType = mappedType;
 		this.mappedName = null;
-		this.activeForManager = false;
-		this.activeForUser = false;
+		this.activeForManager = true;
+		this.activeForUser = true;
 	}
 
 	/**
@@ -207,6 +207,11 @@ public class TableMapping extends PersistableObject implements Serializable
 	public String getMappedTypeName()
 	{
 		return mappedType == MAPPED_TYPE_TABLE ? PropertyProvider.get("eurb.table") : PropertyProvider.get("eurb.view");
+	}
+	
+	public String getMappedTypeEnglishName()
+	{
+		return mappedType == MAPPED_TYPE_TABLE ? "TABLE" : "VIEW";
 	}
 	
 	/**
