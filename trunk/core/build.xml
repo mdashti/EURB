@@ -102,6 +102,13 @@
 			</fileset>
 		</copy>
 
+		<concat destfile="${app.webinf}/messages/messages.properties">
+			<fileset dir="conf/WEB-INF">
+				<exclude name="**/.#*"/>
+				<include name="**/*.properties"/>
+			</fileset>
+	    </concat>
+
 		<copy todir="${app.webinf}">
 			<fileset dir="conf/WEB-INF">
 				<exclude name="**/.#*"/>
