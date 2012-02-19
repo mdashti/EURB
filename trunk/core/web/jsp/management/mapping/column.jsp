@@ -36,6 +36,7 @@
 			EURB.Column.removeAction = '<spring:url value="/management/mapping/column/columnRemove.spy" />';
 			EURB.Column.activateAction = '<spring:url value="/management/mapping/column/columnActivate.spy" />';
 			EURB.Column.deactivateAction = '<spring:url value="/management/mapping/column/columnDeactivate.spy" />';
+			EURB.Column.moveColumnAction = '<spring:url value="/management/mapping/column/columnMove.spy" />';
 
 			EURB.Column.columnName = '<spring:message code="eurb.app.management.column.columnName" />';
 			EURB.Column.mappedName = '<spring:message code="eurb.app.management.column.mappedName" />';
@@ -51,6 +52,9 @@
 			EURB.Column.staticMapping = '<spring:message code="eurb.app.management.column.staticMapping" />';
 			EURB.Column.colDataType = '<spring:message code="eurb.app.management.column.colDataType" />';
 			EURB.Column.colOrder = '<spring:message code="eurb.app.management.column.colOrder" />';
+			EURB.Column.saveRecordFisrt = '<spring:message code="eurb.app.management.column.saveRecordFisrt" />';
+			EURB.Column.cannotMoveFirstRecordUpward = '<spring:message code="eurb.app.management.column.cannotMoveFirstRecordUpward" />';
+			EURB.Column.cannotMoveLastRecordDownward = '<spring:message code="eurb.app.management.column.cannotMoveLastRecordDownward" />';
 			
 			EURB.Column.selectedDbConfig = '<%=selectedDbConfig%>';
 			EURB.Column.selectedTable = '<%=selectedTable%>';

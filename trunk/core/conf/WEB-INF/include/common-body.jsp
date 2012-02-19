@@ -82,6 +82,8 @@
 		EURB.item = '<spring:message code="eurb.item" />';
 		EURB.containing = '<spring:message code="eurb.containing" />';
 		EURB.returnBack = '<spring:message code="eurb.returnBack" />';
+		EURB.up = '<spring:message code="eurb.up" />';
+		EURB.down = '<spring:message code="eurb.down" />';
 		
 		EURB.appMenu = {};
 		EURB.appMenu.dbConfig = '<spring:message code="eurb.app.menu.management.db" />';

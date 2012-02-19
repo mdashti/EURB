@@ -443,4 +443,39 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 						});
 	}
 
+	@Transactional
+	public void moveUp(ColumnMappingPk pk) throws ColumnMappingDaoException {
+		ColumnMapping thiz = findByPrimaryKey(pk);
+		ColumnMapping that;
+		List<ColumnMapping> columnMappings =  jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.col_order < ? and db_config_id = ? and table_mapping_id = ? ORDER BY o.col_order DESC LIMIT 1", this,thiz.getColOrder(), thiz.getDbConfigId(), thiz.getTableMappingId());
+
+		if(columnMappings != null && !columnMappings.isEmpty()) {
+			that = columnMappings.get(0);
+			int tmpColOrder = thiz.getColOrder();
+			thiz.setColOrder(that.getColOrder());
+			that.setColOrder(tmpColOrder);
+			
+			update(thiz.createPk(), thiz);
+			update(that.createPk(), that);
+		}
+		
+	}
+
+	@Transactional
+	public void moveDown(ColumnMappingPk pk) throws ColumnMappingDaoException {
+		ColumnMapping thiz = findByPrimaryKey(pk);
+		ColumnMapping that;
+		List<ColumnMapping> columnMappings =  jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.col_order > ? and db_config_id = ? and table_mapping_id = ? ORDER BY o.col_order ASC LIMIT 1", this,thiz.getColOrder(), thiz.getDbConfigId(), thiz.getTableMappingId());
+
+		if(columnMappings != null && !columnMappings.isEmpty()) {
+			that = columnMappings.get(0);
+			int tmpColOrder = thiz.getColOrder();
+			thiz.setColOrder(that.getColOrder());
+			that.setColOrder(tmpColOrder);
+			
+			update(thiz.createPk(), thiz);
+			update(that.createPk(), that);
+		}
+	}
+
 }

@@ -356,5 +356,13 @@
 .icon-doorout {
     background-image:url(../../../img/icon/fam/door_out.png) !important;
 }
+
+.icon-down {
+	background-image:url(../../../img/icon/arr-down16.png) ! important;
+}
+
+.icon-up {
+	background-image:url(../../../img/icon/arr-up16.png) ! important;
+}
 /*  Icon Classes end */
 

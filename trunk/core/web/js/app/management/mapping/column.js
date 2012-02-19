@@ -105,7 +105,7 @@ EURB.Column.DBGrid = Ext.extend(Ext.grid.GridPanel, {
             ,iconCls:'icon-edit-record'
             ,columnCount:1
             ,ignoreFields:{id:true, dbConfigId:true, tableMappingId:true, formatPattern:true, referencedIdCol:true, referencedTable: true, referencedValueCol:true, staticMapping: true, colDataType:true}
-            ,readonlyFields:{colTypeName:true, columnName: true}
+            ,readonlyFields:{colOrder:true, colTypeName:true, columnName: true}
             //,disabledFields:{name:true}
             ,formConfig:{
                  labelWidth:90
@@ -127,6 +127,12 @@ EURB.Column.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 			 actions:[{
                  iconCls:'icon-edit-record'
                 ,qtip:EURB.editRecord
+            }, {
+                 iconCls:'icon-up'
+                ,qtip:EURB.up
+            }, {
+                 iconCls:'icon-down'
+                ,qtip:EURB.down
             }]
             ,widthIntercept:Ext.isSafari ? 4 : 2
             ,id:'actions'
@@ -236,6 +242,14 @@ EURB.Column.DBGrid = Ext.extend(Ext.grid.GridPanel, {
             case 'icon-edit-record':
                 this.recordForm.show(record, grid.getView().getCell(row, col));
             break;
+
+            case 'icon-up':
+                this.moveColumn(grid, record, action, row, col, 'up');
+            break;
+
+            case 'icon-down':
+                this.moveColumn(grid, record, action, row, col, 'down');
+            break;
         }
     }
 	,commitChanges:function() {
@@ -330,6 +344,56 @@ EURB.Column.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 			}
 		});
 	}
+	,moveColumn: function(grid, record, action, row, col, direction) {
+		if(record.get(this.idName)) {
+			var colOrder = record.get('colOrder');
+			var isUpDir = (direction == 'up');
+			var total = grid.store.getCount();
+			var rec;
+			if(isUpDir) {
+				var hasUpperRec = false;
+				for(var i = 0 ; i < total; i++) {
+					rec = grid.store.getAt(i);
+					if(rec.get('colOrder') < colOrder && rec.get(this.idName)) {
+						hasUpperRec = true;
+						break;
+					}
+				}
+				if(!hasUpperRec) {
+					Ext.Msg.alert(Ext.MessageBox.title.warning, EURB.Column.cannotMoveFirstRecordUpward).setIcon(Ext.Msg.INFO);
+					return;
+				}
+			} else {
+				var hasLowerRec = false;
+				for(var i = 0 ; i < total; i++) {
+					rec = grid.store.getAt(i);
+					if(rec.get('colOrder') > colOrder && rec.get(this.idName)) {
+						hasLowerRec = true;
+						break;
+					}
+				}
+				if(!hasLowerRec) {
+					Ext.Msg.alert(Ext.MessageBox.title.warning, EURB.Column.cannotMoveLastRecordDownward).setIcon(Ext.Msg.INFO);
+					return;
+				}
+			}
+			var o = {
+				 url:EURB.Column.moveColumnAction
+				,method:'post'
+				,callback:this.requestCallback
+				,scope:this
+				,params:{
+					cmd: 'moveColumn',
+					isUpDir: isUpDir,
+					id: record.get(this.idName)
+				}
+			};
+			Ext.Ajax.request(o);
+		} else {
+			var rf = this.recordForm;
+			Ext.Msg.alert(Ext.MessageBox.title.warning, EURB.Column.saveRecordFisrt, function() {rf.show(record, grid.getView().getCell(row, col));}).setIcon(Ext.Msg.INFO);
+		}
+	}
 	,activateForUserInRow:function(row) {
 		this.getSelectionModel().selectRow(row);
 		this.activateSelectedRecordsForUser();
@@ -356,7 +420,7 @@ EURB.Column.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 		var selectedRecords = this.getSelectionModel().getSelections();
 		var records = [];
 		for(var i=0; i<selectedRecords.length; i++) {
-			if(selectedRecords[i].get('id')) {
+			if(selectedRecords[i].get(this.idName)) {
 				records.push(selectedRecords[i]);
 			}
 		}
@@ -391,7 +455,7 @@ EURB.Column.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 		var selectedRecords = this.getSelectionModel().getSelections();
 		var records = [];
 		for(var i=0; i<selectedRecords.length; i++) {
-			if(selectedRecords[i].get('id')) {
+			if(selectedRecords[i].get(this.idName)) {
 				records.push(selectedRecords[i]);
 			}
 		}

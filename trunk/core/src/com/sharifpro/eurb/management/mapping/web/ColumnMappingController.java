@@ -1,6 +1,7 @@
 package com.sharifpro.eurb.management.mapping.web;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -252,6 +253,23 @@ public class ColumnMappingController {
 			columnMappingDao.deactivateAll(pkList, target);
 
 			return JsonUtil.getSuccessfulMapAfterStore(deactivateIds);
+		} catch (Exception e) {
+			return JsonUtil.getModelMapError(e.getMessage());
+		}
+	}
+	
+	@RequestMapping(value="/management/mapping/column/columnMove.spy")
+	public @ResponseBody Map<String,? extends Object> move(@RequestParam(required=true) Long id, @RequestParam(required=true) Boolean isUpDir) throws Exception {
+		try{
+
+			ColumnMappingPk pk = new ColumnMappingPk(id);
+			if(isUpDir) {
+				columnMappingDao.moveUp(pk);
+			} else {
+				columnMappingDao.moveDown(pk);
+			}
+
+			return JsonUtil.getSuccessfulMapAfterStore(Arrays.asList(id));
 		} catch (Exception e) {
 			return JsonUtil.getModelMapError(e.getMessage());
 		}

@@ -116,4 +116,8 @@ public interface ColumnMappingDao
 
 	public void deactivateAll(List<ColumnMappingPk> pkList, String target) throws ColumnMappingDaoException;
 
+	public void moveUp(ColumnMappingPk pk) throws ColumnMappingDaoException;
+
+	public void moveDown(ColumnMappingPk pk) throws ColumnMappingDaoException;
+
 }
