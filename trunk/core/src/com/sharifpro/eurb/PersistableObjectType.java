@@ -45,6 +45,8 @@ public class PersistableObjectType {
 		OBJECT_TYPE_MAP.put(ReportFilter.class.getName(), 750);
 		OBJECT_TYPE_MAP.put(ReportFormat.class.getName(), 800);
 		OBJECT_TYPE_MAP.put(ReportExecutionHistory.class.getName(), 850);
+		
+		OBJECT_TYPE_MAP.put("Version", 900);
 	}
 	
 	public static Integer getObjectTypeFor(String className) {

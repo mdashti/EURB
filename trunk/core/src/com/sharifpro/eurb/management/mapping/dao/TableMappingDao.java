@@ -37,6 +37,22 @@ public interface TableMappingDao
 	 * Returns all rows from the table_mapping table that match the criteria ''.
 	 */
 	public List<TableMapping> findAll() throws TableMappingDaoException;
+	
+	/** 
+	 * Counts all rows from the table_mapping table that match the criteria ''.
+	 */
+	public int countAll() throws TableMappingDaoException;
+	
+	/** 
+	 * Returns all rows from the table_mapping table that match the like query in onFields fields.
+	 */
+	public List<TableMapping> findAll(String query, List<String> onFields) throws TableMappingDaoException;
+
+	/** 
+	 * Counts all rows from the table_mapping table that match the like query in onFields fields.
+	 */
+	public int countAll(String query, List<String> onFields) throws TableMappingDaoException;
+
 
 	/** 
 	 * Returns all rows from the table_mapping table that match the criteria 'id = :id'.

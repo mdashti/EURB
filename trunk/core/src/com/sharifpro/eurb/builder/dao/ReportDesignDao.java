@@ -14,7 +14,7 @@ public interface ReportDesignDao
 	 * @param dto
 	 * @return ReportDesignPk
 	 */
-	public ReportDesignPk insert(ReportDesign dto);
+	public ReportDesignPk insert(ReportDesign dto) throws ReportDesignDaoException;
 
 	/** 
 	 * Updates a single row in the report_design table.

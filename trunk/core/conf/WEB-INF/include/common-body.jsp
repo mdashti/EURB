@@ -169,7 +169,7 @@
 		    	'<ul class="submenu">'+
 		    	'<li><a href="'+EURB.baseURL+'" ><spring:message code="eurb.app.menu.reportbuilder.reports" /></a></li>'+
 		    	'<li><a href="'+EURB.baseURL+'builder/category/category.spy">'+EURB.appMenu.category+'</a></li>'+
-		    	'<li><a href="'+EURB.baseURL+'builder/report/report.spy">'+EURB.appMenu.report+'</a></li>'+
+		    	'<li><a href="'+EURB.baseURL+'builder/report/report-list.spy">'+EURB.appMenu.report+'</a></li>'+
 		    	'</ul>'+
 		    	'<h3 class="headerbar"><a href="'+EURB.baseURL+'"><spring:message code="eurb.app.menu.sample" /></a></h3>'+
 		    	'<ul class="submenu">'+

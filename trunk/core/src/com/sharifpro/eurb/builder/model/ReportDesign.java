@@ -66,6 +66,7 @@ public class ReportDesign extends PersistableObject implements Serializable
 	public ReportDesign()
 	{
 		super();
+		setRecordStatusString("P");
 	}
 
 	/**

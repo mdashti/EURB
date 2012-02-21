@@ -7,6 +7,7 @@ EURB.Report.store = new Ext.data.Store({
 		,root:'data'
 		,fields:[
 			 {name:'id', type:'int'}
+			,{name:'versionId', type:'int'}
 			,{name:'name', type:'string'}
 			,{name:'description', type:'string'}
 		]
@@ -53,7 +54,7 @@ EURB.Report.Grid = Ext.extend(Ext.grid.GridPanel, {
              title:EURB.addEdit+' '+EURB.appMenu.report
             ,iconCls:'icon-edit-record'
             ,columnCount:1
-            ,ignoreFields:{id:true}
+            ,ignoreFields:{id:true,versionId:true}
             //,readonlyFields:{password:true}
             //,disabledFields:{name:true}
             ,formConfig:{
@@ -68,8 +69,6 @@ EURB.Report.Grid = Ext.extend(Ext.grid.GridPanel, {
 				if(record.get('newRecord')) {
 					return this.newRowCls;
 				}
-				
-				return record.get('testCon');
 			}
         });
 

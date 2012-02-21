@@ -1,5 +1,14 @@
 package com.sharifpro.eurb.management.mapping.dao.impl;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.sharifpro.eurb.DaoFactory;
 import com.sharifpro.eurb.management.mapping.dao.TableMappingDao;
 import com.sharifpro.eurb.management.mapping.exception.TableMappingDaoException;
@@ -8,20 +17,13 @@ import com.sharifpro.eurb.management.mapping.model.TableMapping;
 import com.sharifpro.eurb.management.mapping.model.TableMappingPk;
 import com.sharifpro.util.PropertyProvider;
 
-import java.util.List;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
-import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
-import org.springframework.transaction.annotation.Transactional;
-
 public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRowMapper<TableMapping>, TableMappingDao
 {
 	private final static String QUERY_FROM_COLUMNS = "o.db_config_id, o.catalog, o.schema, o.table_name, o.mapped_name, o.mapped_type, o.active_for_manager, o.active_for_user";
 
 	private final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL_AND_JOIN;
+	
+	private final static String COUNT_QUERY = "SELECT count(distinct(o.id)) FROM " + getTableName() + " o ";
 
 	/**
 	 * Method 'insert'
@@ -121,6 +123,45 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 		
+	}
+	
+	@Transactional
+	public int countAll() throws TableMappingDaoException
+	{
+		try {
+			return jdbcTemplate.queryForInt(COUNT_QUERY);
+		}
+		catch (Exception e) {
+			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+
+	}
+	
+	/** 
+	 * Returns all rows from the table_mapping table that match the criteria like query in onFields fields.
+	 */
+	@Transactional
+	public List<TableMapping> findAll(String query, List<String> onFields) throws TableMappingDaoException
+	{
+		try {
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE (" + getMultipleFieldWhereClause(query, onFields) + ") ", this);
+		}
+		catch (Exception e) {
+			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+
+	}
+
+	@Transactional
+	public int countAll(String query, List<String> onFields) throws TableMappingDaoException
+	{
+		try {
+			return jdbcTemplate.queryForInt(COUNT_QUERY + " WHERE (" + getMultipleFieldWhereClause(query, onFields) + ")");
+		}
+		catch (Exception e) {
+			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+
 	}
 
 	/** 

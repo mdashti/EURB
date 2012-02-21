@@ -1,5 +1,6 @@
 package com.sharifpro.eurb.management.mapping.dao.impl;
 
+import com.sharifpro.eurb.PersistableObjectType;
 import com.sharifpro.eurb.management.mapping.dao.PersistableObjectDao;
 import com.sharifpro.eurb.management.mapping.exception.PersistableObjectDaoException;
 import com.sharifpro.eurb.management.mapping.model.PersistableObject;
@@ -65,6 +66,34 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 		dto.setId(emptyPK.getId());
 		return emptyPK;
 	}
+	
+	/**
+	 * Adds a new row as a version object in persistable_object and
+	 * @return id to use as a version id
+	 */
+	@Transactional
+	public Long makeVersionId()
+	{
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+		final String INSERT_SQL = "INSERT INTO persistable_object ( obj_type, creator" + /*", create_date, modifier, modify_date" +*/ " ) VALUES ( ?, ?"+/*", ?, ?, ?"+*/" )";
+		jdbcTemplate.update(
+			new PreparedStatementCreator() {
+				public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+					PreparedStatement ps = connection.prepareStatement(INSERT_SQL, new String[] {"id"});
+					
+					int i=0;
+					ps.setInt(++i, PersistableObjectType.getObjectTypeFor("Version"));
+					ps.setString(++i, SessionManager.getCurrentUserNameNotNull());
+					/*Long now = new Date().getTime();
+					ps.setTimestamp(++i, new java.sql.Timestamp(now));
+					ps.setString(++i, dto.getCreator());
+					ps.setTimestamp(++i, new java.sql.Timestamp(now));*/
+					return ps;
+				}
+			}, keyHolder);
+		return keyHolder.getKey().longValue(); 
+	}
+
 
 	/** 
 	 * Updates a single row in the persistable_object table.

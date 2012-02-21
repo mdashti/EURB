@@ -14,7 +14,7 @@
 			<jsp:param value="${baseUrl}" name="baseUrl"/>
 		</jsp:include>
 		<!-- App custom css -->
-		<link rel="stylesheet" type="text/css" href="${resourcesUrl}/css/app/builder/category/report-category.css" />
+		<link rel="stylesheet" type="text/css" href="${resourcesUrl}/css/app/builder/report/report-list.css" />
 		<style type="text/css">
 		.dbconf-valid{
 			background:#8eec6a;
@@ -36,11 +36,20 @@
 		</jsp:include>
 		<!-- App js -->
 		<script type="text/javascript">
-			EURB.ReportCategory = {};
-			EURB.ReportCategory.searchAction = '<spring:url value="/builder/category/reportCategorySearch.spy" />';
-			EURB.ReportCategory.storeAction = '<spring:url value="/builder/category/reportCategoryStore.spy" />';
-			EURB.ReportCategory.removeAction = '<spring:url value="/builder/category/reportCategoryRemove.spy" />';
+
+			EURB.Report = {};
+			EURB.Report.searchAction = '<spring:url value="/builder/report/reportSearch.spy" />';
+			EURB.Report.storeAction = '<spring:url value="/builder/report/reportStore.spy" />';
+			EURB.Report.removeAction = '<spring:url value="/builder/report/reportRemove.spy" />';
+			EURB.Report.activateAction = '<spring:url value="/builder/report/reportActivate.spy" />';
+			EURB.Report.deactivateAction = '<spring:url value="/builder/report/reportDeactivate.spy" />';
+			
+			EURB.Report.name = '<spring:message code="eurb.app.builder.report.name" />';
+			EURB.Report.description = '<spring:message code="eurb.app.builder.report.description" />';
+			
+			EURB.Report.editDesign = '<spring:message code="eurb.app.builder.report.editDesign" />';
+			
 		</script>
-		<script src="${resourcesUrl}/js/app/builder/category/report-category.js"></script>
+		<script src="${resourcesUrl}/js/app/builder/report/report-list.js"></script>
 	</body>
 </html>

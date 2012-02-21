@@ -17,6 +17,13 @@ public interface PersistableObjectDao
 	 * @return PersistableObjectPk
 	 */
 	public PersistableObjectPk insert(PersistableObject dto, PersistableObjectPk emptyPK);
+	
+	/**
+	 * Adds a new row as a version object in persistable_object and
+	 * @return id to use as a version id
+	 */
+	public Long makeVersionId();
+	
 
 	/** 
 	 * Updates a single row in the persistable_object table.

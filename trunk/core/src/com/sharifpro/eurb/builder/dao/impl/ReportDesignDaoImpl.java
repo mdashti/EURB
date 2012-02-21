@@ -35,17 +35,23 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	 * 
 	 * @param dto
 	 * @return ReportDesignPk
+	 * @throws ReportDesignDaoException 
 	 */
 	@Transactional(readOnly = false)
-	public ReportDesignPk insert(ReportDesign dto)
+	public ReportDesignPk insert(ReportDesign dto) throws ReportDesignDaoException
 	{
-		ReportDesignPk pk = new ReportDesignPk(); 
-		DaoFactory.createPersistableObjectDao().insert(dto, pk);
-		dto.setVersionId(pk.getId());
-		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, version_id, name, description, category_id, query_text, select_part, result_data, format_file, is_current, record_status ) " +
-				"VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",pk.getId(),dto.getVersionId(),dto.getName(),dto.getDescription(),dto.getCategoryId(),dto.getQueryText(),dto.getSelectPart(),dto.getResultData(),dto.getFormatFile(),dto.isIsCurrent(),dto.getRecordStatusString());
-		pk.setVersionId(dto.getVersionId());
-		return pk;
+		try{
+			ReportDesignPk pk = new ReportDesignPk(); 
+			DaoFactory.createPersistableObjectDao().insert(dto, pk);
+			Long versionId = DaoFactory.createPersistableObjectDao().makeVersionId();
+			pk.setVersionId(versionId);
+			jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, version_id, name, description, category_id, query_text, select_part, result_data, format_file, is_current, record_status ) " +
+					"VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",pk.getId(),pk.getVersionId(),dto.getName(),dto.getDescription(),dto.getCategoryId(),dto.getQueryText(),dto.getSelectPart(),dto.getResultData(),dto.getFormatFile(),dto.isIsCurrent(),dto.getRecordStatusString());
+			return pk;
+		}
+		catch (Exception e) {
+			throw new ReportDesignDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
 	}
 
 	/** 
@@ -54,12 +60,17 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	@Transactional(readOnly = false)
 	public void update(ReportDesignPk pk, ReportDesign dto) throws ReportDesignDaoException
 	{
-		Long lastVersion = pk.getVersionId();
-		jdbcTemplate.update("UPDATE " + getTableName() + " SET is_current = 0 WHERE id = ? AND version_id = ?", pk.getId(), pk.getVersionId());
-		DaoFactory.createPersistableObjectDao().update(pk);
-		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, version_id, name, description, category_id, query_text, select_part, result_data, format_file, is_current, record_status ) " +
-				"VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",pk.getId(),++lastVersion,dto.getName(),dto.getDescription(),dto.getCategoryId(),dto.getQueryText(),dto.getSelectPart(),dto.getResultData(),dto.getFormatFile(),dto.isIsCurrent(),dto.getRecordStatusString());
-		pk.setVersionId(lastVersion);
+		try{
+			jdbcTemplate.update("UPDATE " + getTableName() + " SET is_current = 0 WHERE id = ? AND version_id = ?", pk.getId(), pk.getVersionId());
+			DaoFactory.createPersistableObjectDao().update(pk);
+			Long versionId = DaoFactory.createPersistableObjectDao().makeVersionId();
+			pk.setVersionId(versionId);
+			jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, version_id, name, description, category_id, query_text, select_part, result_data, format_file, is_current, record_status ) " +
+					"VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",pk.getId(),pk.getVersionId(),dto.getName(),dto.getDescription(),dto.getCategoryId(),dto.getQueryText(),dto.getSelectPart(),dto.getResultData(),dto.getFormatFile(),dto.isIsCurrent(),dto.getRecordStatusString());
+		}
+		catch (Exception e) {
+			throw new ReportDesignDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
 
 	}
 
@@ -89,7 +100,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 			throw new ReportDesignDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 	}
-	
+
 	/**
 	 * Activates multiple row in report_desing table
 	 */
@@ -116,7 +127,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 			throw new ReportDesignDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 	}
-	
+
 	/**
 	 * Deactivates multiple row in report_desing table
 	 */
@@ -267,7 +278,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	}
 
 	/** 
-	 * Returns all rows from the db_config table that match the criteria like query in onFields fields limited by start and limit.
+	 * Returns all rows from the report_design table that match the criteria like query in onFields fields limited by start and limit.
 	 */
 	@Transactional
 	public List<ReportDesign> findAll(String query, List<String> onFields, Integer start, Integer limit, String sortBy, String sortDir) throws ReportDesignDaoException
