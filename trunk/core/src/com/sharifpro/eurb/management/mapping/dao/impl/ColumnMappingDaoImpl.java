@@ -350,7 +350,7 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 	@Transactional
 	public List<ColumnMapping> findAll(TableMapping tbl, String query, List<String> onFields) throws ColumnMappingDaoException {
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.table_mapping_id=? AND (" + getMultipleFieldWhereClause(query, onFields) + ") ORDER BY o.colOrder", this, tbl.getId());
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.table_mapping_id=? AND (" + getMultipleFieldWhereClause(query, onFields) + ") ORDER BY o.col_order", this, tbl.getId());
 		}
 		catch (Exception e) {
 			throw new ColumnMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -362,34 +362,34 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 		StringBuilder query = new StringBuilder();
 		String likeQuery = " LIKE '%"+txt+"%' OR ";
 		if(fields.contains("colTypeName")) {
-			query.append("o.colTypeName").append(likeQuery);
+			query.append("o.col_type_name").append(likeQuery);
 		}
 		if(fields.contains("columnName")) {
-			query.append("o.columnName").append(likeQuery);
+			query.append("o.column_name").append(likeQuery);
 		}
 		if(fields.contains("formatPattern")) {
-			query.append("o.formatPattern").append(likeQuery);
+			query.append("o.format_pattern").append(likeQuery);
 		}
 		if(fields.contains("mappedName")) {
 			query.append("o.mapped_name").append(likeQuery);
 		}
 		if(fields.contains("referencedIdCol")) {
-			query.append("o.referencedIdCol").append(likeQuery);
+			query.append("o.referenced_id_col").append(likeQuery);
 		}
 		if(fields.contains("referencedTable")) {
-			query.append("o.referencedTable").append(likeQuery);
+			query.append("o.referenced_table").append(likeQuery);
 		}
 		if(fields.contains("referencedValueCol")) {
-			query.append("o.referencedValueCol").append(likeQuery);
+			query.append("o.referenced_value_col").append(likeQuery);
 		}
 		if(fields.contains("colDataType")) {
-			query.append("o.colDataType").append(likeQuery);
+			query.append("o.col_data_type").append(likeQuery);
 		}
 		if(fields.contains("colOrder")) {
-			query.append("o.colOrder").append(likeQuery);
+			query.append("o.col_order").append(likeQuery);
 		}
 		if(fields.contains("staticMapping")) {
-			query.append("o.staticMapping").append(likeQuery);
+			query.append("o.static_mapping").append(likeQuery);
 		}
 		if(query.length() > 0) {
 			return query.substring(0,query.length()-3);
