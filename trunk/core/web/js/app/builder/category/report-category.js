@@ -1,5 +1,3 @@
-Ext.state.Manager.setProvider(new Ext.state.CookieProvider());
-
 EURB.ReportCategory.store = new Ext.data.Store({
 	reader:new Ext.data.JsonReader({
 		 id:'id'

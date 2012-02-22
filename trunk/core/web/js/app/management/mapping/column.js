@@ -1,5 +1,3 @@
-Ext.state.Manager.setProvider(new Ext.state.CookieProvider());
-
 EURB.Column.store = new Ext.data.Store({
 	reader:new Ext.data.JsonReader({
 		 id:'id'
@@ -92,7 +90,7 @@ EURB.Column.cols = [{
 	,renderer: function(value, element, record, rowIndex , colIndex) {return value ? '<a href="javascript:EURB.Column.columnGrid.deactivateForUserInRow('+rowIndex+')"><img src="'+EURB.resourcesURL+'/img/icon/ok16.png" /></a>' : '<a href="javascript:EURB.Column.columnGrid.activateForUserInRow('+rowIndex+')"><img src="'+EURB.resourcesURL+'/img/icon/cancel16.png" /></a>';}
 }];
 
-EURB.Column.DBGrid = Ext.extend(Ext.grid.GridPanel, {
+EURB.Column.ColGrid = Ext.extend(Ext.grid.GridPanel, {
 	// defaults - can be changed from outside
 	 layout:'fit'
 	,border:true
@@ -209,18 +207,18 @@ EURB.Column.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 		this.bbar = ['->'];
 
 		// call parent
-		EURB.Column.DBGrid.superclass.initComponent.apply(this, arguments);
+		EURB.Column.ColGrid.superclass.initComponent.apply(this, arguments);
 	}
 	,onRender:function() {
 		// call parent
-		EURB.Column.DBGrid.superclass.onRender.apply(this, arguments);
+		EURB.Column.ColGrid.superclass.onRender.apply(this, arguments);
 
 		// load store
 		this.store.load();
 
 	}
 	,afterRender:function() {
-		EURB.Column.DBGrid.superclass.afterRender.apply(this, arguments);
+		EURB.Column.ColGrid.superclass.afterRender.apply(this, arguments);
 		//this.getBottomToolbar().add({text:'A test button',iconCls:'icon-info'});
 	}
 	,addRecord:function() {
@@ -492,11 +490,31 @@ EURB.Column.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 
 });
 
+EURB.Column.mappingPropertyGrid = new Ext.grid.PropertyGrid({
+    autoHeight: true,
+    source: {
+        "(name)": "My Object",
+        "Created": new Date(Date.parse('10/15/2006')),
+        "Available": false,
+        "Version": .01,
+        "Description": "A test object"
+    }
+});
 // register xtype
-//Ext.reg('column.dbgrid', EURB.Column.DBGrid);
-EURB.Column.columnGrid = new EURB.Column.DBGrid();
+//Ext.reg('column.colGrid', EURB.Column.ColGrid);
+EURB.Column.columnGrid = new EURB.Column.ColGrid();
 // application main entry point
 Ext.onReady(function() {
 	EURB.mainPanel.items.add(EURB.Column.columnGrid);
-    EURB.mainPanel.doLayout(); 
+    EURB.mainPanel.doLayout();
+    wrc = Ext.getCmp('viewport-info-panel');
+	wrc.add(new Ext.TabPanel({
+    activeTab: 0,
+    tabPosition: 'bottom',
+    items: [{
+        title: EURB.Column.mappingValues,
+        items : [EURB.Column.mappingPropertyGrid]
+    }]
+}));
+	wrc.doLayout();
 });

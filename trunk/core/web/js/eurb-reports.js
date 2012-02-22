@@ -1,3 +1,5 @@
+Ext.state.Manager.setProvider(new Ext.state.CookieProvider());
+
 DocPanel = Ext.extend(Ext.Panel, {
     closable: true,
     autoScroll:true,
@@ -44,7 +46,7 @@ MainPanel = function(){
     MainPanel.superclass.constructor.call(this, {
         id:'doc-body',
         region:'center',
-        margins:'0 5 5 0',
+        //margins:'0 5 5 0',
         minTabWidth: 135,
         layout: 'fit',
         items: [],
@@ -94,10 +96,12 @@ Ext.onReady(function(){
     Ext.QuickTips.init();
 
     var api = new Ext.Panel({
+    	id: 'eurb-app-menu',
         region:'east',
-        margins:'5 0 5 5',
+        //margins:'5 0 5 5',
         split:true,
-        width: 210
+        collapsible: true,
+        width: 150
         //,layout:'accordion',
         //,items: []
         //,html: ''
@@ -105,12 +109,7 @@ Ext.onReady(function(){
     
     EURB.mainMenu = api;
     
-    var mainPanel = new MainPanel();
-
-    EURB.mainPanel = mainPanel;
-    mainPanel.on('tabchange', function(tp, tab){
-        //api.selectClass(tab.cclass); 
-    });
+    EURB.mainPanel = new MainPanel();
 
     var hd = new Ext.Panel({
         border: false,
@@ -128,21 +127,22 @@ Ext.onReady(function(){
             cls:'top-toolbar',
             items:[]
         })]
-    })
-
-    var viewport = new Ext.Viewport({
-        layout:'border',
-        items:[ hd, api, mainPanel ]
     });
 
-    // allow for link in
-    var page = window.location.href.split('?')[1];
-    if(page){
-        
+    var viewPortArr = [ hd, api, EURB.mainPanel ];
+    if(EURB.westPanel) {
+    	viewPortArr.push(EURB.westPanel);
     }
+    if(EURB.southPanel) {
+    	viewPortArr.push(EURB.southPanel);
+    }
+    EURB.viewport = new Ext.Viewport({
+        layout:'border',
+        items: viewPortArr
+    });
     
-    viewport.doLayout();
-	
+    EURB.viewport.doLayout();
+
 	setTimeout(function(){
         Ext.get('loading').remove();
         Ext.get('loading-mask').fadeOut({remove:true});

@@ -1,5 +1,3 @@
-Ext.state.Manager.setProvider(new Ext.state.CookieProvider());
-
 EURB.Table.store = new Ext.data.GroupingStore({
 	reader:new Ext.data.JsonReader({
 		 id:'id'
@@ -84,7 +82,7 @@ EURB.Table.cols = [{
 	,renderer: function(value, element, record, rowIndex , colIndex) {return value ? '<a href="javascript:EURB.Table.tableGrid.deactivateForUserInRow('+rowIndex+')"><img src="'+EURB.resourcesURL+'/img/icon/ok16.png" /></a>' : '<a href="javascript:EURB.Table.tableGrid.activateForUserInRow('+rowIndex+')"><img src="'+EURB.resourcesURL+'/img/icon/cancel16.png" /></a>';}
 }];
 
-EURB.Table.DBGrid = Ext.extend(Ext.grid.GridPanel, {
+EURB.Table.TblGrid = Ext.extend(Ext.grid.GridPanel, {
 	// defaults - can be changed from outside
 	 layout:'fit'
 	,border:true
@@ -201,18 +199,18 @@ EURB.Table.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 		this.bbar = ['->'];
 
 		// call parent
-		EURB.Table.DBGrid.superclass.initComponent.apply(this, arguments);
+		EURB.Table.TblGrid.superclass.initComponent.apply(this, arguments);
 	}
 	,onRender:function() {
 		// call parent
-		EURB.Table.DBGrid.superclass.onRender.apply(this, arguments);
+		EURB.Table.TblGrid.superclass.onRender.apply(this, arguments);
 
 		// load store
 		this.store.load();
 
 	}
 	,afterRender:function() {
-		EURB.Table.DBGrid.superclass.afterRender.apply(this, arguments);
+		EURB.Table.TblGrid.superclass.afterRender.apply(this, arguments);
 		//this.getBottomToolbar().add({text:'A test button',iconCls:'icon-info'});
 	}
 	,addRecord:function() {
@@ -435,8 +433,8 @@ EURB.Table.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 });
 
 // register xtype
-//Ext.reg('table.dbgrid', EURB.Table.DBGrid);
-EURB.Table.tableGrid = new EURB.Table.DBGrid();
+//Ext.reg('table.tblGrid', EURB.Table.TblGrid);
+EURB.Table.tableGrid = new EURB.Table.TblGrid();
 // application main entry point
 Ext.onReady(function() {
 	EURB.mainPanel.items.add(EURB.Table.tableGrid);

@@ -52,7 +52,9 @@
 		
 		<script type="text/javascript">
 		Ext.BLANK_IMAGE_URL = '<%=resourcesUrl%>/js/extjs/resources/images/default/s.gif';
-		EURB = {};
+		if(typeof EURB == 'undefined') {
+			EURB = {};
+		}
 		EURB.baseURL = '<%=baseUrl%>';
 		EURB.resourcesURL = '<%=resourcesUrl%>';
 		EURB.currentUser = '<%=SessionManager.getCurrentUserName() == null ? "admin" : SessionManager.getCurrentUserName() %>';
@@ -171,10 +173,10 @@
 		    	'<li><a href="'+EURB.baseURL+'builder/category/category.spy">'+EURB.appMenu.category+'</a></li>'+
 		    	'<li><a href="'+EURB.baseURL+'builder/report/report-list.spy">'+EURB.appMenu.report+'</a></li>'+
 		    	'</ul>'+
-		    	'<h3 class="headerbar"><a href="'+EURB.baseURL+'"><spring:message code="eurb.app.menu.sample" /></a></h3>'+
+		    	/*'<h3 class="headerbar"><a href="'+EURB.baseURL+'"><spring:message code="eurb.app.menu.sample" /></a></h3>'+
 		    	'<ul class="submenu">'+
 		    	'<li><a href="<spring:url value="/sample" />" ><spring:message code="eurb.app.menu.sample.samplepage" /></a></li>'+	
-		    	'</ul>'+
+		    	'</ul>'+*/
 		    	'</div>'});
 		    EURB.mainMenu.doLayout();
 

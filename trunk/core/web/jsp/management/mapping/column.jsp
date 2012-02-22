@@ -20,6 +20,28 @@
 		</style>
 	</head>
 	<body scroll="no" id="docs" style="direction: rtl">
+		<script type="text/javascript">
+		if(typeof EURB == 'undefined') {
+			EURB = {};
+		}
+		EURB.westPanel = {
+	        border: true,
+	        layout: 'fit',
+	        id: 'viewport-info-panel',
+	        region:'west',
+	        cls: 'info-panel',
+	        split:true,
+	        collapsible: true,
+	        width: 210,
+	        listeners: {
+	        	afterlayout: function(thiz, adjWidth, adjHeight, rawWidth, rawHeight ) {
+	        		if(EURB.Column.mappingPropertyGrid.colModel.store && EURB.Column.mappingPropertyGrid.colModel.store) {
+	        			EURB.Column.mappingPropertyGrid.colModel.store.store.sort('name','ASC');
+	        		}
+	        	}
+	        }
+	    };
+		</script>
 		<jsp:include page="/WEB-INF/include/common-body.jsp">
 			<jsp:param value="${resourcesUrl}" name="resourcesUrl"/>
 			<jsp:param value="${baseUrl}" name="baseUrl"/>
@@ -55,7 +77,8 @@
 			EURB.Column.saveRecordFisrt = '<spring:message code="eurb.app.management.column.saveRecordFisrt" />';
 			EURB.Column.cannotMoveFirstRecordUpward = '<spring:message code="eurb.app.management.column.cannotMoveFirstRecordUpward" />';
 			EURB.Column.cannotMoveLastRecordDownward = '<spring:message code="eurb.app.management.column.cannotMoveLastRecordDownward" />';
-			
+			EURB.Column.mappingValues = '<spring:message code="eurb.app.management.column.mappingValues" />';
+
 			EURB.Column.selectedDbConfig = '<%=selectedDbConfig%>';
 			EURB.Column.selectedTable = '<%=selectedTable%>';
 			// create the combo instance
