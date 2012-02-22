@@ -35,7 +35,7 @@
 	        width: 210,
 	        listeners: {
 	        	afterlayout: function(thiz, adjWidth, adjHeight, rawWidth, rawHeight ) {
-	        		if(EURB.Column.mappingPropertyGrid.colModel.store && EURB.Column.mappingPropertyGrid.colModel.store) {
+	        		if(EURB.Column.mappingPropertyGrid && EURB.Column.mappingPropertyGrid.colModel.store && EURB.Column.mappingPropertyGrid.colModel.store) {
 	        			EURB.Column.mappingPropertyGrid.colModel.store.store.sort('name','ASC');
 	        		}
 	        	}

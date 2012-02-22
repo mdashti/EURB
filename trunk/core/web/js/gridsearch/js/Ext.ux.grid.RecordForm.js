@@ -339,6 +339,10 @@ Ext.extend(Ext.ux.grid.RecordForm, Ext.util.Observable, {
 			// read only and disabled fields
 			if(this.readonlyFields && true === this.readonlyFields[f.name]) {
 				o.readOnly = true;
+			} else {
+				if(typeof this.focusIndex == 'undefined') {
+					this.focusIndex = f.name;
+				}
 			}
 			if(this.disabledFields && true === this.disabledFields[f.name]) {
 				o.disabled = true;
@@ -496,7 +500,11 @@ Ext.extend(Ext.ux.grid.RecordForm, Ext.util.Observable, {
 						var basicForm = this.form.getForm()
 
 						// focus first form field on window show
-						basicForm.items.itemAt(0).focus();
+						for(var i = 0 ; i < basicForm.items.length; i++) {
+							if(basicForm.items.itemAt(i).name == this.focusIndex) {
+								basicForm.items.itemAt(i).focus();
+							}
+						}
 
 						// mark fields invalid if any
 						basicForm.isValid();
@@ -515,7 +523,7 @@ Ext.extend(Ext.ux.grid.RecordForm, Ext.util.Observable, {
 				this.form.startMonitoring();
 				var basicForm = this.form.getForm()
 
-				// focus first form field on window show
+				// focus first editable form field on window show
 				basicForm.items.itemAt(0).focus();
 
 				// mark fields invalid if any

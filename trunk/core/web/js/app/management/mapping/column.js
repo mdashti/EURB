@@ -33,6 +33,13 @@ EURB.Column.store = new Ext.data.Store({
 	}
 	,remoteSort:true
 	,sortInfo:{field: 'colOrder', direction: "ASC"}
+	,listeners:{
+		load: function(g) {
+			if(EURB.Column.columnGrid) {
+		    	EURB.Column.columnGrid.getSelectionModel().selectRow(0);
+			}
+		} // Allow rows to be rendered.
+	}
 });
 
 EURB.Column.cols = [{
@@ -143,6 +150,19 @@ EURB.Column.ColGrid = Ext.extend(Ext.grid.GridPanel, {
 		var config = {
 			store: EURB.Column.store
 			,columns:EURB.Column.cols
+			,sm: new Ext.grid.RowSelectionModel({
+				singleSelect: false,
+				listeners: {
+				    rowselect: function(sm, row, rec) {
+				    	//Ext.Msg.alert(rec.get('columnName'));
+				    	var mappedName = rec.get('rec.mappedName');
+				    	EURB.Column.mappingPropertyGrid.setSource({
+				    		columnName : rec.get('columnName')
+				    		,mappedName : (mappedName ? mappedName : '---')
+				    	});
+			        }
+			    }
+			})
 			,plugins:[new Ext.ux.grid.Search({
 				iconCls:'icon-zoom'
 				//,readonlyIndexes:['name']
@@ -485,21 +505,43 @@ EURB.Column.ColGrid = Ext.extend(Ext.grid.GridPanel, {
             if(sel.length > 0) {
             	this.onRowAction(this, sel[0], 'icon-edit-record', 0, 0);
             }
-		}
+		},
+		viewready: function(g) {
+		    g.getSelectionModel().selectRow(0);
+		} // Allow rows to be rendered.
 	}
 
 });
 
+Ext.grid.PropertyColumnModel.prototype.isCellEditable = function(colIndex, rowIndex){
+	if(!(colIndex == 1)) {
+		return false;
+	}
+	var p = this.store.getProperty(rowIndex),
+        n = p.data.name;
+    if(this.grid.nonEditableCells && this.grid.nonEditableCells[n]){
+        return false;
+    }
+    return true;
+};
+
 EURB.Column.mappingPropertyGrid = new Ext.grid.PropertyGrid({
     autoHeight: true,
-    source: {
-        "(name)": "My Object",
-        "Created": new Date(Date.parse('10/15/2006')),
-        "Available": false,
-        "Version": .01,
-        "Description": "A test object"
+    source: {},
+    propertyNames: {
+        columnName : EURB.Column.columnName
+		,mappedName : EURB.Column.mappedName
+    }
+    ,nonEditableCells : {
+    	columnName : true
+    	,mappedName : true
+    }
+    ,viewConfig : {
+        forceFit: true
+        //,scrollOffset: 2 // the grid will never have scrollbars
     }
 });
+
 // register xtype
 //Ext.reg('column.colGrid', EURB.Column.ColGrid);
 EURB.Column.columnGrid = new EURB.Column.ColGrid();
