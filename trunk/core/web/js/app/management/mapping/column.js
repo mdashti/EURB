@@ -19,6 +19,7 @@ EURB.Column.store = new Ext.data.Store({
 			,{name:'referencedValueCol', type:'string'}
 			,{name:'staticMapping', type:'string'}
 			,{name:'colDataType', type:'int'}
+			,{name:'mappingType', type:'boolean'}
 		]
 	})
 	,proxy:new Ext.data.HttpProxy({
@@ -109,7 +110,7 @@ EURB.Column.ColGrid = Ext.extend(Ext.grid.GridPanel, {
              title:EURB.addEdit+' '+EURB.appMenu.column
             ,iconCls:'icon-edit-record'
             ,columnCount:1
-            ,ignoreFields:{id:true, dbConfigId:true, tableMappingId:true, formatPattern:true, referencedIdCol:true, referencedTable: true, referencedValueCol:true, staticMapping: true, colDataType:true}
+            ,ignoreFields:{id:true, dbConfigId:true, tableMappingId:true, formatPattern:true, referencedIdCol:true, referencedTable: true, referencedValueCol:true, staticMapping: true, colDataType:true, mappingType: true}
             ,readonlyFields:{colOrder:true, colTypeName:true, columnName: true}
             //,disabledFields:{name:true}
             ,formConfig:{
@@ -155,10 +156,11 @@ EURB.Column.ColGrid = Ext.extend(Ext.grid.GridPanel, {
 				listeners: {
 				    rowselect: function(sm, row, rec) {
 				    	//Ext.Msg.alert(rec.get('columnName'));
-				    	var mappedName = rec.get('rec.mappedName');
+				    	var mappedName = rec.get('mappedName');
 				    	EURB.Column.mappingPropertyGrid.setSource({
 				    		columnName : rec.get('columnName')
 				    		,mappedName : (mappedName ? mappedName : '---')
+				    		,mappingType : rec.get('mappingType')
 				    	});
 			        }
 			    }
@@ -531,6 +533,7 @@ EURB.Column.mappingPropertyGrid = new Ext.grid.PropertyGrid({
     propertyNames: {
         columnName : EURB.Column.columnName
 		,mappedName : EURB.Column.mappedName
+		,mappingType: EURB.Column.mappingType
     }
     ,nonEditableCells : {
     	columnName : true
@@ -539,6 +542,35 @@ EURB.Column.mappingPropertyGrid = new Ext.grid.PropertyGrid({
     ,viewConfig : {
         forceFit: true
         //,scrollOffset: 2 // the grid will never have scrollbars
+    }
+    ,customRenderers: {
+        mappingType: function(v){
+            if(v){
+                return EURB.Column.mappingTypeStatic;
+            }else{
+                return EURB.Column.mappingTypeTable;
+            }
+        }
+    }
+    ,customEditors: {
+        mappingType: new Ext.grid.GridEditor(new Ext.form.ComboBox({
+        	mode: 'local',
+		    store: new Ext.data.ArrayStore({
+		        idIndex: 0,
+		        fields: [
+		            'type',
+		            'typeName'
+		        ],
+		        data: [[true, EURB.Column.mappingTypeStatic], [false, EURB.Column.mappingTypeTable]]
+		    }),
+		    valueField: 'type',
+		    displayField: 'typeName',
+		    forceSelection: true,
+		    allowBlank: false,
+		    editable: false,
+		    clearFilterOnReset: true,
+		    disableKeyFilter: true
+		}))
     }
 });
 

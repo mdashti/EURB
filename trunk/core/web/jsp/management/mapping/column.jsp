@@ -72,6 +72,9 @@
 			EURB.Column.referencedTable = '<spring:message code="eurb.app.management.column.referencedTable" />';
 			EURB.Column.referencedValueCol = '<spring:message code="eurb.app.management.column.referencedValueCol" />';
 			EURB.Column.staticMapping = '<spring:message code="eurb.app.management.column.staticMapping" />';
+			EURB.Column.mappingType = '<spring:message code="eurb.app.management.column.mappingType" />';
+			EURB.Column.mappingTypeStatic = '<spring:message code="eurb.app.management.column.mappingTypeStatic" />';
+			EURB.Column.mappingTypeTable = '<spring:message code="eurb.app.management.column.mappingTypeTable" />';
 			EURB.Column.colDataType = '<spring:message code="eurb.app.management.column.colDataType" />';
 			EURB.Column.colOrder = '<spring:message code="eurb.app.management.column.colOrder" />';
 			EURB.Column.saveRecordFisrt = '<spring:message code="eurb.app.management.column.saveRecordFisrt" />';

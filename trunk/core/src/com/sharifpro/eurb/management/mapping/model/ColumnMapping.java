@@ -7,6 +7,10 @@ import com.sharifpro.db.meta.TableColumnInfo;
 public class ColumnMapping extends PersistableObject implements Serializable
 {
 	private static final long serialVersionUID = -2903512798099004237L;
+
+	private static final boolean MAPPING_TYPE_DYNAMIC = false;
+
+	private static final boolean MAPPING_TYPE_STATIC = true;
 	
 	/** 
 	 * This attribute maps to the column db_config_id in the column_mapping table.
@@ -558,4 +562,7 @@ public class ColumnMapping extends PersistableObject implements Serializable
 		return ret.toString();
 	}
 
+	public boolean getMappingType() {
+		return referencedTable == null ? MAPPING_TYPE_STATIC : MAPPING_TYPE_DYNAMIC;
+	}
 }

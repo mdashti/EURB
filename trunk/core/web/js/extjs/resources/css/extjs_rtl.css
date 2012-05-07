@@ -381,3 +381,7 @@ x-btn-mc em.x-btn-arrow
     padding: 4px 25px 4px 17px;
     background-position: 99% 3px;
 }
+
+.x-form-field-wrap {
+	text-align: right;
+}
