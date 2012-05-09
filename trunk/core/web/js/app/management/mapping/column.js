@@ -554,22 +554,23 @@ EURB.Column.mappingPropertyGrid = new Ext.grid.PropertyGrid({
     }
     ,customEditors: {
         mappingType: new Ext.grid.GridEditor(new Ext.form.ComboBox({
-        	mode: 'local',
+		    typeAhead: true,
+		    triggerAction: 'all',
+		    lazyRender:true,
+		    mode: 'local',
 		    store: new Ext.data.ArrayStore({
-		        idIndex: 0,
+		        id: 0,
 		        fields: [
-		            'type',
-		            'typeName'
+		            'myId',
+		            'displayText'
 		        ],
 		        data: [[true, EURB.Column.mappingTypeStatic], [false, EURB.Column.mappingTypeTable]]
 		    }),
-		    valueField: 'type',
-		    displayField: 'typeName',
+		    valueField: 'myId',
+		    displayField: 'displayText',
 		    forceSelection: true,
 		    allowBlank: false,
-		    editable: false,
-		    clearFilterOnReset: true,
-		    disableKeyFilter: true
+		    editable: false
 		}))
     }
 });

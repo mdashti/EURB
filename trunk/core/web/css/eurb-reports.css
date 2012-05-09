@@ -402,3 +402,7 @@ color: black;
 color: white;
 background: black;
 }
+
+.left-align-txt {
+	text-align: left;
+}

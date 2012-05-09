@@ -1,8 +1,8 @@
 package com.sharifpro.eurb.management.security.dao;
 
-import com.sharifpro.eurb.management.security.dao.UserDao;
 import com.sharifpro.eurb.management.security.exception.UserDaoException;
 import com.sharifpro.eurb.management.security.model.User;
+import com.sharifpro.eurb.management.security.dao.UserDao;
 import com.sharifpro.eurb.management.security.model.UserPk;
 
 import java.util.List;
@@ -25,7 +25,7 @@ public interface UserDao
 	/** 
 	 * Sets enabled flag for a single user in the users table.
 	 */
-	public void setEnabled(UserPk pk, User dto) throws UserDaoException;
+	public void setEnabled(UserPk pk, boolean enabled) throws UserDaoException;
 	
 	/** 
 	 * Sets password for a single user in the users table.
@@ -39,7 +39,7 @@ public interface UserDao
 	/** 
 	 * Returns all rows from the users table that match the criteria 'username = :username'.
 	 */
-	public User findByPrimaryKey(String username) throws UserDaoException;
+	public User findByPrimaryKey(Long id) throws UserDaoException;
 
 	/** 
 	 * Returns all rows from the users table that match the criteria ''.
@@ -76,4 +76,55 @@ public interface UserDao
 	 */
 	public User findByPrimaryKey(UserPk pk) throws UserDaoException;
 
+	/** 
+	 * Counts all rows from the db_config table that match the criteria ''.
+	 */
+	public int countAll() throws UserDaoException;
+	
+	/** 
+	 * Returns all rows from the db_config table that match the criteria '' limited by start and limit.
+	 * @param dir 
+	 * @param sort 
+	 */
+	public List<User> findAll(Integer start, Integer limit, String sort, String dir) throws UserDaoException;
+	
+	/** 
+	 * Returns all rows from the db_config table that match the like query in onFields fields limited by start and limit.
+	 * @param dir 
+	 * @param sort 
+	 */
+	public List<User> findAll(String query, List<String> onFields, Integer start, Integer limit, String sort, String dir) throws UserDaoException;
+	
+	/** 
+	 * Counts all rows from the db_config table that match the like query in onFields fields.
+	 */
+	public int countAll(String query, List<String> onFields) throws UserDaoException;
+
+	/**
+	 * Deletes multiple rows in the user table.
+	 *
+	 * @param pkList
+	 * @throws UserDaoException 
+	 */
+	public void deleteAll(List<UserPk> pkList) throws UserDaoException;
+
+	/** 
+	 * Activates a single row in the db_config table.
+	 */
+	public void activate(UserPk pk) throws UserDaoException;
+	
+	/** 
+	 * Activates multiple rows in the db_config table.
+	 */
+	public void activateAll(List<UserPk> pkList) throws UserDaoException;
+	
+	/** 
+	 * Deactivates a single row in the db_config table.
+	 */
+	public void deactivate(UserPk pk) throws UserDaoException;
+	
+	/** 
+	 * Deactivates multiple rows in the db_config table.
+	 */
+	public void deactivateAll(List<UserPk> pkList) throws UserDaoException;
 }

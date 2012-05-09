@@ -5,31 +5,14 @@ import java.io.Serializable;
 import com.sharifpro.eurb.management.mapping.model.PersistableObjectPk;
 
 /** 
- * This class represents the primary key of the users table.
+ * This class represents the primary key of the groups table.
  */
 public class UserPk extends PersistableObjectPk implements Serializable
 {
-	private static final long serialVersionUID = -2572395260394655158L;
-	protected String username;
-
-	/** 
-	 * Sets the value of username
-	 */
-	public void setUsername(String username)
-	{
-		this.username = username;
-	}
-
-	/** 
-	 * Gets the value of username
-	 */
-	public String getUsername()
-	{
-		return username;
-	}
+	private static final long serialVersionUID = 444358832111560554L;
 
 	/**
-	 * Method 'UsersPk'
+	 * Method 'UserPk'
 	 * 
 	 */
 	public UserPk()
@@ -38,14 +21,13 @@ public class UserPk extends PersistableObjectPk implements Serializable
 	}
 
 	/**
-	 * Method 'UsersPk'
+	 * Method 'UserPk'
 	 * 
-	 * @param username
+	 * @param id
 	 */
-	public UserPk(final String username, final Long id)
+	public UserPk(final Long id)
 	{
 		super(id);
-		this.username = username;
 	}
 
 	/**
@@ -64,28 +46,7 @@ public class UserPk extends PersistableObjectPk implements Serializable
 			return false;
 		}
 		
-		final UserPk _cast = (UserPk) _other;
-		if (username == null ? _cast.username != username : !username.equals( _cast.username )) {
-			return false;
-		}
-		
 		return true;
-	}
-
-	/**
-	 * Method 'hashCode'
-	 * 
-	 * @return int
-	 */
-	public int hashCode()
-	{
-		int _hashCode = super.hashCode();
-		
-		if (username != null) {
-			_hashCode = 29 * _hashCode + username.hashCode();
-		}
-		
-		return _hashCode;
 	}
 
 	/**
@@ -98,7 +59,6 @@ public class UserPk extends PersistableObjectPk implements Serializable
 		StringBuffer ret = new StringBuffer();
 		ret.append( "model.UserPk: " );
 		ret.append( super.toString() );
-		ret.append( ", username=" + username );
 		return ret.toString();
 	}
 

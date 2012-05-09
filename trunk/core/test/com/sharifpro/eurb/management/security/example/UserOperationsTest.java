@@ -1,5 +1,7 @@
 package com.sharifpro.eurb.management.security.example;
 
+import java.util.List;
+
 import com.sharifpro.eurb.DaoFactory;
 import com.sharifpro.eurb.InsertInitialData;
 import com.sharifpro.eurb.management.security.dao.UserDao;
@@ -21,8 +23,8 @@ public class UserOperationsTest extends InsertInitialData{
 		System.out.println(CollectionUtil.toString(dao.findAll()));
 		
 
-		User adminUser = dao.findByPrimaryKey("dashti");
-
+		List<User> adminUserList = dao.findWhereUsernameEquals("dashti");
+		User adminUser = adminUserList == null || adminUserList.isEmpty() ? null : adminUserList.get(0);
 		if (adminUser == null) {
 			System.out.println("Admin user not found! trying to make it...");
 

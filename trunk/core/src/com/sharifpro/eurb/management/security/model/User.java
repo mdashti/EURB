@@ -153,7 +153,7 @@ public class User extends PersistableObject implements Serializable
 	 */
 	public UserPk createPk()
 	{
-		return new UserPk(username, id);
+		return new UserPk(id);
 	}
 
 	/**
