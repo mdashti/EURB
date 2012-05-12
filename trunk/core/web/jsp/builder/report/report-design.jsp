@@ -49,6 +49,9 @@
 			EURB.ReportColumn.removeAction = '<spring:url value="/builder/report/reportColumnRemove.spy" />';
 			EURB.ReportColumn.storeAction = '<spring:url value="/builder/report/reportColumnStore.spy" />';
 			EURB.ReportColumn.updateComboContent = '<spring:url value="/builder/report/reportColumnComboContent.spy" />';
+			EURB.ReportColumn.columnSearchAction = '<spring:url value="/management/mapping/column/mappedColumnSearch.spy" />';
+			
+			EURB.ReportColumn.title = '<spring:message code="eurb.app.builder.report.column.title" />';
 			
 			EURB.ReportColumn.Column = '<spring:message code="eurb.app.builder.report.column.column" />';
 			EURB.ReportColumn.ColumnHeader = '<spring:message code="eurb.app.builder.report.column.header" />';
@@ -60,10 +63,38 @@
 			EURB.ReportColumn.ColumnAlign = '<spring:message code="eurb.app.builder.report.column.align" />';
 			EURB.ReportColumn.ColumnDir = '<spring:message code="eurb.app.builder.report.column.dir" />';
 			
-			EURB.ReportColumn.title = '<spring:message code="eurb.app.builder.report.column.title" />';
+			EURB.ReportColumn.leftAlign = '<spring:message code="eurb.app.builder.report.column.leftAlign" />';
+			EURB.ReportColumn.middleAlign = '<spring:message code="eurb.app.builder.report.column.middleAlign" />';
+			EURB.ReportColumn.rightAlign = '<spring:message code="eurb.app.builder.report.column.rightAlign" />';
+			EURB.ReportColumn.ltrDir = '<spring:message code="eurb.app.builder.report.column.ltrDir" />';
+			EURB.ReportColumn.rtlDir = '<spring:message code="eurb.app.builder.report.column.rtlDir" />';
+			EURB.ReportColumn.ascendingSort = '<spring:message code="eurb.app.builder.report.column.ascSort" />';
+			EURB.ReportColumn.descendingSort = '<spring:message code="eurb.app.builder.report.column.descSort" />';
 			
 			
-			EURB.ReportColumn.columnSearchAction = '<spring:url value="/management/mapping/column/mappedColumnSearch.spy" />';
+			EURB.ReportFilter = {};
+			
+			EURB.ReportFilter.searchAction = '<spring:url value="/builder/report/reportFilterSearch.spy" />';
+			EURB.ReportFilter.storeAction = '<spring:url value="/builder/report/reportFilterStore.spy" />';
+			EURB.ReportFilter.removeAction = '<spring:url value="/builder/report/reportFilterRemove.spy" />';
+			
+			EURB.ReportFilter.title = '<spring:message code="eurb.app.builder.report.filter.title" />';
+			EURB.ReportFilter.Column = '<spring:message code="eurb.app.builder.report.filter.column" />';
+			EURB.ReportFilter.Operator = '<spring:message code="eurb.app.builder.report.filter.operator" />';
+			EURB.ReportFilter.Operand1 = '<spring:message code="eurb.app.builder.report.filter.operand1" />';
+			EURB.ReportFilter.Operand2 = '<spring:message code="eurb.app.builder.report.filter.operand2" />';
+			EURB.ReportFilter.equal = '<spring:message code="eurb.app.builder.report.filter.equal" />';
+			EURB.ReportFilter.smallerThan = '<spring:message code="eurb.app.builder.report.filter.smallerThan" />';
+			EURB.ReportFilter.biggerThan = '<spring:message code="eurb.app.builder.report.filter.biggerThan" />';
+			EURB.ReportFilter.notEqual = '<spring:message code="eurb.app.builder.report.filter.notEqual" />';
+			EURB.ReportFilter.between = '<spring:message code="eurb.app.builder.report.filter.between" />';
+			EURB.ReportFilter.like = '<spring:message code="eurb.app.builder.report.filter.like" />';
+			EURB.ReportFilter.notNull = '<spring:message code="eurb.app.builder.report.filter.notNull" />';
+			EURB.ReportFilter.nul = '<spring:message code="eurb.app.builder.report.filter.nul" />';
+			
+			
+			
+			
 			
 			EURB.ReportDesign.comboRenderer = function(combo){
 			    return function(value){
@@ -86,7 +117,9 @@
 			        data: ${tableMappingComboContent}
 			    }),
 			    valueField: 'id',
-			    displayField: 'mappedName'
+			    displayField: 'mappedName',
+			    forceSelection: true,
+			    allowBlank: false
 			});
 			
 			
@@ -104,7 +137,34 @@
 			        data: ${columnMappingComboContent}
 			    }),
 			    valueField: 'id',
-			    displayField: 'mappedName'
+			    displayField: 'mappedName',
+			    forceSelection: true,
+			    allowBlank: false,
+			    listeners:{
+			    	select: function(combo,record,index){
+			    		rform = EURB.ReportColumn.reportColumnGrid.recordForm.form.getForm();
+			    		rform.items.itemAt(8).setValue(record.get('mappedName'));
+			    	}
+			    }
+			});
+			
+			EURB.ReportFilter.columnCombo = new Ext.form.ComboBox({
+			    typeAhead: true,
+			    triggerAction: 'all',
+			    lazyRender:true,
+			    mode: 'local',
+			    store: new Ext.data.ArrayStore({
+			        id: 0,
+			        fields: [
+			            'id',
+			            'mappedName'
+			        ],
+			        data: ${columnMappingComboContent}
+			    }),
+			    valueField: 'id',
+			    displayField: 'mappedName',
+			    forceSelection: true,
+			    allowBlank: false
 			});
 
 			updateReportColumnComboContent = function(){
@@ -138,7 +198,7 @@
 					this.showError(o.error || EURB.unknownError);
 					return;
 				}
-				EURB.ReportColumn.columnCombo.bindStore(new Ext.data.ArrayStore({
+				EURB.ReportDesign.columnCombo.bindStore(new Ext.data.ArrayStore({
 			        id: 0,
 			        fields: [
 			            'id',
@@ -146,7 +206,7 @@
 			        ],
 			        data: o.data
 			    }));
-				EURB.ReportColumn.reportColumnGrid.colModel.getColumnAt(0).setEditor(EURB.ReportColumn.columnCombo);
+				EURB.ReportColumn.reportColumnGrid.colModel.getColumnAt(0).setEditor(EURB.ReportDesign.columnCombo);
 				window.location.href = EURB.baseURL+'builder/report/report'+EURB.ReportDesign.selectedDesign+'-design.spy';
 			};
 			
@@ -155,6 +215,7 @@
 		</script>
 		<script  src="${resourcesUrl}/js/app/builder/report/report-dataset.js"></script>
 		<script  src="${resourcesUrl}/js/app/builder/report/report-column.js"></script>
+		<script  src="${resourcesUrl}/js/app/builder/report/report-filter.js"></script>
 		<script src="${resourcesUrl}/js/app/builder/report/report-design.js"></script>
 	</body>
 </html>

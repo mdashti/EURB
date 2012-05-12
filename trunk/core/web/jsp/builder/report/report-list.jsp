@@ -46,8 +46,33 @@
 			
 			EURB.Report.name = '<spring:message code="eurb.app.builder.report.name" />';
 			EURB.Report.description = '<spring:message code="eurb.app.builder.report.description" />';
+			EURB.Report.category = '<spring:message code="eurb.app.builder.report.category" />';
 			
 			EURB.Report.editDesign = '<spring:message code="eurb.app.builder.report.editDesign" />';
+			
+			EURB.Report.comboRenderer = function(combo){
+			    return function(value){
+			        var record = combo.findRecord(combo.valueField, value);
+			        return record ? record.get(combo.displayField) : combo.valueNotFoundText;
+			    }
+			};
+
+			EURB.Report.categoryCombo = new Ext.form.ComboBox({
+			    typeAhead: true,
+			    triggerAction: 'all',
+			    lazyRender:true,
+			    mode: 'local',
+			    store: new Ext.data.ArrayStore({
+			        id: 0,
+			        fields: [
+			            'id',
+			            'name'
+			        ],
+			        data: ${categoriesComboContent}
+			    }),
+			    valueField: 'id',
+			    displayField: 'name'
+			});
 			
 		</script>
 		<script src="${resourcesUrl}/js/app/builder/report/report-list.js"></script>

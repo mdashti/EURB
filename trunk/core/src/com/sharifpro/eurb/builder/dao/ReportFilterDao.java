@@ -13,8 +13,9 @@ public interface ReportFilterDao
 	 * 
 	 * @param dto
 	 * @return ReportFilterPk
+	 * @throws ReportFilterDaoException 
 	 */
-	public ReportFilterPk insert(ReportFilter dto);
+	public ReportFilterPk insert(ReportFilter dto) throws ReportFilterDaoException;
 
 	/** 
 	 * Updates a single row in the report_filter table.
@@ -25,6 +26,11 @@ public interface ReportFilterDao
 	 * Deletes a single row in the report_filter table.
 	 */
 	public void delete(ReportFilterPk pk) throws ReportFilterDaoException;
+	
+	/** 
+	 * Deletes all given rows in the report_filter table.
+	 */
+	public void deleteAll(List<ReportFilterPk> pkList) throws ReportFilterDaoException;
 
 	/** 
 	 * Returns all rows from the report_filter table that match the criteria 'id = :id'.
@@ -35,6 +41,16 @@ public interface ReportFilterDao
 	 * Returns all rows from the report_filter table that match the criteria ''.
 	 */
 	public List<ReportFilter> findAll() throws ReportFilterDaoException;
+	
+	/** 
+	 * Returns all rows from the report_filter table that match the criteria 'report_design_id := reportDesignId'.
+	 */
+	public List<ReportFilter> findAll(Long reportDesignId) throws ReportFilterDaoException;
+	
+	/** 
+	 * Counts all rows from the report_filter table that match the criteria 'report_design_id := reportDesignId'.
+	 */
+	public int countAll(Long reportDesignId) throws ReportFilterDaoException;
 
 	/** 
 	 * Returns all rows from the report_filter table that match the criteria 'id = :id'.

@@ -27,7 +27,7 @@ EURB.ReportCategory.store = new Ext.data.Store({
 });
 
 EURB.ReportCategory.cols = [{
-	 header:'Name'
+	 header:EURB.ReportCategory.Name
 	,id:'name'
 	,dataIndex:'name'
 	,width:50
@@ -36,7 +36,7 @@ EURB.ReportCategory.cols = [{
 		allowBlank:false
 	})
 },{
-	 header:'Description'
+	 header:EURB.ReportCategory.Description
 	,id:'description'
 	,dataIndex:'description'
 	,width:100

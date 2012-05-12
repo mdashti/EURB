@@ -1,20 +1,66 @@
+////////////////////////////operator combo box///////////////////////////////
+EURB.ReportFilter.operatorCombo = new Ext.form.ComboBox({
+    typeAhead: true,
+    triggerAction: 'all',
+    lazyRender:true,
+    mode: 'local',
+    store: new Ext.data.ArrayStore({
+        id: 0,
+        fields: [
+            'operatorValue',
+            'operatorLabel',
+            'operatorNumberOfOperands'
+        ],
+        data: [['=' , EURB.ReportFilter.equal , 1] , ['<' , EURB.ReportFilter.smallerThan , 1] , ['>' , EURB.ReportFilter.biggerThan , 1] , ['<>' , EURB.ReportFilter.notEqual , 1]
+        	   ,['between' , EURB.ReportFilter.between , 2 ] , ['like' , EURB.ReportFilter.like , 1] , ['is not null' , EURB.ReportFilter.notNull , 0] , ['is null' , EURB.ReportFilter.nul , 0]        	   
+        	  ]
+    }),
+    valueField: 'operatorValue',
+    displayField: 'operatorLabel',
+    forceSelection: true,
+    allowBlank: false,
+    editable: false,
+    listeners:{
+    	select: function(combo,record,index){
+    		rform = EURB.ReportFilter.reportFilterGrid.recordForm.form.getForm();
+    		numOperands = record.get('operatorNumberOfOperands');
+    		if(numOperands == 0){
+    			rform.items.itemAt(2).setDisabled(true);
+    			rform.items.itemAt(3).setDisabled(true);
+    		}
+    		else if(numOperands == 1){
+    			rform.items.itemAt(2).setDisabled(false);
+    			rform.items.itemAt(3).setDisabled(true);
+    		}
+    		else if(numOperands == 2){
+    			rform.items.itemAt(2).setDisabled(false);
+    			rform.items.itemAt(3).setDisabled(false);
+    		}
+    	}
+    }
+});
+
 
 ////////////////////////////data set grid/////////////////////////////////////
 
-EURB.ReportDataset.store = new Ext.data.Store({
+EURB.ReportFilter.store = new Ext.data.Store({
 	reader:new Ext.data.JsonReader({
 		 id:'id'
 		,totalProperty:'totalCount'
 		,root:'data'
 		,fields:[
-			 {name:'id', type:'int'}
-			,{name:'designId', type:'int'}
-			,{name:'designVersionId', type:'int'}
-			,{name:'tableMappingId', type:'int'}
+			  {name:'id', type:'int'}
+			,{name:'reportDesignId', type:'int'}
+			,{name:'reportDesignVersionId', type:'int'}
+			,{name:'reportDatasetId', type:'int'}
+			,{name:'columnMappingId', type:'int'}
+			,{name:'operator', type:'string'}
+			,{name:'operand1', type:'string'}
+			,{name:'operand2', type:'string'}
 		]
 	})
 	,proxy:new Ext.data.HttpProxy({
-		url:EURB.ReportDataset.searchAction
+		url:EURB.ReportFilter.searchAction
         ,listeners: {
         	'exception' : EURB.proxyExceptionHandler
         }
@@ -26,37 +72,66 @@ EURB.ReportDataset.store = new Ext.data.Store({
 	,remoteSort:true
 });
 
-EURB.ReportDataset.cols = [{
-	 header:EURB.ReportDataset.Table
-	,id:'tableMappingId'
-	,dataIndex:'tableMappingId'
-	,width:20
+EURB.ReportFilter.cols = [{
+	 header:EURB.ReportFilter.Column
+	,id:'columnMappingId'
+	,dataIndex:'columnMappingId'
+	,width:50
 	,sortable:true
-	,editor:EURB.ReportDataset.tableCombo
-	,renderer:EURB.ReportDesign.comboRenderer(EURB.ReportDataset.tableCombo)
+	,editor:EURB.ReportFilter.columnCombo
+	,renderer:EURB.ReportDesign.comboRenderer(EURB.ReportFilter.columnCombo)
+},
+{
+	 header:EURB.ReportFilter.Operator
+	,id:'operator'
+	,dataIndex:'operator'
+	,width:25
+	,sortable:true
+	,editor:EURB.ReportFilter.operatorCombo
+	,renderer:EURB.ReportDesign.comboRenderer(EURB.ReportFilter.operatorCombo)
+},
+{
+	 header:EURB.ReportFilter.Operand1
+	,id:'operand1'
+	,dataIndex:'operand1'
+	,width:10
+	,sortable:true
+	,editor:new Ext.form.TextField({
+		allowBlank:false
+	})
+},
+{
+	 header:EURB.ReportFilter.Operand2
+	,id:'operand2'
+	,dataIndex:'operand2'
+	,width:25
+	,sortable:true
+	,editor:new Ext.form.TextField({
+		allowBlank:false
+	})
 }];
 
-EURB.ReportDataset.DatasetGrid = Ext.extend(Ext.grid.GridPanel, {
+EURB.ReportFilter.FitlerGrid = Ext.extend(Ext.grid.GridPanel, {
 	// defaults - can be changed from outside
 	 width: '100%'
 	,height: 300
 	,border:true
 	,stateful:false
 	,idName:'id'
-	,title: EURB.ReportDataset.title
+	,title: EURB.ReportFilter.title
 	,initComponent:function() {
         this.recordForm = new Ext.ux.grid.RecordForm({
-             title:EURB.addEdit+' '+ EURB.ReportDataset.title
+             title:EURB.addEdit+' '+EURB.ReportFilter.title
             ,iconCls:'icon-edit-record'
             ,columnCount:1
-            ,ignoreFields:{id:true,designId:true,designVersionId:true}
+            ,ignoreFields:{id:true,reportDesignId:true,reportDesignVersionId:true,reportDatasetId:true}
             ,formConfig:{
                  labelWidth:80
                 ,buttonAlign:'right'
                 ,bodyStyle:'padding-top:10px'
             }
             ,afterUpdateRecord: function(rec) {
-            	EURB.ReportDataset.reportDatasetGrid.commitChanges();
+            	EURB.ReportFilter.reportFilterGrid.commitChanges();
             }
             ,getRowClass:function(record) {
 				if(record.get('newRecord')) {
@@ -80,12 +155,12 @@ EURB.ReportDataset.DatasetGrid = Ext.extend(Ext.grid.GridPanel, {
             ,getEditor:Ext.emptyFn
 		});
 		this.rowActions.on('action', this.onRowAction, this);
-		EURB.ReportDataset.cols.push(this.rowActions);
+		EURB.ReportFilter.cols.push(this.rowActions);
 		
 		// hard coded - cannot be changed from outside
 		var config = {
-			store: EURB.ReportDataset.store
-			,columns:EURB.ReportDataset.cols
+			store: EURB.ReportFilter.store
+			,columns:EURB.ReportFilter.cols
 			,plugins:[new Ext.ux.grid.Search({
 				iconCls:'icon-zoom'
 				//,readonlyIndexes:['name']
@@ -117,20 +192,19 @@ EURB.ReportDataset.DatasetGrid = Ext.extend(Ext.grid.GridPanel, {
 
 		// create bottom paging toolbar
 		this.bbar = ['->'];
-
 		// call parent
-		EURB.ReportDataset.DatasetGrid.superclass.initComponent.apply(this, arguments);
+		EURB.ReportFilter.FitlerGrid.superclass.initComponent.apply(this, arguments);
 	}
 	,onRender:function() {
 		// call parent
-		EURB.ReportDataset.DatasetGrid.superclass.onRender.apply(this, arguments);
+		EURB.ReportFilter.FitlerGrid.superclass.onRender.apply(this, arguments);
 
 		// load store
 		this.store.load();
 
 	}
 	,afterRender:function() {
-		EURB.ReportDataset.DatasetGrid.superclass.afterRender.apply(this, arguments);
+		EURB.ReportFilter.FitlerGrid.superclass.afterRender.apply(this, arguments);
 	}
 	,addRecord:function() {
         var store = this.store;
@@ -168,7 +242,7 @@ EURB.ReportDataset.DatasetGrid = Ext.extend(Ext.grid.GridPanel, {
 			data.push(r.data);
 		}, this);
 		var o = {
-			 url:EURB.ReportDataset.storeAction
+			 url:EURB.ReportFilter.storeAction
 			,method:'post'
 			,callback:this.requestCallback
 			,scope:this
@@ -197,8 +271,7 @@ EURB.ReportDataset.DatasetGrid = Ext.extend(Ext.grid.GridPanel, {
 			this.showError(o.error || EURB.unknownError);
 			return;
 		}
-		
-		updateReportColumnComboContent();
+
 		switch(options.params.cmd) {
 			default:
 				this.store.commitChanges();
@@ -233,7 +306,7 @@ EURB.ReportDataset.DatasetGrid = Ext.extend(Ext.grid.GridPanel, {
 					data.push(r.get(this.idName));
 				}, this);
 				var o = {
-					 url:EURB.ReportDataset.removeAction
+					 url:EURB.ReportFilter.removeAction
 					,method:'post'
 					,callback:this.requestCallback
 					,scope:this

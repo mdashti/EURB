@@ -11,22 +11,22 @@ public class ReportFilter extends PersistableObject implements Serializable
 	/** 
 	 * This attribute maps to the column report_column_id in the report_filter table.
 	 */
-	protected Long reportColumnId;
+	protected Long columnMappingId;
 
 	/** 
 	 * This attribute maps to the column report_column_dataset_id in the report_filter table.
 	 */
-	protected Long reportColumnDatasetId;
+	protected Long reportDatasetId;
 
 	/** 
 	 * This attribute maps to the column report_column_design_id in the report_filter table.
 	 */
-	protected Long reportColumnDesignId;
+	protected Long reportDesignId;
 
 	/** 
 	 * This attribute maps to the column report_column_design_version_id in the report_filter table.
 	 */
-	protected Long reportColumnDesignVersionId;
+	protected Long reportDesignVersionId;
 
 	/** 
 	 * This attribute maps to the column prefix in the report_filter table.
@@ -87,19 +87,19 @@ public class ReportFilter extends PersistableObject implements Serializable
 	 * 
 	 * @return Long
 	 */
-	public Long getReportColumnId()
+	public Long getColumnMappingId()
 	{
-		return reportColumnId;
+		return columnMappingId;
 	}
 
 	/**
 	 * Method 'setReportColumnId'
 	 * 
-	 * @param reportColumnId
+	 * @param columnMappingId
 	 */
-	public void setReportColumnId(Long reportColumnId)
+	public void setColumnMappingId(Long columnMappingId)
 	{
-		this.reportColumnId = reportColumnId;
+		this.columnMappingId = columnMappingId;
 	}
 
 	/**
@@ -107,19 +107,19 @@ public class ReportFilter extends PersistableObject implements Serializable
 	 * 
 	 * @return Long
 	 */
-	public Long getReportColumnDatasetId()
+	public Long getReportDatasetId()
 	{
-		return reportColumnDatasetId;
+		return reportDatasetId;
 	}
 
 	/**
 	 * Method 'setReportColumnDatasetId'
 	 * 
-	 * @param reportColumnDatasetId
+	 * @param reportDatasetId
 	 */
-	public void setReportColumnDatasetId(Long reportColumnDatasetId)
+	public void setReportDatasetId(Long reportDatasetId)
 	{
-		this.reportColumnDatasetId = reportColumnDatasetId;
+		this.reportDatasetId = reportDatasetId;
 	}
 
 	/**
@@ -127,19 +127,19 @@ public class ReportFilter extends PersistableObject implements Serializable
 	 * 
 	 * @return Long
 	 */
-	public Long getReportColumnDesignId()
+	public Long getReportDesignId()
 	{
-		return reportColumnDesignId;
+		return reportDesignId;
 	}
 
 	/**
 	 * Method 'setReportColumnDesignId'
 	 * 
-	 * @param reportColumnDesignId
+	 * @param reportDesignId
 	 */
-	public void setReportColumnDesignId(Long reportColumnDesignId)
+	public void setReportDesignId(Long reportDesignId)
 	{
-		this.reportColumnDesignId = reportColumnDesignId;
+		this.reportDesignId = reportDesignId;
 	}
 
 	/**
@@ -147,19 +147,19 @@ public class ReportFilter extends PersistableObject implements Serializable
 	 * 
 	 * @return Long
 	 */
-	public Long getReportColumnDesignVersionId()
+	public Long getReportDesignVersionId()
 	{
-		return reportColumnDesignVersionId;
+		return reportDesignVersionId;
 	}
 
 	/**
 	 * Method 'setReportColumnDesignVersionId'
 	 * 
-	 * @param reportColumnDesignVersionId
+	 * @param reportDesignVersionId
 	 */
-	public void setReportColumnDesignVersionId(Long reportColumnDesignVersionId)
+	public void setReportDesignVersionId(Long reportDesignVersionId)
 	{
-		this.reportColumnDesignVersionId = reportColumnDesignVersionId;
+		this.reportDesignVersionId = reportDesignVersionId;
 	}
 
 	/**
@@ -499,10 +499,10 @@ public class ReportFilter extends PersistableObject implements Serializable
 		StringBuffer ret = new StringBuffer();
 		ret.append( "model.ReportFilter: " );
 		ret.append( super.toString() );
-		ret.append( ", reportColumnId=" + reportColumnId );
-		ret.append( ", reportColumnDatasetId=" + reportColumnDatasetId );
-		ret.append( ", reportColumnDesignId=" + reportColumnDesignId );
-		ret.append( ", reportColumnDesignVersionId=" + reportColumnDesignVersionId );
+		ret.append( ", reportColumnId=" + columnMappingId );
+		ret.append( ", reportColumnDatasetId=" + reportDatasetId );
+		ret.append( ", reportColumnDesignId=" + reportDesignId );
+		ret.append( ", reportColumnDesignVersionId=" + reportDesignVersionId );
 		ret.append( ", prefix=" + prefix );
 		ret.append( ", operator=" + operator );
 		ret.append( ", suffix=" + suffix );

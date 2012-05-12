@@ -33,6 +33,8 @@ public class ReportDatasetDaoImpl extends AbstractDAO implements ParameterizedRo
 	public ReportDatasetPk insert(ReportDataset dto) throws ReportDatasetDaoException
 	{
 		try{
+			int lastOrder = jdbcTemplate.queryForInt("SELECT MAX(ds_order) FROM " + getTableName() + " WHERE design_id = ? AND design_version_id = ?", dto.getDesignId(), dto.getDesignVersionId());
+			dto.setDsOrder(++lastOrder);
 			ReportDatasetPk pk = new ReportDatasetPk(); 
 			DaoFactory.createPersistableObjectDao().insert(dto, pk);
 			jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id,design_id, design_version_id, table_mapping_id, base_report_id, base_report_version_id, ds_order, operator) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )",
@@ -239,7 +241,7 @@ public class ReportDatasetDaoImpl extends AbstractDAO implements ParameterizedRo
 	public List<ReportDataset> findByReportDesign(Long designId, Long designVersionId) throws ReportDatasetDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.design_id = ? AND o.design_version_id = ?", this,designId,designVersionId);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.design_id = ? AND o.design_version_id = ? ORDER BY o.ds_order", this,designId,designVersionId);
 		}
 		catch (Exception e) {
 			throw new ReportDatasetDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);

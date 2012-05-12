@@ -1,5 +1,6 @@
 EURB.ReportDataset.reportDatasetGrid = new EURB.ReportDataset.DatasetGrid();
 EURB.ReportColumn.reportColumnGrid = new EURB.ReportColumn.ColumnGrid();
+EURB.ReportFilter.reportFilterGrid = new EURB.ReportFilter.FitlerGrid();
 // application main entry point
 Ext.onReady(function() {
 	EURB.ReportDesign.panel = new Ext.Panel({
@@ -15,7 +16,17 @@ Ext.onReady(function() {
                 region: 'center',
                 width: '70%',
                 split: true,
-                items: [EURB.ReportColumn.reportColumnGrid]
+                items: [{
+                    region: 'center',
+                    width: '100%',
+                    split: true,
+                    items: [EURB.ReportColumn.reportColumnGrid]
+                },{
+                    region: 'south',
+                    width: '100%',
+                    split: true,
+                    items: [EURB.ReportFilter.reportFilterGrid]
+                }]
             }]
 	});
 	EURB.mainPanel.items.add(EURB.ReportDesign.panel);

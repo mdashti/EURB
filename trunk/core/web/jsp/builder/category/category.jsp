@@ -28,6 +28,9 @@
 			EURB.ReportCategory.searchAction = '<spring:url value="/builder/category/reportCategorySearch.spy" />';
 			EURB.ReportCategory.storeAction = '<spring:url value="/builder/category/reportCategoryStore.spy" />';
 			EURB.ReportCategory.removeAction = '<spring:url value="/builder/category/reportCategoryRemove.spy" />';
+			
+			EURB.ReportCategory.Name = '<spring:message code="eurb.app.builder.category.name" />';
+			EURB.ReportCategory.Description = '<spring:message code="eurb.app.builder.category.description" />';
 		</script>
 		<script src="${resourcesUrl}/js/app/builder/category/report-category.js"></script>
 	</body>

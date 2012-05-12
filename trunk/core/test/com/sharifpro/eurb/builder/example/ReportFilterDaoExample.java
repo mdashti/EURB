@@ -340,13 +340,13 @@ public class ReportFilterDaoExample
 		StringBuffer buf = new StringBuffer();
 		buf.append( dto.getId() );
 		buf.append( ", " );
-		buf.append( dto.getReportColumnId() );
+		buf.append( dto.getColumnMappingId() );
 		buf.append( ", " );
-		buf.append( dto.getReportColumnDatasetId() );
+		buf.append( dto.getReportDatasetId() );
 		buf.append( ", " );
-		buf.append( dto.getReportColumnDesignId() );
+		buf.append( dto.getReportDesignId() );
 		buf.append( ", " );
-		buf.append( dto.getReportColumnDesignVersionId() );
+		buf.append( dto.getReportDesignVersionId() );
 		buf.append( ", " );
 		buf.append( dto.getPrefix() );
 		buf.append( ", " );

@@ -11,8 +11,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
+import com.sharifpro.eurb.builder.dao.ReportCategoryDao;
 import com.sharifpro.eurb.builder.dao.ReportDesignDao;
+import com.sharifpro.eurb.builder.model.ReportCategory;
 import com.sharifpro.eurb.builder.model.ReportDesign;
 import com.sharifpro.eurb.builder.model.ReportDesignPk;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
@@ -28,8 +31,27 @@ import com.sharifpro.util.json.JsonUtil;
 public class ReportListController {
 
 	private ReportDesignDao reportDesignDao;
-	
+	private ReportCategoryDao reportCategoryDao;
+
 	private JsonUtil jsonUtil;
+
+
+	@RequestMapping(value="/builder/report/report-list.spy")
+	public ModelAndView executeReportListSpy() throws Exception {
+		ModelAndView mv = new ModelAndView();
+
+		List<ReportCategory> reportCategories = reportCategoryDao.findAll();
+		Object[][] categoriesArr = new Object[reportCategories.size()][2];
+		for(int i = 0; i < reportCategories.size(); i++) {
+			categoriesArr[i][0] = reportCategories.get(i).getId();
+			categoriesArr[i][1] = reportCategories.get(i).getName();
+		}
+
+		mv.addObject("categoriesComboContent", jsonUtil.getJSONFromObject(categoriesArr));
+
+		mv.setViewName("/builder/report/report-list");
+		return mv;
+	}
 
 	@RequestMapping(value="/builder/report/reportSearch.spy")
 	public @ResponseBody Map<String,? extends Object> search(@RequestParam(defaultValue="", required=false) String query
@@ -38,7 +60,7 @@ public class ReportListController {
 			,@RequestParam(defaultValue=AbstractDAO.DEFAULT_PAGE_SIZE_STR, required=false) String limit
 			,@RequestParam(defaultValue=PersistableObject.IDENTIFIER_FIELD, required=false) String sort
 			,@RequestParam(defaultValue=AbstractDAO.ASCENDING_SORT_ORDER, required=false) String dir) throws Exception {
-		
+
 		try{
 			List<ReportDesign> reportDesigns;
 			int totalCount;
@@ -66,7 +88,7 @@ public class ReportListController {
 		try{
 
 			List<ReportDesign> reportDesigns = jsonUtil.getListFromRequest(data, ReportDesign.class);
-			
+
 			List<Object[]> insertIds = new ArrayList<Object[]>(reportDesigns.size());
 			ReportDesignPk pk;
 			for(ReportDesign reportDesign : reportDesigns) {
@@ -78,7 +100,7 @@ public class ReportListController {
 				}
 				insertIds.add(new Object[] {pk.getId()});
 			}
-			
+
 			return JsonUtil.getSuccessfulMapAfterStore(insertIds);
 
 		} catch (Exception e) {
@@ -97,7 +119,7 @@ public class ReportListController {
 				pkList.add(new ReportDesignPk(new Long(id)));
 			}
 			reportDesignDao.deleteAll(pkList);
-			
+
 			return JsonUtil.getSuccessfulMapAfterStore(deleteIds);
 
 		} catch (Exception e) {
@@ -105,7 +127,7 @@ public class ReportListController {
 			return JsonUtil.getModelMapError(e.getMessage());
 		}
 	}
-	
+
 	@RequestMapping(value="/builder/report/reportActivate.spy")
 	public @ResponseBody Map<String,? extends Object> activate(@RequestParam Object data) throws Exception {
 		try{
@@ -116,7 +138,7 @@ public class ReportListController {
 				pkList.add(new ReportDesignPk(new Long(id)));
 			}
 			reportDesignDao.activateAll(pkList);
-			
+
 			return JsonUtil.getSuccessfulMapAfterStore(activateIds);
 
 		} catch (Exception e) {
@@ -124,7 +146,7 @@ public class ReportListController {
 			return JsonUtil.getModelMapError(e.getMessage());
 		}
 	}
-	
+
 	@RequestMapping(value="/builder/report/reportDeactivate.spy")
 	public @ResponseBody Map<String,? extends Object> deactivate(@RequestParam Object data) throws Exception {
 		try{
@@ -135,7 +157,7 @@ public class ReportListController {
 				pkList.add(new ReportDesignPk(new Long(id)));
 			}
 			reportDesignDao.deactivateAll(pkList);
-			
+
 			return JsonUtil.getSuccessfulMapAfterStore(deactivateIds);
 
 		} catch (Exception e) {
@@ -144,6 +166,11 @@ public class ReportListController {
 		}
 	}
 
+
+	@Autowired
+	public void setReportCategoryDao(ReportCategoryDao reportCategoryDao){
+		this.reportCategoryDao = reportCategoryDao;
+	}
 
 	@Autowired
 	public void setReportDesignDao(ReportDesignDao reportDesignDao) {

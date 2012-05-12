@@ -1,3 +1,66 @@
+////////////////////////////alignment combo box///////////////////////////////
+EURB.ReportColumn.alignCombo = new Ext.form.ComboBox({
+    typeAhead: true,
+    triggerAction: 'all',
+    lazyRender:true,
+    mode: 'local',
+    store: new Ext.data.ArrayStore({
+        id: 0,
+        fields: [
+            'alignValue',
+            'alignLabel'
+        ],
+        data: [['left', EURB.ReportColumn.leftAlign], ['middle', EURB.ReportColumn.middleAlign], ['right', EURB.ReportColumn.rightAlign]]
+    }),
+    valueField: 'alignValue',
+    displayField: 'alignLabel',
+    forceSelection: true,
+    allowBlank: false,
+    editable: false
+});
+
+////////////////////////////direction combo box///////////////////////////////
+EURB.ReportColumn.dirCombo = new Ext.form.ComboBox({
+    typeAhead: true,
+    triggerAction: 'all',
+    lazyRender:true,
+    mode: 'local',
+    store: new Ext.data.ArrayStore({
+        id: 0,
+        fields: [
+            'dirValue',
+            'dirLabel'
+        ],
+        data: [['ltr', EURB.ReportColumn.ltrDir], ['rtl', EURB.ReportColumn.rtlDir]]
+    }),
+    valueField: 'dirValue',
+    displayField: 'dirLabel',
+    forceSelection: true,
+    allowBlank: false,
+    editable: false
+});
+
+////////////////////////////sort order combo box///////////////////////////////
+EURB.ReportColumn.sortTypeCombo = new Ext.form.ComboBox({
+    typeAhead: true,
+    triggerAction: 'all',
+    lazyRender:true,
+    mode: 'local',
+    store: new Ext.data.ArrayStore({
+        id: 0,
+        fields: [
+            'sortTypeValue',
+            'sortTypeLabel'
+        ],
+        data: [[0, EURB.ReportColumn.ascendingSort], [1, EURB.ReportColumn.descendingSort]]
+    }),
+    valueField: 'sortTypeValue',
+    displayField: 'sortTypeLabel',
+    forceSelection: true,
+    allowBlank: false,
+    editable: false
+});
+
 
 ////////////////////////////data set grid/////////////////////////////////////
 
@@ -80,9 +143,8 @@ EURB.ReportColumn.cols = [{
 	,dataIndex:'sortType'
 	,width:25
 	,sortable:true
-	,editor:new Ext.form.TextField({
-		allowBlank:true
-	})
+	,editor:EURB.ReportColumn.sortTypeCombo
+	,renderer:EURB.ReportDesign.comboRenderer(EURB.ReportColumn.sortTypeCombo)
 },
 {
 	 header:EURB.ReportColumn.GroupLevel
@@ -110,9 +172,8 @@ EURB.ReportColumn.cols = [{
 	,dataIndex:'columnAlign'
 	,width:25
 	,sortable:true
-	,editor:new Ext.form.TextField({
-		allowBlank:false
-	})
+	,editor:EURB.ReportColumn.alignCombo
+	,renderer:EURB.ReportDesign.comboRenderer(EURB.ReportColumn.alignCombo)
 },
 {
 	 header:EURB.ReportColumn.ColumnDir
@@ -120,15 +181,14 @@ EURB.ReportColumn.cols = [{
 	,dataIndex:'columnDir'
 	,width:25
 	,sortable:true
-	,editor:new Ext.form.TextField({
-		allowBlank:false
-	})
+	,editor:EURB.ReportColumn.dirCombo
+	,renderer:EURB.ReportDesign.comboRenderer(EURB.ReportColumn.dirCombo)
 }];
 
 EURB.ReportColumn.ColumnGrid = Ext.extend(Ext.grid.GridPanel, {
 	// defaults - can be changed from outside
 	 width: '100%'
-	,height: 500
+	,height: 300
 	,border:true
 	,stateful:false
 	,idName:'id'
@@ -197,7 +257,7 @@ EURB.ReportColumn.ColumnGrid = Ext.extend(Ext.grid.GridPanel, {
 					 scope:this
 					,click:{fn:this.deleteSelectedRecords,buffer:200}
 				}
-			}]
+			},"->"]
 		};
 
 		// apply config
@@ -205,12 +265,7 @@ EURB.ReportColumn.ColumnGrid = Ext.extend(Ext.grid.GridPanel, {
 		Ext.apply(this.initialConfig, config);
 
 		// create bottom paging toolbar
-		this.bbar = new Ext.PagingToolbar({
-			 store:this.store
-			,displayInfo:true
-			,pageSize:EURB.defaultPageLimit
-		});
-
+		this.bbar = ['->'];
 		// call parent
 		EURB.ReportColumn.ColumnGrid.superclass.initComponent.apply(this, arguments);
 	}

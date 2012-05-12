@@ -7,6 +7,7 @@ EURB.Report.store = new Ext.data.Store({
 			 {name:'id', type:'int'}
 			,{name:'versionId', type:'int'}
 			,{name:'name', type:'string'}
+			,{name:'categoryId', type:'int'}
 			,{name:'description', type:'string'}
 		]
 	})
@@ -30,13 +31,21 @@ EURB.Report.cols = [{
 		allowBlank:false
 	})
 },{
+	 header:EURB.Report.category
+	,id:'categoryId'
+	,dataIndex:'categoryId'
+	,width:50
+	,sortable:true
+	,editor:EURB.Report.categoryCombo
+	,renderer:EURB.Report.comboRenderer(EURB.Report.categoryCombo)
+},{
 	 header:EURB.Report.description
 	,id:'description'
 	,dataIndex:'description'
 	,width:100
 	,sortable:true
 	,editor:new Ext.form.TextField({
-		allowBlank:false
+		allowBlank:true
 	})
 }];
 
