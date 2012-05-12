@@ -1,6 +1,8 @@
 package com.sharifpro.eurb.management.mapping.dao.impl;
 
 import com.sharifpro.eurb.DaoFactory;
+import com.sharifpro.eurb.builder.dao.impl.ReportDatasetDaoImpl;
+import com.sharifpro.eurb.builder.model.ReportDesign;
 import com.sharifpro.eurb.management.mapping.dao.ColumnMappingDao;
 import com.sharifpro.eurb.management.mapping.exception.ColumnMappingDaoException;
 import com.sharifpro.eurb.management.mapping.model.ColumnMapping;
@@ -128,6 +130,35 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 		}
 		
 	}
+	
+	/** 
+	 * Returns all rows from the column_mapping table that match the criteria 'mapped name is not null'.
+	 */
+	@Transactional
+	public List<ColumnMapping> findAllMapped() throws ColumnMappingDaoException
+	{
+		try {
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.mapped_name IS NOT NULL ORDER BY o.id", this);
+		}
+		catch (Exception e) {
+			throw new ColumnMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+		
+	}
+	
+	
+	@Transactional
+	public List<ColumnMapping> findAllMapped(ReportDesign design) throws ColumnMappingDaoException
+	{
+		try {
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.mapped_name IS NOT NULL AND table_mapping_id IN " +
+					"(SELECT table_mapping_id FROM " + ReportDatasetDaoImpl.getTableName() + " WHERE design_id = ? and design_version_id = ?)  ORDER BY o.id", this, design.getId(), design.getVersionId());
+		}
+		catch (Exception e) {
+			throw new ColumnMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+		
+	}
 
 	/** 
 	 * Returns all rows from the column_mapping table that match the criteria 'id = :id'.
@@ -152,6 +183,21 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 	{
 		try {
 			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.table_mapping_id = ?", this,tableMappingId);
+		}
+		catch (Exception e) {
+			throw new ColumnMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+		
+	}
+	
+	/** 
+	 * Returns all rows from the column_mapping table that match the criteria 'table_mapping_id = :tableMappingId and mapped_name is not null'.
+	 */
+	@Transactional
+	public List<ColumnMapping> findMappedByTableMapping(Long tableMappingId) throws ColumnMappingDaoException
+	{
+		try {
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.table_mapping_id = ? AND o.mapped_name IS NOT NULL ", this,tableMappingId);
 		}
 		catch (Exception e) {
 			throw new ColumnMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -356,7 +402,30 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 			throw new ColumnMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 	}
+	
+	
+	@Transactional
+	public List<ColumnMapping> findAllMapped(TableMapping tbl, String query, List<String> onFields) throws ColumnMappingDaoException {
+		try {
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.table_mapping_id=? AND o.mapped_name IS NOT NULL AND (" + getMultipleFieldWhereClause(query, onFields) + ") ORDER BY o.col_order", this, tbl.getId());
+		}
+		catch (Exception e) {
+			throw new ColumnMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+	}
 
+	
+	@Transactional
+	public List<ColumnMapping> findAllMapped(String query, List<String> onFields) throws ColumnMappingDaoException {
+		try {
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.mapped_name IS NOT NULL AND (" + getMultipleFieldWhereClause(query, onFields) + ") ORDER BY o.col_order", this);
+		}
+		catch (Exception e) {
+			throw new ColumnMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+	}
+
+	
 	private String getMultipleFieldWhereClause(String txt,
 			List<String> fields) {
 		StringBuilder query = new StringBuilder();

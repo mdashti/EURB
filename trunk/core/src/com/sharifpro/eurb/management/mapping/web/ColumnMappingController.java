@@ -44,7 +44,7 @@ public class ColumnMappingController {
 	private DbConfigDao dbConfigDao;
 	private TableMappingDao tableMappingDao;
 	private ColumnMappingDao columnMappingDao;
-	
+
 	private JsonUtil jsonUtil;
 
 	@RequestMapping(value="/management/mapping/column/columnSearch.spy")
@@ -54,7 +54,7 @@ public class ColumnMappingController {
 			,@RequestParam(defaultValue="[]", required=false) String fields
 			,@RequestParam(defaultValue="columnName", required=false) final String sort
 			,@RequestParam(defaultValue=AbstractDAO.ASCENDING_SORT_ORDER, required=false) final String dir) throws Exception {
-		
+
 		try{
 			DbConfig dbConf = null;
 			TableMapping tbl = null;
@@ -132,11 +132,11 @@ public class ColumnMappingController {
 				} else {
 					columnMappings = columnMappingDao.findAll(tbl, query, onFields);
 				}
-	
+
 				final StringComparator strComp = new StringComparator();
 				final BooleanComparator boolComp = new BooleanComparator(true);
 				Collections.sort(columnMappings, new Comparator<ColumnMapping>() {
-	
+
 					@Override
 					public int compare(ColumnMapping thiz, ColumnMapping other) {
 						int coef = AbstractDAO.DESCENDING_SORT_ORDER.equals(dir) ? -1 : 1;
@@ -177,12 +177,90 @@ public class ColumnMappingController {
 		}
 	}
 
+/*	@RequestMapping(value="/management/mapping/column/mappedColumnSearch.spy")
+	public @ResponseBody Map<String,? extends Object> searchMapped(@RequestParam(required=false) Long table
+			,@RequestParam(defaultValue="", required=false) String query
+			,@RequestParam(defaultValue="[]", required=false) String fields
+			,@RequestParam(defaultValue="columnName", required=false) final String sort
+			,@RequestParam(defaultValue=AbstractDAO.ASCENDING_SORT_ORDER, required=false) final String dir) throws Exception {
+
+		try{
+			TableMapping tbl = null;
+
+			if(table != null){	
+				tbl = tableMappingDao.findByPrimaryKey(table);
+			}
+			List<ColumnMapping> columnMappings = new ArrayList<ColumnMapping>(0);
+
+			List<String> onFields = jsonUtil.getListFromRequest(fields, String.class);
+			if(StringUtils.isEmpty(query) || onFields == null || onFields.isEmpty()) {
+				if(tbl != null){
+					columnMappings = columnMappingDao.findMappedByTableMapping(tbl.getId());
+				}
+				else{
+					columnMappings = columnMappingDao.findAllMapped();
+				}
+				
+			} else {
+				if(tbl != null){
+					columnMappings = columnMappingDao.findAllMapped(tbl, query, onFields);
+				}
+				else{
+					columnMappings = columnMappingDao.findAllMapped(query, onFields);
+				}
+			}
+
+			final StringComparator strComp = new StringComparator();
+			final BooleanComparator boolComp = new BooleanComparator(true);
+			Collections.sort(columnMappings, new Comparator<ColumnMapping>() {
+
+				@Override
+				public int compare(ColumnMapping thiz, ColumnMapping other) {
+					int coef = AbstractDAO.DESCENDING_SORT_ORDER.equals(dir) ? -1 : 1;
+					if("colTypeName".equals(sort)) {
+						return coef * strComp.compare(thiz.getColTypeName(), other.getColTypeName());
+					} else if("columnName".equals(sort)) {
+						return coef * strComp.compare(thiz.getColumnName(), other.getColumnName());
+					} else if("formatPattern".equals(sort)) {
+						return coef * strComp.compare(thiz.getFormatPattern(), other.getFormatPattern());
+					} else if("mappedName".equals(sort)) {
+						return coef * strComp.compare(thiz.getMappedName(), other.getMappedName());
+					} else if("referencedIdCol".equals(sort)) {
+						return coef * strComp.compare(thiz.getReferencedIdCol(), other.getReferencedIdCol());
+					} else if("referencedTable".equals(sort)) {
+						return coef * strComp.compare(thiz.getReferencedTable(), other.getReferencedTable());
+					} else if("referencedValueCol".equals(sort)) {
+						return coef * strComp.compare(thiz.getReferencedValueCol(), other.getReferencedValueCol());
+					} else if("staticMapping".equals(sort)) {
+						return coef * strComp.compare(thiz.getStaticMapping(), other.getStaticMapping());
+					} else if("colDataType".equals(sort)) {
+						return coef * new Integer(thiz.getColDataType()).compareTo(other.getColDataType());
+					} else if("colOrder".equals(sort)) {
+						return coef * new Integer(thiz.getColOrder()).compareTo(other.getColOrder());
+					} else if("activeForManager".equals(sort)) {
+						return coef * boolComp.compare(thiz.isActiveForManager(), other.isActiveForManager());
+					} else if("activeForUser".equals(sort)) {
+						return coef * boolComp.compare(thiz.isActiveForUser(), other.isActiveForUser());
+					}
+					return 0;
+				}
+			});
+			return JsonUtil.getSuccessfulMap(columnMappings);
+
+		} catch (Exception e) {
+
+			return JsonUtil.getModelMapError(e.getMessage());
+		}
+	}*/
+	
+	
+
 	@RequestMapping(value="/management/mapping/column/columnStore.spy")
 	public @ResponseBody Map<String,? extends Object> store(@RequestParam Object data) throws Exception {
 		try{
 
 			List<ColumnMapping> columnMappings = jsonUtil.getListFromRequest(data, ColumnMapping.class);
-			
+
 			List<Long> insertIds = new ArrayList<Long>(columnMappings.size());
 			ColumnMappingPk pk;
 			for(ColumnMapping col : columnMappings) {
@@ -194,7 +272,7 @@ public class ColumnMappingController {
 				}
 				insertIds.add(pk.getId());
 			}
-			
+
 			return JsonUtil.getSuccessfulMapAfterStore(insertIds);
 
 		} catch (Exception e) {
@@ -202,7 +280,7 @@ public class ColumnMappingController {
 			return JsonUtil.getModelMapError(e.getMessage());
 		}
 	}
-	
+
 	@RequestMapping(value="/management/mapping/column/columnRemove.spy")
 	public @ResponseBody Map<String,? extends Object> delete(@RequestParam Object data) throws Exception {
 
@@ -213,7 +291,7 @@ public class ColumnMappingController {
 				pkList.add(new ColumnMappingPk(new Long(id)));
 			}
 			columnMappingDao.deleteAll(pkList);
-			
+
 			return JsonUtil.getSuccessfulMapAfterStore(deleteIds);
 
 		} catch (Exception e) {
@@ -221,7 +299,7 @@ public class ColumnMappingController {
 			return JsonUtil.getModelMapError(e.getMessage());
 		}
 	}
-	
+
 	@RequestMapping(value="/management/mapping/column/columnActivate.spy")
 	public @ResponseBody Map<String,? extends Object> activate(@RequestParam Object data, @RequestParam(required=true) String target) throws Exception {
 		try{
@@ -232,7 +310,7 @@ public class ColumnMappingController {
 				pkList.add(new ColumnMappingPk(new Long(id)));
 			}
 			columnMappingDao.activateAll(pkList, target);
-			
+
 			return JsonUtil.getSuccessfulMapAfterStore(activateIds);
 
 		} catch (Exception e) {
@@ -240,7 +318,7 @@ public class ColumnMappingController {
 			return JsonUtil.getModelMapError(e.getMessage());
 		}
 	}
-	
+
 	@RequestMapping(value="/management/mapping/column/columnDeactivate.spy")
 	public @ResponseBody Map<String,? extends Object> deactivate(@RequestParam Object data, @RequestParam(required=true) String target) throws Exception {
 		try{
@@ -257,7 +335,7 @@ public class ColumnMappingController {
 			return JsonUtil.getModelMapError(e.getMessage());
 		}
 	}
-	
+
 	@RequestMapping(value="/management/mapping/column/columnMove.spy")
 	public @ResponseBody Map<String,? extends Object> move(@RequestParam(required=true) Long id, @RequestParam(required=true) Boolean isUpDir) throws Exception {
 		try{
@@ -309,7 +387,7 @@ public class ColumnMappingController {
 			mv.addObject("dbconfig", selectedDbConfig.getId()+"");
 		}
 		mv.addObject("dbConfigComboContent", jsonUtil.getJSONFromObject(dbConfArr));
-		
+
 		if(selectedDbConfig != null) {
 			List<TableMapping> tableList = tableMappingDao.findAll(selectedDbConfig);
 			TableMapping selectedTable = null;
@@ -354,7 +432,7 @@ public class ColumnMappingController {
 	public void setDbConfigDao(DbConfigDao dbConfigDao) {
 		this.dbConfigDao = dbConfigDao;
 	}
-	
+
 	@Autowired
 	public void setJsonUtil(JsonUtil jsonUtil) {
 		this.jsonUtil = jsonUtil;

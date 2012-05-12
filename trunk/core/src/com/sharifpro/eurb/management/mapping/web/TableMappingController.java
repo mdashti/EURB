@@ -40,7 +40,7 @@ public class TableMappingController {
 
 	private DbConfigDao dbConfigDao;
 	private TableMappingDao tableMappingDao;
-	
+
 	private JsonUtil jsonUtil;
 
 	@RequestMapping(value="/management/mapping/table/tableSearch.spy")
@@ -49,7 +49,7 @@ public class TableMappingController {
 			,@RequestParam(defaultValue="[]", required=false) String fields
 			,@RequestParam(defaultValue="tableName", required=false) final String sort
 			,@RequestParam(defaultValue=AbstractDAO.ASCENDING_SORT_ORDER, required=false) final String dir) throws Exception {
-		
+
 		try{
 			DbConfig dbConf = null;
 			if(dbconfig == null) {
@@ -79,7 +79,7 @@ public class TableMappingController {
 								tableMappings.add(new TableMapping(dbConf.getId(), tbl.getCatalogName(), tbl.getSchemaName(), tbl.getSimpleName(), TableMapping.MAPPED_TYPE_TABLE));
 							}
 						}
-						
+
 						ITableInfo[] views = dbConf.getViews(conn);
 						for(ITableInfo v : views) {
 							if(!tableMappings.contains(v)) {
@@ -96,11 +96,11 @@ public class TableMappingController {
 				} else {
 					tableMappings = tableMappingDao.findAll(dbConf, query, onFields);
 				}
-	
+
 				final StringComparator strComp = new StringComparator();
 				final BooleanComparator boolComp = new BooleanComparator(true);
 				Collections.sort(tableMappings, new Comparator<TableMapping>() {
-	
+
 					@Override
 					public int compare(TableMapping thiz, TableMapping other) {
 						int coef = AbstractDAO.DESCENDING_SORT_ORDER.equals(dir) ? -1 : 1;
@@ -131,12 +131,79 @@ public class TableMappingController {
 		}
 	}
 
+
+/*
+	@RequestMapping(value="/management/mapping/table/mappedTableSearch.spy")
+	public @ResponseBody Map<String,? extends Object> searchMapped(@RequestParam(required=false) Long dbconfig
+			,@RequestParam(defaultValue="", required=false) String query
+			,@RequestParam(defaultValue="[]", required=false) String fields
+			,@RequestParam(defaultValue="tableName", required=false) final String sort
+			,@RequestParam(defaultValue=AbstractDAO.ASCENDING_SORT_ORDER, required=false) final String dir) throws Exception {
+
+		try{
+			DbConfig dbConf = null;
+			if(dbconfig != null) {
+				dbConf = dbConfigDao.findByPrimaryKey(dbconfig);
+			}
+			List<TableMapping> tableMappings = new ArrayList<TableMapping>(0);
+
+			List<String> onFields = jsonUtil.getListFromRequest(fields, String.class);
+			if(StringUtils.isEmpty(query) || onFields == null || onFields.isEmpty()) {
+				if(dbConf != null){
+					tableMappings = tableMappingDao.findAllMapped(dbConf);
+				}
+				else{
+					tableMappings = tableMappingDao.findAllMapped();
+				}
+
+			} else {
+				if(dbConf != null){
+					tableMappings = tableMappingDao.findAllMapped(dbConf, query, onFields);
+				}
+				else{
+					tableMappings = tableMappingDao.findAll(query, onFields);
+				}
+			}
+
+			final StringComparator strComp = new StringComparator();
+			final BooleanComparator boolComp = new BooleanComparator(true);
+			Collections.sort(tableMappings, new Comparator<TableMapping>() {
+
+				@Override
+				public int compare(TableMapping thiz, TableMapping other) {
+					int coef = AbstractDAO.DESCENDING_SORT_ORDER.equals(dir) ? -1 : 1;
+					if("tableName".equals(sort)) {
+						return coef * strComp.compare(thiz.getTableName(), other.getTableName());
+					} else if("catalog".equals(sort)) {
+						return coef * strComp.compare(thiz.getCatalog(), other.getCatalog());
+					} else if("schema".equals(sort)) {
+						return coef * strComp.compare(thiz.getSchema(), other.getSchema());
+					} else if("mappedName".equals(sort)) {
+						return coef * strComp.compare(thiz.getMappedName(), other.getMappedName());
+					} else if("mappedTypeName".equals(sort)) {
+						return coef * strComp.compare(thiz.getMappedTypeName(), other.getMappedTypeName());
+					} else if("activeForManager".equals(sort)) {
+						return coef * boolComp.compare(thiz.isActiveForManager(), other.isActiveForManager());
+					} else if("activeForUser".equals(sort)) {
+						return coef * boolComp.compare(thiz.isActiveForUser(), other.isActiveForUser());
+					}
+					return 0;
+				}
+			});
+			return JsonUtil.getSuccessfulMap(tableMappings);
+
+		} catch (Exception e) {
+
+			return JsonUtil.getModelMapError(e.getMessage());
+		}
+	}*/
+
 	@RequestMapping(value="/management/mapping/table/tableStore.spy")
 	public @ResponseBody Map<String,? extends Object> store(@RequestParam Object data) throws Exception {
 		try{
 
 			List<TableMapping> tableMappings = jsonUtil.getListFromRequest(data, TableMapping.class);
-			
+
 			List<Long> insertIds = new ArrayList<Long>(tableMappings.size());
 			TableMappingPk pk;
 			for(TableMapping tbl : tableMappings) {
@@ -148,7 +215,7 @@ public class TableMappingController {
 				}
 				insertIds.add(pk.getId());
 			}
-			
+
 			return JsonUtil.getSuccessfulMapAfterStore(insertIds);
 
 		} catch (Exception e) {
@@ -156,7 +223,7 @@ public class TableMappingController {
 			return JsonUtil.getModelMapError(e.getMessage());
 		}
 	}
-	
+
 	@RequestMapping(value="/management/mapping/table/tableRemove.spy")
 	public @ResponseBody Map<String,? extends Object> delete(@RequestParam Object data) throws Exception {
 
@@ -167,7 +234,7 @@ public class TableMappingController {
 				pkList.add(new TableMappingPk(new Long(id)));
 			}
 			tableMappingDao.deleteAll(pkList);
-			
+
 			return JsonUtil.getSuccessfulMapAfterStore(deleteIds);
 
 		} catch (Exception e) {
@@ -175,7 +242,7 @@ public class TableMappingController {
 			return JsonUtil.getModelMapError(e.getMessage());
 		}
 	}
-	
+
 	@RequestMapping(value="/management/mapping/table/tableActivate.spy")
 	public @ResponseBody Map<String,? extends Object> activate(@RequestParam Object data, @RequestParam(required=true) String target) throws Exception {
 		try{
@@ -186,7 +253,7 @@ public class TableMappingController {
 				pkList.add(new TableMappingPk(new Long(id)));
 			}
 			tableMappingDao.activateAll(pkList, target);
-			
+
 			return JsonUtil.getSuccessfulMapAfterStore(activateIds);
 
 		} catch (Exception e) {
@@ -194,7 +261,7 @@ public class TableMappingController {
 			return JsonUtil.getModelMapError(e.getMessage());
 		}
 	}
-	
+
 	@RequestMapping(value="/management/mapping/table/tableDeactivate.spy")
 	public @ResponseBody Map<String,? extends Object> deactivate(@RequestParam Object data, @RequestParam(required=true) String target) throws Exception {
 		try{
@@ -205,7 +272,7 @@ public class TableMappingController {
 				pkList.add(new TableMappingPk(new Long(id)));
 			}
 			tableMappingDao.deactivateAll(pkList, target);
-			
+
 			return JsonUtil.getSuccessfulMapAfterStore(deactivateIds);
 
 		} catch (Exception e) {
@@ -218,7 +285,7 @@ public class TableMappingController {
 	public ModelAndView executeTableSpy() throws Exception {
 		return executeTableSpy(null);
 	}
-	
+
 	@RequestMapping(value="/management/mapping/db{dbconfig}-table.spy")
 	public ModelAndView executeTableSpy(@PathVariable String dbconfig) throws Exception {
 		ModelAndView mv = new ModelAndView();
@@ -239,12 +306,12 @@ public class TableMappingController {
 	public void setTableMappingDao(TableMappingDao tableMappingDao) {
 		this.tableMappingDao = tableMappingDao;
 	}
-	
+
 	@Autowired
 	public void setDbConfigDao(DbConfigDao dbConfigDao) {
 		this.dbConfigDao = dbConfigDao;
 	}
-	
+
 	@Autowired
 	public void setJsonUtil(JsonUtil jsonUtil) {
 		this.jsonUtil = jsonUtil;

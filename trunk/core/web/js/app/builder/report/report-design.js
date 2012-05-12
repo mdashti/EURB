@@ -1,45 +1,23 @@
-EURB.ReportDesign.tablesStore = new Ext.data.Store({
-	reader:new Ext.data.JsonReader({
-		 id:'id'
-		,totalProperty:'totalCount'
-		,root:'data'
-		,fields:[
-		     {name:'id', type:'int'}
-			,{name:'dbConfigId', type:'int'}
-			,{name:'mappedName', type:'string'}
-			,{name:'mappedTypeName', type:'string'}
-		]
-	})
-	,proxy:new Ext.data.HttpProxy({
-		url:EURB.ReportDesign.tablesListAction
-        ,listeners: {
-        	'exception' : EURB.proxyExceptionHandler
-        }
-    })
-	//,baseParams:{}
-	,remoteSort:true
-});
-
-EURB.ReportDesign.tablesCombo = new Ext.form.ComboBox({
-    typeAhead: true,
-    triggerAction: 'all',
-    lazyRender:true,
-    store: EURB.ReportDesign.tablesStore,
-    forceSelection: true,
-    valueField: 'id',
-    displayField: 'mappedName',
-    listeners: {
-    	'select' : function(thiz, newValue, oldValue) {
-    		alert(newValue + ':' + oldValue);
-    	}
-    }
-});
-
-
-// register xtype
-//Ext.reg('report.Grid', EURB.Report.Grid);
+EURB.ReportDataset.reportDatasetGrid = new EURB.ReportDataset.DatasetGrid();
+EURB.ReportColumn.reportColumnGrid = new EURB.ReportColumn.ColumnGrid();
 // application main entry point
 Ext.onReady(function() {
-	EURB.mainPanel.items.add(EURB.ReportDesign.tablesCombo);
-    EURB.mainPanel.doLayout(); 
+	EURB.ReportDesign.panel = new Ext.Panel({
+            layout: 'border',
+            border: false,
+            width: '100%',
+            items: [{
+                region: 'east',
+                width: '30%',
+                split: true,
+                items: [EURB.ReportDataset.reportDatasetGrid]
+            },{
+                region: 'center',
+                width: '70%',
+                split: true,
+                items: [EURB.ReportColumn.reportColumnGrid]
+            }]
+	});
+	EURB.mainPanel.items.add(EURB.ReportDesign.panel);
+    EURB.mainPanel.doLayout();
 });

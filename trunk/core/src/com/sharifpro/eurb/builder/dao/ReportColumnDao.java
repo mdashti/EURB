@@ -4,6 +4,8 @@ import com.sharifpro.eurb.builder.dao.ReportColumnDao;
 import com.sharifpro.eurb.builder.exception.ReportColumnDaoException;
 import com.sharifpro.eurb.builder.model.ReportColumn;
 import com.sharifpro.eurb.builder.model.ReportColumnPk;
+import com.sharifpro.eurb.builder.model.ReportDesign;
+
 import java.util.List;
 
 public interface ReportColumnDao
@@ -14,7 +16,7 @@ public interface ReportColumnDao
 	 * @param dto
 	 * @return ReportColumnPk
 	 */
-	public ReportColumnPk insert(ReportColumn dto);
+	public ReportColumnPk insert(ReportColumn dto) throws ReportColumnDaoException;
 
 	/** 
 	 * Updates a single row in the report_column table.
@@ -25,6 +27,11 @@ public interface ReportColumnDao
 	 * Deletes a single row in the report_column table.
 	 */
 	public void delete(ReportColumnPk pk) throws ReportColumnDaoException;
+	
+	/** 
+	 * Deletes all the given rows in the report_column table.
+	 */
+	public void deleteAll(List<ReportColumnPk> pkList) throws ReportColumnDaoException;
 
 	/** 
 	 * Returns all rows from the report_column table that match the criteria 'id = :id AND dataset_id = :datasetId AND design_id = :designId AND design_version_id = :designVersionId'.
@@ -35,6 +42,16 @@ public interface ReportColumnDao
 	 * Returns all rows from the report_column table that match the criteria ''.
 	 */
 	public List<ReportColumn> findAll() throws ReportColumnDaoException;
+	
+	/** 
+	 * Returns all rows from the report_column table that match the criteria 'design_id = :design.getId()'.
+	 */
+	public List<ReportColumn> findAll(ReportDesign design) throws ReportColumnDaoException;
+	
+	/** 
+	 * Counts all rows from the report_column table that match the criteria 'design_id = :design.getId()'.
+	 */
+	public int countAll(ReportDesign design) throws ReportColumnDaoException;
 
 	/** 
 	 * Returns all rows from the report_column table that match the criteria 'id = :id'.

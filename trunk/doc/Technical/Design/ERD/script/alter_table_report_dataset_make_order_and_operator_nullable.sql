@@ -1,0 +1,1 @@
+ALTER TABLE `eurb`.`report_dataset` CHANGE COLUMN `ds_order` `ds_order` INT(10) UNSIGNED NULL DEFAULT 1  , CHANGE COLUMN `operator` `operator` INT(10) UNSIGNED NULL DEFAULT '0'  ;

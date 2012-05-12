@@ -1,44 +1,44 @@
-EURB.ReportCategory.store = new Ext.data.Store({
+
+////////////////////////////data set grid/////////////////////////////////////
+
+EURB.ReportDataset.store = new Ext.data.Store({
 	reader:new Ext.data.JsonReader({
 		 id:'id'
 		,totalProperty:'totalCount'
 		,root:'data'
 		,fields:[
 			 {name:'id', type:'int'}
-			,{name:'name', type:'string'}
-			,{name:'description', type:'string'}
+			,{name:'designId', type:'int'}
+			,{name:'designVersionId', type:'int'}
+			,{name:'tableMappingId', type:'int'}
+			,{name:'dsOrder', type:'int'}
 		]
 	})
 	,proxy:new Ext.data.HttpProxy({
-		url:EURB.ReportCategory.searchAction
+		url:EURB.ReportDataset.searchAction
         ,listeners: {
-        	'exception' : function(proxy, type, action, options, res) {
-    	    	Ext.Msg.show({
-    	    		title: 'ERROR',
-    	    		msg: Ext.util.JSON.decode(res.responseText).message,
-    	    		icon: Ext.MessageBox.ERROR,
-    	    		buttons: Ext.Msg.OK
-    	    	});
-    	    }
+        	'exception' : EURB.proxyExceptionHandler
         }
     })
-	//,baseParams:{}
+	,baseParams:{
+		reportDesign: EURB.ReportDesign.selectedDesign,
+		reportVersion: EURB.ReportDesign.selectedVersion
+	}
 	,remoteSort:true
 });
 
-EURB.ReportCategory.cols = [{
-	 header:'Name'
-	,id:'name'
-	,dataIndex:'name'
+EURB.ReportDataset.cols = [{
+	 header:EURB.ReportDataset.Table
+	,id:'tableMappingId'
+	,dataIndex:'tableMappingId'
 	,width:50
 	,sortable:true
-	,editor:new Ext.form.TextField({
-		allowBlank:false
-	})
+	,editor:EURB.ReportDataset.tableCombo
+	,renderer:EURB.ReportDesign.comboRenderer(EURB.ReportDataset.tableCombo)
 },{
-	 header:'Description'
-	,id:'description'
-	,dataIndex:'description'
+	 header:EURB.ReportDataset.Order
+	,id:'dsOrder'
+	,dataIndex:'dsOrder'
 	,width:100
 	,sortable:true
 	,editor:new Ext.form.TextField({
@@ -46,34 +46,32 @@ EURB.ReportCategory.cols = [{
 	})
 }];
 
-EURB.ReportCategory.CategoryGrid = Ext.extend(Ext.grid.GridPanel, {
+EURB.ReportDataset.DatasetGrid = Ext.extend(Ext.grid.GridPanel, {
 	// defaults - can be changed from outside
-	 layout:'fit'
+	 width: '100%'
+	,height: 300
 	,border:true
 	,stateful:false
 	,idName:'id'
-	,title: EURB.appMenu.category
+	,title: EURB.ReportDataset.title
 	,initComponent:function() {
         this.recordForm = new Ext.ux.grid.RecordForm({
-             title:EURB.addEdit+' '+EURB.appMenu.category
+             title:EURB.addEdit+' '+ EURB.ReportDataset.title
             ,iconCls:'icon-edit-record'
             ,columnCount:1
-            ,ignoreFields:{id:true}
-            //,readonlyFields:{password:true}
-            //,disabledFields:{name:true}
+            ,ignoreFields:{id:true,designId:true,designVersionId:true}
             ,formConfig:{
                  labelWidth:80
                 ,buttonAlign:'right'
                 ,bodyStyle:'padding-top:10px'
             }
             ,afterUpdateRecord: function(rec) {
-            	EURB.ReportCategory.reportCategoryGrid.commitChanges();
+            	EURB.ReportDataset.reportDatasetGrid.commitChanges();
             }
-            , getRowClass:function(record) {
+            ,getRowClass:function(record) {
 				if(record.get('newRecord')) {
 					return this.newRowCls;
-				}
-				
+				}				
 			}
         });
 
@@ -86,21 +84,18 @@ EURB.ReportCategory.CategoryGrid = Ext.extend(Ext.grid.GridPanel, {
 			},{
                  iconCls:'icon-edit-record'
                 ,qtip:EURB.editRecord
-            },{
-                 iconCls:'icon-copy'
-                ,qtip:EURB.copyRecord
             }]
             ,widthIntercept:Ext.isSafari ? 4 : 2
             ,id:'actions'
             ,getEditor:Ext.emptyFn
 		});
 		this.rowActions.on('action', this.onRowAction, this);
-		EURB.ReportCategory.cols.push(this.rowActions);
+		EURB.ReportDataset.cols.push(this.rowActions);
 		
 		// hard coded - cannot be changed from outside
 		var config = {
-			store: EURB.ReportCategory.store
-			,columns:EURB.ReportCategory.cols
+			store: EURB.ReportDataset.store
+			,columns:EURB.ReportDataset.cols
 			,plugins:[new Ext.ux.grid.Search({
 				iconCls:'icon-zoom'
 				//,readonlyIndexes:['name']
@@ -138,18 +133,18 @@ EURB.ReportCategory.CategoryGrid = Ext.extend(Ext.grid.GridPanel, {
 		});
 
 		// call parent
-		EURB.ReportCategory.CategoryGrid.superclass.initComponent.apply(this, arguments);
+		EURB.ReportDataset.DatasetGrid.superclass.initComponent.apply(this, arguments);
 	}
 	,onRender:function() {
 		// call parent
-		EURB.ReportCategory.CategoryGrid.superclass.onRender.apply(this, arguments);
+		EURB.ReportDataset.DatasetGrid.superclass.onRender.apply(this, arguments);
 
 		// load store
 		this.store.load();
 
 	}
 	,afterRender:function() {
-		EURB.ReportCategory.CategoryGrid.superclass.afterRender.apply(this, arguments);
+		EURB.ReportDataset.DatasetGrid.superclass.afterRender.apply(this, arguments);
 	}
 	,addRecord:function() {
         var store = this.store;
@@ -175,9 +170,6 @@ EURB.ReportCategory.CategoryGrid = Ext.extend(Ext.grid.GridPanel, {
                 this.recordForm.show(record, grid.getView().getCell(row, col));
             break;
 
-            case 'icon-copy':
-                this.copyRecord(record);
-            break;
         }
     }
 	,commitChanges:function() {
@@ -190,13 +182,15 @@ EURB.ReportCategory.CategoryGrid = Ext.extend(Ext.grid.GridPanel, {
 			data.push(r.data);
 		}, this);
 		var o = {
-			 url:EURB.ReportCategory.storeAction
+			 url:EURB.ReportDataset.storeAction
 			,method:'post'
 			,callback:this.requestCallback
 			,scope:this
 			,params:{
 				cmd: 'storeData',
-				data:Ext.encode(data)
+				data:Ext.encode(data),
+				reportDesign : EURB.ReportDesign.selectedDesign,
+				reportVersion: EURB.ReportDesign.selectedVersion
 			}
 		};
 		Ext.Ajax.request(o);
@@ -217,7 +211,8 @@ EURB.ReportCategory.CategoryGrid = Ext.extend(Ext.grid.GridPanel, {
 			this.showError(o.error || EURB.unknownError);
 			return;
 		}
-
+		
+		updateReportColumnComboContent();
 		switch(options.params.cmd) {
 			default:
 				this.store.commitChanges();
@@ -227,25 +222,6 @@ EURB.ReportCategory.CategoryGrid = Ext.extend(Ext.grid.GridPanel, {
 		}
 	}
 	,showError:EURB.showError
-	,copyRecord: function(record) {
-		var store = this.store;
-        if(store.recordType) {
-            var rec = new store.recordType({newRecord:true});
-            rec.fields.each(function(f) {
-            	if(f.name != this.idName && f.name != "name") {
-                	rec.data[f.name] = record.data[f.name];
-            	} else {
-            		rec.data[f.name] = '';
-            	}
-            });
-            store.add(rec);
-            this.onRowAction(this, rec, 'icon-edit-record', 0, 0);
-            //this.bbar.pageSize++;
-            this.bbar.doLayout();
-            return rec;
-        }
-        return false;
-	}
 	,deleteRecord:function(record) {
 		this.getSelectionModel().selectRecords([record]);
 		this.deleteSelectedRecords();
@@ -271,7 +247,7 @@ EURB.ReportCategory.CategoryGrid = Ext.extend(Ext.grid.GridPanel, {
 					data.push(r.get(this.idName));
 				}, this);
 				var o = {
-					 url:EURB.ReportCategory.removeAction
+					 url:EURB.ReportDataset.removeAction
 					,method:'post'
 					,callback:this.requestCallback
 					,scope:this
@@ -296,9 +272,3 @@ EURB.ReportCategory.CategoryGrid = Ext.extend(Ext.grid.GridPanel, {
 
 });
 
-EURB.ReportCategory.reportCategoryGrid = new EURB.ReportCategory.CategoryGrid();
-// application main entry point
-Ext.onReady(function() {
-	EURB.mainPanel.items.add(EURB.ReportCategory.reportCategoryGrid);
-    EURB.mainPanel.doLayout(); 
-});

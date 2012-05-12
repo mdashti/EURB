@@ -14,7 +14,7 @@
 			<jsp:param value="${baseUrl}" name="baseUrl"/>
 		</jsp:include>
 		<!-- App custom css -->
-		<link rel="stylesheet" type="text/css" href="${resourcesUrl}/css/app/builder/category/report-category.css" />
+		<link rel="stylesheet" type="text/css" href="${resourcesUrl}/css/app/builder/report/report-design.css" />
 		
 	</head>
 	<body scroll="no" id="docs" style="direction: rtl">
@@ -22,13 +22,5 @@
 			<jsp:param value="${resourcesUrl}" name="resourcesUrl"/>
 			<jsp:param value="${baseUrl}" name="baseUrl"/>
 		</jsp:include>
-		<!-- App js -->
-		<script type="text/javascript">
-			EURB.ReportCategory = {};
-			EURB.ReportCategory.searchAction = '<spring:url value="/builder/category/reportCategorySearch.spy" />';
-			EURB.ReportCategory.storeAction = '<spring:url value="/builder/category/reportCategoryStore.spy" />';
-			EURB.ReportCategory.removeAction = '<spring:url value="/builder/category/reportCategoryRemove.spy" />';
-		</script>
-		<script src="${resourcesUrl}/js/app/builder/category/report-category.js"></script>
 	</body>
 </html>

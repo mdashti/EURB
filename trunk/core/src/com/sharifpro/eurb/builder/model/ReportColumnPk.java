@@ -90,6 +90,17 @@ public class ReportColumnPk extends PersistableObjectPk implements Serializable
 		this.designId = designId;
 		this.designVersionId = designVersionId;
 	}
+	
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param id
+	 */
+	public ReportColumnPk(final Long id){
+		super(id);
+	}
+	
 
 	/**
 	 * Method 'equals'

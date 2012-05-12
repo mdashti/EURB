@@ -125,6 +125,22 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 		
 	}
 	
+	
+	/** 
+	 * Returns all rows from the table_mapping table that match the criteria 'mapped name is not null'.
+	 */
+	@Transactional
+	public List<TableMapping> findAllMapped() throws TableMappingDaoException
+	{
+		try {
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.mapped_name IS NOT NULL ORDER BY id", this);
+		}
+		catch (Exception e) {
+			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+		
+	}
+	
 	@Transactional
 	public int countAll() throws TableMappingDaoException
 	{
@@ -145,6 +161,18 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	{
 		try {
 			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE (" + getMultipleFieldWhereClause(query, onFields) + ") ", this);
+		}
+		catch (Exception e) {
+			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+
+	}
+	
+	@Transactional
+	public List<TableMapping> findAllMapped(String query, List<String> onFields) throws TableMappingDaoException
+	{
+		try {
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE (" + getMultipleFieldWhereClause(query, onFields) + ") AND o.mapped_name IS NOT NULL ", this);
 		}
 		catch (Exception e) {
 			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -356,6 +384,27 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<TableMapping> findAll(DbConfig dbConf, String query, List<String> onFields) throws TableMappingDaoException {
 		try {
 			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.db_config_id=? AND (" + getMultipleFieldWhereClause(query, onFields) + ") ORDER BY o.id", this, dbConf.getId());
+		}
+		catch (Exception e) {
+			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+	}
+	
+	@Transactional
+	public List<TableMapping> findAllMapped(DbConfig dbConf, String query, List<String> onFields) throws TableMappingDaoException {
+		try {
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.db_config_id=? AND (" + getMultipleFieldWhereClause(query, onFields) + ") AND o.mapped_name IS NOT NULL ORDER BY o.id", this, dbConf.getId());
+		}
+		catch (Exception e) {
+			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+	}
+	
+	@Transactional
+	public List<TableMapping> findAllMapped(DbConfig dbConf)
+			throws TableMappingDaoException {
+		try {
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.db_config_id=? AND o.mapped_name IS NOT NULL ORDER BY o.id", this, dbConf.getId());
 		}
 		catch (Exception e) {
 			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);

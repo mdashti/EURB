@@ -55,6 +55,15 @@ public class ReportDatasetPk extends PersistableObjectPk implements Serializable
 	{
 		super();
 	}
+	
+	/**
+	 * Method 'ReportDatasetPk'
+	 * 
+	 * @param id
+	 */
+	public ReportDatasetPk(final Long id){
+		super(id);
+	}
 
 	/**
 	 * Method 'ReportDatasetPk'

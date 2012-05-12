@@ -39,6 +39,11 @@ public interface TableMappingDao
 	public List<TableMapping> findAll() throws TableMappingDaoException;
 	
 	/** 
+	 * Returns all rows from the table_mapping table that match the criteria 'mapped name is not null'.
+	 */
+	public List<TableMapping> findAllMapped() throws TableMappingDaoException;
+	
+	/** 
 	 * Counts all rows from the table_mapping table that match the criteria ''.
 	 */
 	public int countAll() throws TableMappingDaoException;
@@ -47,6 +52,12 @@ public interface TableMappingDao
 	 * Returns all rows from the table_mapping table that match the like query in onFields fields.
 	 */
 	public List<TableMapping> findAll(String query, List<String> onFields) throws TableMappingDaoException;
+
+	
+	/** 
+	 * Returns all rows from the table_mapping table that match the like query in onFields fields.
+	 */
+	public List<TableMapping> findAllMapped(String query, List<String> onFields) throws TableMappingDaoException;
 
 	/** 
 	 * Counts all rows from the table_mapping table that match the like query in onFields fields.
@@ -113,5 +124,9 @@ public interface TableMappingDao
 	public List<TableMapping> findAll(DbConfig dbConf, String query, List<String> onFields) throws TableMappingDaoException;
 
 	public List<TableMapping> findAll(DbConfig dbConf) throws TableMappingDaoException;
+	
+	public List<TableMapping> findAllMapped(DbConfig dbConf) throws TableMappingDaoException;
+	
+	public List<TableMapping> findAllMapped(DbConfig dbConf, String query, List<String> onFields) throws TableMappingDaoException;
 
 }

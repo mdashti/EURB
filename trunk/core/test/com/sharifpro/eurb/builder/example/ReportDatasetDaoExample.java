@@ -74,7 +74,7 @@ public class ReportDatasetDaoExample
 	public static void findByReportDesign(Long baseReportId, Long baseReportVersionId) throws Exception
 	{
 		ReportDatasetDao dao = DaoFactory.createReportDatasetDao();
-		List<ReportDataset> _result = dao.findByReportDesign(baseReportId, baseReportVersionId);
+		List<ReportDataset> _result = dao.findByBaseReportDesign(baseReportId, baseReportVersionId);
 		for (ReportDataset dto : _result) {
 			display(dto);
 		}
@@ -91,7 +91,7 @@ public class ReportDatasetDaoExample
 	public static void findByReportDesign2(Long designId, Long designVersionId) throws Exception
 	{
 		ReportDatasetDao dao = DaoFactory.createReportDatasetDao();
-		List<ReportDataset> _result = dao.findByReportDesign2(designId, designVersionId);
+		List<ReportDataset> _result = dao.findByReportDesign(designId, designVersionId);
 		for (ReportDataset dto : _result) {
 			display(dto);
 		}

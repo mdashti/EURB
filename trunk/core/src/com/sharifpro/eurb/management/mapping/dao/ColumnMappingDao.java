@@ -1,5 +1,6 @@
 package com.sharifpro.eurb.management.mapping.dao;
 
+import com.sharifpro.eurb.builder.model.ReportDesign;
 import com.sharifpro.eurb.management.mapping.dao.ColumnMappingDao;
 import com.sharifpro.eurb.management.mapping.exception.ColumnMappingDaoException;
 import com.sharifpro.eurb.management.mapping.model.ColumnMapping;
@@ -37,6 +38,13 @@ public interface ColumnMappingDao
 	 * Returns all rows from the column_mapping table that match the criteria ''.
 	 */
 	public List<ColumnMapping> findAll() throws ColumnMappingDaoException;
+	
+	/** 
+	 * Returns all rows from the column_mapping table that match the criteria 'mapped name is not null'.
+	 */
+	public List<ColumnMapping> findAllMapped() throws ColumnMappingDaoException;
+	
+	public List<ColumnMapping> findAllMapped(ReportDesign design) throws ColumnMappingDaoException;
 
 	/** 
 	 * Returns all rows from the column_mapping table that match the criteria 'id = :id'.
@@ -47,6 +55,12 @@ public interface ColumnMappingDao
 	 * Returns all rows from the column_mapping table that match the criteria 'table_mapping_id = :tableMappingId'.
 	 */
 	public List<ColumnMapping> findByTableMapping(Long tableMappingId) throws ColumnMappingDaoException;
+
+	
+	/** 
+	 * Returns all rows from the column_mapping table that match the criteria 'table_mapping_id = :tableMappingId and mapped name is not null'.
+	 */
+	public List<ColumnMapping> findMappedByTableMapping(Long tableMappingId) throws ColumnMappingDaoException;
 
 	/** 
 	 * Returns all rows from the column_mapping table that match the criteria 'id = :id'.
@@ -109,6 +123,10 @@ public interface ColumnMappingDao
 	public ColumnMapping findByPrimaryKey(ColumnMappingPk pk) throws ColumnMappingDaoException;
 
 	public List<ColumnMapping> findAll(TableMapping tbl, String query, List<String> onFields) throws ColumnMappingDaoException;
+	
+	public List<ColumnMapping> findAllMapped(TableMapping tbl, String query, List<String> onFields) throws ColumnMappingDaoException;
+	
+	public List<ColumnMapping> findAllMapped(String query, List<String> onFields) throws ColumnMappingDaoException;
 
 	public void deleteAll(List<ColumnMappingPk> pkList) throws ColumnMappingDaoException;
 

@@ -63,7 +63,7 @@ public class ReportCategoryController {
 
 			List<ReportCategory> reportCategories = jsonUtil.getListFromRequest(data, ReportCategory.class);
 			
-			List<Object[]> insertIds = new ArrayList<Object[]>(reportCategories.size());
+			List<Long> insertIds = new ArrayList<Long>(reportCategories.size());
 			ReportCategoryPk pk;
 			for(ReportCategory reportCategory : reportCategories) {
 				if(reportCategory.isNewRecord()) {
@@ -72,6 +72,7 @@ public class ReportCategoryController {
 					pk = reportCategory.createPk();
 					reportCategoryDao.update(pk,reportCategory);
 				}
+				insertIds.add(pk.getId());
 			}
 			
 			return JsonUtil.getSuccessfulMapAfterStore(insertIds);
