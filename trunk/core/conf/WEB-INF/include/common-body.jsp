@@ -172,12 +172,12 @@
 		    	'<li><a href="<spring:url value="/management/mapping/dbconfig.spy" />">'+EURB.appMenu.dbConfig+'</a></li>'+
 		    	'<li><a href="<spring:url value="/management/mapping/db-table.spy" />">'+EURB.appMenu.table+'</a></li>'+
 		    	'<li><a href="<spring:url value="/management/mapping/db-table-column.spy" />">'+EURB.appMenu.column+'</a></li>'+
+		    	'<li><a href="'+EURB.baseURL+'builder/category/category.spy">'+EURB.appMenu.category+'</a></li>'+
 		    	'<li><a href="<spring:url value="/management/security/user.spy" />">'+EURB.appMenu.user+'</a></li>'+
 		    	'</ul>'+
 		    	'<h3 class="headerbar"><a href="'+EURB.baseURL+'"><spring:message code="eurb.app.menu.reportbuilder" /></a></h3>'+
 		    	'<ul class="submenu">'+
 		    	/*'<li><a href="'+EURB.baseURL+'" ><spring:message code="eurb.app.menu.reportbuilder.reports" /></a></li>'+*/
-		    	'<li><a href="'+EURB.baseURL+'builder/category/category.spy">'+EURB.appMenu.category+'</a></li>'+
 		    	'<li><a href="'+EURB.baseURL+'builder/report/report-list.spy">'+EURB.appMenu.report+'</a></li>'+
 		    	'<li><a href="'+EURB.baseURL+'builder/report/show-report.jsp">'+EURB.appMenu.showReport+'</a></li>'+
 		    	'</ul>'+
