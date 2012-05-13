@@ -35,7 +35,9 @@
 	</bean>
 
 	<bean class="org.springframework.security.authentication.encoding.ShaPasswordEncoder" id="passwordEncoder"/>
-             
+    
+	<!--security:debug /-->
+	
 	<security:authentication-manager id="authManager">
 		<security:authentication-provider user-service-ref="userDetailsService">
 			<security:password-encoder ref="passwordEncoder"> 
@@ -43,6 +45,23 @@
 			</security:password-encoder>
 		</security:authentication-provider>
 	</security:authentication-manager>
+
+	<security:http pattern="/resources-#{applicationProps['application.version']}/**" security="none" />
+	<security:http auto-config="false" entry-point-ref="authenticationEntryPoint" authentication-manager-ref="authManager">
+		<security:intercept-url pattern="/login.spy*" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+		<security:intercept-url pattern="/**" access="ROLE_MAPPING_MANAGEMENT" />
+		<security:custom-filter position="FORM_LOGIN_FILTER" ref="authenticationProcessingFilter"/>
+		<security:logout logout-url="/logout.spy" logout-success-url="/login.spy"/>
+	</security:http>
+	
+	<bean id="authenticationProcessingFilter" class="com.sharifpro.filter.AuthenticationProcessingFilter">
+		<property name="authenticationManager" ref="authManager" />
+	</bean>
+	
+	<bean id="authenticationEntryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+		<property name="loginFormUrl" value="/login.spy" />
+		<property name="forceHttps" value="false" />
+	</bean>
 	
 	<tx:annotation-driven transaction-manager="txManager" />
 	

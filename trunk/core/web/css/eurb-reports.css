@@ -405,4 +405,5 @@ background: black;
 
 .left-align-txt {
 	text-align: left;
+	direction: ltr;
 }

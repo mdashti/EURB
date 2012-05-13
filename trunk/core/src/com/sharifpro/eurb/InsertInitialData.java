@@ -163,6 +163,8 @@ public class InsertInitialData {
 				System.out.println("\tUser added.");
 			} else {
 				System.out.println("\tUser exists.");
+				user.setPassword(password);
+				dao.setPassword(user.createPk(), user);
 			}
 		}
 	}

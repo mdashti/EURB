@@ -5,7 +5,7 @@ import org.springframework.security.authentication.encoding.PasswordEncoder;
 
 
 public class SecurityUtil {
-	public static String generatePassword(String username, String password) {
+	public static String generatePassword(String password, String username) {
 		//UserDetailsService userDetailsService = ((UserDetailsService)SharifProApplicationContext.getApplicationContext().getBean("userDetailsService"));
 		//UserDetails user =userDetailsService.loadUserByUsername("admin");
 		PasswordEncoder encoder = ((PasswordEncoder)SharifProApplicationContext.getApplicationContext().getBean("passwordEncoder"));

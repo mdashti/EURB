@@ -622,7 +622,7 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `eurb`;
-INSERT INTO `eurb`.`authorities` (`username`, `authority`) VALUES ('admin', 'MAPPING_MANAGEMENT_DB_LIST');
+INSERT INTO `eurb`.`authorities` (`username`, `authority`) VALUES ('admin', 'ROLE_MAPPING_MANAGEMENT_DB_LIST');
 
 COMMIT;
 
@@ -640,7 +640,7 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `eurb`;
-INSERT INTO `eurb`.`group_authorities` (`group_id`, `authority`) VALUES (200, 'MAPPING_MANAGEMENT_DB_LIST');
+INSERT INTO `eurb`.`group_authorities` (`group_id`, `authority`) VALUES (200, 'ROLE_MAPPING_MANAGEMENT_DB_LIST');
 
 COMMIT;
 

@@ -50,21 +50,24 @@ MainPanel = function(){
         minTabWidth: 135,
         layout: 'fit',
         items: [],
-        bbar: new Ext.ux.StatusBar({
+        bbar: EURB.menuEnabled ? new Ext.ux.StatusBar({
             id: 'eurb-status',
             //statusAlign: 'right', // the magic config
             // These are just the standard toolbar TextItems we created above.  They get
             // custom classes below in the render handler which is what gives them their
             // customized inset appearance.
             items: [{
-				 text:EURB.logout
-				,iconCls:'icon-key'
+					 text:EURB.logout
+					,iconCls:'icon-key'
+					,handler: function() {
+						window.location.href = EURB.baseURL+'logout.spy'
+					}
 				}, ' ', ' ', ' ', '-', ' ', ' ', ' ', 
             	currentUser, ' ', ' ', ' ', '-', ' ', ' ', ' ', 
             	currentIP, ' ', ' ', ' ', ' ', '-', ' ', ' ', ' ', 
             	clock, ' ', ' ', ' ']
-        }),
-        listeners: {
+        }) : [],
+        listeners: EURB.menuEnabled ? {
             render: {
                 fn: function(){
                     // Add a class to the parent TD of each text item so we can give them some custom inset box
@@ -85,7 +88,7 @@ MainPanel = function(){
                 },
                 delay: 100
             }
-        }
+        } : {}
     });
 };
 
@@ -94,20 +97,22 @@ Ext.extend(MainPanel, Ext.Panel);
 Ext.onReady(function(){
 
     Ext.QuickTips.init();
-
-    var api = new Ext.Panel({
-    	id: 'eurb-app-menu',
-        region:'east',
-        //margins:'5 0 5 5',
-        split:true,
-        collapsible: true,
-        width: 150
-        //,layout:'accordion',
-        //,items: []
-        //,html: ''
-    });
-    
-    EURB.mainMenu = api;
+	var api;
+    if(EURB.menuEnabled) {
+	    api = new Ext.Panel({
+	    	id: 'eurb-app-menu',
+	        region:'east',
+	        //margins:'5 0 5 5',
+	        split:true,
+	        collapsible: true,
+	        width: 150
+	        //,layout:'accordion',
+	        //,items: []
+	        //,html: ''
+	    });
+	    
+	    EURB.mainMenu = api;
+    }
     
     EURB.mainPanel = new MainPanel();
 
@@ -128,8 +133,12 @@ Ext.onReady(function(){
             items:[]
         })]
     });
-
-    var viewPortArr = [ hd, api, EURB.mainPanel ];
+    var viewPortArr;
+	if(EURB.menuEnabled) {
+    	viewPortArr = [ hd, api, EURB.mainPanel ];
+	} else {
+		viewPortArr = [ hd, EURB.mainPanel ];
+	}
     if(EURB.westPanel) {
     	viewPortArr.push(EURB.westPanel);
     }

@@ -3,6 +3,8 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <% String resourcesUrl = request.getParameter("resourcesUrl"); %>
 <% String baseUrl = request.getParameter("baseUrl"); %>
+<% boolean menuEnabled = !"false".equals(request.getParameter("menuEnabled")); %>
+<% boolean statusEnabled = !"false".equals(request.getParameter("statusEnabled")); %>
 		<div id="loading-mask" style=""></div>
 		<div id="loading">
 			<div class="loading-indicator">
@@ -55,8 +57,11 @@
 		if(typeof EURB == 'undefined') {
 			EURB = {};
 		}
+		EURB.title = '<spring:message code="eurb.app.title" />';
 		EURB.baseURL = '<%=baseUrl%>';
 		EURB.resourcesURL = '<%=resourcesUrl%>';
+		EURB.menuEnabled = <%=menuEnabled%>;
+		EURB.statusEnabled = '<%=statusEnabled%>';
 		EURB.currentUser = '<%=SessionManager.getCurrentUserName() == null ? "admin" : SessionManager.getCurrentUserName() %>';
 		EURB.currentIpAddress = '<%=request.getRemoteAddr()%>';
 		
@@ -158,7 +163,7 @@
 		    EURB.mainMenu.items.add(item2);
 		    
 		    */
-
+			<% if(menuEnabled) { %>
 		    EURB.mainMenu.add({
 		    	bodyBorder : false,
 		    	html:'<div class="urbangreymenu">'+
@@ -182,7 +187,7 @@
 		    	'</ul>'+*/
 		    	'</div>'});
 		    EURB.mainMenu.doLayout();
-
+			<% } %>
 	        /*ddaccordion.init({
 	        	headerclass: "headerbar", //Shared CSS class name of headers group
 	        	contentclass: "submenu", //Shared CSS class name of contents group

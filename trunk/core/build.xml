@@ -108,6 +108,9 @@
 				<include name="**/*.properties"/>
 			</fileset>
 	    </concat>
+		
+		<copy file="${app.webinf}/messages/messages.properties" tofile="${app.webinf}/messages/messages_en.properties" />
+		<copy file="${app.webinf}/messages/messages.properties" tofile="${app.webinf}/messages/messages_en_US.properties" />
 
 		<copy todir="${app.webinf}">
 			<fileset dir="conf/WEB-INF">
