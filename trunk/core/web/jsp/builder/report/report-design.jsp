@@ -62,6 +62,8 @@
 			EURB.ReportColumn.ColumnWidth = '<spring:message code="eurb.app.builder.report.column.width" />';
 			EURB.ReportColumn.ColumnAlign = '<spring:message code="eurb.app.builder.report.column.align" />';
 			EURB.ReportColumn.ColumnDir = '<spring:message code="eurb.app.builder.report.column.dir" />';
+			EURB.ReportColumn.Formula = '<spring:message code="eurb.app.builder.report.column.formula" />';
+			EURB.ReportColumn.IsCustom = '<spring:message code="eurb.app.builder.report.column.isCustom" />';
 			
 			EURB.ReportColumn.leftAlign = '<spring:message code="eurb.app.builder.report.column.leftAlign" />';
 			EURB.ReportColumn.middleAlign = '<spring:message code="eurb.app.builder.report.column.middleAlign" />';
@@ -70,6 +72,10 @@
 			EURB.ReportColumn.rtlDir = '<spring:message code="eurb.app.builder.report.column.rtlDir" />';
 			EURB.ReportColumn.ascendingSort = '<spring:message code="eurb.app.builder.report.column.ascSort" />';
 			EURB.ReportColumn.descendingSort = '<spring:message code="eurb.app.builder.report.column.descSort" />';
+			
+			EURB.ReportColumn.formula = '<spring:message code="eurb.app.builder.report.column.formulaTitle" />';
+			EURB.ReportColumn.formulaEditor = '<spring:message code="eurb.app.builder.report.column.formulaEditor" />';
+			EURB.ReportColumn.formulaColumns = '<spring:message code="eurb.app.builder.report.column.formulaColumns" />';
 			
 			
 			EURB.ReportFilter = {};
@@ -143,10 +149,36 @@
 			    listeners:{
 			    	select: function(combo,record,index){
 			    		rform = EURB.ReportColumn.reportColumnGrid.recordForm.form.getForm();
-			    		rform.items.itemAt(8).setValue(record.get('mappedName'));
+			    		rform.items.itemAt(9).setValue(record.get('mappedName'));
 			    	}
 			    }
 			});
+			
+			EURB.ReportColumn.formulaColumnCombo = new Ext.form.ComboBox({
+			    typeAhead: true,
+			    triggerAction: 'all',
+			    lazyRender:true,
+			    fieldLabel: EURB.ReportColumn.formulaColumns,
+			    mode: 'local',
+			    store: new Ext.data.ArrayStore({
+			        id: 0,
+			        fields: [
+			            'id',
+			            'mappedName'
+			        ],
+			        data: ${columnMappingComboContent}
+			    }),
+			    valueField: 'id',
+			    displayField: 'mappedName',
+			    forceSelection: true,
+			    allowBlank: true,
+			    listeners:{
+			    	select: function(combo,record,index){
+			    		addText('[' + record.get('mappedName') + '-' + record.get('id') + ']');
+			    	}
+			    }
+			});
+
 			
 			EURB.ReportFilter.columnCombo = new Ext.form.ComboBox({
 			    typeAhead: true,
@@ -213,9 +245,11 @@
 			
 			
 		</script>
+		<script src="${resourcesUrl}/js/app/builder/report/formula-editor.js"></script>
 		<script  src="${resourcesUrl}/js/app/builder/report/report-dataset.js"></script>
 		<script  src="${resourcesUrl}/js/app/builder/report/report-column.js"></script>
 		<script  src="${resourcesUrl}/js/app/builder/report/report-filter.js"></script>
 		<script src="${resourcesUrl}/js/app/builder/report/report-design.js"></script>
+		
 	</body>
 </html>

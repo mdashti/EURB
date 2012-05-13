@@ -57,10 +57,44 @@ EURB.ReportColumn.sortTypeCombo = new Ext.form.ComboBox({
     valueField: 'sortTypeValue',
     displayField: 'sortTypeLabel',
     forceSelection: true,
-    allowBlank: false,
+    allowBlank: true,
     editable: false
 });
 
+
+hideFormField = function(field){
+	field.hide();
+	field.container.up('div.x-form-item').setStyle('display', 'none');
+}
+
+showFormField = function(field){
+	field.show();
+	field.container.up('div.x-form-item').setStyle('display', 'block');
+}
+
+formulaColumn = function(){
+	mappedNameField = EURB.ReportColumn.reportColumnGrid.recordForm.form.getForm().items.itemAt(1);
+	formulaCollapsible = Ext.getCmp('report-formula-collapsible');
+	formulaField = Ext.getCmp('report-column-formula');
+	mappedNameField.setDisabled(true);
+	mappedNameField.allowBlank = true;
+	hideFormField(mappedNameField);
+	formulaField.setDisabled(false);
+	formulaField.allowBlank = false
+	showFormField(formulaCollapsible);
+}
+
+simpleColumn = function(){
+	mappedNameField = EURB.ReportColumn.reportColumnGrid.recordForm.form.getForm().items.itemAt(1);
+	formulaCollapsible = Ext.getCmp('report-formula-collapsible');
+	formulaField = Ext.getCmp('report-column-formula');
+	mappedNameField.setDisabled(false);
+	mappedNameField.allowBlank = false;
+	showFormField(mappedNameField);
+	formulaField.setDisabled(true);
+	formulaField.allowBlank = true;
+	hideFormField(formulaCollapsible);
+}
 
 ////////////////////////////data set grid/////////////////////////////////////
 
@@ -74,6 +108,7 @@ EURB.ReportColumn.store = new Ext.data.Store({
 			,{name:'designId', type:'int'}
 			,{name:'designVersionId', type:'int'}
 			,{name:'datasetId', type:'int'}
+			,{name:'isCustom', type:'boolean'}
 			,{name:'columnMappingId', type:'int'}
 			,{name:'colOrder', type:'int'}
 			,{name:'sortOrder', type:'int'}
@@ -83,6 +118,7 @@ EURB.ReportColumn.store = new Ext.data.Store({
 			,{name:'columnAlign', type:'string'}
 			,{name:'columnDir', type:'string'}
 			,{name:'columnHeader', type:'string'}
+			,{name:'formula', type:'string'}
 		]
 	})
 	,proxy:new Ext.data.HttpProxy({
@@ -102,7 +138,7 @@ EURB.ReportColumn.cols = [{
 	 header:EURB.ReportColumn.Column
 	,id:'columnMappingId'
 	,dataIndex:'columnMappingId'
-	,width:50
+	,width:30
 	,sortable:true
 	,editor:EURB.ReportColumn.columnCombo
 	,renderer:EURB.ReportDesign.comboRenderer(EURB.ReportColumn.columnCombo)
@@ -111,7 +147,7 @@ EURB.ReportColumn.cols = [{
 	 header:EURB.ReportColumn.ColumnHeader
 	,id:'columnHeader'
 	,dataIndex:'columnHeader'
-	,width:25
+	,width:30
 	,sortable:true
 	,editor:new Ext.form.TextField({
 		allowBlank:true
@@ -126,6 +162,33 @@ EURB.ReportColumn.cols = [{
 	,editor:new Ext.form.TextField({
 		allowBlank:false
 	})
+},
+{
+	 header:EURB.ReportColumn.IsCustom
+	,id:'isCustom'
+	,dataIndex:'isCustom'
+	,width:10
+	,sortable:false
+	,editor:new Ext.form.Checkbox({listeners: {
+        check: {
+            fn: function(){
+	            	if(this.checked){
+	            		formulaColumn();
+	            	}
+	            	else{
+	            		simpleColumn();
+	            	}
+            	}
+        }
+    }})
+},
+{
+	 header:EURB.ReportColumn.Formula
+	,id:'formula'
+	,dataIndex:'formula'
+	,width:30
+	,sortable:false
+	,editor:EURB.ReportColumn.formulaFieldSet
 },
 {
 	 header:EURB.ReportColumn.SortOrder
@@ -281,7 +344,7 @@ EURB.ReportColumn.ColumnGrid = Ext.extend(Ext.grid.GridPanel, {
 		EURB.ReportColumn.ColumnGrid.superclass.afterRender.apply(this, arguments);
 	}
 	,addRecord:function() {
-        var store = this.store;
+    	var store = this.store;
         if(store.recordType) {
             var rec = new store.recordType({newRecord:true});
             rec.fields.each(function(f) {
@@ -301,7 +364,10 @@ EURB.ReportColumn.ColumnGrid = Ext.extend(Ext.grid.GridPanel, {
             break;
 
             case 'icon-edit-record':
-                this.recordForm.show(record, grid.getView().getCell(row, col));
+            	{
+            		this.recordForm.show(record, grid.getView().getCell(row, col));
+            		simpleColumn();
+            	}
             break;
 
         }
@@ -315,6 +381,7 @@ EURB.ReportColumn.ColumnGrid = Ext.extend(Ext.grid.GridPanel, {
 		Ext.each(records, function(r, i) {
 			data.push(r.data);
 		}, this);
+		data[0].formula = Ext.getCmp('report-column-formula').getValue();
 		var o = {
 			 url:EURB.ReportColumn.storeAction
 			,method:'post'
