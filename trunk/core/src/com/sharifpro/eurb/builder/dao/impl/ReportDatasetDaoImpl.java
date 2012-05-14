@@ -21,7 +21,7 @@ public class ReportDatasetDaoImpl extends AbstractDAO implements ParameterizedRo
 {
 
 	private final static String QUERY_FROM_COLUMNS = " o.design_id, o.design_version_id, o.table_mapping_id, o.base_report_id, o.base_report_version_id, o.ds_order, o.operator ";
-	private final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL_AND_JOIN;
+	private final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + " o " + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL_AND_JOIN;
 	private final static String COUNT_QUERY = "SELECT count(distinct(o.id)) FROM " + getTableName() + " o ";
 	/**
 	 * Method 'insert'

@@ -28,7 +28,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 	
 	public static final String TABLE_NAME = "persistable_object";
 	public static final String TABLE_NAME_AND_INITIAL = TABLE_NAME + " p";
-	public static final String TABLE_NAME_AND_INITIAL_AND_JOIN = " o INNER JOIN " + TABLE_NAME_AND_INITIAL + " USING (id)";
+	public static final String TABLE_NAME_AND_INITIAL_AND_JOIN = " INNER JOIN " + TABLE_NAME_AND_INITIAL + " USING (id)";
 
 	public static final String PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS = "p.id, p.obj_type, p.creator, p.create_date, p.modifier, p.modify_date";
 	

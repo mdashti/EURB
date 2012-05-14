@@ -7,7 +7,9 @@ import com.sharifpro.eurb.builder.model.ReportColumn;
 import com.sharifpro.eurb.builder.model.ReportColumnPk;
 import com.sharifpro.eurb.builder.model.ReportDesign;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
+import com.sharifpro.eurb.management.mapping.dao.impl.ColumnMappingDaoImpl;
 import com.sharifpro.eurb.management.mapping.dao.impl.PersistableObjectDaoImpl;
+import com.sharifpro.eurb.management.mapping.model.ColumnMapping;
 import com.sharifpro.util.PropertyProvider;
 
 import java.util.List;
@@ -18,10 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRowMapper<ReportColumn>, ReportColumnDao
 {
-	private final static String QUERY_FROM_COLUMNS = "o.dataset_id, o.design_id, o.design_version_id, o.col_type, o.column_mapping_id, o.report_column_id, o.col_order, " +
-			"o.sort_order, o.sort_type, o.group_level, o.column_width, o.column_align, o.column_dir, o.column_header, o.is_custom, o.formula";
-	private final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL_AND_JOIN;
-	private final static String COUNT_QUERY = "SELECT count(distinct(o.id)) FROM " + getTableName() + " o ";
+	private final static String QUERY_FROM_COLUMNS = "r.dataset_id, r.design_id, r.design_version_id, r.col_type, r.column_mapping_id, r.report_column_id, r.col_order, " +
+			"r.sort_order, r.sort_type, r.group_level, r.column_width, r.column_align, r.column_dir, r.column_header, r.is_custom, r.formula";
+	private final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + ", " + ColumnMappingDaoImpl.QUERY_FROM_COLUMNS + " FROM " + getTableName() + " r " + " INNER JOIN " + ColumnMappingDaoImpl.getTableName() + " o ON (r.column_mapping_id = o.id) " + " INNER JOIN " + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL + " ON (p.id = r.id)";
+	private final static String COUNT_QUERY = "SELECT count(distinct(r.id)) FROM " + getTableName() + " r ";
 
 
 	/**
@@ -72,7 +74,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public void delete(ReportColumnPk pk) throws ReportColumnDaoException
 	{
 		try{
-			jdbcTemplate.update("DELETE FROM " + getTableName() + " WHERE id = ? ",pk.getId());
+			jdbcTemplate.update("DELETE FROM " + getTableName() + " WHERE r.id = ? ",pk.getId());
 			DaoFactory.createPersistableObjectDao().delete(pk);
 		}
 		catch (Exception e) {
@@ -132,6 +134,10 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 		dto.setColumnHeader( rs.getString( ++i ) );
 		dto.setCustom( rs.getBoolean( ++i ) );
 		dto.setFormula( rs.getString( ++i ) );
+		
+		dto.setColumnMapping(new ColumnMappingDaoImpl().mapRow(rs, row, new ColumnMapping(),i));
+		dto.getColumnMapping().setId(dto.getColumnMappingId());
+		
 		return dto;
 	}
 
@@ -152,7 +158,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public ReportColumn findByPrimaryKey(Long id, Long datasetId, Long designId, Long designVersionId) throws ReportColumnDaoException
 	{
 		try {
-			List<ReportColumn> list = jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.id = ? AND o.dataset_id = ? AND o.design_id = ? AND o.design_version_id = ?", this,id,datasetId,designId,designVersionId);
+			List<ReportColumn> list = jdbcTemplate.query(QUERY_SELECT_PART + " WHERE r.id = ? AND r.dataset_id = ? AND r.design_id = ? AND r.design_version_id = ?", this,id,datasetId,designId,designVersionId);
 			return list.size() == 0 ? null : list.get(0);
 		}
 		catch (Exception e) {
@@ -168,7 +174,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findAll() throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " ORDER BY o.id, o.dataset_id, o.design_id, o.design_version_id", this);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " ORDER BY r.id, r.dataset_id, r.design_id, r.design_version_id", this);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -184,7 +190,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findAll(ReportDesign design) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.design_id = ? ORDER BY o.id, o.dataset_id, o.design_id, o.design_version_id", this, design.getId());
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE r.design_id = ? ORDER BY r.id, r.dataset_id, r.design_id, r.design_version_id", this, design.getId());
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -199,7 +205,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public int countAll(ReportDesign design) throws ReportColumnDaoException
 	{
 		try{
-			return jdbcTemplate.queryForInt(COUNT_QUERY + " WHERE o.design_id = ?", design.getId());
+			return jdbcTemplate.queryForInt(COUNT_QUERY + " WHERE r.design_id = ?", design.getId());
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -214,7 +220,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findByPersistableObject(Long id) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.id = ?", this,id);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE r.id = ?", this,id);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -229,7 +235,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findByColumnMapping(Long columnMappingId) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.column_mapping_id = ?", this,columnMappingId);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE r.column_mapping_id = ?", this,columnMappingId);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -244,7 +250,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findByReportColumn(Long reportColumnId) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.report_column_id = ?", this,reportColumnId);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE r.report_column_id = ?", this,reportColumnId);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -259,7 +265,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findByReportDataset(Long datasetId, Long designId, Long designVersionId) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.dataset_id = ? AND o.design_id = ? AND o.design_version_id = ?", this,datasetId,designId,designVersionId);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE r.dataset_id = ? AND r.design_id = ? AND r.design_version_id = ?", this,datasetId,designId,designVersionId);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -274,7 +280,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findWhereIdEquals(Long id) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.id = ? ORDER BY o.id", this,id);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE r.id = ? ORDER BY r.id", this,id);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -289,7 +295,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findWhereDatasetIdEquals(Long datasetId) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.dataset_id = ? ORDER BY o.dataset_id", this,datasetId);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE r.dataset_id = ? ORDER BY r.dataset_id", this,datasetId);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -304,7 +310,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findWhereDesignIdEquals(Long designId) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.design_id = ? ORDER BY o.design_id", this,designId);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE r.design_id = ? ORDER BY r.design_id", this,designId);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -319,7 +325,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findWhereDesignVersionIdEquals(Long designVersionId) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.design_version_id = ? ORDER BY o.design_version_id", this,designVersionId);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE r.design_version_id = ? ORDER BY r.design_version_id", this,designVersionId);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -334,7 +340,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findWhereColTypeEquals(Integer colType) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.col_type = ? ORDER BY o.col_type", this,colType);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE r.col_type = ? ORDER BY r.col_type", this,colType);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -349,7 +355,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findWhereColumnMappingIdEquals(Long columnMappingId) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.column_mapping_id = ? ORDER BY o.column_mapping_id", this,columnMappingId);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE r.column_mapping_id = ? ORDER BY r.column_mapping_id", this,columnMappingId);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -364,7 +370,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findWhereReportColumnIdEquals(Long reportColumnId) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.report_column_id = ? ORDER BY o.report_column_id", this,reportColumnId);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE r.report_column_id = ? ORDER BY r.report_column_id", this,reportColumnId);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -379,7 +385,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findWhereColOrderEquals(Integer colOrder) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.col_order = ? ORDER BY o.col_order", this,colOrder);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE r.col_order = ? ORDER BY r.col_order", this,colOrder);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -394,7 +400,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findWhereSortOrderEquals(Integer sortOrder) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.sort_order = ? ORDER BY o.sort_order", this,sortOrder);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE r.sort_order = ? ORDER BY r.sort_order", this,sortOrder);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -409,7 +415,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findWhereSortTypeEquals(Short sortType) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.sort_type = ? ORDER BY o.sort_type", this,sortType);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE r.sort_type = ? ORDER BY r.sort_type", this,sortType);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -424,7 +430,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findWhereGroupLevelEquals(Integer groupLevel) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.group_level = ? ORDER BY o.group_level", this,groupLevel);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE r.group_level = ? ORDER BY r.group_level", this,groupLevel);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -439,7 +445,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findWhereColumnWidthEquals(Integer columnWidth) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.column_width = ? ORDER BY o.column_width", this,columnWidth);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE r.column_width = ? ORDER BY r.column_width", this,columnWidth);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -454,7 +460,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findWhereColumnAlignEquals(String columnAlign) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.column_align = ? ORDER BY o.column_align", this,columnAlign);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE r.column_align = ? ORDER BY r.column_align", this,columnAlign);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -469,7 +475,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findWhereColumnDirEquals(String columnDir) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.column_dir = ? ORDER BY o.column_dir", this,columnDir);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE r.column_dir = ? ORDER BY r.column_dir", this,columnDir);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -484,7 +490,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findWhereColumnHeaderEquals(String columnHeader) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.column_header = ? ORDER BY o.column_header", this,columnHeader);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE r.column_header = ? ORDER BY r.column_header", this,columnHeader);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -499,7 +505,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findWhereIsCustomEquals(Short isCustom) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.is_custom = ? ORDER BY o.is_custom", this,isCustom);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE r.is_custom = ? ORDER BY r.is_custom", this,isCustom);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -514,7 +520,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findWhereFormulaEquals(String formula) throws ReportColumnDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.formula = ? ORDER BY o.formula", this,formula);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE r.formula = ? ORDER BY r.formula", this,formula);
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);

@@ -20,7 +20,7 @@ public class ReportFilterDaoImpl extends AbstractDAO implements ParameterizedRow
 
 	private final static String QUERY_FROM_COLUMNS = "o.column_mapping_id, o.report_dataset_id, o.report_design_id, o.report_design_version_id, o.prefix, o.operator, o.suffix, o.operand1, o.operand2, " +
 			"o.filter_type, o.operand1_column_id, o.operand1_column_dataset_id, o.operand1_column_design_id ";
-	private final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL_AND_JOIN;
+	private final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + " o " + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL_AND_JOIN;
 	private final static String COUNT_QUERY = "SELECT count(distinct(o.id)) FROM " + getTableName() + " o ";
 
 	/**

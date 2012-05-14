@@ -115,7 +115,7 @@ EURB.ViewReport.Grid = Ext.extend(Ext.grid.GridPanel, {
 	,onRowAction:function(grid, record, action, row, col) {
         switch(action) {
             case 'icon-grid':
-            	window.location.href = EURB.baseURL+'builder/report/report'+record.get(this.idName)+'-design.spy';
+            	window.location.href = EURB.baseURL+'builder/report/run-report'+record.get(this.idName)+'-v'+record.get('versionId')+'.spy';
             break;
         }
     }

@@ -2,6 +2,7 @@ package com.sharifpro.eurb.builder.model;
 
 import java.io.Serializable;
 
+import com.sharifpro.eurb.management.mapping.model.ColumnMapping;
 import com.sharifpro.eurb.management.mapping.model.PersistableObject;
 
 public class ReportColumn extends PersistableObject implements Serializable
@@ -32,6 +33,8 @@ public class ReportColumn extends PersistableObject implements Serializable
 	 * This attribute maps to the column column_mapping_id in the report_column table.
 	 */
 	protected Long columnMappingId;
+	
+	protected ColumnMapping columnMapping;
 
 	/** 
 	 * This attribute maps to the column report_column_id in the report_column table.
@@ -195,6 +198,26 @@ public class ReportColumn extends PersistableObject implements Serializable
 	public void setColumnMappingId(Long columnMappingId)
 	{
 		this.columnMappingId = columnMappingId;
+	}
+
+	/**
+	 * Method 'getColumnMappingId'
+	 * 
+	 * @return Long
+	 */
+	public ColumnMapping getColumnMapping()
+	{
+		return columnMapping;
+	}
+
+	/**
+	 * Method 'setColumnMappingId'
+	 * 
+	 * @param columnMappingId
+	 */
+	public void setColumnMapping(ColumnMapping columnMapping)
+	{
+		this.columnMapping = columnMapping;
 	}
 
 	/**

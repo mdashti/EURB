@@ -21,9 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements ParameterizedRowMapper<ColumnMapping>, ColumnMappingDao
 {
-	private final static String QUERY_FROM_COLUMNS = "o.db_config_id, o.table_mapping_id, o.column_name, o.mapped_name, o.col_type_name, o.col_data_type, o.col_order, o.format_pattern, o.static_mapping, o.referenced_table, o.referenced_id_col, o.referenced_value_col, o.active_for_manager, o.active_for_user";
+	public final static String QUERY_FROM_COLUMNS = "o.db_config_id, o.table_mapping_id, o.column_name, o.mapped_name, o.col_type_name, o.col_data_type, o.col_order, o.format_pattern, o.static_mapping, o.referenced_table, o.referenced_id_col, o.referenced_value_col, o.active_for_manager, o.active_for_user";
 
-	private final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL_AND_JOIN;
+	public final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + " o " + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL_AND_JOIN;
 
 	/**
 	 * Method 'insert'
@@ -73,6 +73,12 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 		ColumnMapping dto = new ColumnMapping();
 		PersistableObjectDaoImpl.PERSISTABLE_OBJECT_MAPPER.mapRow(rs, row, dto);
 		int i = PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS_COUNT;
+		return mapRow(rs, row, dto, i);
+	}
+	
+	public ColumnMapping mapRow(ResultSet rs, int row, ColumnMapping dto, int start) throws SQLException
+	{
+		int i = start;
 		dto.setDbConfigId( new Long( rs.getLong(++i) ) );
 		dto.setTableMappingId( new Long( rs.getLong(++i) ) );
 		dto.setColumnName( rs.getString( ++i ) );

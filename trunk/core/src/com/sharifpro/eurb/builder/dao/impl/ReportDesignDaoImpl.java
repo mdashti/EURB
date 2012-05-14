@@ -21,7 +21,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 {
 	private final static String QUERY_FROM_COLUMNS = "o.version_id, o.name, o.description, o.category_id, o.query_text, o.select_part, o.result_data, o.format_file, o.is_current, o.record_status ";
 
-	private final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL_AND_JOIN;
+	private final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + " o " + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL_AND_JOIN;
 
 	private final static String QUERY_ACTIVE_WHERE_PART = " o.is_current = 1 and o.record_status = '" + RecordStatus.ACTIVE + "'";
 

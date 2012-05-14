@@ -26,7 +26,7 @@ public class AuthenticationProcessingFilter extends UsernamePasswordAuthenticati
 
 		Writer out = responseWrapper.getWriter();
 
-		String targetUrl = "/index.spy";
+		String targetUrl = "index.spy";
 		out.write("{success:true, targetUrl : \'" + targetUrl + "\'}");
 		out.close();
 

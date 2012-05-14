@@ -241,14 +241,12 @@
 				EURB.ReportColumn.reportColumnGrid.colModel.getColumnAt(0).setEditor(EURB.ReportDesign.columnCombo);
 				window.location.href = EURB.baseURL+'builder/report/report'+EURB.ReportDesign.selectedDesign+'-design.spy';
 			};
-			
-			
-			
+
 		</script>
 		<script src="${resourcesUrl}/js/app/builder/report/formula-editor.js"></script>
-		<script  src="${resourcesUrl}/js/app/builder/report/report-dataset.js"></script>
-		<script  src="${resourcesUrl}/js/app/builder/report/report-column.js"></script>
-		<script  src="${resourcesUrl}/js/app/builder/report/report-filter.js"></script>
+		<script src="${resourcesUrl}/js/app/builder/report/report-dataset.js"></script>
+		<script src="${resourcesUrl}/js/app/builder/report/report-column.js"></script>
+		<script src="${resourcesUrl}/js/app/builder/report/report-filter.js"></script>
 		<script src="${resourcesUrl}/js/app/builder/report/report-design.js"></script>
 		
 	</body>
