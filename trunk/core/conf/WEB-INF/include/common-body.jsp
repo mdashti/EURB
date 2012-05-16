@@ -49,6 +49,10 @@
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/gridsearch/js/Ext.ux.grid.Search.js"></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/gridsearch/js/Ext.ux.grid.RowActions.js"></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/gridsearch/js/Ext.ux.grid.RecordForm.js"></script>
+		
+		<%-- Highcharts --%>
+		<script type="text/javascript" src="<%=resourcesUrl%>/js/app/menu/jquery.min.js" ></script>
+		<script type="text/javascript" src="<%=resourcesUrl%>/js/Highcharts/js/highcharts.js" ></script>
 
 		<script src="<%=resourcesUrl%>/js/extjs/locale/ext-lang-fa.js"></script>
 		
