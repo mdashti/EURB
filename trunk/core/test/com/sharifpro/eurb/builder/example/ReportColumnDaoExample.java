@@ -421,7 +421,7 @@ public class ReportColumnDaoExample
 		buf.append( ", " );
 		buf.append( dto.getSortOrder() );
 		buf.append( ", " );
-		buf.append( dto.isSortType() );
+		buf.append( dto.getSortType() );
 		buf.append( ", " );
 		buf.append( dto.getGroupLevel() );
 		buf.append( ", " );

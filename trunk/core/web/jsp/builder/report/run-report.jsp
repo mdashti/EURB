@@ -35,13 +35,13 @@
 					,fields: ${storeFields}
 				})
 				,proxy:new Ext.data.HttpProxy({
-					url:EURB.RunReport.searchAction
+					url: '<spring:url value="/builder/report/get-reportdata${report}-v${version}.spy" />'
 			        ,listeners: {
 			        	'exception' : EURB.proxyExceptionHandler
 			        }
 			    })
 				//,baseParams:{}
-				,remoteSort:true
+				,remoteSort:false
 			});
 
 			EURB.RunReport.cols = ${gridColumns};

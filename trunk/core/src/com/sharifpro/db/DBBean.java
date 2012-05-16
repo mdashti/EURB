@@ -881,4 +881,8 @@ public class DBBean implements Serializable {
             throw sqle;
         }
     }
+    
+    public static boolean isValidIdentifier(Long id) {
+    	return id != null;
+    }
 }
