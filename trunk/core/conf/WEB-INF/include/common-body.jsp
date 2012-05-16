@@ -78,6 +78,7 @@
 		EURB.copyRecord = '<spring:message code="eurb.copyRecord" />';
 		EURB.disableRecord = '<spring:message code="eurb.disableRecord" />';
 		EURB.enableRecord = '<spring:message code="eurb.enableRecord" />';
+		EURB.saveRecords = '<spring:message code="eurb.saveRecords" />';
 		EURB.unknownError = '<spring:message code="eurb.unknownError" />';
 		EURB.unableToDecodeJSON = '<spring:message code="eurb.unableToDecodeJSON" />';
 		EURB.areYouSureToDelTitle = '<spring:message code="eurb.areYouSureToDelTitle" />';

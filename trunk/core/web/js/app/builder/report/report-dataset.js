@@ -36,7 +36,7 @@ EURB.ReportDataset.cols = [{
 	,renderer:EURB.ReportDesign.comboRenderer(EURB.ReportDataset.tableCombo)
 }];
 
-EURB.ReportDataset.DatasetGrid = Ext.extend(Ext.grid.GridPanel, {
+EURB.ReportDataset.DatasetGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 	// defaults - can be changed from outside
 	 width: '100%'
 	,height: 300
@@ -108,6 +108,13 @@ EURB.ReportDataset.DatasetGrid = Ext.extend(Ext.grid.GridPanel, {
 					 scope:this
 					,click:{fn:this.deleteSelectedRecords,buffer:200}
 				}
+			},{
+				 text:EURB.saveRecords
+					,iconCls:'icon-save'
+					,listeners:{
+						 scope:this
+						,click:{fn:this.commitChanges,buffer:200}
+					}
 			},"->"]
 		};
 
@@ -247,13 +254,6 @@ EURB.ReportDataset.DatasetGrid = Ext.extend(Ext.grid.GridPanel, {
 		});
 	}
 	,listeners: {
-		dblclick : function() {
-			var sm = this.getSelectionModel();
-            var sel = sm.getSelections();
-            if(sel.length > 0) {
-            	this.onRowAction(this, sel[0], 'icon-edit-record', 0, 0);
-            }
-		}
 	}
 
 });

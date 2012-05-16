@@ -54,7 +54,7 @@ public class ReportColumn extends PersistableObject implements Serializable
 	/** 
 	 * This attribute maps to the column sort_type in the report_column table.
 	 */
-	protected Boolean sortType;
+	protected Integer sortType;
 
 	/** 
 	 * This attribute maps to the column group_level in the report_column table.
@@ -281,11 +281,11 @@ public class ReportColumn extends PersistableObject implements Serializable
 	}
 
 	/**
-	 * Method 'isSortType'
+	 * Method 'getSortType'
 	 * 
 	 * @return boolean
 	 */
-	public Boolean isSortType()
+	public Integer getSortType()
 	{
 		return sortType;
 	}
@@ -295,10 +295,11 @@ public class ReportColumn extends PersistableObject implements Serializable
 	 * 
 	 * @param sortType
 	 */
-	public void setSortType(Boolean sortType)
-	{
-		this.sortType = sortType;
+	public void setSortType(Integer sortType){
+			this.sortType = sortType;
 	}
+
+	
 
 	/**
 	 * Method 'getGroupLevel'

@@ -149,7 +149,7 @@
 			    listeners:{
 			    	select: function(combo,record,index){
 			    		rform = EURB.ReportColumn.reportColumnGrid.recordForm.form.getForm();
-			    		rform.items.itemAt(9).setValue(record.get('mappedName'));
+			    		rform.items.itemAt(2).setValue(record.get('mappedName'));
 			    	}
 			    }
 			});
@@ -230,7 +230,7 @@
 					this.showError(o.error || EURB.unknownError);
 					return;
 				}
-				EURB.ReportDesign.columnCombo.bindStore(new Ext.data.ArrayStore({
+				/* EURB.ReportDesign.columnCombo.bindStore(new Ext.data.ArrayStore({
 			        id: 0,
 			        fields: [
 			            'id',
@@ -238,7 +238,7 @@
 			        ],
 			        data: o.data
 			    }));
-				EURB.ReportColumn.reportColumnGrid.colModel.getColumnAt(0).setEditor(EURB.ReportDesign.columnCombo);
+				EURB.ReportColumn.reportColumnGrid.colModel.getColumnAt(0).setEditor(EURB.ReportDesign.columnCombo); */
 				window.location.href = EURB.baseURL+'builder/report/report'+EURB.ReportDesign.selectedDesign+'-design.spy';
 			};
 

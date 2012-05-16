@@ -111,7 +111,7 @@ EURB.ReportFilter.cols = [{
 	})
 }];
 
-EURB.ReportFilter.FitlerGrid = Ext.extend(Ext.grid.GridPanel, {
+EURB.ReportFilter.FitlerGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 	// defaults - can be changed from outside
 	 width: '100%'
 	,height: 300
@@ -170,20 +170,27 @@ EURB.ReportFilter.FitlerGrid = Ext.extend(Ext.grid.GridPanel, {
 			}), this.rowActions, this.recordForm]
 			,viewConfig:{forceFit:true}
 			,tbar:[{
-				 text:EURB.addRecord
-				,iconCls:'icon-plus'
-				,listeners:{
-					 scope:this
-					,click:{fn:this.addRecord,buffer:200}
-				}
-			},{
-				 text:EURB.delRecord
-				,iconCls:'icon-minus'
-				,listeners:{
-					 scope:this
-					,click:{fn:this.deleteSelectedRecords,buffer:200}
-				}
-			},"->"]
+					 text:EURB.addRecord
+					,iconCls:'icon-plus'
+					,listeners:{
+						 scope:this
+						,click:{fn:this.addRecord,buffer:200}
+					}
+				},{
+					 text:EURB.delRecord
+					,iconCls:'icon-minus'
+					,listeners:{
+						 scope:this
+						,click:{fn:this.deleteSelectedRecords,buffer:200}
+					}
+				},{
+					 text:EURB.saveRecords
+						,iconCls:'icon-save'
+						,listeners:{
+							 scope:this
+							,click:{fn:this.commitChanges,buffer:200}
+						}
+				},"->"]
 		};
 
 		// apply config
@@ -320,13 +327,6 @@ EURB.ReportFilter.FitlerGrid = Ext.extend(Ext.grid.GridPanel, {
 		});
 	}
 	,listeners: {
-		dblclick : function() {
-			var sm = this.getSelectionModel();
-            var sel = sm.getSelections();
-            if(sel.length > 0) {
-            	this.onRowAction(this, sel[0], 'icon-edit-record', 0, 0);
-            }
-		}
 	}
 
 });

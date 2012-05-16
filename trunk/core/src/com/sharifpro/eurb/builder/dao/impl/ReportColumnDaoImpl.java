@@ -40,7 +40,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 			DaoFactory.createPersistableObjectDao().insert(dto, pk);
 			jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, dataset_id, design_id, design_version_id, col_type, column_mapping_id, report_column_id, col_order, sort_order, sort_type, group_level," +
 					" column_width, column_align, column_dir, column_header, is_custom, formula ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",
-					pk.getId(),dto.getDatasetId(),dto.getDesignId(),dto.getDesignVersionId(),dto.getColType(),dto.getColumnMappingId(),dto.getReportColumnId(),dto.getColOrder(),dto.getSortOrder(),dto.isSortType(),dto.getGroupLevel(),dto.getColumnWidth(),dto.getColumnAlign(),dto.getColumnDir(),dto.getColumnHeader(),dto.isCustom(),dto.getFormula());
+					pk.getId(),dto.getDatasetId(),dto.getDesignId(),dto.getDesignVersionId(),dto.getColType(),dto.getColumnMappingId(),dto.getReportColumnId(),dto.getColOrder(),dto.getSortOrder(),dto.getSortType(),dto.getGroupLevel(),dto.getColumnWidth(),dto.getColumnAlign(),dto.getColumnDir(),dto.getColumnHeader(),dto.isCustom(),dto.getFormula());
 			return pk;
 		}
 		catch (Exception e) {
@@ -59,7 +59,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 			jdbcTemplate.update("UPDATE " + getTableName() + " SET id = ?, dataset_id = ?, design_id = ?, design_version_id = ?, col_type = ?, column_mapping_id = ?, report_column_id = ?, col_order = ?, " +
 					"sort_order = ?, sort_type = ?, group_level = ?, column_width = ?, column_align = ?, column_dir = ?, column_header = ?, is_custom = ?, formula = ? WHERE id = ? AND dataset_id = ? AND " +
 					"design_id = ? AND design_version_id = ?",dto.getId(),dto.getDatasetId(),dto.getDesignId(),dto.getDesignVersionId(),dto.getColType(),dto.getColumnMappingId(),dto.getReportColumnId(),
-					dto.getColOrder(),dto.getSortOrder(),dto.isSortType(),dto.getGroupLevel(),dto.getColumnWidth(),dto.getColumnAlign(),dto.getColumnDir(),dto.getColumnHeader(),dto.isCustom(),dto.getFormula(),
+					dto.getColOrder(),dto.getSortOrder(),dto.getSortType(),dto.getGroupLevel(),dto.getColumnWidth(),dto.getColumnAlign(),dto.getColumnDir(),dto.getColumnHeader(),dto.isCustom(),dto.getFormula(),
 					pk.getId(),pk.getDatasetId(),pk.getDesignId(),pk.getDesignVersionId());
 		}
 		catch (Exception e) {
@@ -122,7 +122,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 
 		dto.setColOrder( new Integer( rs.getInt(++i) ) );
 		dto.setSortOrder( new Integer( rs.getInt(++i) ) );
-		dto.setSortType( rs.getBoolean( ++i ) );
+		dto.setSortType( new Integer (rs.getInt( ++i ) ) );
 		dto.setGroupLevel( new Integer( rs.getInt(++i) ) );
 		if (rs.wasNull()) {
 			dto.setGroupLevel( null );

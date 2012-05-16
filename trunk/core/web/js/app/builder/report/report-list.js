@@ -49,7 +49,7 @@ EURB.Report.cols = [{
 	})
 }];
 
-EURB.Report.Grid = Ext.extend(Ext.grid.GridPanel, {
+EURB.Report.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
 	// defaults - can be changed from outside
 	 layout:'fit'
 	,border:true
@@ -142,6 +142,13 @@ EURB.Report.Grid = Ext.extend(Ext.grid.GridPanel, {
 					 scope:this
 					,click:{fn:this.deactivateSelectedRecords,buffer:200}
 				}
+			},{
+				 text:EURB.saveRecords
+					,iconCls:'icon-save'
+					,listeners:{
+						 scope:this
+						,click:{fn:this.commitChanges,buffer:200}
+					}
 			}]
 		};
 
@@ -358,13 +365,6 @@ EURB.Report.Grid = Ext.extend(Ext.grid.GridPanel, {
 		Ext.Ajax.request(o);
 	}
 	,listeners: {
-		dblclick : function() {
-			var sm = this.getSelectionModel();
-            var sel = sm.getSelections();
-            if(sel.length > 0) {
-            	this.onRowAction(this, sel[0], 'icon-edit-record', 0, 0);
-            }
-		}
 	}
 
 });

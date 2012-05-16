@@ -74,14 +74,15 @@ showFormField = function(field){
 
 formulaColumn = function(){
 	mappedNameField = EURB.ReportColumn.reportColumnGrid.recordForm.form.getForm().items.itemAt(1);
+	headerField = EURB.ReportColumn.reportColumnGrid.recordForm.form.getForm().items.itemAt(2);
+	headerField.setValue('');
 	formulaCollapsible = Ext.getCmp('report-formula-collapsible');
 	formulaField = Ext.getCmp('report-column-formula');
 	mappedNameField.setDisabled(true);
 	mappedNameField.allowBlank = true;
 	hideFormField(mappedNameField);
-	formulaField.setDisabled(false);
-	formulaField.allowBlank = false
 	showFormField(formulaCollapsible);
+	formulaField.allowBlank = false;
 }
 
 simpleColumn = function(){
@@ -91,7 +92,6 @@ simpleColumn = function(){
 	mappedNameField.setDisabled(false);
 	mappedNameField.allowBlank = false;
 	showFormField(mappedNameField);
-	formulaField.setDisabled(true);
 	formulaField.allowBlank = true;
 	hideFormField(formulaCollapsible);
 }
@@ -110,15 +110,15 @@ EURB.ReportColumn.store = new Ext.data.Store({
 			,{name:'datasetId', type:'int'}
 			,{name:'isCustom', type:'boolean'}
 			,{name:'columnMappingId', type:'int'}
+			,{name:'columnHeader', type:'string'}
+			,{name:'formula', type:'string'}
 			,{name:'colOrder', type:'int'}
 			,{name:'sortOrder', type:'int'}
-			,{name:'sortType', type:'bool'}
+			,{name:'sortType', type:'int'}
 			,{name:'groupLevel', type:'int'}
 			,{name:'columnWidth', type:'int'}
 			,{name:'columnAlign', type:'string'}
 			,{name:'columnDir', type:'string'}
-			,{name:'columnHeader', type:'string'}
-			,{name:'formula', type:'string'}
 		]
 	})
 	,proxy:new Ext.data.HttpProxy({
@@ -150,7 +150,7 @@ EURB.ReportColumn.cols = [{
 	,width:30
 	,sortable:true
 	,editor:new Ext.form.TextField({
-		allowBlank:true
+		allowBlank:false
 	})
 },
 {
