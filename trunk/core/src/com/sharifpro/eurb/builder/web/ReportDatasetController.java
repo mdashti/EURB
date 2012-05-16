@@ -15,6 +15,8 @@ import com.sharifpro.eurb.builder.dao.ReportDesignDao;
 import com.sharifpro.eurb.builder.model.ReportDataset;
 import com.sharifpro.eurb.builder.model.ReportDatasetPk;
 import com.sharifpro.eurb.builder.model.ReportDesign;
+import com.sharifpro.eurb.management.mapping.dao.TableMappingDao;
+import com.sharifpro.eurb.management.mapping.model.TableMapping;
 import com.sharifpro.util.json.JsonUtil;
 
 /**
@@ -27,6 +29,7 @@ public class ReportDatasetController {
 
 	private ReportDesignDao reportDesignDao;
 	private ReportDatasetDao reportDatasetDao;
+	private TableMappingDao tableMappingDao;
 	
 	private JsonUtil jsonUtil;
 
@@ -63,6 +66,7 @@ public class ReportDatasetController {
 		try{
 
 			List<ReportDataset> reportDatasets = jsonUtil.getListFromRequest(data, ReportDataset.class);
+			ReportDesign report = reportDesignDao.findByPrimaryKey(Long.valueOf(reportDesign), Long.valueOf(reportVersion));
 			
 			List<Long> insertIds = new ArrayList<Long>(reportDatasets.size());
 			ReportDatasetPk pk;
@@ -70,6 +74,11 @@ public class ReportDatasetController {
 				reportDataset.setDesignId(reportDesign);
 				reportDataset.setDesignVersionId(reportVersion);
 				if(reportDataset.isNewRecord()) {
+					if(report.getDbConfigId() == null || report.getDbConfigId() == 0){
+						TableMapping table = tableMappingDao.findByPrimaryKey(reportDataset.getTableMappingId());
+						report.setDbConfigId(table.getDbConfigId());
+						reportDesignDao.updateCurrentVersion(report.createPk(), report);
+					}
 					pk = reportDatasetDao.insert(reportDataset);
 				} else {
 					pk = reportDataset.createPk();
@@ -107,6 +116,11 @@ public class ReportDatasetController {
 	
 	
 
+	@Autowired
+	public void setTableMappingDao(TableMappingDao tableMappingDao){
+		this.tableMappingDao = tableMappingDao;
+	}
+	
 	@Autowired
 	public void setReportDatasetDao(ReportDatasetDao reportDatasetDao) {
 		this.reportDatasetDao = reportDatasetDao;

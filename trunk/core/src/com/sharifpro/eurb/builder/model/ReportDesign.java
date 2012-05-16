@@ -58,6 +58,13 @@ public class ReportDesign extends PersistableObject implements Serializable
 	 * This attribute maps to the column record_status in the report_design table.
 	 */
 	protected RecordStatus recordStatus = RecordStatus.ACTIVE;
+	
+	/** 
+	 * This attribute maps to the column db_config_id in the report_design table.
+	 */
+	protected Long dbConfigId;
+
+	
 
 	/**
 	 * Method 'ReportDesign'
@@ -281,6 +288,27 @@ public class ReportDesign extends PersistableObject implements Serializable
 	
 	public void setRecordStatusString(String recordStatus){
 		this.recordStatus = RecordStatus.get(recordStatus);
+	}
+	
+	
+	/**
+	 * Method 'getDbConfigId'
+	 * 
+	 * @return Long
+	 */
+	public Long getDbConfigId()
+	{
+		return dbConfigId;
+	}
+
+	/**
+	 * Method 'setDbConfigId'
+	 * 
+	 * @param dbConfigId
+	 */
+	public void setDbConfigId(Long dbConfigId)
+	{
+		this.dbConfigId = dbConfigId;
 	}
 
 	/**

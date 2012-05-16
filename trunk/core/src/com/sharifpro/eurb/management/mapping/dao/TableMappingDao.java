@@ -1,5 +1,6 @@
 package com.sharifpro.eurb.management.mapping.dao;
 
+import com.sharifpro.eurb.builder.model.ReportDesign;
 import com.sharifpro.eurb.management.mapping.dao.TableMappingDao;
 import com.sharifpro.eurb.management.mapping.exception.TableMappingDaoException;
 import com.sharifpro.eurb.management.mapping.model.DbConfig;
@@ -41,7 +42,7 @@ public interface TableMappingDao
 	/** 
 	 * Returns all rows from the table_mapping table that match the criteria 'mapped name is not null'.
 	 */
-	public List<TableMapping> findAllMapped() throws TableMappingDaoException;
+	public List<TableMapping> findAllMapped(ReportDesign reportDesign) throws TableMappingDaoException;
 	
 	/** 
 	 * Counts all rows from the table_mapping table that match the criteria ''.
@@ -125,8 +126,8 @@ public interface TableMappingDao
 
 	public List<TableMapping> findAll(DbConfig dbConf) throws TableMappingDaoException;
 	
-	public List<TableMapping> findAllMapped(DbConfig dbConf) throws TableMappingDaoException;
+	public List<TableMapping> findAllMapped(Long dbConf) throws TableMappingDaoException;
 	
-	public List<TableMapping> findAllMapped(DbConfig dbConf, String query, List<String> onFields) throws TableMappingDaoException;
+	public List<TableMapping> findAllMapped(Long dbConf, String query, List<String> onFields) throws TableMappingDaoException;
 
 }

@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sharifpro.eurb.DaoFactory;
+import com.sharifpro.eurb.builder.model.ReportDesign;
 import com.sharifpro.eurb.management.mapping.dao.TableMappingDao;
 import com.sharifpro.eurb.management.mapping.exception.TableMappingDaoException;
 import com.sharifpro.eurb.management.mapping.model.DbConfig;
@@ -130,10 +131,15 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	 * Returns all rows from the table_mapping table that match the criteria 'mapped name is not null'.
 	 */
 	@Transactional
-	public List<TableMapping> findAllMapped() throws TableMappingDaoException
+	public List<TableMapping> findAllMapped(ReportDesign reportDesign) throws TableMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.mapped_name IS NOT NULL ORDER BY id", this);
+			if(reportDesign.getDbConfigId() != null && reportDesign.getDbConfigId() > 0){
+				return findAllMapped(reportDesign.getDbConfigId());
+			}
+			else{
+				return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.mapped_name IS NOT NULL ORDER BY id", this);
+			}
 		}
 		catch (Exception e) {
 			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -391,9 +397,9 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	}
 	
 	@Transactional
-	public List<TableMapping> findAllMapped(DbConfig dbConf, String query, List<String> onFields) throws TableMappingDaoException {
+	public List<TableMapping> findAllMapped(Long dbConf, String query, List<String> onFields) throws TableMappingDaoException {
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.db_config_id=? AND (" + getMultipleFieldWhereClause(query, onFields) + ") AND o.mapped_name IS NOT NULL ORDER BY o.id", this, dbConf.getId());
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.db_config_id=? AND (" + getMultipleFieldWhereClause(query, onFields) + ") AND o.mapped_name IS NOT NULL ORDER BY o.id", this, dbConf);
 		}
 		catch (Exception e) {
 			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -401,10 +407,10 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	}
 	
 	@Transactional
-	public List<TableMapping> findAllMapped(DbConfig dbConf)
+	public List<TableMapping> findAllMapped(Long dbConf)
 			throws TableMappingDaoException {
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.db_config_id=? AND o.mapped_name IS NOT NULL ORDER BY o.id", this, dbConf.getId());
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.db_config_id=? AND o.mapped_name IS NOT NULL ORDER BY o.id", this, dbConf);
 		}
 		catch (Exception e) {
 			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);

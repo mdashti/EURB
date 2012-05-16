@@ -20,6 +20,12 @@ public interface ReportDesignDao
 	 * Updates a single row in the report_design table.
 	 */
 	public void update(ReportDesignPk pk, ReportDesign dto) throws ReportDesignDaoException;
+	
+	/** 
+	 * Updates a single row in the report_design table but does not make a new version.
+	 */
+	public void updateCurrentVersion(ReportDesignPk pk, ReportDesign dto) throws ReportDesignDaoException;
+
 
 	/** 
 	 * Deletes a single row in the report_design table.

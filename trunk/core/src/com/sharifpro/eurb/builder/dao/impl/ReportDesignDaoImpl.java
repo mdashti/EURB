@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRowMapper<ReportDesign>, ReportDesignDao
 {
-	private final static String QUERY_FROM_COLUMNS = "o.version_id, o.name, o.description, o.category_id, o.query_text, o.select_part, o.result_data, o.format_file, o.is_current, o.record_status ";
+	private final static String QUERY_FROM_COLUMNS = "o.version_id, o.name, o.description, o.category_id, o.query_text, o.select_part, o.result_data, o.format_file, o.is_current, o.record_status, o.db_config_id ";
 
 	private final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + " o " + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL_AND_JOIN;
 
@@ -45,8 +45,9 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 			DaoFactory.createPersistableObjectDao().insert(dto, pk);
 			Long versionId = DaoFactory.createPersistableObjectDao().makeVersionId();
 			pk.setVersionId(versionId);
-			jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, version_id, name, description, category_id, query_text, select_part, result_data, format_file, is_current, record_status ) " +
-					"VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",pk.getId(),pk.getVersionId(),dto.getName(),dto.getDescription(),dto.getCategoryId(),dto.getQueryText(),dto.getSelectPart(),dto.getResultData(),dto.getFormatFile(),dto.isIsCurrent(),dto.getRecordStatusString());
+			jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, version_id, name, description, category_id, query_text, select_part, result_data, format_file, is_current, record_status, db_config_id ) " +
+					"VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",pk.getId(),pk.getVersionId(),dto.getName(),dto.getDescription(),dto.getCategoryId(),dto.getQueryText(),dto.getSelectPart(),dto.getResultData(),
+					dto.getFormatFile(),dto.isIsCurrent(),dto.getRecordStatusString(), dto.getDbConfigId());
 			return pk;
 		}
 		catch (Exception e) {
@@ -65,8 +66,27 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 			DaoFactory.createPersistableObjectDao().update(pk);
 			Long versionId = DaoFactory.createPersistableObjectDao().makeVersionId();
 			pk.setVersionId(versionId);
-			jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, version_id, name, description, category_id, query_text, select_part, result_data, format_file, is_current, record_status ) " +
-					"VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",pk.getId(),pk.getVersionId(),dto.getName(),dto.getDescription(),dto.getCategoryId(),dto.getQueryText(),dto.getSelectPart(),dto.getResultData(),dto.getFormatFile(),dto.isIsCurrent(),dto.getRecordStatusString());
+			jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, version_id, name, description, category_id, query_text, select_part, result_data, format_file, is_current, record_status, db_config_id ) " +
+					"VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",pk.getId(),pk.getVersionId(),dto.getName(),dto.getDescription(),dto.getCategoryId(),dto.getQueryText(),dto.getSelectPart(),dto.getResultData(),
+					dto.getFormatFile(),dto.isIsCurrent(),dto.getRecordStatusString(), dto.getDbConfigId());
+		}
+		catch (Exception e) {
+			throw new ReportDesignDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+
+	}
+	
+	/** 
+	 * Updates a single row in the report_design table but doesn't make a new version.
+	 */
+	@Transactional(readOnly = false)
+	public void updateCurrentVersion(ReportDesignPk pk, ReportDesign dto) throws ReportDesignDaoException
+	{
+		try{
+			DaoFactory.createPersistableObjectDao().update(pk);
+			jdbcTemplate.update("UPDATE " + getTableName() + " SET name = ?, description = ?, category_id = ?, query_text = ?, select_part = ?, result_data = ?, format_file = ?, is_current = ?, record_status = ?, db_config_id = ?  " +
+					"WHERE id = ? AND version_id = ?",dto.getName(),dto.getDescription(),dto.getCategoryId(),dto.getQueryText(),dto.getSelectPart(),dto.getResultData(),dto.getFormatFile(),dto.isIsCurrent(),
+					dto.getRecordStatusString(), dto.getDbConfigId(),pk.getId(),pk.getVersionId());
 		}
 		catch (Exception e) {
 			throw new ReportDesignDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -194,6 +214,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 		dto.setFormatFile( rs.getString( ++i ) );
 		dto.setIsCurrent( rs.getBoolean( ++i ) );
 		dto.setRecordStatusString( rs.getString( ++i ) );
+		dto.setDbConfigId( new Long( rs.getLong( ++i ) ) );
 		return dto;
 	}
 

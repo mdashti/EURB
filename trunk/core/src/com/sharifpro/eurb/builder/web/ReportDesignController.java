@@ -48,7 +48,7 @@ public class ReportDesignController {
 		// TODO :  actually we should make a new version
 		mv.addObject("version", reportDesign.getVersionId().toString());
 		
-		List<TableMapping> tableMappings = tableMappingDao.findAllMapped();
+		List<TableMapping> tableMappings = tableMappingDao.findAllMapped(reportDesign);
 		Object[][] tableMappingArr = new Object[tableMappings.size()][2];
 		for(int i = 0; i < tableMappings.size(); i++) {
 			tableMappingArr[i][0] = tableMappings.get(i).getId();
