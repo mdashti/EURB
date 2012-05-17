@@ -38,6 +38,7 @@
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/Select.js"></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/examples/ux/statusbar/StatusBar.js"></script>
 		<%--<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/Ext.ux.form.FileUploadField.js"></script>
+		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/Ext.ux.Exporter.js"></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/Ext.ux.XHRUpload.js"></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/swfupload.js"></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/swfupload.swfobject.js"></script>

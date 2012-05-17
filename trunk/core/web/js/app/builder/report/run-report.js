@@ -25,7 +25,11 @@ EURB.RunReport.Grid = Ext.extend(Ext.grid.GridPanel, {
 			,plugins : [new Ext.ux.plugin.PagingToolbarResizer( {options : [ 15, 20, 25, 50, 100 ], prependCombo: false, displayText: EURB.pageSizeDisplayText})]
 		});
 		
-		this.tbar = ['->',{
+		this.tbar = ['->'/*,{
+			xtype: 'exportbutton'
+			,component: this
+			,store: EURB.RunReport.store
+		}*/, {
 			 text:EURB.RunReport.printCurrentPage
 			,iconCls:'icon-print'
 			,listeners:{
