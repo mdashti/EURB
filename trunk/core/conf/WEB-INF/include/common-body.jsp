@@ -34,6 +34,7 @@
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/Ext.ux.grid.RowActions.js"></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/Ext.ux.grid.RecordForm.js"></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/Ext.ux.plugin.PagingToolbarResizer.js"></script>
+		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/Ext.ux.GridPrinter.js"></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/Select.js"></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/examples/ux/statusbar/StatusBar.js"></script>
 		<%--<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/Ext.ux.form.FileUploadField.js"></script>
@@ -59,6 +60,8 @@
 		
 		<script type="text/javascript">
 		Ext.BLANK_IMAGE_URL = '<%=resourcesUrl%>/js/extjs/resources/images/default/s.gif';
+		Ext.ux.GridPrinter.stylesheetPath = '<%=resourcesUrl%>/css/gridPrint.css';
+		Ext.ux.GridPrinter.closeAutomatically = false;
 		if(typeof EURB == 'undefined') {
 			EURB = {};
 		}

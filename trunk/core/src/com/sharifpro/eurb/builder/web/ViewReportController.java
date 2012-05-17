@@ -77,15 +77,9 @@ public class ViewReportController {
 	}
 	@RequestMapping(value="/builder/report/run-report{report}-v{version}.spy")
 	public ModelAndView executeRunReport(@PathVariable Long report, @PathVariable Long version) throws Exception {
-		//All Datasets must be in the same dbConfig
-		Long dbConfigId = null;
-		
 		//find report design with given id
 		ReportDesign reportDesign = reportDesignDao.findByPrimaryKey(report, version);
-		
-		List<ReportDataset> datasetList = reportDatasetDao.findAll(reportDesign);
 		List<ReportColumn> columnList = reportColumnDao.findAllSortByColOrder(reportDesign);
-		
 		
 		//UI
 		List<ExtStoreField> storeFields = new ArrayList<ExtStoreField>(columnList.size());
@@ -99,7 +93,7 @@ public class ViewReportController {
 			gridColumns.add(new ExtGridColumn(col.getColumnHeader(), key, col.getColumnWidth()));
 			totalWidth += col.getColumnWidth();
 		}
-		gridColumns.add(0,new ExtGridColumn("radif", "id", (int) (0.05 * totalWidth)));
+		gridColumns.add(0,new ExtGridColumn(PropertyProvider.get("eurb.app.builder.runreport.grid.radif"), "id", (int) (0.05 * totalWidth)));
 		
 		ModelAndView mv = new ModelAndView();
 		mv.addObject("report", report);

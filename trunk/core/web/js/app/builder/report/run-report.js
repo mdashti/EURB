@@ -24,6 +24,15 @@ EURB.RunReport.Grid = Ext.extend(Ext.grid.GridPanel, {
 			,pageSize:EURB.defaultPageLimit
 			,plugins : [new Ext.ux.plugin.PagingToolbarResizer( {options : [ 15, 20, 25, 50, 100 ], prependCombo: false, displayText: EURB.pageSizeDisplayText})]
 		});
+		
+		this.tbar = ['->',{
+			 text:EURB.RunReport.printCurrentPage
+			,iconCls:'icon-print'
+			,listeners:{
+				 scope:this
+				,click:{fn: function() { Ext.ux.GridPrinter.print(EURB.RunReport.runReportGrid) },buffer:200}
+			}
+		}];
 
 		// call parent
 		EURB.RunReport.Grid.superclass.initComponent.apply(this, arguments);

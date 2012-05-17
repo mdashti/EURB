@@ -27,6 +27,7 @@
 			
 			EURB.RunReport = {};
 			EURB.RunReport.viewReport = '<spring:message code="eurb.app.builder.runreport.title" /> ${reportName}';
+			EURB.RunReport.printCurrentPage = '<spring:message code="eurb.app.builder.runreport.grid.printCurrentPage" />';
 			EURB.RunReport.store = new Ext.data.Store({
 				reader:new Ext.data.JsonReader({
 					 id:'id'
