@@ -3,7 +3,7 @@ EURB.RunReport.Grid = Ext.extend(Ext.grid.GridPanel, {
 	 layout:'fit'
 	,border:true
 	,stateful:false
-	,title: EURB.appMenu.showReport
+	,title: EURB.RunReport.viewReport
 	,initComponent:function() {
 		
 		// hard coded - cannot be changed from outside
@@ -22,6 +22,7 @@ EURB.RunReport.Grid = Ext.extend(Ext.grid.GridPanel, {
 			 store:this.store
 			,displayInfo:true
 			,pageSize:EURB.defaultPageLimit
+			,plugins : [new Ext.ux.plugin.PagingToolbarResizer( {options : [ 15, 20, 25, 50, 100 ], prependCombo: false, displayText: EURB.pageSizeDisplayText})]
 		});
 
 		// call parent

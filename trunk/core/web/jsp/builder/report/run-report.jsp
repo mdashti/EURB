@@ -26,7 +26,7 @@
 			
 			
 			EURB.RunReport = {};
-			
+			EURB.RunReport.viewReport = '<spring:message code="eurb.app.builder.runreport.title" /> ${reportName}';
 			EURB.RunReport.store = new Ext.data.Store({
 				reader:new Ext.data.JsonReader({
 					 id:'id'
@@ -40,7 +40,7 @@
 			        	'exception' : EURB.proxyExceptionHandler
 			        }
 			    })
-				//,baseParams:{}
+				,baseParams:{start: 0, limit: EURB.defaultPageLimit}
 				,remoteSort:false
 			});
 

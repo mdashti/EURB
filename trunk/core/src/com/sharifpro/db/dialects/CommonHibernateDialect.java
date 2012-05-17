@@ -929,4 +929,20 @@ public class CommonHibernateDialect implements HibernateDialect,
 		return result.toString();
 	}
 
+	@Override
+	public String buildQuery(String querySelect,
+			String queryFrom, String queryWhere, int start,
+			int limit) {
+		
+		return buildQuery(querySelect, queryFrom, queryWhere) + " LIMIT " + limit + " OFFSET " + start;
+	}
+
+	@Override
+	public String buildQuery(String querySelect,
+			String queryFrom, String queryWhere) {
+		StringBuilder query = new StringBuilder();
+		query.append(querySelect).append(queryFrom).append(queryWhere);
+		return query.toString();
+	}
+
 }

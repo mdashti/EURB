@@ -121,9 +121,9 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 		}
 
 		dto.setColOrder( new Integer( rs.getInt(++i) ) );
-		dto.setSortOrder( new Integer( rs.getInt(++i) ) );
-		dto.setSortType( new Integer (rs.getInt( ++i ) ) );
-		dto.setGroupLevel( new Integer( rs.getInt(++i) ) );
+		dto.setSortOrder( (Integer) rs.getObject(++i) );
+		dto.setSortType( (Integer) rs.getObject(++i)  );
+		dto.setGroupLevel( (Integer) rs.getObject(++i) );
 		if (rs.wasNull()) {
 			dto.setGroupLevel( null );
 		}
@@ -191,6 +191,21 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	{
 		try {
 			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE r.design_id = ? ORDER BY r.id, r.dataset_id, r.design_id, r.design_version_id", this, design.getId());
+		}
+		catch (Exception e) {
+			throw new ReportColumnDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+
+	}
+	
+	/** 
+	 * Returns all rows from the report_column table that match the criteria 'design_id = :design.getId()'.
+	 */
+	@Transactional
+	public List<ReportColumn> findAllSortByColOrder(ReportDesign design) throws ReportColumnDaoException
+	{
+		try {
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE r.design_id = ? ORDER BY r.col_order, r.id", this, design.getId());
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);

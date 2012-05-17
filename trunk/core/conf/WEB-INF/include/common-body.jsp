@@ -33,6 +33,7 @@
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/Ext.ux.menu.IconMenu.js"></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/Ext.ux.grid.RowActions.js"></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/Ext.ux.grid.RecordForm.js"></script>
+		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/Ext.ux.plugin.PagingToolbarResizer.js"></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/Select.js"></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/examples/ux/statusbar/StatusBar.js"></script>
 		<%--<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/Ext.ux.form.FileUploadField.js"></script>
@@ -69,7 +70,8 @@
 		EURB.currentUser = '<%=SessionManager.getCurrentUserName() == null ? "admin" : SessionManager.getCurrentUserName() %>';
 		EURB.currentIpAddress = '<%=request.getRemoteAddr()%>';
 		
-		EURB.defaultPageLimit = <%=AbstractDAO.DEFAULT_PAGE_SIZE%>;
+		EURB.defaultPageLimit = <%=AbstractDAO.DEFAULT_PAGE_SIZE_STR%>;
+		EURB.pageSizeDisplayText = '<spring:message code="eurb.pageSizeDisplayText" />';
 		
 		EURB.loading = '<spring:message code="eurb.loading" />';
 		EURB.user = '<spring:message code="eurb.user" />';

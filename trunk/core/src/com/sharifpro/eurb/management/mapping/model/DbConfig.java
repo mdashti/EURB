@@ -12,6 +12,11 @@ import org.apache.log4j.Logger;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
+import com.sharifpro.db.dialects.HibernateDialect;
+import com.sharifpro.db.dialects.MySQL5DialectExt;
+import com.sharifpro.db.dialects.MySQLDialectExt;
+import com.sharifpro.db.dialects.PostgreSQLDialectExt;
+import com.sharifpro.db.dialects.SQLServerDialectExt;
 import com.sharifpro.db.exception.ValidationException;
 import com.sharifpro.db.meta.ISQLConnection;
 import com.sharifpro.db.meta.ISQLDatabaseMetaData;
@@ -459,5 +464,19 @@ public class DbConfig extends PersistableObject implements Serializable
 	public TableColumnInfo[] getColumns(ISQLConnection conn, TableMapping tbl) throws SQLException{
 		ISQLDatabaseMetaData metaData = getMetaData(conn);
 		return metaData.getColumnInfo(tbl.getCatalog(), tbl.getSchema(), tbl.getTableName());
+	}
+
+	public HibernateDialect getDialect() {
+		if(getDriverClass().toLowerCase().contains("mysql")) {
+			return new MySQLDialectExt();
+		} else if(getDriverClass().toLowerCase().contains("mysql5")) {
+			return new MySQL5DialectExt();
+		} else if(getDriverClass().toLowerCase().contains("postgresql")) {
+			return new PostgreSQLDialectExt();
+		} else if(getDriverClass().toLowerCase().contains("sqlserver") || getDriverClass().toLowerCase().contains("jtds")) {
+			return new SQLServerDialectExt();
+		} else {
+			return null;
+		}
 	}
 }

@@ -12,10 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.sharifpro.db.DBBean;
+import com.sharifpro.db.dialects.HibernateDialect;
 import com.sharifpro.db.meta.ISQLConnection;
 import com.sharifpro.db.meta.TableColumnInfo;
 import com.sharifpro.eurb.builder.dao.ReportCategoryDao;
@@ -31,9 +33,11 @@ import com.sharifpro.eurb.builder.model.ReportDataset;
 import com.sharifpro.eurb.builder.model.ReportDesign;
 import com.sharifpro.eurb.management.mapping.dao.DbConfigDao;
 import com.sharifpro.eurb.management.mapping.dao.TableMappingDao;
+import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
 import com.sharifpro.eurb.management.mapping.exception.TableMappingDaoException;
 import com.sharifpro.eurb.management.mapping.model.ColumnMapping;
 import com.sharifpro.eurb.management.mapping.model.DbConfig;
+import com.sharifpro.eurb.management.mapping.model.PersistableObject;
 import com.sharifpro.eurb.management.mapping.model.TableMapping;
 import com.sharifpro.util.PropertyProvider;
 import com.sharifpro.util.json.JsonUtil;
@@ -80,7 +84,7 @@ public class ViewReportController {
 		ReportDesign reportDesign = reportDesignDao.findByPrimaryKey(report, version);
 		
 		List<ReportDataset> datasetList = reportDatasetDao.findAll(reportDesign);
-		List<ReportColumn> columnList = reportColumnDao.findAll(reportDesign);
+		List<ReportColumn> columnList = reportColumnDao.findAllSortByColOrder(reportDesign);
 		
 		
 		//UI
@@ -109,7 +113,11 @@ public class ViewReportController {
 	}
 	
 	@RequestMapping(value="/builder/report/get-reportdata{report}-v{version}.spy")
-	public @ResponseBody Map<String,? extends Object> executeRunReportData(@PathVariable Long report, @PathVariable Long version) throws Exception {
+	public @ResponseBody Map<String,? extends Object> executeRunReportData(@PathVariable Long report, @PathVariable Long version
+			,@RequestParam(required=false) String start
+			,@RequestParam(required=false) String limit
+			,@RequestParam(required=false) String sort
+			,@RequestParam(required=false) String dir) throws Exception {
 		try{
 			//All Datasets must be in the same dbConfig
 			Long dbConfigId = null;
@@ -121,7 +129,7 @@ public class ViewReportController {
 			List<ReportColumn> columnList = reportColumnDao.findAll(reportDesign);
 			
 			//Build QUERY
-			StringBuilder query = new StringBuilder();
+			
 			StringBuilder querySelect = new StringBuilder("Select ");
 			StringBuilder queryFrom = new StringBuilder(" From ");
 			StringBuilder queryWhere = new StringBuilder(" WHERE 1=1 ");
@@ -158,13 +166,16 @@ public class ViewReportController {
 				}
 			}
 			
-			query.append(querySelect).append(queryFrom).append(queryWhere);
+			
+			StringBuilder countQuery = new StringBuilder();
+			countQuery.append("SELECT COUNT(*)").append(queryFrom).append(queryWhere);
 			
 			
 			//Execute QUERY
 			DbConfig dbConf = dbConfigDao.findByPrimaryKey(dbConfigId);
 			ISQLConnection conn = null;
 			List<Map<String, Object>> resultList = new LinkedList<Map<String,Object>>();
+			int total = 0;
 			try {
 				conn = dbConf.getConnection();
 				if(conn == null) {
@@ -173,10 +184,21 @@ public class ViewReportController {
 				conn.setReadOnly(true);
 				Map<String,Object> result;
 				DBBean db = new DBBean(dbConf.getDataSource());
+				db.executeQuery(countQuery.toString());
+				if(db.result.next()) {
+					total = db.result.getInt(1);
+				}
 				
-				db.executeQuery(query.toString());
+				String finalQuery;
+				HibernateDialect dialect = dbConf.getDialect();
+				if(start == null || limit == null) {
+					finalQuery = dialect.buildQuery(querySelect.toString(),queryFrom.toString(),queryWhere.toString());
+				} else {
+					finalQuery = dialect.buildQuery(querySelect.toString(),queryFrom.toString(),queryWhere.toString(),Integer.parseInt(start), Integer.parseInt(limit));
+				}
+				db.executeQuery(finalQuery);
 				
-				int counter = 1;
+				int counter = 1 + Integer.parseInt(start);
 				while(db.result.next()) {
 					result = new HashMap<String, Object>();
 					result.put("id", counter++);
@@ -194,7 +216,7 @@ public class ViewReportController {
 				}
 			}
 			
-			return JsonUtil.getSuccessfulMap(resultList);
+			return JsonUtil.getSuccessfulMap(resultList, total);
 
 		} catch (Exception e) {
 

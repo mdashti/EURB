@@ -1243,4 +1243,29 @@ public interface HibernateDialect extends StringTemplateConstants {
 	 *         update or delete statement.
 	 */
 	String getBinaryLiteralString(byte[] binaryData);
+
+	/**
+	 * Building query based on current dialect with pagination
+	 * 
+	 * @param querySelect
+	 * @param queryFrom
+	 * @param queryWhere
+	 * @param start
+	 * @param limit
+	 * @return
+	 */
+	String buildQuery(String querySelect, String queryFrom,
+			String queryWhere, int start, int limit);
+
+	/**
+	 * Building query based on current dialect
+	 * 
+	 * @param querySelect
+	 * @param queryFrom
+	 * @param queryWhere
+	 * @param start
+	 * @param limit
+	 * @return
+	 */
+	String buildQuery(String string, String string2, String string3);
 }

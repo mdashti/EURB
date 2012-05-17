@@ -14,7 +14,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
  */
 public class AbstractDAO
 {
-	public final static int DEFAULT_PAGE_SIZE=15;
+	public final static int DEFAULT_PAGE_SIZE=25;
 	public final static String DEFAULT_PAGE_SIZE_STR=DEFAULT_PAGE_SIZE+"";
 	public static final String ASCENDING_SORT_ORDER = "ASC";
 	public static final String DESCENDING_SORT_ORDER = "DESC";

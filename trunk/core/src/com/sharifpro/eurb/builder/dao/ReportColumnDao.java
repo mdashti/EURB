@@ -49,6 +49,11 @@ public interface ReportColumnDao
 	public List<ReportColumn> findAll(ReportDesign design) throws ReportColumnDaoException;
 	
 	/** 
+	 * Returns all rows from the report_column table that match the criteria 'design_id = :design.getId()' order by col order.
+	 */
+	public List<ReportColumn> findAllSortByColOrder(ReportDesign design) throws ReportColumnDaoException;
+	
+	/** 
 	 * Counts all rows from the report_column table that match the criteria 'design_id = :design.getId()'.
 	 */
 	public int countAll(ReportDesign design) throws ReportColumnDaoException;
