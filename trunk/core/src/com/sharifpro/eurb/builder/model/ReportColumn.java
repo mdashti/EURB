@@ -670,6 +670,7 @@ public class ReportColumn extends PersistableObject implements Serializable
 		public int compare(ReportColumn thiz, ReportColumn that) {
 			Integer thizSortOrder = thiz.getSortOrder();
 			Integer thatSortOrder = that.getSortOrder();
+			//NULL sortOrder columns must be added to end of the sort columns
 			if(thizSortOrder == null && thatSortOrder == null) {
 				return 0;
 			} else if(thizSortOrder == null) {

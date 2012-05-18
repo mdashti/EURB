@@ -305,13 +305,13 @@ EURB.ReportColumn.ColumnGrid = Ext.extend(Ext.grid.GridPanel, {
 		var config = {
 			store: EURB.ReportColumn.store
 			,columns:EURB.ReportColumn.cols
-			,plugins:[new Ext.ux.grid.Search({
+			,plugins:[/*new Ext.ux.grid.Search({
 				iconCls:'icon-zoom'
 				//,readonlyIndexes:['name']
 				//,minChars:2
 				,autoFocus:true
 			//				,menuStyle:'radio'
-			}), this.rowActions, this.recordForm]
+			}),*/ this.rowActions, this.recordForm]
 			,viewConfig:{forceFit:true}
 			,tbar:[{
 				 text:EURB.addRecord

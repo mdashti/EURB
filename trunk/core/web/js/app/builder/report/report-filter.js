@@ -161,13 +161,13 @@ EURB.ReportFilter.FitlerGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 		var config = {
 			store: EURB.ReportFilter.store
 			,columns:EURB.ReportFilter.cols
-			,plugins:[new Ext.ux.grid.Search({
+			,plugins:[/*new Ext.ux.grid.Search({
 				iconCls:'icon-zoom'
 				//,readonlyIndexes:['name']
 				//,minChars:2
 				,autoFocus:true
 			//				,menuStyle:'radio'
-			}), this.rowActions, this.recordForm]
+			}),*/ this.rowActions, this.recordForm]
 			,viewConfig:{forceFit:true}
 			,tbar:[{
 					 text:EURB.addRecord
