@@ -203,6 +203,16 @@ public class ReportFilter extends PersistableObject implements Serializable
 	}
 
 	/**
+	 * Method 'getOperatorObj'
+	 * 
+	 * @return ReportFilterOperator
+	 */
+	public ReportFilterOperator getOperatorObj()
+	{
+		return ReportFilterOperator.getInstance(operator);
+	}
+
+	/**
 	 * Method 'getSuffix'
 	 * 
 	 * @return String
@@ -515,4 +525,44 @@ public class ReportFilter extends PersistableObject implements Serializable
 		return ret.toString();
 	}
 
+	public static class ReportFilterOperator {
+		public final String operator;
+		public final int numberOfOperands;
+
+		private final static ReportFilterOperator IS_NOT_NULL = new ReportFilterOperator("IS NOT NULL", 0);
+		private final static ReportFilterOperator IS_NULL = new ReportFilterOperator("IS NULL", 1);
+		private final static ReportFilterOperator EQUALS = new ReportFilterOperator("=", 1);
+		private final static ReportFilterOperator NOT_EQUALS = new ReportFilterOperator("<>", 1);
+		private final static ReportFilterOperator SMALLER_THAN = new ReportFilterOperator("<", 1);
+		private final static ReportFilterOperator GREATER_THAN = new ReportFilterOperator(">", 1);
+		private final static ReportFilterOperator BETWEEN = new ReportFilterOperator("BETWEEN", 1);
+		private final static ReportFilterOperator LIKE = new ReportFilterOperator("LIKE", 1);
+
+		
+		private ReportFilterOperator(String operator, int numberOfOperands) {
+			this.operator = operator;
+			this.numberOfOperands = numberOfOperands;
+		}
+		
+		public static ReportFilterOperator getInstance(String operator) {
+			if(IS_NOT_NULL.operator.equalsIgnoreCase(operator)) {
+				return IS_NOT_NULL;
+			} else if(IS_NULL.operator.equalsIgnoreCase(operator)) {
+				return IS_NULL;
+			} else if(EQUALS.operator.equalsIgnoreCase(operator)) {
+				return EQUALS;
+			} else if(NOT_EQUALS.operator.equalsIgnoreCase(operator)) {
+				return NOT_EQUALS;
+			} else if(SMALLER_THAN.operator.equalsIgnoreCase(operator)) {
+				return SMALLER_THAN;
+			} else if(GREATER_THAN.operator.equalsIgnoreCase(operator)) {
+				return GREATER_THAN;
+			} else if(BETWEEN.operator.equalsIgnoreCase(operator)) {
+				return BETWEEN;
+			} else if(LIKE.operator.equalsIgnoreCase(operator)) {
+				return LIKE;
+			}
+			return null;
+		}
+	}
 }

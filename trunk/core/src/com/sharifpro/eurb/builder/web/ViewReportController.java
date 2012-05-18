@@ -25,6 +25,7 @@ import com.sharifpro.eurb.builder.dao.ReportCategoryDao;
 import com.sharifpro.eurb.builder.dao.ReportColumnDao;
 import com.sharifpro.eurb.builder.dao.ReportDatasetDao;
 import com.sharifpro.eurb.builder.dao.ReportDesignDao;
+import com.sharifpro.eurb.builder.dao.ReportFilterDao;
 import com.sharifpro.eurb.builder.exception.ReportExecutionHistoryDaoException;
 import com.sharifpro.eurb.builder.intermediate.ExtGridColumn;
 import com.sharifpro.eurb.builder.intermediate.ExtStoreField;
@@ -32,6 +33,7 @@ import com.sharifpro.eurb.builder.model.ReportCategory;
 import com.sharifpro.eurb.builder.model.ReportColumn;
 import com.sharifpro.eurb.builder.model.ReportDataset;
 import com.sharifpro.eurb.builder.model.ReportDesign;
+import com.sharifpro.eurb.builder.model.ReportFilter;
 import com.sharifpro.eurb.management.mapping.dao.DbConfigDao;
 import com.sharifpro.eurb.management.mapping.dao.TableMappingDao;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
@@ -57,6 +59,7 @@ public class ViewReportController {
 	private ReportColumnDao reportColumnDao;
 	private TableMappingDao tableMappingDao;
 	private DbConfigDao dbConfigDao;
+	private ReportFilterDao reportFilterDao;
 	private JsonUtil jsonUtil;
 
 
@@ -119,15 +122,18 @@ public class ViewReportController {
 			
 			//find report design with given id
 			ReportDesign reportDesign = reportDesignDao.findByPrimaryKey(report, version);
-			
 			List<ReportDataset> datasetList = reportDatasetDao.findAll(reportDesign);
 			List<ReportColumn> columnList = reportColumnDao.findAll(reportDesign);
+			Map<Long, ReportColumn> columnMap = new HashMap<Long, ReportColumn>();
+			List<ReportFilter> reportFilters = reportFilterDao.findAll(reportDesign.getId());
 			
 			//Build QUERY
 			///Build SELECT Part
 			StringBuilder querySelectSB = new StringBuilder("Select ");	
 			boolean firstCol = true;
 			for(ReportColumn col : columnList) {
+				//@ TODO key for this map and all its usages must be col.getId()
+				columnMap.put(col.getColumnMappingId(), col);
 				if(!firstCol) {
 					querySelectSB.append(", ");
 				}
@@ -155,7 +161,29 @@ public class ViewReportController {
 					firstDS = false;
 				}
 			}
-			StringBuilder queryWhereSB = new StringBuilder(" WHERE 1=1 ");
+			//Build Where part
+			StringBuilder queryWhereSB = new StringBuilder();
+			ReportFilter.ReportFilterOperator oper;
+			boolean firstFilter = true;
+			for(ReportFilter filter : reportFilters) {
+				ReportColumn relatedCol = columnMap.get(filter.getColumnMappingId());
+				if(relatedCol != null) {
+					oper = filter.getOperatorObj();
+					if(firstFilter) {
+						queryWhereSB.append(" WHERE ");
+						firstFilter = false;
+					}
+					queryWhereSB.append(" ").append(relatedCol.getDatabaseKey()).append(" ").append(filter.getOperator()).append(" ");
+					if(oper.numberOfOperands == 0) {
+						queryWhereSB.append(oper.operator);
+					} else if(oper.numberOfOperands == 1) {
+						queryWhereSB.append("?");
+					} else if(oper.numberOfOperands == 2) {
+						queryWhereSB.append("? and ?");
+					}
+				}
+			}
+			
 			//Build ORDER BY part
 			StringBuilder querySortSB = new StringBuilder();
 			List<ReportColumn> sortCols = new LinkedList<ReportColumn>();
@@ -202,7 +230,22 @@ public class ViewReportController {
 				Map<String,Object> result;
 				DBBean db = new DBBean(dbConf.getDataSource());
 				String countQuery = dialect.buildCountQuery(querySelect, queryFrom, queryWhere);
-				db.executeQuery(countQuery);
+				if(queryWhere.isEmpty()) {
+					db.executeQuery(countQuery);
+				} else {
+					int index = 1;
+					db.prepareStatement(countQuery);
+					for(ReportFilter filter : reportFilters) {
+						oper = filter.getOperatorObj();
+						if(oper.numberOfOperands == 1) {
+							db.pstmt.setObject(index++, filter.getOperand1());
+						} else if(oper.numberOfOperands == 2) {
+							db.pstmt.setObject(index++, filter.getOperand1());
+							db.pstmt.setObject(index++, filter.getOperand2());
+						}
+					}
+					db.executePrepared();
+				}
 				if(db.result.next()) {
 					total = db.result.getInt(1);
 				}
@@ -215,8 +258,23 @@ public class ViewReportController {
 					finalQuery = dialect.buildQuery(querySelect,queryFrom,queryWhere, querySort, Integer.parseInt(start), Integer.parseInt(limit));
 					counter += Integer.parseInt(start);
 				}
-				db.executeQuery(finalQuery);
-				
+
+				if(queryWhere.isEmpty()) {
+					db.executeQuery(finalQuery);
+				} else {
+					int index = 1;
+					db.prepareStatement(finalQuery);
+					for(ReportFilter filter : reportFilters) {
+						oper = filter.getOperatorObj();
+						if(oper.numberOfOperands == 1) {
+							db.pstmt.setObject(index++, filter.getOperand1());
+						} else if(oper.numberOfOperands == 2) {
+							db.pstmt.setObject(index++, filter.getOperand1());
+							db.pstmt.setObject(index++, filter.getOperand2());
+						}
+					}
+					db.executePrepared();
+				}
 				while(db.result.next()) {
 					result = new HashMap<String, Object>();
 					result.put("id", counter++);
@@ -270,6 +328,11 @@ public class ViewReportController {
 	@Autowired
 	public void setDbConfigDao(DbConfigDao dbConfigDao) {
 		this.dbConfigDao = dbConfigDao;
+	}
+
+	@Autowired
+	public void setReportFilterDao(ReportFilterDao reportFilterDao) {
+		this.reportFilterDao = reportFilterDao;
 	}
 
 	@Autowired
