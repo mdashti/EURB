@@ -122,7 +122,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 
 		dto.setColOrder( new Integer( rs.getInt(++i) ) );
 		dto.setSortOrder( (Integer) rs.getObject(++i) );
-		dto.setSortType( (Integer) rs.getObject(++i)  );
+		dto.setSortType( rs.getInt(++i)  );
 		dto.setGroupLevel( (Integer) rs.getObject(++i) );
 		if (rs.wasNull()) {
 			dto.setGroupLevel( null );
@@ -349,7 +349,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	}
 
 	/** 
-	 * Returns all rows from the report_column table that match the criteria 'col_type = :colTypeName'.
+	 * Returns all rows from the report_column table that match the criteria 'col_type = :colType'.
 	 */
 	@Transactional
 	public List<ReportColumn> findWhereColTypeEquals(Integer colType) throws ReportColumnDaoException

@@ -1,6 +1,7 @@
 package com.sharifpro.eurb.builder.model;
 
 import java.io.Serializable;
+import java.util.Comparator;
 
 import com.sharifpro.eurb.management.mapping.model.ColumnMapping;
 import com.sharifpro.eurb.management.mapping.model.PersistableObject;
@@ -9,6 +10,10 @@ public class ReportColumn extends PersistableObject implements Serializable
 {
 	private static final long serialVersionUID = 608566522317972974L;
 
+	public final static Integer SORT_TYPE_NO_SORT = 0;
+	public final static Integer SORT_TYPE_ASC = 1;
+	public final static Integer SORT_TYPE_DESC = 2;
+	
 	/** 
 	 * This attribute maps to the column dataset_id in the report_column table.
 	 */
@@ -173,7 +178,7 @@ public class ReportColumn extends PersistableObject implements Serializable
 	/**
 	 * Method 'setColType'
 	 * 
-	 * @param colTypeName
+	 * @param colType
 	 */
 	public void setColType(Integer colType)
 	{
@@ -471,7 +476,7 @@ public class ReportColumn extends PersistableObject implements Serializable
 			return false;
 		}
 		
-		/*if (colTypeName == null ? _cast.colType != colTypeName : !colTypeName.equals( _cast.colType )) {
+		/*if (colType == null ? _cast.colType != colType : !colType.equals( _cast.colType )) {
 			return false;
 		}
 		
@@ -547,8 +552,8 @@ public class ReportColumn extends PersistableObject implements Serializable
 			_hashCode = 29 * _hashCode + designVersionId.hashCode();
 		}
 		
-		/*if (colTypeName != null) {
-			_hashCode = 29 * _hashCode + colTypeName.hashCode();
+		/*if (colType != null) {
+			_hashCode = 29 * _hashCode + colType.hashCode();
 		}
 		
 		if (columnMappingId != null) {
@@ -619,7 +624,7 @@ public class ReportColumn extends PersistableObject implements Serializable
 		ret.append( ", datasetId=" + datasetId );
 		ret.append( ", designId=" + designId );
 		ret.append( ", designVersionId=" + designVersionId );
-		ret.append( ", colTypeName=" + colType );
+		ret.append( ", colType=" + colType );
 		ret.append( ", columnMappingId=" + columnMappingId );
 		ret.append( ", reportColumnId=" + reportColumnId );
 		ret.append( ", colOrder=" + colOrder );
@@ -635,4 +640,42 @@ public class ReportColumn extends PersistableObject implements Serializable
 		return ret.toString();
 	}
 
+	/**
+	 * The return value is used as key referring to this column
+	 * usually used in UI elements
+	 * 
+	 * @return column key
+	 */
+	public String getColumnKey() {
+		return "t"+this.getDatasetId()+"_"+this.getColumnMapping().getColumnName() + this.getColumnMappingId();
+	}
+
+	/**
+	 * The return value is used as key referring to this column
+	 * usually used in queries
+	 * 
+	 * @return column key
+	 */
+	public String getDatabaseKey() {
+		return "t"+this.getDatasetId()+"."+this.getColumnMapping().getColumnName();
+	}
+	
+	public static class ReportColumnSortOrderComparator implements Comparator<ReportColumn> {
+
+		@Override
+		public int compare(ReportColumn thiz, ReportColumn that) {
+			Integer thizSortOrder = thiz.getSortOrder();
+			Integer thatSortOrder = that.getSortOrder();
+			if(thizSortOrder == null && thatSortOrder == null) {
+				return 0;
+			} else if(thizSortOrder == null) {
+				return 1;
+			} else if(thatSortOrder == null) {
+				return -1;
+			} else {
+				return thizSortOrder - thatSortOrder;
+			}
+		}
+		
+	}
 }

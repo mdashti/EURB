@@ -379,4 +379,13 @@ public class TableMapping extends PersistableObject implements Serializable
 		return ret.toString();
 	}
 
+	public Object getTableFullName() {
+		StringBuilder fullName = new StringBuilder();
+		if(!StringUtils.isEmpty(this.getCatalog())) {
+			fullName.append(this.getCatalog()).append(".");
+		}
+		fullName.append(this.getTableName());
+		return fullName.toString();
+	}
+
 }

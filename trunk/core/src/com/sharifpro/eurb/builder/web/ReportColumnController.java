@@ -117,6 +117,8 @@ public class ReportColumnController {
 					pk = reportColumnDao.insert(reportColumn);
 				} else {
 					pk = reportColumn.createPk();
+					//@ TODO : set col  type correctly
+					reportColumn.setColType(1);
 					reportColumnDao.update(pk,reportColumn);
 				}
 				insertIds.add(pk.getId());

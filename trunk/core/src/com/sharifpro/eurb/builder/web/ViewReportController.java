@@ -2,6 +2,7 @@ package com.sharifpro.eurb.builder.web;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -88,7 +89,7 @@ public class ViewReportController {
 		
 		int totalWidth = 0;
 		for(ReportColumn col : columnList) {
-			String key = "t"+col.getDatasetId()+"_"+col.getColumnMapping().getColumnName() + col.getColumnMappingId();
+			String key = col.getColumnKey();
 			storeFields.add(new ExtStoreField(key));
 			gridColumns.add(new ExtGridColumn(col.getColumnHeader(), key, col.getColumnWidth()));
 			totalWidth += col.getColumnWidth();
@@ -123,22 +124,29 @@ public class ViewReportController {
 			List<ReportColumn> columnList = reportColumnDao.findAll(reportDesign);
 			
 			//Build QUERY
-			
-			StringBuilder querySelect = new StringBuilder("Select ");
-			StringBuilder queryFrom = new StringBuilder(" From ");
-			StringBuilder queryWhere = new StringBuilder(" WHERE 1=1 ");
-	
+			///Build SELECT Part
+			StringBuilder querySelectSB = new StringBuilder("Select ");	
+			boolean firstCol = true;
+			for(ReportColumn col : columnList) {
+				if(!firstCol) {
+					querySelectSB.append(", ");
+				}
+				querySelectSB.append(col.getDatabaseKey());
+				
+				if(firstCol) {
+					firstCol = false;
+				}
+			}
+			//Build FROM part
+			StringBuilder queryFromSB = new StringBuilder(" From ");
 			boolean firstDS = true;
 			for(ReportDataset ds : datasetList) {
 				if(DBBean.isValidIdentifier(ds.getTableMappingId())) { // is directly bound to table
 					TableMapping table = tableMappingDao.findByPrimaryKey(ds.getTableMappingId());
 					if(!firstDS){
-						queryFrom.append(", ");
+						queryFromSB.append(", ");
 					}
-					if(!StringUtils.isEmpty(table.getCatalog())) {
-						queryFrom.append(table.getCatalog()).append(".");
-					}
-					queryFrom.append(table.getTableName()).append(" t").append(ds.getId());
+					queryFromSB.append(table.getTableFullName()).append(" t").append(ds.getId());
 					dbConfigId = table.getDbConfigId();
 				} else { //is a report base on report
 					//TODO report based on report must be handled
@@ -147,22 +155,34 @@ public class ViewReportController {
 					firstDS = false;
 				}
 			}
-			
-			boolean firstCol = true;
+			StringBuilder queryWhereSB = new StringBuilder(" WHERE 1=1 ");
+			//Build ORDER BY part
+			StringBuilder querySortSB = new StringBuilder();
+			List<ReportColumn> sortCols = new LinkedList<ReportColumn>();
 			for(ReportColumn col : columnList) {
-				if(!firstCol) {
-					querySelect.append(", ");
+				if(col.getSortType() != null && (ReportColumn.SORT_TYPE_ASC.equals(col.getSortType()) || ReportColumn.SORT_TYPE_DESC.equals(col.getSortType()))) {
+					sortCols.add(col);
 				}
-				querySelect.append("t").append(col.getDatasetId()).append(".").append(col.getColumnMapping().getColumnName());
-				
-				if(firstCol) {
-					firstCol = false;
+			}
+			if(!sortCols.isEmpty()) {
+				querySortSB.append(" ORDER BY ");
+				Collections.sort(sortCols, new ReportColumn.ReportColumnSortOrderComparator());
+				boolean firstSort = true;
+				for(ReportColumn col : sortCols) {
+					if(!firstSort){
+						querySortSB.append(", ");
+					}
+					querySortSB.append(col.getDatabaseKey()).append(" ").append(col.getSortType() == ReportColumn.SORT_TYPE_DESC ? "DESC" : "ASC");
+					if(firstSort) {
+						firstSort = false;
+					}
 				}
 			}
 			
-			
-			StringBuilder countQuery = new StringBuilder();
-			countQuery.append("SELECT COUNT(*)").append(queryFrom).append(queryWhere);
+			String querySelect = querySelectSB.toString();
+			String queryFrom = queryFromSB.toString();
+			String queryWhere = queryWhereSB.toString();
+			String querySort = querySortSB.toString();
 			
 			
 			//Execute QUERY
@@ -176,29 +196,32 @@ public class ViewReportController {
 					throw new ReportExecutionHistoryDaoException(PropertyProvider.get("eurb.app.management.table.dbConfigIsInvalid"));
 				}
 				conn.setReadOnly(true);
+
+				HibernateDialect dialect = dbConf.getDialect();
+				
 				Map<String,Object> result;
 				DBBean db = new DBBean(dbConf.getDataSource());
-				db.executeQuery(countQuery.toString());
+				String countQuery = dialect.buildCountQuery(querySelect, queryFrom, queryWhere);
+				db.executeQuery(countQuery);
 				if(db.result.next()) {
 					total = db.result.getInt(1);
 				}
 				
 				String finalQuery;
-				HibernateDialect dialect = dbConf.getDialect();
+				int counter = 1;
 				if(start == null || limit == null) {
-					finalQuery = dialect.buildQuery(querySelect.toString(),queryFrom.toString(),queryWhere.toString());
+					finalQuery = dialect.buildQuery(querySelect,queryFrom,queryWhere, querySort);
 				} else {
-					finalQuery = dialect.buildQuery(querySelect.toString(),queryFrom.toString(),queryWhere.toString(),Integer.parseInt(start), Integer.parseInt(limit));
+					finalQuery = dialect.buildQuery(querySelect,queryFrom,queryWhere, querySort, Integer.parseInt(start), Integer.parseInt(limit));
+					counter += Integer.parseInt(start);
 				}
 				db.executeQuery(finalQuery);
 				
-				int counter = 1 + Integer.parseInt(start);
 				while(db.result.next()) {
 					result = new HashMap<String, Object>();
 					result.put("id", counter++);
 					for(ReportColumn col : columnList) {
-						String key = "t"+col.getDatasetId()+"_"+col.getColumnMapping().getColumnName() + col.getColumnMappingId();
-						result.put(key, db.result.getObject("t"+col.getDatasetId()+"."+col.getColumnMapping().getColumnName()));
+						result.put(col.getColumnKey(), db.result.getObject(col.getDatabaseKey()));
 					}
 					resultList.add(result);
 				}

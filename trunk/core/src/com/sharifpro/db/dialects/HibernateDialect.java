@@ -1255,10 +1255,23 @@ public interface HibernateDialect extends StringTemplateConstants {
 	 * @return
 	 */
 	String buildQuery(String querySelect, String queryFrom,
-			String queryWhere, int start, int limit);
+			String queryWhere, String querySort, int start, int limit);
 
 	/**
 	 * Building query based on current dialect
+	 * 
+	 * @param querySelect
+	 * @param queryFrom
+	 * @param queryWhere
+	 * @param querySort 
+	 * @param start
+	 * @param limit
+	 * @return
+	 */
+	String buildQuery(String querySelect, String queryFrom, String queryWhere, String querySort);
+
+	/**
+	 * Building count query based on current dialect
 	 * 
 	 * @param querySelect
 	 * @param queryFrom
@@ -1267,5 +1280,5 @@ public interface HibernateDialect extends StringTemplateConstants {
 	 * @param limit
 	 * @return
 	 */
-	String buildQuery(String string, String string2, String string3);
+	String buildCountQuery(String querySelect, String queryFrom, String queryWhere);
 }

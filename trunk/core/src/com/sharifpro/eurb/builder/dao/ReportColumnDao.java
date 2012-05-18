@@ -99,7 +99,7 @@ public interface ReportColumnDao
 	public List<ReportColumn> findWhereDesignVersionIdEquals(Long designVersionId) throws ReportColumnDaoException;
 
 	/** 
-	 * Returns all rows from the report_column table that match the criteria 'col_type = :colTypeName'.
+	 * Returns all rows from the report_column table that match the criteria 'col_type = :colType'.
 	 */
 	public List<ReportColumn> findWhereColTypeEquals(Integer colType) throws ReportColumnDaoException;
 

@@ -931,18 +931,26 @@ public class CommonHibernateDialect implements HibernateDialect,
 
 	@Override
 	public String buildQuery(String querySelect,
-			String queryFrom, String queryWhere, int start,
+			String queryFrom, String queryWhere, String querySort, int start,
 			int limit) {
 		
-		return buildQuery(querySelect, queryFrom, queryWhere) + " LIMIT " + limit + " OFFSET " + start;
+		return buildQuery(querySelect, queryFrom, queryWhere, querySort) + " LIMIT " + limit + " OFFSET " + start;
 	}
 
 	@Override
 	public String buildQuery(String querySelect,
-			String queryFrom, String queryWhere) {
+			String queryFrom, String queryWhere, String querySort) {
 		StringBuilder query = new StringBuilder();
-		query.append(querySelect).append(queryFrom).append(queryWhere);
+		query.append(querySelect).append(queryFrom).append(queryWhere).append(querySort);
 		return query.toString();
+	}
+
+	@Override
+	public String buildCountQuery(String querySelect,
+			String queryFrom, String queryWhere) {
+		StringBuilder countQuery = new StringBuilder();
+		countQuery.append("SELECT COUNT(*)").append(queryFrom).append(queryWhere);
+		return countQuery.toString();
 	}
 
 }
