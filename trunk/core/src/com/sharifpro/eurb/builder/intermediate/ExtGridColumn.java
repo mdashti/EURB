@@ -5,12 +5,16 @@ public class ExtGridColumn {
 	String id;
 	String dataIndex;
 	Integer width;
-	public ExtGridColumn(String header, String id, Integer width) {
+	String align;
+	String css;
+	public ExtGridColumn(String header, String id, Integer width, String align, String css) {
 		super();
 		this.header = header;
 		this.id = id;
 		this.dataIndex = id;
 		this.width = width;
+		this.align = align;
+		this.css = css;
 	}
 	public String getHeader() {
 		return header;
@@ -35,5 +39,17 @@ public class ExtGridColumn {
 	}
 	public void setWidth(Integer width) {
 		this.width = width;
+	}
+	public String getAlign() {
+		return align;
+	}
+	public void setAlign(String align) {
+		this.align = align;
+	}
+	public String getCss() {
+		return css;
+	}
+	public void setCss(String css) {
+		this.css = css;
 	}
 }

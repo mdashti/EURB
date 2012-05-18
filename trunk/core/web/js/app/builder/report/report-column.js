@@ -10,7 +10,7 @@ EURB.ReportColumn.alignCombo = new Ext.form.ComboBox({
             'alignValue',
             'alignLabel'
         ],
-        data: [['left', EURB.ReportColumn.leftAlign], ['middle', EURB.ReportColumn.middleAlign], ['right', EURB.ReportColumn.rightAlign]]
+        data: [['left', EURB.ReportColumn.leftAlign], ['center', EURB.ReportColumn.middleAlign], ['right', EURB.ReportColumn.rightAlign]]
     }),
     valueField: 'alignValue',
     displayField: 'alignLabel',

@@ -126,7 +126,7 @@ Ext.ux.GridPrinter = {
   bodyTpl:  new Ext.XTemplate(
     '<tr>',
       '<tpl for=".">',
-        '<td>\{{dataIndex}\}</td>',
+        '<td style="text-align:{align};{css}">\{{dataIndex}\}</td>',
       '</tpl>',
     '</tr>'
   )

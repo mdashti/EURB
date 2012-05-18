@@ -91,10 +91,10 @@ public class ViewReportController {
 		for(ReportColumn col : columnList) {
 			String key = col.getColumnKey();
 			storeFields.add(new ExtStoreField(key));
-			gridColumns.add(new ExtGridColumn(col.getColumnHeader(), key, col.getColumnWidth()));
+			gridColumns.add(new ExtGridColumn(col.getColumnHeader(), key, col.getColumnWidth(), col.getColumnAlign(), "direction:"+col.getColumnDir()+";"));
 			totalWidth += col.getColumnWidth();
 		}
-		gridColumns.add(0,new ExtGridColumn(PropertyProvider.get("eurb.app.builder.runreport.grid.radif"), "id", (int) (0.05 * totalWidth)));
+		gridColumns.add(0,new ExtGridColumn(PropertyProvider.get("eurb.app.builder.runreport.grid.radif"), "id", (int) (0.05 * totalWidth), "center", "direction:ltr;"));
 		
 		ModelAndView mv = new ModelAndView();
 		mv.addObject("report", report);

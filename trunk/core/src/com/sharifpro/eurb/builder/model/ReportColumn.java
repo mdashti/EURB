@@ -14,6 +14,10 @@ public class ReportColumn extends PersistableObject implements Serializable
 	public final static Integer SORT_TYPE_ASC = 1;
 	public final static Integer SORT_TYPE_DESC = 2;
 	
+	public final static String COLUMN_ALIGN_LEFT = "left";
+	public final static String COLUMN_ALIGN_RIGHT = "right";
+	public final static String COLUMN_ALIGN_CENTER = "center";
+	
 	/** 
 	 * This attribute maps to the column dataset_id in the report_column table.
 	 */
