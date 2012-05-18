@@ -52,7 +52,7 @@ EURB.ReportColumn.sortTypeCombo = new Ext.form.ComboBox({
             'sortTypeValue',
             'sortTypeLabel'
         ],
-        data: [[0, EURB.ReportColumn.ascendingSort], [1, EURB.ReportColumn.descendingSort]]
+        data: [[0, EURB.ReportColumn.noSort], [1, EURB.ReportColumn.ascendingSort], [2, EURB.ReportColumn.descendingSort]]
     }),
     valueField: 'sortTypeValue',
     displayField: 'sortTypeLabel',
@@ -113,9 +113,15 @@ EURB.ReportColumn.store = new Ext.data.Store({
 			,{name:'columnHeader', type:'string'}
 			,{name:'formula', type:'string'}
 			,{name:'colOrder', type:'int'}
-			,{name:'sortOrder', type:'int'}
+			,{name:'sortOrder', convert: function(value, row) {
+			        return (value == null) ? null : parseInt(value);
+			    }
+			 }
 			,{name:'sortType', type:'int'}
-			,{name:'groupLevel', type:'int'}
+			,{name:'groupLevel', convert: function(value, row) {
+			        return (value == null) ? null : parseInt(value);
+			    }
+			 }
 			,{name:'columnWidth', type:'int'}
 			,{name:'columnAlign', type:'string'}
 			,{name:'columnDir', type:'string'}
@@ -199,6 +205,7 @@ EURB.ReportColumn.cols = [{
 	,editor:new Ext.form.TextField({
 		allowBlank:true
 	})
+	,renderer: function(value) { return value == null ? '' : value;}
 },
 {
 	 header:EURB.ReportColumn.SortType

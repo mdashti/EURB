@@ -70,6 +70,7 @@
 			EURB.ReportColumn.rightAlign = '<spring:message code="eurb.app.builder.report.column.rightAlign" />';
 			EURB.ReportColumn.ltrDir = '<spring:message code="eurb.app.builder.report.column.ltrDir" />';
 			EURB.ReportColumn.rtlDir = '<spring:message code="eurb.app.builder.report.column.rtlDir" />';
+			EURB.ReportColumn.noSort = '<spring:message code="eurb.app.builder.report.column.noSort" />';
 			EURB.ReportColumn.ascendingSort = '<spring:message code="eurb.app.builder.report.column.ascSort" />';
 			EURB.ReportColumn.descendingSort = '<spring:message code="eurb.app.builder.report.column.descSort" />';
 			
