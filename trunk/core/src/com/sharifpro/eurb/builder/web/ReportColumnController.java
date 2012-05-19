@@ -38,7 +38,7 @@ public class ReportColumnController {
 
 	@RequestMapping(value="/builder/report/reportColumnSearch.spy")
 	public @ResponseBody Map<String,? extends Object> search(@RequestParam(required=true) Long reportDesign) throws Exception {
-		
+
 		try{
 			ReportDesign design = null;
 			if(reportDesign != null){
@@ -49,7 +49,7 @@ public class ReportColumnController {
 			}
 			List<ReportColumn> reportColumns = new ArrayList<ReportColumn>(0);
 			int totalCount = 0;
-			
+
 			if(design != null){
 				reportColumns = reportColumnDao.findAll(design);
 				totalCount = reportColumnDao.countAll(design);
@@ -62,7 +62,7 @@ public class ReportColumnController {
 			return JsonUtil.getModelMapError(e.getMessage());
 		}
 	}
-	
+
 
 	@RequestMapping(value="/builder/report/reportColumnStore.spy")
 	public @ResponseBody Map<String,? extends Object> store(@RequestParam Object data, @RequestParam(required=true) Long reportDesign
@@ -70,16 +70,22 @@ public class ReportColumnController {
 		try{
 
 			List<ReportColumn> reportColumns = jsonUtil.getListFromRequest(data, ReportColumn.class);
-			
+
 			List<Long> insertIds = new ArrayList<Long>(reportColumns.size());
 			ReportColumnPk pk;
 			for(ReportColumn reportColumn : reportColumns) {
 				reportColumn.setDesignId(reportDesign);
 				reportColumn.setDesignVersionId(reportVersion);
 				if(reportColumn.isNewRecord()) {
-					ColumnMapping columnMapping = columnMappingDao.findByPrimaryKey(reportColumn.getColumnMappingId());
-					List<ReportDataset> reportDataset = reportDatasetDao.findByReportDesignAndTableMapping(reportDesign, reportVersion, columnMapping.getTableMappingId());
-					reportColumn.setDatasetId(reportDataset.get(0).getId());
+					if(reportColumn.getColumnMappingId() != null){
+						ColumnMapping columnMapping = columnMappingDao.findByPrimaryKey(reportColumn.getColumnMappingId());
+						if(columnMapping != null){
+							List<ReportDataset> reportDataset = reportDatasetDao.findByReportDesignAndTableMapping(reportDesign, reportVersion, columnMapping.getTableMappingId());
+							if(reportDataset != null && reportDataset.size() > 0){
+								reportColumn.setDatasetId(reportDataset.get(0).getId());
+							}
+						}
+					}
 					//@ TODO : set col  type correctly
 					reportColumn.setColType(1);
 					reportColumn.setCustom(false);
@@ -92,7 +98,34 @@ public class ReportColumnController {
 				}
 				insertIds.add(pk.getId());
 			}
-			
+
+			return JsonUtil.getSuccessfulMapAfterStore(insertIds);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return JsonUtil.getModelMapError(e.getMessage());
+		}
+	}
+
+	@RequestMapping(value="/builder/report/reportColumnFormulaStore.spy")
+	public  @ResponseBody Map<String,? extends Object> storeFormula(@RequestParam(required=true) Long id, @RequestParam(required=true) String columnHeader
+			, @RequestParam(required=true) String formula) throws Exception {
+		ReportColumnPk pk;
+		List<Long> insertIds = new ArrayList<Long>(1);
+		try{
+
+			ReportColumn reportColumn = reportColumnDao.findWhereIdEquals(id).get(0);
+
+			reportColumn.setColumnHeader(columnHeader);
+			reportColumn.setFormula(formula);
+			reportColumn.setCustom(true);
+
+			pk = reportColumn.createPk();
+
+
+			reportColumnDao.update(pk,reportColumn);
+			insertIds.add(pk.getId());
+
 			return JsonUtil.getSuccessfulMapAfterStore(insertIds);
 
 		} catch (Exception e) {
@@ -111,7 +144,7 @@ public class ReportColumnController {
 				pkList.add(new ReportColumnPk(new Long(id)));
 			}
 			reportColumnDao.deleteAll(pkList);
-			
+
 			return JsonUtil.getSuccessfulMapAfterStore(deleteIds);
 
 		} catch (Exception e) {
@@ -119,12 +152,12 @@ public class ReportColumnController {
 			return JsonUtil.getModelMapError(e.getMessage());
 		}
 	}
-	
+
 	@Autowired
 	public void setColumnMappingDao(ColumnMappingDao columnMappingDao) {
 		this.columnMappingDao = columnMappingDao;
 	}
-	
+
 	@Autowired
 	public void setReportDatasetDao(ReportDatasetDao reportDatasetDao) {
 		this.reportDatasetDao = reportDatasetDao;
@@ -134,7 +167,7 @@ public class ReportColumnController {
 	public void setReportColumnDao(ReportColumnDao reportColumnDao) {
 		this.reportColumnDao = reportColumnDao;
 	}
-	
+
 	@Autowired
 	public void setReportDesignDao(ReportDesignDao reportDesignDao) {
 		this.reportDesignDao = reportDesignDao;

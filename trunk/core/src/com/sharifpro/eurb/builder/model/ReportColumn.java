@@ -116,6 +116,8 @@ public class ReportColumn extends PersistableObject implements Serializable
 	 */
 	public Long getDatasetId()
 	{
+		if(datasetId == 0)
+			return null;
 		return datasetId;
 	}
 

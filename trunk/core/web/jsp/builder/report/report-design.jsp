@@ -50,6 +50,7 @@
 			EURB.ReportColumn.storeAction = '<spring:url value="/builder/report/reportColumnStore.spy" />';
 			EURB.ReportColumn.updateComboContent = '<spring:url value="/builder/report/reportColumnComboContent.spy" />';
 			EURB.ReportColumn.columnSearchAction = '<spring:url value="/management/mapping/column/mappedColumnSearch.spy" />';
+			EURB.ReportColumn.editFormulaAction = '<spring:url value="/builder/report/reportColumnFormulaStore.spy" />';
 			
 			EURB.ReportColumn.title = '<spring:message code="eurb.app.builder.report.column.title" />';
 			
@@ -152,11 +153,11 @@
 			    valueField: 'id',
 			    displayField: 'title',
 			    forceSelection: true,
-			    allowBlank: false,
+			    allowBlank: true,
 			    listeners:{
 			    	select: function(combo,record,index){
 			    		rform = EURB.ReportColumn.reportColumnGrid.recordForm.form.getForm();
-			    		rform.items.itemAt(2).setValue(record.get('mappedName'));
+			    		rform.items.itemAt(1).setValue(record.get('mappedName'));
 			    	}
 			    }
 			});

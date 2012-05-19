@@ -64,29 +64,6 @@ EURB.ReportColumn.sortTypeCombo = new Ext.form.ComboBox({
 
 
 
-formulaColumn = function(){
-	mappedNameField = EURB.ReportColumn.reportColumnGrid.recordForm.form.getForm().items.itemAt(1);
-	headerField = EURB.ReportColumn.reportColumnGrid.recordForm.form.getForm().items.itemAt(2);
-	headerField.setValue('');
-	formulaCollapsible = Ext.getCmp('report-formula-collapsible');
-	formulaField = Ext.getCmp('report-column-formula');
-	mappedNameField.setDisabled(true);
-	mappedNameField.allowBlank = true;
-	hideFormField(mappedNameField);
-	showFormField(formulaCollapsible);
-	formulaField.allowBlank = false;
-}
-
-simpleColumn = function(){
-	mappedNameField = EURB.ReportColumn.reportColumnGrid.recordForm.form.getForm().items.itemAt(1);
-	formulaCollapsible = Ext.getCmp('report-formula-collapsible');
-	formulaField = Ext.getCmp('report-column-formula');
-	mappedNameField.setDisabled(false);
-	mappedNameField.allowBlank = false;
-	showFormField(mappedNameField);
-	formulaField.allowBlank = true;
-	hideFormField(formulaCollapsible);
-}
 
 ////////////////////////////data set grid/////////////////////////////////////
 
@@ -100,7 +77,6 @@ EURB.ReportColumn.store = new Ext.data.Store({
 			,{name:'designId', type:'int'}
 			,{name:'designVersionId', type:'int'}
 			,{name:'datasetId', type:'int'}
-			,{name:'isCustom', type:'boolean'}
 			,{name:'columnMappingId', type:'int'}
 			,{name:'columnHeader', type:'string'}
 			,{name:'formula', type:'string'}
@@ -162,32 +138,14 @@ EURB.ReportColumn.cols = [{
 	})
 },
 {
-	 header:EURB.ReportColumn.IsCustom
-	,id:'isCustom'
-	,dataIndex:'isCustom'
-	,width:10
-	,sortable:false
-	,hidden:true
-	,editor:new Ext.form.Checkbox({listeners: {
-        check: {
-            fn: function(){
-	            	if(this.checked){
-	            		formulaColumn();
-	            	}
-	            	else{
-	            		simpleColumn();
-	            	}
-            	}
-        }
-    }})
-},
-{
 	 header:EURB.ReportColumn.Formula
 	,id:'formula'
 	,dataIndex:'formula'
 	,width:30
 	,sortable:false
-	,editor:EURB.ReportColumn.formulaFieldSet
+	,editor:new Ext.form.TextField({
+		allowBlank:false
+	})
 },
 {
 	 header:EURB.ReportColumn.SortOrder
@@ -261,7 +219,7 @@ EURB.ReportColumn.ColumnGrid = Ext.extend(Ext.grid.GridPanel, {
              title:EURB.addEdit+' '+EURB.ReportColumn.title
             ,iconCls:'icon-edit-record'
             ,columnCount:1
-            ,ignoreFields:{id:true,designId:true,designVersionId:true,datasetId:true}
+            ,ignoreFields:{id:true,designId:true,designVersionId:true,datasetId:true,formula:true}
             ,formConfig:{
                  labelWidth:80
                 ,buttonAlign:'right'
@@ -276,6 +234,58 @@ EURB.ReportColumn.ColumnGrid = Ext.extend(Ext.grid.GridPanel, {
 				}				
 			}
         });
+        
+        var editFormulaForm = new Ext.form.FormPanel({
+			baseCls: 'x-plain',
+			labelWidth: 100,
+			defaultType: 'textfield',
+			items: [{
+			    name: 'id'
+			    ,allowBlank:false
+			    ,xtype: 'hidden'
+			},{
+			    fieldLabel: EURB.ReportColumn.ColumnHeader
+			    ,name: 'columnHeader'
+			    ,anchor:'100%'  // anchor width by percentage
+			    ,xtype: 'textfield'
+				,allowBlank:false
+				
+			},EURB.ReportColumn.formulaFieldSet]
+	    });
+        this.editFormulaForm = editFormulaForm;
+        var editFormulaWindow = new Ext.Window({
+			title: EURB.ReportColumn.formulaEditor,
+			width: 500,
+			height:300,
+			minWidth: 300,
+			closeAction: 'hide',
+			minHeight: 150,
+			layout: 'fit',
+			plain:true,
+			bodyStyle:'padding:5px;',
+			buttonAlign:'center',
+			items: editFormulaForm,
+		    buttons: [{
+		        text:Ext.MessageBox.buttonText.ok,
+		        handler: function() {
+		        	if(editFormulaForm.getForm().isValid()) {
+		        		editFormulaForm.getForm().submit({
+		        			url:EURB.ReportColumn.editFormulaAction,
+		        			success:function(form, action){
+		        				editFormulaWindow.hide();
+				        		EURB.ReportColumn.reportColumnGrid.store.reload();
+		        			}
+		        		});
+		        	}
+		        }
+		    },{
+		        text: Ext.MessageBox.buttonText.cancel,
+		        handler: function(){
+		            editFormulaWindow.hide();
+		        }
+		    }]
+		});
+		this.editFormulaWindow = editFormulaWindow;
 
 		// create row actions
 		this.rowActions = new Ext.ux.grid.RowActions({
@@ -286,6 +296,9 @@ EURB.ReportColumn.ColumnGrid = Ext.extend(Ext.grid.GridPanel, {
 			},{
                  iconCls:'icon-edit-record'
                 ,qtip:EURB.editRecord
+            },{
+            	iconCls:'icon-calculator'
+            	,qtip:EURB.editFormula
             }]
             ,widthIntercept:Ext.isSafari ? 4 : 2
             ,id:'actions'
@@ -366,11 +379,19 @@ EURB.ReportColumn.ColumnGrid = Ext.extend(Ext.grid.GridPanel, {
             case 'icon-edit-record':
             	{
             		this.recordForm.show(record, grid.getView().getCell(row, col));
-            		simpleColumn();
             	}
+            break;
+            case 'icon-calculator':
+            	this.editFormulaWindow.show(grid.getView().getCell(row, col),this.editFormulaFor(record),this);
             break;
 
         }
+    }
+	,editFormulaFor:function(record) {
+    	var frm = this.editFormulaForm.getForm();
+    	frm.reset();
+    	frm.loadRecord(record);
+    	//frm.findField('newpass').focus(false,500);
     }
 	,commitChanges:function() {
 		var records = this.store.getModifiedRecords();
@@ -381,7 +402,7 @@ EURB.ReportColumn.ColumnGrid = Ext.extend(Ext.grid.GridPanel, {
 		Ext.each(records, function(r, i) {
 			data.push(r.data);
 		}, this);
-		data[0].formula = Ext.getCmp('report-column-formula').getValue();
+		//data[0].formula = Ext.getCmp('report-column-formula').getValue();
 		var o = {
 			 url:EURB.ReportColumn.storeAction
 			,method:'post'

@@ -22,7 +22,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 {
 	private final static String QUERY_FROM_COLUMNS = "r.dataset_id, r.design_id, r.design_version_id, r.col_type, r.column_mapping_id, r.report_column_id, r.col_order, " +
 			"r.sort_order, r.sort_type, r.group_level, r.column_width, r.column_align, r.column_dir, r.column_header, r.is_custom, r.formula";
-	private final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + ", " + ColumnMappingDaoImpl.QUERY_FROM_COLUMNS + " FROM " + getTableName() + " r " + " INNER JOIN " + ColumnMappingDaoImpl.getTableName() + " o ON (r.column_mapping_id = o.id) " + " INNER JOIN " + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL + " ON (p.id = r.id)";
+	private final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + ", " + ColumnMappingDaoImpl.QUERY_FROM_COLUMNS + " FROM " + getTableName() + " r " + " LEFT JOIN " + ColumnMappingDaoImpl.getTableName() + " o ON (r.column_mapping_id = o.id) " + " INNER JOIN " + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL + " ON (p.id = r.id)";
 	private final static String COUNT_QUERY = "SELECT count(distinct(r.id)) FROM " + getTableName() + " r ";
 
 
@@ -56,11 +56,12 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	{
 		try{
 			DaoFactory.createPersistableObjectDao().update(pk);
-			jdbcTemplate.update("UPDATE " + getTableName() + " SET id = ?, dataset_id = ?, design_id = ?, design_version_id = ?, col_type = ?, column_mapping_id = ?, report_column_id = ?, col_order = ?, " +
-					"sort_order = ?, sort_type = ?, group_level = ?, column_width = ?, column_align = ?, column_dir = ?, column_header = ?, is_custom = ?, formula = ? WHERE id = ? AND dataset_id = ? AND " +
-					"design_id = ? AND design_version_id = ?",dto.getId(),dto.getDatasetId(),dto.getDesignId(),dto.getDesignVersionId(),dto.getColType(),dto.getColumnMappingId(),dto.getReportColumnId(),
-					dto.getColOrder(),dto.getSortOrder(),dto.getSortType(),dto.getGroupLevel(),dto.getColumnWidth(),dto.getColumnAlign(),dto.getColumnDir(),dto.getColumnHeader(),dto.isCustom(),dto.getFormula(),
-					pk.getId(),pk.getDatasetId(),pk.getDesignId(),pk.getDesignVersionId());
+			jdbcTemplate.update("UPDATE " + getTableName() + " SET dataset_id = ?, col_type = ?, column_mapping_id = ?, " +
+					"report_column_id = ?, col_order = ?, sort_order = ?, sort_type = ?, group_level = ?, column_width = ?, column_align = ?, column_dir = ?, " +
+					"column_header = ?, is_custom = ?, formula = ? WHERE id = ? ",
+					dto.getDatasetId(),dto.getColType(),dto.getColumnMappingId(),dto.getReportColumnId(),
+					dto.getColOrder(),dto.getSortOrder(),dto.getSortType(),dto.getGroupLevel(),dto.getColumnWidth(),dto.getColumnAlign(),dto.getColumnDir(),
+					dto.getColumnHeader(),dto.isCustom(),dto.getFormula(),pk.getId());
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
