@@ -73,18 +73,24 @@ public class ReportFilterController {
 			
 			List<Long> insertIds = new ArrayList<Long>(reportFilters.size());
 			ReportFilterPk pk;
-			for(ReportFilter ReportFilter : reportFilters) {
-				ReportFilter.setReportDesignId(reportDesign);
-				ReportFilter.setReportDesignVersionId(reportVersion);
-				if(ReportFilter.isNewRecord()) {
-					ColumnMapping columnMapping = columnMappingDao.findByPrimaryKey(ReportFilter.getColumnMappingId());
+			for(ReportFilter reportFilter : reportFilters) {
+				if(reportFilter.getOperand1ColumnMappingId() != null){
+					reportFilter.setFilterType(1);
+				}
+				else{
+					reportFilter.setFilterType(0);
+				}
+				reportFilter.setReportDesignId(reportDesign);
+				reportFilter.setReportDesignVersionId(reportVersion);
+				if(reportFilter.isNewRecord()) {
+					ColumnMapping columnMapping = columnMappingDao.findByPrimaryKey(reportFilter.getColumnMappingId());
 					List<ReportDataset> reportDataset = reportDatasetDao.findByReportDesignAndTableMapping(reportDesign, reportVersion, columnMapping.getTableMappingId());
-					ReportFilter.setReportDatasetId(reportDataset.get(0).getId());
+					reportFilter.setReportDatasetId(reportDataset.get(0).getId());
 					//@ TODO : set col  type correctly
-					pk = reportFilterDao.insert(ReportFilter);
+					pk = reportFilterDao.insert(reportFilter);
 				} else {
-					pk = ReportFilter.createPk();
-					reportFilterDao.update(pk,ReportFilter);
+					pk = reportFilter.createPk();
+					reportFilterDao.update(pk,reportFilter);
 				}
 				insertIds.add(pk.getId());
 			}

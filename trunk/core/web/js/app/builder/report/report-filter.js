@@ -25,20 +25,81 @@ EURB.ReportFilter.operatorCombo = new Ext.form.ComboBox({
     		rform = EURB.ReportFilter.reportFilterGrid.recordForm.form.getForm();
     		numOperands = record.get('operatorNumberOfOperands');
     		if(numOperands == 0){
-    			rform.items.itemAt(2).setDisabled(true);
     			rform.items.itemAt(3).setDisabled(true);
+    			rform.items.itemAt(4).setDisabled(true);
     		}
     		else if(numOperands == 1){
-    			rform.items.itemAt(2).setDisabled(false);
-    			rform.items.itemAt(3).setDisabled(true);
+    			rform.items.itemAt(3).setDisabled(false);
+    			rform.items.itemAt(4).setDisabled(true);
     		}
     		else if(numOperands == 2){
-    			rform.items.itemAt(2).setDisabled(false);
     			rform.items.itemAt(3).setDisabled(false);
+    			rform.items.itemAt(4).setDisabled(false);
     		}
     	}
     }
 });
+
+
+
+
+joinFilter = function(){
+	formItems = EURB.ReportFilter.reportFilterGrid.recordForm.form.getForm().items;
+	operator = formItems.itemAt(2);
+	operand1 = formItems.itemAt(3);
+	operand2 = formItems.itemAt(4);
+	operand1Column = formItems.itemAt(5);
+	
+	operand1.setDisabled(true);
+	operand1.allowBlank = true;
+	operand2.setDisabled(true);
+	operand2.allowBlank = true;
+	
+	hideFormField(operand1);
+	hideFormField(operand2);
+	showFormField(operand1Column);
+	
+	operand1Column.allowBlank = false;
+	operand1Column.setDisabled(false);
+	
+	operator.setValue('=');
+	operator.setReadOnly(true);
+}
+
+simpleFilter = function(){
+	formItems = EURB.ReportFilter.reportFilterGrid.recordForm.form.getForm().items;
+	operand1 = formItems.itemAt(3);
+	operand2 = formItems.itemAt(4);
+	operand1Column = formItems.itemAt(5);
+	
+	operand1Column.allowBlank = true;
+	operand1Column.setDisabled(true);
+	
+	showFormField(operand1);
+	showFormField(operand2);
+	hideFormField(operand1Column);
+	
+	operand1.setDisabled(false);
+	operand1.allowBlank = false;
+	operand2.setDisabled(false);
+	operand2.allowBlank = false;
+	
+	operator.setReadOnly(false);
+	
+	
+}
+
+
+checkFilterType = function() {
+	formItems = EURB.ReportFilter.reportFilterGrid.recordForm.form.getForm().items;
+	type = formItems.itemAt(1);
+	if(type.checked){
+		joinFilter();
+	}
+	else{
+		simpleFilter();
+	}
+}
 
 
 ////////////////////////////data set grid/////////////////////////////////////
@@ -49,14 +110,16 @@ EURB.ReportFilter.store = new Ext.data.Store({
 		,totalProperty:'totalCount'
 		,root:'data'
 		,fields:[
-			  {name:'id', type:'int'}
+			 {name:'id', type:'int'}
 			,{name:'reportDesignId', type:'int'}
 			,{name:'reportDesignVersionId', type:'int'}
 			,{name:'reportDatasetId', type:'int'}
 			,{name:'columnMappingId', type:'int'}
+			,{name:'filterType', type:'int'}
 			,{name:'operator', type:'string'}
 			,{name:'operand1', type:'string'}
 			,{name:'operand2', type:'string'}
+			,{name:'operand1ColumnMappingId', type:'int'}
 		]
 	})
 	,proxy:new Ext.data.HttpProxy({
@@ -72,7 +135,8 @@ EURB.ReportFilter.store = new Ext.data.Store({
 	,remoteSort:true
 });
 
-EURB.ReportFilter.cols = [{
+EURB.ReportFilter.cols = [
+{
 	 header:EURB.ReportFilter.Column
 	,id:'columnMappingId'
 	,dataIndex:'columnMappingId'
@@ -80,6 +144,26 @@ EURB.ReportFilter.cols = [{
 	,sortable:true
 	,editor:EURB.ReportFilter.columnCombo
 	,renderer:EURB.ReportDesign.comboRenderer(EURB.ReportFilter.columnCombo)
+},
+{
+	 header:EURB.ReportFilter.IsJoin
+	,id:'filterType'
+	,dataIndex:'filterType'
+	,width:10
+	,sortable:false
+	,hidden:true
+	,editor:new Ext.form.Checkbox({listeners: {
+        check: {
+            fn: function(){
+	            	if(this.checked){
+	            		joinFilter();
+	            	}
+	            	else{
+	            		simpleFilter();
+	            	}
+            	}
+        }
+    }})
 },
 {
 	 header:EURB.ReportFilter.Operator
@@ -109,7 +193,17 @@ EURB.ReportFilter.cols = [{
 	,editor:new Ext.form.TextField({
 		allowBlank:false
 	})
-}];
+},
+{
+	 header:EURB.ReportFilter.Operand1Column
+	,id:'operand1ColumnMappingId'
+	,dataIndex:'operand1ColumnMappingId'
+	,width:50
+	,sortable:true
+	,editor:EURB.ReportFilter.columnCombo
+	,renderer:EURB.ReportDesign.comboRenderer(EURB.ReportFilter.columnCombo)
+}
+];
 
 EURB.ReportFilter.FitlerGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 	// defaults - can be changed from outside
@@ -235,6 +329,7 @@ EURB.ReportFilter.FitlerGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 
             case 'icon-edit-record':
                 this.recordForm.show(record, grid.getView().getCell(row, col));
+                checkFilterType();
             break;
 
         }
@@ -289,15 +384,16 @@ EURB.ReportFilter.FitlerGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 	}
 	,showError:EURB.showError
 	,deleteRecord:function(record) {
-		this.getSelectionModel().selectRecords([record]);
 		this.deleteSelectedRecords();
 	}
 	,deleteSelectedRecords:function() {
-		var records = this.getSelectionModel().getSelections();
-		if(!records.length) {
+		var index = this.getSelectionModel().getSelectedCell();
+		if(!index) {
 			Ext.Msg.alert(Ext.MessageBox.title.warning, EURB.selectAtLeastOneRecordFisrt).setIcon(Ext.Msg.INFO);
 			return;
 		}
+		var record = this.store.getAt(index[0]);
+		records = [record];
 		Ext.Msg.show({
 			 title:EURB.areYouSureToDelTitle
 			,msg:String.format(EURB.areYouSureToDelete, records.length == 1 ? records[0].get('name') : EURB.records)

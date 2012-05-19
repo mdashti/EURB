@@ -90,6 +90,9 @@
 			EURB.ReportFilter.Operator = '<spring:message code="eurb.app.builder.report.filter.operator" />';
 			EURB.ReportFilter.Operand1 = '<spring:message code="eurb.app.builder.report.filter.operand1" />';
 			EURB.ReportFilter.Operand2 = '<spring:message code="eurb.app.builder.report.filter.operand2" />';
+			EURB.ReportFilter.Operand1Column = '<spring:message code="eurb.app.builder.report.filter.operand1Column" />';
+			EURB.ReportFilter.IsJoin = '<spring:message code="eurb.app.builder.report.filter.isJoin" />';
+			
 			EURB.ReportFilter.equal = '<spring:message code="eurb.app.builder.report.filter.equal" />';
 			EURB.ReportFilter.smallerThan = '<spring:message code="eurb.app.builder.report.filter.smallerThan" />';
 			EURB.ReportFilter.biggerThan = '<spring:message code="eurb.app.builder.report.filter.biggerThan" />';
@@ -139,12 +142,15 @@
 			        id: 0,
 			        fields: [
 			            'id',
-			            'mappedName'
+			            'title',
+			            'datasetId',
+			            'mappedName',
+			            'tableMappedName'
 			        ],
 			        data: ${columnMappingComboContent}
 			    }),
 			    valueField: 'id',
-			    displayField: 'mappedName',
+			    displayField: 'title',
 			    forceSelection: true,
 			    allowBlank: false,
 			    listeners:{
@@ -164,13 +170,16 @@
 			    store: new Ext.data.ArrayStore({
 			        id: 0,
 			        fields: [
-			            'id',
-			            'mappedName'
+						'id',
+						'title',
+						'datasetId',
+						'mappedName',
+						'tableMappedName'
 			        ],
 			        data: ${columnMappingComboContent}
 			    }),
 			    valueField: 'id',
-			    displayField: 'mappedName',
+			    displayField: 'title',
 			    forceSelection: true,
 			    allowBlank: true,
 			    listeners:{
@@ -189,13 +198,16 @@
 			    store: new Ext.data.ArrayStore({
 			        id: 0,
 			        fields: [
-			            'id',
-			            'mappedName'
+						'id',
+						'title',
+						'datasetId',
+						'mappedName',
+						'tableMappedName'
 			        ],
 			        data: ${columnMappingComboContent}
 			    }),
 			    valueField: 'id',
-			    displayField: 'mappedName',
+			    displayField: 'title',
 			    forceSelection: true,
 			    allowBlank: false
 			});
@@ -242,6 +254,18 @@
 				EURB.ReportColumn.reportColumnGrid.colModel.getColumnAt(0).setEditor(EURB.ReportDesign.columnCombo); */
 				window.location.href = EURB.baseURL+'builder/report/report'+EURB.ReportDesign.selectedDesign+'-design.spy';
 			};
+			
+			
+			
+			hideFormField = function(field){
+				field.hide();
+				field.container.up('div.x-form-item').setStyle('display', 'none');
+			}
+
+			showFormField = function(field){
+				field.show();
+				field.container.up('div.x-form-item').setStyle('display', 'block');
+			}
 
 		</script>
 		<script src="${resourcesUrl}/js/app/builder/report/formula-editor.js"></script>

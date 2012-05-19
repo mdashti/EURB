@@ -1,8 +1,7 @@
 package com.sharifpro.eurb.management.mapping.dao.impl;
 
 import com.sharifpro.eurb.DaoFactory;
-import com.sharifpro.eurb.builder.dao.impl.ReportDatasetDaoImpl;
-import com.sharifpro.eurb.builder.model.ReportDesign;
+import com.sharifpro.eurb.builder.model.ReportDataset;
 import com.sharifpro.eurb.management.mapping.dao.ColumnMappingDao;
 import com.sharifpro.eurb.management.mapping.exception.ColumnMappingDaoException;
 import com.sharifpro.eurb.management.mapping.model.ColumnMapping;
@@ -154,11 +153,10 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 	
 	
 	@Transactional
-	public List<ColumnMapping> findAllMapped(ReportDesign design) throws ColumnMappingDaoException
+	public List<ColumnMapping> findAllMapped(ReportDataset dataset) throws ColumnMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.mapped_name IS NOT NULL AND table_mapping_id IN " +
-					"(SELECT table_mapping_id FROM " + ReportDatasetDaoImpl.getTableName() + " WHERE design_id = ? and design_version_id = ?)  ORDER BY o.id", this, design.getId(), design.getVersionId());
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.mapped_name IS NOT NULL AND table_mapping_id = ?  ORDER BY o.id", this, dataset.getTableMappingId());
 		}
 		catch (Exception e) {
 			throw new ColumnMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);

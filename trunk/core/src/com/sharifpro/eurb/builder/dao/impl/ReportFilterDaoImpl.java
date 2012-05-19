@@ -19,7 +19,7 @@ public class ReportFilterDaoImpl extends AbstractDAO implements ParameterizedRow
 {
 
 	private final static String QUERY_FROM_COLUMNS = "o.column_mapping_id, o.report_dataset_id, o.report_design_id, o.report_design_version_id, o.prefix, o.operator, o.suffix, o.operand1, o.operand2, " +
-			"o.filter_type, o.operand1_column_id, o.operand1_column_dataset_id, o.operand1_column_design_id ";
+			"o.filter_type, o.operand1_column_mapping_id, o.operand1_dataset_id, o.operand1_report_column_id ";
 	private final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + " o " + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL_AND_JOIN;
 	private final static String COUNT_QUERY = "SELECT count(distinct(o.id)) FROM " + getTableName() + " o ";
 
@@ -36,9 +36,9 @@ public class ReportFilterDaoImpl extends AbstractDAO implements ParameterizedRow
 			ReportFilterPk pk = new ReportFilterPk();
 			DaoFactory.createPersistableObjectDao().insert(dto, pk);
 			jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, column_mapping_id, report_dataset_id, report_design_id, report_design_version_id, prefix, operator, suffix, operand1, " +
-					"operand2, filter_type, operand1_column_id, operand1_column_dataset_id, operand1_column_design_id ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",
+					"operand2, filter_type, operand1_column_mapping_id, operand1_dataset_id, operand1_report_column_id ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",
 					pk.getId(),dto.getColumnMappingId(),dto.getReportDatasetId(),dto.getReportDesignId(),dto.getReportDesignVersionId(),dto.getPrefix(),dto.getOperator(),dto.getSuffix(),dto.getOperand1(),
-					dto.getOperand2(),dto.getFilterType(),dto.getOperand1ColumnId(),dto.getOperand1ColumnDatasetId(),dto.getOperand1ColumnDesignId());
+					dto.getOperand2(),dto.getFilterType(),dto.getOperand1ColumnMappingId(),dto.getOperand1DatasetId(),dto.getOperand1ReportColumnId());
 			return pk;
 		}
 		catch (Exception e) {
@@ -55,9 +55,9 @@ public class ReportFilterDaoImpl extends AbstractDAO implements ParameterizedRow
 		try{
 			DaoFactory.createPersistableObjectDao().update(pk);
 			jdbcTemplate.update("UPDATE " + getTableName() + " SET id = ?, column_mapping_id = ?, report_dataset_id = ?, report_design_id = ?, report_design_version_id = ?, prefix = ?, operator = ?, " +
-					"suffix = ?, operand1 = ?, operand2 = ?, filter_type = ?, operand1_column_id = ?, operand1_column_dataset_id = ?, operand1_column_design_id = ? WHERE id = ?",
+					"suffix = ?, operand1 = ?, operand2 = ?, filter_type = ?, operand1_column_mapping_id = ?, operand1_dataset_id = ?, operand1_report_column_id = ? WHERE id = ?",
 					dto.getId(),dto.getColumnMappingId(),dto.getReportDatasetId(),dto.getReportDesignId(),dto.getReportDesignVersionId(),dto.getPrefix(),dto.getOperator(),dto.getSuffix(),dto.getOperand1(),
-					dto.getOperand2(),dto.getFilterType(),dto.getOperand1ColumnId(),dto.getOperand1ColumnDatasetId(),dto.getOperand1ColumnDesignId(),pk.getId());
+					dto.getOperand2(),dto.getFilterType(),dto.getOperand1ColumnMappingId(),dto.getOperand1DatasetId(),dto.getOperand1ReportColumnId(),pk.getId());
 		}
 		catch (Exception e) {
 			throw new ReportFilterDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -114,19 +114,19 @@ public class ReportFilterDaoImpl extends AbstractDAO implements ParameterizedRow
 			dto.setFilterType( null );
 		}
 
-		dto.setOperand1ColumnId( new Long( rs.getLong(++i) ) );
+		dto.setOperand1ColumnMappingId( new Long( rs.getLong(++i) ) );
 		if (rs.wasNull()) {
-			dto.setOperand1ColumnId( null );
+			dto.setOperand1ColumnMappingId( null );
 		}
 
-		dto.setOperand1ColumnDatasetId( new Long( rs.getLong(++i) ) );
+		dto.setOperand1DatasetId( new Long( rs.getLong(++i) ) );
 		if (rs.wasNull()) {
-			dto.setOperand1ColumnDatasetId( null );
+			dto.setOperand1DatasetId( null );
 		}
 
-		dto.setOperand1ColumnDesignId( new Long( rs.getLong(++i) ) );
+		dto.setOperand1ReportColumnId( new Long( rs.getLong(++i) ) );
 		if (rs.wasNull()) {
-			dto.setOperand1ColumnDesignId( null );
+			dto.setOperand1ReportColumnId( null );
 		}
 
 		return dto;
@@ -220,13 +220,13 @@ public class ReportFilterDaoImpl extends AbstractDAO implements ParameterizedRow
 	}
 
 	/** 
-	 * Returns all rows from the report_filter table that match the criteria 'operand1_column_id = :operand1ColumnId AND operand1_column_dataset_id = :operand1ColumnDatasetId AND operand1_column_design_id = :operand1ColumnDesignId'.
+	 * Returns all rows from the report_filter table that match the criteria 'operand1_column_mapping_id = :operand1ColumnId AND operand1_dataset_id = :operand1ColumnDatasetId AND operand1_report_column_id = :operand1ColumnDesignId'.
 	 */
 	@Transactional
 	public List<ReportFilter> findByReportColumn(Long operand1ColumnId, Long operand1ColumnDatasetId, Long operand1ColumnDesignId) throws ReportFilterDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.operand1_column_id = ? AND o.operand1_column_dataset_id = ? AND o.operand1_column_design_id = ?", this,operand1ColumnId,operand1ColumnDatasetId,operand1ColumnDesignId);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.operand1_column_mapping_id = ? AND o.operand1_dataset_id = ? AND o.operand1_report_column_id = ?", this,operand1ColumnId,operand1ColumnDatasetId,operand1ColumnDesignId);
 		}
 		catch (Exception e) {
 			throw new ReportFilterDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -415,13 +415,13 @@ public class ReportFilterDaoImpl extends AbstractDAO implements ParameterizedRow
 	}
 
 	/** 
-	 * Returns all rows from the report_filter table that match the criteria 'operand1_column_id = :operand1ColumnId'.
+	 * Returns all rows from the report_filter table that match the criteria 'operand1_column_mapping_id = :operand1ColumnId'.
 	 */
 	@Transactional
 	public List<ReportFilter> findWhereOperand1ColumnIdEquals(Long operand1ColumnId) throws ReportFilterDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.operand1_column_id = ? ORDER BY o.operand1_column_id", this,operand1ColumnId);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.operand1_column_mapping_id = ? ORDER BY o.operand1_column_mapping_id", this,operand1ColumnId);
 		}
 		catch (Exception e) {
 			throw new ReportFilterDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -430,13 +430,13 @@ public class ReportFilterDaoImpl extends AbstractDAO implements ParameterizedRow
 	}
 
 	/** 
-	 * Returns all rows from the report_filter table that match the criteria 'operand1_column_dataset_id = :operand1ColumnDatasetId'.
+	 * Returns all rows from the report_filter table that match the criteria 'operand1_dataset_id = :operand1ColumnDatasetId'.
 	 */
 	@Transactional
 	public List<ReportFilter> findWhereOperand1ColumnDatasetIdEquals(Long operand1ColumnDatasetId) throws ReportFilterDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.operand1_column_dataset_id = ? ORDER BY o.operand1_column_dataset_id", this,operand1ColumnDatasetId);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.operand1_dataset_id = ? ORDER BY o.operand1_dataset_id", this,operand1ColumnDatasetId);
 		}
 		catch (Exception e) {
 			throw new ReportFilterDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -445,13 +445,13 @@ public class ReportFilterDaoImpl extends AbstractDAO implements ParameterizedRow
 	}
 
 	/** 
-	 * Returns all rows from the report_filter table that match the criteria 'operand1_column_design_id = :operand1ColumnDesignId'.
+	 * Returns all rows from the report_filter table that match the criteria 'operand1_report_column_id = :operand1ColumnDesignId'.
 	 */
 	@Transactional
 	public List<ReportFilter> findWhereOperand1ColumnDesignIdEquals(Long operand1ColumnDesignId) throws ReportFilterDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.operand1_column_design_id = ? ORDER BY o.operand1_column_design_id", this,operand1ColumnDesignId);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.operand1_report_column_id = ? ORDER BY o.operand1_report_column_id", this,operand1ColumnDesignId);
 		}
 		catch (Exception e) {
 			throw new ReportFilterDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);

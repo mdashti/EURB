@@ -360,11 +360,11 @@ public class ReportFilterDaoExample
 		buf.append( ", " );
 		buf.append( dto.getFilterType() );
 		buf.append( ", " );
-		buf.append( dto.getOperand1ColumnId() );
+		buf.append( dto.getOperand1ColumnMappingId() );
 		buf.append( ", " );
-		buf.append( dto.getOperand1ColumnDatasetId() );
+		buf.append( dto.getOperand1DatasetId() );
 		buf.append( ", " );
-		buf.append( dto.getOperand1ColumnDesignId() );
+		buf.append( dto.getOperand1ReportColumnId() );
 		System.out.println( buf.toString() );
 	}
 

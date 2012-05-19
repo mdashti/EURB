@@ -59,19 +59,19 @@ public class ReportFilter extends PersistableObject implements Serializable
 	protected Integer filterType;
 
 	/** 
+	 * This attribute maps to the column operand1_column_mapping_id in the report_filter table.
+	 */
+	protected Long operand1ColumnMappingId;
+
+	/** 
+	 * This attribute maps to the column operand1_dataset_id in the report_filter table.
+	 */
+	protected Long operand1DatasetId;
+
+	/** 
 	 * This attribute maps to the column operand1_column_id in the report_filter table.
 	 */
-	protected Long operand1ColumnId;
-
-	/** 
-	 * This attribute maps to the column operand1_column_dataset_id in the report_filter table.
-	 */
-	protected Long operand1ColumnDatasetId;
-
-	/** 
-	 * This attribute maps to the column operand1_column_design_id in the report_filter table.
-	 */
-	protected Long operand1ColumnDesignId;
+	protected Long operand1ReportColumnId;
 
 	/**
 	 * Method 'ReportFilter'
@@ -293,63 +293,63 @@ public class ReportFilter extends PersistableObject implements Serializable
 	}
 
 	/**
-	 * Method 'getOperand1ColumnId'
+	 * Method 'getOperand1ColumnMappingId'
 	 * 
 	 * @return Long
 	 */
-	public Long getOperand1ColumnId()
+	public Long getOperand1ColumnMappingId()
 	{
-		return operand1ColumnId;
+		return operand1ColumnMappingId;
 	}
 
 	/**
-	 * Method 'setOperand1ColumnId'
+	 * Method 'setOperand1ColumnMappingId'
 	 * 
-	 * @param operand1ColumnId
+	 * @param operand1ColumnMappingId
 	 */
-	public void setOperand1ColumnId(Long operand1ColumnId)
+	public void setOperand1ColumnMappingId(Long operand1ColumnMappingId)
 	{
-		this.operand1ColumnId = operand1ColumnId;
+		this.operand1ColumnMappingId = operand1ColumnMappingId;
 	}
 
 	/**
-	 * Method 'getOperand1ColumnDatasetId'
-	 * 
-	 * @return Long
-	 */
-	public Long getOperand1ColumnDatasetId()
-	{
-		return operand1ColumnDatasetId;
-	}
-
-	/**
-	 * Method 'setOperand1ColumnDatasetId'
-	 * 
-	 * @param operand1ColumnDatasetId
-	 */
-	public void setOperand1ColumnDatasetId(Long operand1ColumnDatasetId)
-	{
-		this.operand1ColumnDatasetId = operand1ColumnDatasetId;
-	}
-
-	/**
-	 * Method 'getOperand1ColumnDesignId'
+	 * Method 'getOperand1DatasetId'
 	 * 
 	 * @return Long
 	 */
-	public Long getOperand1ColumnDesignId()
+	public Long getOperand1DatasetId()
 	{
-		return operand1ColumnDesignId;
+		return operand1DatasetId;
 	}
 
 	/**
-	 * Method 'setOperand1ColumnDesignId'
+	 * Method 'setOperand1DatasetId'
 	 * 
-	 * @param operand1ColumnDesignId
+	 * @param operand1DatasetId
 	 */
-	public void setOperand1ColumnDesignId(Long operand1ColumnDesignId)
+	public void setOperand1DatasetId(Long operand1DatasetId)
 	{
-		this.operand1ColumnDesignId = operand1ColumnDesignId;
+		this.operand1DatasetId = operand1DatasetId;
+	}
+
+	/**
+	 * Method 'getOperand1ReportColumnId'
+	 * 
+	 * @return Long
+	 */
+	public Long getOperand1ReportColumnId()
+	{
+		return operand1ReportColumnId;
+	}
+
+	/**
+	 * Method 'setOperand1ReportColumnId'
+	 * 
+	 * @param operand1ReportColumnId
+	 */
+	public void setOperand1ReportColumnId(Long operand1ReportColumnId)
+	{
+		this.operand1ReportColumnId = operand1ReportColumnId;
 	}
 
 	/**
@@ -519,9 +519,9 @@ public class ReportFilter extends PersistableObject implements Serializable
 		ret.append( ", operand1=" + operand1 );
 		ret.append( ", operand2=" + operand2 );
 		ret.append( ", filterType=" + filterType );
-		ret.append( ", operand1ColumnId=" + operand1ColumnId );
-		ret.append( ", operand1ColumnDatasetId=" + operand1ColumnDatasetId );
-		ret.append( ", operand1ColumnDesignId=" + operand1ColumnDesignId );
+		ret.append( ", operand1ColumnId=" + operand1ColumnMappingId );
+		ret.append( ", operand1ColumnDatasetId=" + operand1DatasetId );
+		ret.append( ", operand1ColumnDesignId=" + operand1ReportColumnId );
 		return ret.toString();
 	}
 

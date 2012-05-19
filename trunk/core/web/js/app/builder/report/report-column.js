@@ -62,15 +62,7 @@ EURB.ReportColumn.sortTypeCombo = new Ext.form.ComboBox({
 });
 
 
-hideFormField = function(field){
-	field.hide();
-	field.container.up('div.x-form-item').setStyle('display', 'none');
-}
 
-showFormField = function(field){
-	field.show();
-	field.container.up('div.x-form-item').setStyle('display', 'block');
-}
 
 formulaColumn = function(){
 	mappedNameField = EURB.ReportColumn.reportColumnGrid.recordForm.form.getForm().items.itemAt(1);
@@ -175,6 +167,7 @@ EURB.ReportColumn.cols = [{
 	,dataIndex:'isCustom'
 	,width:10
 	,sortable:false
+	,hidden:true
 	,editor:new Ext.form.Checkbox({listeners: {
         check: {
             fn: function(){
@@ -430,15 +423,16 @@ EURB.ReportColumn.ColumnGrid = Ext.extend(Ext.grid.GridPanel, {
 	}
 	,showError:EURB.showError
 	,deleteRecord:function(record) {
-		this.getSelectionModel().selectRecords([record]);
 		this.deleteSelectedRecords();
 	}
 	,deleteSelectedRecords:function() {
-		var records = this.getSelectionModel().getSelections();
-		if(!records.length) {
+		var index = this.getSelectionModel().getSelectedCell();
+		if(!index) {
 			Ext.Msg.alert(Ext.MessageBox.title.warning, EURB.selectAtLeastOneRecordFisrt).setIcon(Ext.Msg.INFO);
 			return;
 		}
+		var record = this.store.getAt(index[0]);
+		records = [record];
 		Ext.Msg.show({
 			 title:EURB.areYouSureToDelTitle
 			,msg:String.format(EURB.areYouSureToDelete, records.length == 1 ? records[0].get('name') : EURB.records)

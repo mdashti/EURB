@@ -1,6 +1,6 @@
 package com.sharifpro.eurb.management.mapping.dao;
 
-import com.sharifpro.eurb.builder.model.ReportDesign;
+import com.sharifpro.eurb.builder.model.ReportDataset;
 import com.sharifpro.eurb.management.mapping.dao.ColumnMappingDao;
 import com.sharifpro.eurb.management.mapping.exception.ColumnMappingDaoException;
 import com.sharifpro.eurb.management.mapping.model.ColumnMapping;
@@ -44,7 +44,7 @@ public interface ColumnMappingDao
 	 */
 	public List<ColumnMapping> findAllMapped() throws ColumnMappingDaoException;
 	
-	public List<ColumnMapping> findAllMapped(ReportDesign design) throws ColumnMappingDaoException;
+	public List<ColumnMapping> findAllMapped(ReportDataset dataset) throws ColumnMappingDaoException;
 
 	/** 
 	 * Returns all rows from the column_mapping table that match the criteria 'id = :id'.
