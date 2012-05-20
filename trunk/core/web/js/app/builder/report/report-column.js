@@ -391,7 +391,6 @@ EURB.ReportColumn.ColumnGrid = Ext.extend(Ext.grid.GridPanel, {
     	var frm = this.editFormulaForm.getForm();
     	frm.reset();
     	frm.loadRecord(record);
-    	//frm.findField('newpass').focus(false,500);
     }
 	,commitChanges:function() {
 		var records = this.store.getModifiedRecords();

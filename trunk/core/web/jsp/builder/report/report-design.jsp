@@ -111,10 +111,22 @@
 			EURB.ReportChart.searchAction = '<spring:url value="/builder/report/reportChartSearch.spy" />';
 			EURB.ReportChart.removeAction = '<spring:url value="/builder/report/reportChartRemove.spy" />';
 			EURB.ReportChart.storeAction = '<spring:url value="/builder/report/reportChartStore.spy" />';
-			
+			EURB.ReportChart.editAxisAction = '<spring:url value="/builder/report/chartAxisStore.spy" />';
+			EURB.ReportChart.chartAxisSearch = '<spring:url value="/builder/report/chartAxisSearch.spy" />';
+				
 			EURB.ReportChart.Name = '<spring:message code="eurb.app.builder.report.chart.name" />';
 			EURB.ReportChart.Type = '<spring:message code="eurb.app.builder.report.chart.type" />';
 			EURB.ReportChart.title = '<spring:message code="eurb.app.builder.report.chart.title" />';
+			
+			EURB.ReportChart.line = '<spring:message code="eurb.app.builder.report.chart.line" />';
+			EURB.ReportChart.bar = '<spring:message code="eurb.app.builder.report.chart.bar" />';
+			EURB.ReportChart.pie = '<spring:message code="eurb.app.builder.report.chart.pie" />';
+			EURB.ReportChart.xAxis = '<spring:message code="eurb.app.builder.report.chart.xAxis" />';
+			EURB.ReportChart.AxisColumn = '<spring:message code="eurb.app.builder.report.chart.axisColumn" />';
+			EURB.ReportChart.AxisTitle = '<spring:message code="eurb.app.builder.report.chart.axisTitle" />';
+			EURB.ReportChart.yAxis = '<spring:message code="eurb.app.builder.report.chart.yAxis" />';
+			
+			
 			
 			
 			
@@ -207,6 +219,55 @@
 
 			
 			EURB.ReportFilter.columnCombo = new Ext.form.ComboBox({
+			    typeAhead: true,
+			    triggerAction: 'all',
+			    lazyRender:true,
+			    mode: 'local',
+			    store: new Ext.data.ArrayStore({
+			        id: 0,
+			        fields: [
+						'id',
+						'title',
+						'datasetId',
+						'mappedName',
+						'tableMappedName'
+			        ],
+			        data: ${columnMappingComboContent}
+			    }),
+			    valueField: 'id',
+			    displayField: 'title',
+			    forceSelection: true,
+			    allowBlank: false
+			});
+			
+			
+			EURB.ReportChart.xAxisColumnCombo = new Ext.form.ComboBox({
+				fieldLabel:EURB.ReportChart.AxisColumn,
+				hiddenName:'xColumnMapping',
+			    typeAhead: true,
+			    triggerAction: 'all',
+			    lazyRender:true,
+			    mode: 'local',
+			    store: new Ext.data.ArrayStore({
+			        id: 0,
+			        fields: [
+						'id',
+						'title',
+						'datasetId',
+						'mappedName',
+						'tableMappedName'
+			        ],
+			        data: ${columnMappingComboContent}
+			    }),
+			    valueField: 'id',
+			    displayField: 'title',
+			    forceSelection: true,
+			    allowBlank: false
+			});
+			
+			EURB.ReportChart.yAxisColumnCombo = new Ext.form.ComboBox({
+				fieldLabel:EURB.ReportChart.AxisColumn,
+				hiddenName:'yColumnMapping',
 			    typeAhead: true,
 			    triggerAction: 'all',
 			    lazyRender:true,

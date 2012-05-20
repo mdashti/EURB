@@ -103,6 +103,7 @@
 		EURB.up = '<spring:message code="eurb.up" />';
 		EURB.down = '<spring:message code="eurb.down" />';
 		EURB.editFormula = '<spring:message code="eurb.editFormula" />';
+		EURB.editChartAxis = '<spring:message code="eurb.editChartAxis" />';
 		
 		EURB.appMenu = {};
 		EURB.appMenu.dbConfig = '<spring:message code="eurb.app.menu.management.db" />';

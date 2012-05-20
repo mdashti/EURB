@@ -1,3 +1,23 @@
+////////////////////////////chart type combo box///////////////////////////////
+EURB.ReportChart.chartTypeCombo = new Ext.form.ComboBox({
+    typeAhead: true,
+    triggerAction: 'all',
+    lazyRender:true,
+    mode: 'local',
+    store: new Ext.data.ArrayStore({
+        id: 0,
+        fields: [
+            'typeValue',
+            'typeLabel'
+        ],
+        data: [['line', EURB.ReportChart.line], ['bar', EURB.ReportChart.bar], ['pie', EURB.ReportChart.pie]]
+    }),
+    valueField: 'typeValue',
+    displayField: 'typeLabel',
+    forceSelection: true,
+    allowBlank: false,
+    editable: false
+});
 
 ////////////////////////////data set grid/////////////////////////////////////
 
@@ -43,9 +63,8 @@ EURB.ReportChart.cols = [{
 	,dataIndex:'type'
 	,width:20
 	,sortable:true
-	,editor:new Ext.form.TextField({
-		allowBlank:false
-	})
+	,editor:EURB.ReportChart.chartTypeCombo
+	,renderer: EURB.ReportDesign.comboRenderer(EURB.ReportChart.chartTypeCombo)
 }];
 
 EURB.ReportChart.ChartGrid = Ext.extend(Ext.grid.EditorGridPanel, {
@@ -76,6 +95,92 @@ EURB.ReportChart.ChartGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 				}				
 			}
         });
+        
+        var axisForm = new Ext.form.FormPanel({
+			baseCls: 'x-plain',
+			labelWidth: 100,
+			defaultType: 'textfield',
+			items: [{
+			    name: 'id'
+			    ,allowBlank:false
+			    ,xtype: 'hidden'
+			},
+			{
+			    name: 'xAxisId'
+			    ,allowBlank:true
+			    ,xtype: 'hidden'
+			},
+			{
+			    name: 'yAxisId'
+			    ,allowBlank:true
+			    ,xtype: 'hidden'
+			},
+			{
+				xtype:'fieldset'
+				,title: EURB.ReportChart.xAxis
+				,collapsible:false
+				,items:[
+				    EURB.ReportChart.xAxisColumnCombo
+				,
+				{
+					fieldLabel: EURB.ReportChart.AxisTitle
+					,name: 'xTitle'
+					,xtype:'textfield'
+					,allowBlank:true
+				}
+				]
+				
+			},{
+				xtype:'fieldset'
+				,title: EURB.ReportChart.yAxis
+				,collapsible:false
+				,items:[
+				    EURB.ReportChart.yAxisColumnCombo
+				,
+				{
+					fieldLabel: EURB.ReportChart.AxisTitle
+					,name: 'yTitle'
+					,xtype:'textfield'
+					,allowBlank:true
+				}
+				]
+					
+			}]
+	    });
+        this.axisForm = axisForm;
+        var axisWindow = new Ext.Window({
+			title: EURB.ReportColumn.formulaEditor,
+			width: 500,
+			height:300,
+			minWidth: 300,
+			closeAction: 'hide',
+			minHeight: 150,
+			layout: 'fit',
+			plain:true,
+			bodyStyle:'padding:5px;',
+			buttonAlign:'center',
+			items: axisForm,
+		    buttons: [{
+		        text:Ext.MessageBox.buttonText.ok,
+		        handler: function() {
+		        	if(axisForm.getForm().isValid()) {
+		        		axisForm.getForm().submit({
+		        			url:EURB.ReportChart.editAxisAction,
+		        			success:function(form, action){
+		        				axisWindow.hide();
+		        			}
+		        		});
+		        	}
+		        }
+		    },{
+		        text: Ext.MessageBox.buttonText.cancel,
+		        handler: function(){
+		            axisWindow.hide();
+		        }
+		    }]
+		});
+		this.axisWindow = axisWindow;
+
 
 		// create row actions
 		this.rowActions = new Ext.ux.grid.RowActions({
@@ -86,6 +191,9 @@ EURB.ReportChart.ChartGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 			},{
                  iconCls:'icon-edit-record'
                 ,qtip:EURB.editRecord
+            },{
+            	iconCls:'icon-chart'
+                ,qtip:EURB.editChartAxis
             }]
             ,widthIntercept:Ext.isSafari ? 4 : 2
             ,id:'actions'
@@ -174,9 +282,66 @@ EURB.ReportChart.ChartGrid = Ext.extend(Ext.grid.EditorGridPanel, {
             case 'icon-edit-record':
                 this.recordForm.show(record, grid.getView().getCell(row, col));
             break;
+            case 'icon-chart':
+            	this.axisWindow.show(grid.getView().getCell(row, col),this.axisFor(record),this);
+            break;
 
         }
     }
+	,axisFor:function(record) {
+		var records = [record];
+		if(!records.length) {
+			return;
+		}
+		var data = [];
+		Ext.each(records, function(r, i) {
+			data.push(r.data);
+		}, this);
+		var o = {
+			 url:EURB.ReportChart.chartAxisSearch
+			,method:'post'
+			,callback:this.axisRequestCallback
+			,scope:this
+			,params:{
+				cmd: 'storeData',
+				data:Ext.encode(data)
+			}
+		};
+		Ext.Ajax.request(o);
+    }
+	,axisRequestCallback:function(options, success, response) {
+		if(true !== success) {
+			this.showError(response.responseText);
+			return;
+		}
+		try {
+			var o = Ext.decode(response.responseText);
+		}
+		catch(e) {
+			this.showError(response.responseText, EURB.unableToDecodeJSON);
+			return;
+		}
+		if(true !== o.success) {
+			this.showError(o.error || EURB.unknownError);
+			return;
+		}
+		data = o.data;
+		var RecordCons = Ext.data.Record.create(['id', 'xAxisId', 'xColumnMapping', 'xTitle' , 'yAxisId', 'yColumnMapping' , 'yTitle']);
+		var record = new RecordCons(
+			{
+				id: data[0],
+				xAxisId: data[1],
+				xColumnMapping: data[2],
+				xTitle: data[3],
+				yAxisId: data[4],
+				yColumnMapping: data[5],
+				yTitle: data[6]
+			}
+		); 
+		var frm = this.axisForm.getForm();
+    	frm.reset();
+    	frm.loadRecord(record);
+	}
 	,commitChanges:function() {
 		var records = this.store.getModifiedRecords();
 		if(!records.length) {
@@ -217,7 +382,6 @@ EURB.ReportChart.ChartGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 			return;
 		}
 		
-		updateReportColumnComboContent();
 		switch(options.params.cmd) {
 			default:
 				this.store.commitChanges();

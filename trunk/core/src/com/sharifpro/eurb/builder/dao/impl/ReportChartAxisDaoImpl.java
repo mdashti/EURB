@@ -211,7 +211,7 @@ public class ReportChartAxisDaoImpl extends AbstractDAO implements Parameterized
 	public List<ReportChartAxis> findByReportChart(Long chartId) throws ReportChartAxisDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.chart_id = ? ORDER BY o.ds_order", this, chartId);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.chart_id = ? ORDER BY o.id", this, chartId);
 		}
 		catch (Exception e) {
 			throw new ReportChartAxisDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);

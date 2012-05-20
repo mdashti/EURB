@@ -257,7 +257,7 @@ public class InsertInitialData {
 		dbConf.setDriverClass("com.mysql.jdbc.Driver");
 		dbConf.setDriverUrl("jdbc:mysql://localhost/eurb?useUnicode=yes&characterEncoding=UTF-8");
 		dbConf.setUsername("root");
-		dbConf.setPassword("ROOT");
+		dbConf.setPassword("root");
 		dbConf.setTestQuery("select 1 from dual");
 		dbConf.setRecordStatus(RecordStatus.ACTIVE);
 		
