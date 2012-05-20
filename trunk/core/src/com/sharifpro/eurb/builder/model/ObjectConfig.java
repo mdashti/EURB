@@ -137,7 +137,7 @@ public class ObjectConfig implements Serializable
 	 */
 	public ObjectConfigPk createPk()
 	{
-		return new ObjectConfigPk();
+		return new ObjectConfigPk(objectId, key);
 	}
 
 	/**

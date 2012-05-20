@@ -17,7 +17,7 @@ public interface ColumnMappingDao
 	 * @param dto
 	 * @return ColumnMappingPk
 	 */
-	public ColumnMappingPk insert(ColumnMapping dto);
+	public ColumnMappingPk insert(ColumnMapping dto) throws ColumnMappingDaoException;
 
 	/** 
 	 * Updates a single row in the column_mapping table.

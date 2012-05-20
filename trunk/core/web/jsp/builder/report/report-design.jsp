@@ -32,6 +32,9 @@
 			EURB.ReportDesign.selectedDesign = '<%=selectedDesign %>';
 			EURB.ReportDesign.selectedVersion = '<%=selectedVersion %>';
 			
+			EURB.ReportDesign.reportTab = '<spring:message code="eurb.app.builder.report.design.reportTab" />';
+			EURB.ReportDesign.reportChart = '<spring:message code="eurb.app.builder.report.design.reportChart" />';
+			
 			
 			
 			EURB.ReportDataset = {};
@@ -102,6 +105,18 @@
 			EURB.ReportFilter.like = '<spring:message code="eurb.app.builder.report.filter.like" />';
 			EURB.ReportFilter.notNull = '<spring:message code="eurb.app.builder.report.filter.notNull" />';
 			EURB.ReportFilter.nul = '<spring:message code="eurb.app.builder.report.filter.nul" />';
+			
+			
+			EURB.ReportChart = {};
+			EURB.ReportChart.searchAction = '<spring:url value="/builder/report/reportChartSearch.spy" />';
+			EURB.ReportChart.removeAction = '<spring:url value="/builder/report/reportChartRemove.spy" />';
+			EURB.ReportChart.storeAction = '<spring:url value="/builder/report/reportChartStore.spy" />';
+			
+			EURB.ReportChart.Name = '<spring:message code="eurb.app.builder.report.chart.name" />';
+			EURB.ReportChart.Type = '<spring:message code="eurb.app.builder.report.chart.type" />';
+			EURB.ReportChart.title = '<spring:message code="eurb.app.builder.report.chart.title" />';
+			
+			
 			
 			
 			
@@ -273,6 +288,10 @@
 		<script src="${resourcesUrl}/js/app/builder/report/report-dataset.js"></script>
 		<script src="${resourcesUrl}/js/app/builder/report/report-column.js"></script>
 		<script src="${resourcesUrl}/js/app/builder/report/report-filter.js"></script>
+		
+		<script src="${resourcesUrl}/js/app/builder/report/report-chart.js"></script>
+		
+		
 		<script src="${resourcesUrl}/js/app/builder/report/report-design.js"></script>
 		
 	</body>

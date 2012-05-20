@@ -143,6 +143,15 @@
 	<bean id="ReportDatasetDao" class="com.sharifpro.eurb.builder.dao.impl.ReportDatasetDaoImpl" scope="singleton">
 		<property name="dataSource" ref="EURBDataSource" />
 	</bean>
+	<bean id="ReportChartDao" class="com.sharifpro.eurb.builder.dao.impl.ReportChartDaoImpl" scope="singleton">
+		<property name="dataSource" ref="EURBDataSource" />
+	</bean>
+	<bean id="ReportChartAxisDao" class="com.sharifpro.eurb.builder.dao.impl.ReportChartAxisDaoImpl" scope="singleton">
+		<property name="dataSource" ref="EURBDataSource" />
+	</bean>
+	<bean id="ObjectConfigDao" class="com.sharifpro.eurb.builder.dao.impl.ObjectConfigDaoImpl" scope="singleton">
+		<property name="dataSource" ref="EURBDataSource" />
+	</bean>
 	<bean id="ReportDesignDao" class="com.sharifpro.eurb.builder.dao.impl.ReportDesignDaoImpl" scope="singleton">
 		<property name="dataSource" ref="EURBDataSource" />
 	</bean>

@@ -9,6 +9,35 @@ public class ObjectConfigPk implements Serializable
 {
 	private static final long serialVersionUID = -3518340072436103311L;
 
+	/** 
+	 * This attribute maps to the column object_id	 in the object_config table.
+	 */
+	protected Long objectId;
+
+	
+	/** 
+	 * This attribute maps to the column key in the object_config table.
+	 */
+	protected String key;
+
+	
+	
+	public void setObjectId(Long objectId){
+		this.objectId = objectId;
+	}
+	
+	public Long getObjectId(){
+		return this.objectId;
+	}
+	
+	
+	public void setKey(String key){
+		this.key = key;
+	}
+	
+	public String getKey(){
+		return this.key;
+	}
 	/**
 	 * Method 'ObjectConfigPk'
 	 * 
@@ -18,6 +47,12 @@ public class ObjectConfigPk implements Serializable
 		super();
 	}
 
+	
+	public ObjectConfigPk(Long objectId, String key){
+		super();
+		this.objectId = objectId;
+		this.key = key;
+	}
 	
 
 	/**

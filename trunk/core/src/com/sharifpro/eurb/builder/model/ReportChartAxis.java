@@ -123,6 +123,26 @@ public class ReportChartAxis extends PersistableObject implements Serializable
 	{
 		this.title = title;
 	}
+	
+	/**
+	 * Method 'getAggregation'
+	 * 
+	 * @return String
+	 */
+	public String getAggregation()
+	{
+		return aggregation;
+	}
+
+	/**
+	 * Method 'setAggregation'
+	 * 
+	 * @param aggregation
+	 */
+	public void setAggregation(String aggregation)
+	{
+		this.aggregation = aggregation;
+	}
 
 	
 	/**

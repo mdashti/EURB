@@ -29,14 +29,23 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 	 * 
 	 * @param dto
 	 * @return ColumnMappingPk
+	 * @throws ColumnMappingDaoException 
 	 */
 	@Transactional
-	public ColumnMappingPk insert(ColumnMapping dto)
+	public ColumnMappingPk insert(ColumnMapping dto) throws ColumnMappingDaoException
 	{
+		try{
 		ColumnMappingPk pk = new ColumnMappingPk();
 		DaoFactory.createPersistableObjectDao().insert(dto, pk);
-		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, db_config_id, table_mapping_id, column_name, mapped_name, col_type_name, col_data_type, col_order, format_pattern, static_mapping, referenced_table, referenced_id_col, referenced_value_col, active_for_manager, active_for_user ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",pk.getId(),dto.getDbConfigId(),dto.getTableMappingId(),dto.getColumnName(),dto.getMappedName(),dto.getColTypeName(),dto.getColDataType(),dto.getColOrder(),dto.getFormatPattern(),dto.getStaticMapping(),dto.getReferencedTable(),dto.getReferencedIdCol(),dto.getReferencedValueCol(),dto.isActiveForManager(),dto.isActiveForUser());
+		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, db_config_id, table_mapping_id, column_name, mapped_name, col_type_name, col_data_type, col_order," +
+				" format_pattern, static_mapping, active_for_manager, active_for_user ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",
+				pk.getId(),dto.getDbConfigId(),dto.getTableMappingId(),dto.getColumnName(),dto.getMappedName(),dto.getColTypeName(),dto.getColDataType(),
+				dto.getColOrder(),dto.getFormatPattern(),dto.getStaticMapping(),dto.isActiveForManager(),dto.isActiveForUser());
 		return pk;
+		}
+		catch (Exception e) {
+			throw new ColumnMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
 	}
 
 	/** 

@@ -5,6 +5,8 @@ import java.util.Map;
 
 import com.sharifpro.eurb.builder.model.GroupAggregation;
 import com.sharifpro.eurb.builder.model.ReportCategory;
+import com.sharifpro.eurb.builder.model.ReportChart;
+import com.sharifpro.eurb.builder.model.ReportChartAxis;
 import com.sharifpro.eurb.builder.model.ReportColumn;
 import com.sharifpro.eurb.builder.model.ReportDataset;
 import com.sharifpro.eurb.builder.model.ReportDesign;
@@ -45,6 +47,9 @@ public class PersistableObjectType {
 		OBJECT_TYPE_MAP.put(ReportFilter.class.getName(), 750);
 		OBJECT_TYPE_MAP.put(ReportFormat.class.getName(), 800);
 		OBJECT_TYPE_MAP.put(ReportExecutionHistory.class.getName(), 850);
+		OBJECT_TYPE_MAP.put(ReportChart.class.getName(), 950);
+		OBJECT_TYPE_MAP.put(ReportChartAxis.class.getName(), 1000);
+		
 		
 		OBJECT_TYPE_MAP.put("Version", 900);
 	}
