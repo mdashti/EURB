@@ -134,7 +134,7 @@
 		</script>
 		<!-- App Menu -->
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/app/menu/jquery.min.js"></script>
-		<script type="text/javascript" src="<%=resourcesUrl%>/js/app/menu/ddaccordion.js">
+		<script type="text/javascript" src="<%=resourcesUrl%>/js/app/menu/ddaccordion.js"></script>
 		
 		<!-- Renderers -->
 		<script src="<%=resourcesUrl%>/js/renderer.js"></script>

@@ -96,9 +96,18 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 		dto.setColOrder( rs.getInt( ++i ) );
 		dto.setFormatPattern( rs.getString( ++i ) );
 		dto.setStaticMapping( rs.getString( ++i ) );
-		dto.setReferencedTable( rs.getString( ++i ) );
-		dto.setReferencedIdCol( rs.getString( ++i ) );
-		dto.setReferencedValueCol( rs.getString( ++i ) );
+		dto.setReferencedTable( new Long( rs.getLong( ++i ) ) );
+		if(rs.wasNull()) {
+			dto.setReferencedTable(null);
+		}
+		dto.setReferencedIdCol( new Long( rs.getLong( ++i ) ) );
+		if(rs.wasNull()) {
+			dto.setReferencedIdCol(null);
+		}
+		dto.setReferencedValueCol( new Long( rs.getLong( ++i ) ) );
+		if(rs.wasNull()) {
+			dto.setReferencedValueCol(null);
+		}
 		dto.setActiveForManager( rs.getBoolean( ++i ) );
 		dto.setActiveForUser( rs.getBoolean( ++i ) );
 		return dto;

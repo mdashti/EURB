@@ -48,9 +48,12 @@ public class TableMappingController {
 			,@RequestParam(defaultValue="", required=false) String query
 			,@RequestParam(defaultValue="[]", required=false) String fields
 			,@RequestParam(defaultValue="tableName", required=false) final String sort
-			,@RequestParam(defaultValue=AbstractDAO.ASCENDING_SORT_ORDER, required=false) final String dir) throws Exception {
+			,@RequestParam(defaultValue=AbstractDAO.ASCENDING_SORT_ORDER, required=false) final String dir
+			,@RequestParam(defaultValue="false", required=false) final String onlyMappedTables) throws Exception {
 
 		try{
+			boolean onlyMappedTablesVal = "true".equalsIgnoreCase(onlyMappedTables) ? true : false;
+			
 			DbConfig dbConf = null;
 			if(dbconfig == null) {
 				List<DbConfig> tmpList = dbConfigDao.findAll(0, 1, PersistableObject.IDENTIFIER_FIELD, AbstractDAO.ASCENDING_SORT_ORDER);
@@ -64,7 +67,7 @@ public class TableMappingController {
 
 			if(dbConf != null) {
 				List<String> onFields = jsonUtil.getListFromRequest(fields, String.class);
-				if(StringUtils.isEmpty(query) || onFields == null || onFields.isEmpty()) {
+				if(!onlyMappedTablesVal && (StringUtils.isEmpty(query) || onFields == null || onFields.isEmpty())) {
 					tableMappings = tableMappingDao.findAll(dbConf);
 					ISQLConnection conn = null;
 					try {
@@ -94,7 +97,11 @@ public class TableMappingController {
 						}
 					}
 				} else {
-					tableMappings = tableMappingDao.findAll(dbConf, query, onFields);
+					if(onlyMappedTablesVal) {
+						tableMappings = tableMappingDao.findAll(dbConf);
+					} else {
+						tableMappings = tableMappingDao.findAll(dbConf, query, onFields);
+					}
 				}
 
 				final StringComparator strComp = new StringComparator();

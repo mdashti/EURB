@@ -59,6 +59,7 @@
 			EURB.Column.activateAction = '<spring:url value="/management/mapping/column/columnActivate.spy" />';
 			EURB.Column.deactivateAction = '<spring:url value="/management/mapping/column/columnDeactivate.spy" />';
 			EURB.Column.moveColumnAction = '<spring:url value="/management/mapping/column/columnMove.spy" />';
+			EURB.Column.tableSearchAction = '<spring:url value="/management/mapping/table/tableSearch.spy" />';
 
 			EURB.Column.columnName = '<spring:message code="eurb.app.management.column.columnName" />';
 			EURB.Column.mappedName = '<spring:message code="eurb.app.management.column.mappedName" />';
@@ -75,12 +76,17 @@
 			EURB.Column.mappingType = '<spring:message code="eurb.app.management.column.mappingType" />';
 			EURB.Column.mappingTypeStatic = '<spring:message code="eurb.app.management.column.mappingTypeStatic" />';
 			EURB.Column.mappingTypeTable = '<spring:message code="eurb.app.management.column.mappingTypeTable" />';
+			EURB.Column.mappingTypeNone = '<spring:message code="eurb.app.management.column.mappingTypeNone" />';
 			EURB.Column.colDataType = '<spring:message code="eurb.app.management.column.colDataType" />';
 			EURB.Column.colOrder = '<spring:message code="eurb.app.management.column.colOrder" />';
 			EURB.Column.saveRecordFisrt = '<spring:message code="eurb.app.management.column.saveRecordFisrt" />';
 			EURB.Column.cannotMoveFirstRecordUpward = '<spring:message code="eurb.app.management.column.cannotMoveFirstRecordUpward" />';
 			EURB.Column.cannotMoveLastRecordDownward = '<spring:message code="eurb.app.management.column.cannotMoveLastRecordDownward" />';
 			EURB.Column.mappingValues = '<spring:message code="eurb.app.management.column.mappingValues" />';
+			EURB.Column.saveAll = '<spring:message code="eurb.app.management.column.saveAll" />';
+			EURB.Column.cancelAll = '<spring:message code="eurb.app.management.column.cancelAll" />';
+			EURB.Column.origVal = '<spring:message code="eurb.app.management.column.origVal" />';
+			EURB.Column.mappedVal = '<spring:message code="eurb.app.management.column.mappedVal" />';
 
 			EURB.Column.selectedDbConfig = '<%=selectedDbConfig%>';
 			EURB.Column.selectedTable = '<%=selectedTable%>';

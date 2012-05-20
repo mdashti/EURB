@@ -53,9 +53,12 @@ public class ColumnMappingController {
 			,@RequestParam(defaultValue="", required=false) String query
 			,@RequestParam(defaultValue="[]", required=false) String fields
 			,@RequestParam(defaultValue="columnName", required=false) final String sort
-			,@RequestParam(defaultValue=AbstractDAO.ASCENDING_SORT_ORDER, required=false) final String dir) throws Exception {
+			,@RequestParam(defaultValue=AbstractDAO.ASCENDING_SORT_ORDER, required=false) final String dir
+			,@RequestParam(defaultValue="false", required=false) final String onlyMappedTables) throws Exception {
 
 		try{
+			boolean onlyMappedTablesVal = "true".equalsIgnoreCase(onlyMappedTables) ? true : false;
+			
 			DbConfig dbConf = null;
 			TableMapping tbl = null;
 			if(dbconfig == null) {
@@ -107,7 +110,7 @@ public class ColumnMappingController {
 
 			if(dbConf != null && tbl != null) {
 				List<String> onFields = jsonUtil.getListFromRequest(fields, String.class);
-				if(StringUtils.isEmpty(query) || onFields == null || onFields.isEmpty()) {
+				if(!onlyMappedTablesVal && (StringUtils.isEmpty(query) || onFields == null || onFields.isEmpty())) {
 					columnMappings = columnMappingDao.findByTableMapping(tbl.getId());
 					ISQLConnection conn = null;
 					try {
@@ -130,7 +133,11 @@ public class ColumnMappingController {
 						}
 					}
 				} else {
-					columnMappings = columnMappingDao.findAll(tbl, query, onFields);
+					if(onlyMappedTablesVal) {
+						columnMappings = columnMappingDao.findByTableMapping(tbl.getId());
+					} else {
+						columnMappings = columnMappingDao.findAll(tbl, query, onFields);
+					}
 				}
 
 				final StringComparator strComp = new StringComparator();
@@ -148,14 +155,14 @@ public class ColumnMappingController {
 							return coef * strComp.compare(thiz.getFormatPattern(), other.getFormatPattern());
 						} else if("mappedName".equals(sort)) {
 							return coef * strComp.compare(thiz.getMappedName(), other.getMappedName());
-						} else if("referencedIdCol".equals(sort)) {
+						/*} else if("referencedIdCol".equals(sort)) {
 							return coef * strComp.compare(thiz.getReferencedIdCol(), other.getReferencedIdCol());
 						} else if("referencedTable".equals(sort)) {
 							return coef * strComp.compare(thiz.getReferencedTable(), other.getReferencedTable());
 						} else if("referencedValueCol".equals(sort)) {
 							return coef * strComp.compare(thiz.getReferencedValueCol(), other.getReferencedValueCol());
 						} else if("staticMapping".equals(sort)) {
-							return coef * strComp.compare(thiz.getStaticMapping(), other.getStaticMapping());
+							return coef * strComp.compare(thiz.getStaticMapping(), other.getStaticMapping());*/
 						} else if("colDataType".equals(sort)) {
 							return coef * new Integer(thiz.getColDataType()).compareTo(other.getColDataType());
 						} else if("colOrder".equals(sort)) {

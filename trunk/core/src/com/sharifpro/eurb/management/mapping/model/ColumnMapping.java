@@ -2,15 +2,17 @@ package com.sharifpro.eurb.management.mapping.model;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.sharifpro.db.meta.TableColumnInfo;
 
 public class ColumnMapping extends PersistableObject implements Serializable
 {
 	private static final long serialVersionUID = -2903512798099004237L;
 
-	private static final boolean MAPPING_TYPE_DYNAMIC = false;
-
-	private static final boolean MAPPING_TYPE_STATIC = true;
+	private static final int MAPPING_TYPE_NONE = 0;
+	private static final int MAPPING_TYPE_DYNAMIC = 1;
+	private static final int MAPPING_TYPE_STATIC = 2;
 	
 	/** 
 	 * This attribute maps to the column db_config_id in the column_mapping table.
@@ -72,19 +74,19 @@ public class ColumnMapping extends PersistableObject implements Serializable
 	protected String staticMapping;
 
 	/** 
-	 * This attribute maps to the column referenced_table in the column_mapping table.
+	 * This attribute maps to the column referenced_table in the column_mapping table referred to table_mapping.id .
 	 */
-	protected String referencedTable;
+	protected Long referencedTable;
 
 	/** 
-	 * This attribute maps to the column referenced_id_col in the column_mapping table.
+	 * This attribute maps to the column referenced_id_col in the column_mapping table referred to column_mapping.id .
 	 */
-	protected String referencedIdCol;
+	protected Long referencedIdCol;
 
 	/** 
-	 * This attribute maps to the column referenced_value_col in the column_mapping table.
+	 * This attribute maps to the column referenced_value_col in the column_mapping table referred to column_mapping.id .
 	 */
-	protected String referencedValueCol;
+	protected Long referencedValueCol;
 
 	/** 
 	 * This attribute maps to the column active_for_manager in the column_mapping table.
@@ -310,7 +312,7 @@ public class ColumnMapping extends PersistableObject implements Serializable
 	 * 
 	 * @return String
 	 */
-	public String getReferencedTable()
+	public Long getReferencedTable()
 	{
 		return referencedTable;
 	}
@@ -320,7 +322,7 @@ public class ColumnMapping extends PersistableObject implements Serializable
 	 * 
 	 * @param referencedTable
 	 */
-	public void setReferencedTable(String referencedTable)
+	public void setReferencedTable(Long referencedTable)
 	{
 		this.referencedTable = referencedTable;
 	}
@@ -330,7 +332,7 @@ public class ColumnMapping extends PersistableObject implements Serializable
 	 * 
 	 * @return String
 	 */
-	public String getReferencedIdCol()
+	public Long getReferencedIdCol()
 	{
 		return referencedIdCol;
 	}
@@ -340,7 +342,7 @@ public class ColumnMapping extends PersistableObject implements Serializable
 	 * 
 	 * @param referencedIdCol
 	 */
-	public void setReferencedIdCol(String referencedIdCol)
+	public void setReferencedIdCol(Long referencedIdCol)
 	{
 		this.referencedIdCol = referencedIdCol;
 	}
@@ -350,7 +352,7 @@ public class ColumnMapping extends PersistableObject implements Serializable
 	 * 
 	 * @return String
 	 */
-	public String getReferencedValueCol()
+	public Long getReferencedValueCol()
 	{
 		return referencedValueCol;
 	}
@@ -360,7 +362,7 @@ public class ColumnMapping extends PersistableObject implements Serializable
 	 * 
 	 * @param referencedValueCol
 	 */
-	public void setReferencedValueCol(String referencedValueCol)
+	public void setReferencedValueCol(Long referencedValueCol)
 	{
 		this.referencedValueCol = referencedValueCol;
 	}
@@ -562,7 +564,7 @@ public class ColumnMapping extends PersistableObject implements Serializable
 		return ret.toString();
 	}
 
-	public boolean getMappingType() {
-		return referencedTable == null ? MAPPING_TYPE_STATIC : MAPPING_TYPE_DYNAMIC;
+	public int getMappingType() {
+		return (referencedTable == null || referencedIdCol == null || referencedValueCol == null) ? (StringUtils.isEmpty(staticMapping) ? MAPPING_TYPE_NONE : MAPPING_TYPE_STATIC) : MAPPING_TYPE_DYNAMIC;
 	}
 }
