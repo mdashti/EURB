@@ -240,7 +240,6 @@
 			    allowBlank: false
 			});
 			
-			
 			EURB.ReportChart.xAxisColumnCombo = new Ext.form.ComboBox({
 				fieldLabel:EURB.ReportChart.AxisColumn,
 				hiddenName:'xColumnMapping',
@@ -262,7 +261,13 @@
 			    valueField: 'id',
 			    displayField: 'title',
 			    forceSelection: true,
-			    allowBlank: false
+			    allowBlank: false,
+			    listeners:{
+			    	select: function(combo,record,index){
+			    		dsField = EURB.ReportChart.reportChartGrid.axisForm.getForm().findField('xDataset');
+			    		dsField.setValue(record.get('datasetId'));
+			    	}
+			    }
 			});
 			
 			EURB.ReportChart.yAxisColumnCombo = new Ext.form.ComboBox({
@@ -286,7 +291,13 @@
 			    valueField: 'id',
 			    displayField: 'title',
 			    forceSelection: true,
-			    allowBlank: false
+			    allowBlank: false,
+			    listeners:{
+			    	select: function(combo,record,index){
+			    		dsField = EURB.ReportChart.reportChartGrid.axisForm.getForm().findField('yDataset');
+			    		dsField.setValue(record.get('datasetId'));
+			    	}
+			    }
 			});
 
 			updateReportColumnComboContent = function(){

@@ -106,28 +106,28 @@ EURB.ReportChart.ChartGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 			    ,xtype: 'hidden'
 			},
 			{
-			    name: 'xAxisId'
-			    ,allowBlank:true
-			    ,xtype: 'hidden'
-			},
-			{
-			    name: 'yAxisId'
-			    ,allowBlank:true
-			    ,xtype: 'hidden'
-			},
-			{
 				xtype:'fieldset'
 				,title: EURB.ReportChart.xAxis
 				,collapsible:false
 				,items:[
-				    EURB.ReportChart.xAxisColumnCombo
-				,
-				{
-					fieldLabel: EURB.ReportChart.AxisTitle
-					,name: 'xTitle'
-					,xtype:'textfield'
-					,allowBlank:true
-				}
+					{
+					    name: 'xAxisId'
+					    ,allowBlank:true
+					    ,xtype: 'hidden'
+					},
+					{
+					    name: 'xDataset'
+					    ,allowBlank:true
+					    ,xtype: 'hidden'
+					},
+
+				    EURB.ReportChart.xAxisColumnCombo,
+					{
+						fieldLabel: EURB.ReportChart.AxisTitle
+						,name: 'xTitle'
+						,xtype:'textfield'
+						,allowBlank:true
+					}
 				]
 				
 			},{
@@ -135,14 +135,23 @@ EURB.ReportChart.ChartGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 				,title: EURB.ReportChart.yAxis
 				,collapsible:false
 				,items:[
-				    EURB.ReportChart.yAxisColumnCombo
-				,
-				{
-					fieldLabel: EURB.ReportChart.AxisTitle
-					,name: 'yTitle'
-					,xtype:'textfield'
-					,allowBlank:true
-				}
+				    {
+					    name: 'yAxisId'
+					    ,allowBlank:true
+					    ,xtype: 'hidden'
+					},
+					{
+					    name: 'yDataset'
+					    ,allowBlank:true
+					    ,xtype: 'hidden'
+					},
+					EURB.ReportChart.yAxisColumnCombo,
+					{
+						fieldLabel: EURB.ReportChart.AxisTitle
+						,name: 'yTitle'
+						,xtype:'textfield'
+						,allowBlank:true
+					}
 				]
 					
 			}]
@@ -326,16 +335,18 @@ EURB.ReportChart.ChartGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 			return;
 		}
 		data = o.data;
-		var RecordCons = Ext.data.Record.create(['id', 'xAxisId', 'xColumnMapping', 'xTitle' , 'yAxisId', 'yColumnMapping' , 'yTitle']);
+		var RecordCons = Ext.data.Record.create(['id', 'xAxisId', 'xColumnMapping', 'xDataset', 'xTitle' , 'yAxisId', 'yDataset', 'yColumnMapping' , 'yTitle']);
 		var record = new RecordCons(
 			{
 				id: data[0],
 				xAxisId: data[1],
 				xColumnMapping: data[2],
-				xTitle: data[3],
-				yAxisId: data[4],
-				yColumnMapping: data[5],
-				yTitle: data[6]
+				xDataset: data[3],
+				xTitle: data[4],
+				yAxisId: data[5],
+				yColumnMapping: data[6],
+				yDataset: data[7],
+				yTitle: data[8]
 			}
 		); 
 		var frm = this.axisForm.getForm();

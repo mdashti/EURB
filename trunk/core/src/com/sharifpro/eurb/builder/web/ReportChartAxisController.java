@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.sharifpro.eurb.builder.dao.ReportChartDao;
 import com.sharifpro.util.json.JsonUtil;
 import com.sharifpro.eurb.builder.dao.ReportChartAxisDao;
 import com.sharifpro.eurb.builder.model.ReportChart;
@@ -25,15 +24,14 @@ import com.sharifpro.eurb.builder.model.ReportChartAxisPk;
 @Controller
 public class ReportChartAxisController {
 
-	private ReportChartDao reportChartDao;
 	private ReportChartAxisDao reportChartAxisDao;
 
 	private JsonUtil jsonUtil;
 
 	@RequestMapping(value="/builder/report/chartAxisStore.spy")
 	public @ResponseBody Map<String,? extends Object> storeChartAxis(@RequestParam(required=true) Long id, 
-			@RequestParam Long xAxisId, @RequestParam(required=true) Long xColumnMapping, @RequestParam String xTitle, 
-			@RequestParam Long yAxisId, @RequestParam(required=true) Long yColumnMapping, @RequestParam String yTitle) throws Exception {
+			@RequestParam Long xAxisId, @RequestParam(required=true) Long xColumnMapping, @RequestParam(required=true) Long xDataset, @RequestParam String xTitle, 
+			@RequestParam Long yAxisId, @RequestParam(required=true) Long yColumnMapping, @RequestParam(required=true) Long yDataset, @RequestParam String yTitle) throws Exception {
 		List<Long> insertIds = new ArrayList<Long>(2);
 		ReportChartAxisPk pk;
 		try{
@@ -41,6 +39,7 @@ public class ReportChartAxisController {
 				ReportChartAxis xAxis = new ReportChartAxis();
 				xAxis.setChartId(id);
 				xAxis.setColumnMappingId(xColumnMapping);
+				xAxis.setDatasetId(xDataset);
 				xAxis.setType("x");
 				xAxis.setTitle(xTitle);
 				pk = reportChartAxisDao.insert(xAxis);
@@ -49,6 +48,7 @@ public class ReportChartAxisController {
 				ReportChartAxis xAxis = reportChartAxisDao.findByPrimaryKey(xAxisId);
 				pk = xAxis.createPk();
 				xAxis.setColumnMappingId(xColumnMapping);
+				xAxis.setDatasetId(xDataset);
 				xAxis.setTitle(xTitle);
 				reportChartAxisDao.update(pk, xAxis);
 			}
@@ -58,6 +58,7 @@ public class ReportChartAxisController {
 				ReportChartAxis yAxis = new ReportChartAxis();
 				yAxis.setChartId(id);
 				yAxis.setColumnMappingId(yColumnMapping);
+				yAxis.setDatasetId(yDataset);
 				yAxis.setType("y");
 				yAxis.setTitle(yTitle);
 				pk = reportChartAxisDao.insert(yAxis);
@@ -66,6 +67,7 @@ public class ReportChartAxisController {
 				ReportChartAxis yAxis = reportChartAxisDao.findByPrimaryKey(yAxisId);
 				pk = yAxis.createPk();
 				yAxis.setColumnMappingId(yColumnMapping);
+				yAxis.setDatasetId(yDataset);
 				yAxis.setTitle(yTitle);
 				reportChartAxisDao.update(pk, yAxis);
 			}
@@ -101,12 +103,14 @@ public class ReportChartAxisController {
 			if(xAxis != null){
 				result.add(xAxis.getId());
 				result.add(xAxis.getColumnMappingId());
+				result.add(xAxis.getDatasetId());
 				result.add(xAxis.getTitle());
 			}
 
 			if(yAxis != null){
 				result.add(yAxis.getId());
 				result.add(yAxis.getColumnMappingId());
+				result.add(yAxis.getDatasetId());
 				result.add(yAxis.getTitle());
 			}
 
@@ -120,10 +124,6 @@ public class ReportChartAxisController {
 
 
 
-	@Autowired
-	public void setReportChartDao(ReportChartDao reportChartDao) {
-		this.reportChartDao = reportChartDao;
-	}
 
 	@Autowired
 	public void setReportChartAxisDao(ReportChartAxisDao reportChartAxisDao){

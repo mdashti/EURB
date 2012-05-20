@@ -30,10 +30,13 @@ import com.sharifpro.eurb.builder.exception.ReportExecutionHistoryDaoException;
 import com.sharifpro.eurb.builder.intermediate.ExtGridColumn;
 import com.sharifpro.eurb.builder.intermediate.ExtStoreField;
 import com.sharifpro.eurb.builder.model.ReportCategory;
+import com.sharifpro.eurb.builder.model.ReportChart;
+import com.sharifpro.eurb.builder.model.ReportChartAxis;
 import com.sharifpro.eurb.builder.model.ReportColumn;
 import com.sharifpro.eurb.builder.model.ReportDataset;
 import com.sharifpro.eurb.builder.model.ReportDesign;
 import com.sharifpro.eurb.builder.model.ReportFilter;
+import com.sharifpro.eurb.management.mapping.dao.ColumnMappingDao;
 import com.sharifpro.eurb.management.mapping.dao.DbConfigDao;
 import com.sharifpro.eurb.management.mapping.dao.TableMappingDao;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
@@ -44,6 +47,9 @@ import com.sharifpro.eurb.management.mapping.model.PersistableObject;
 import com.sharifpro.eurb.management.mapping.model.TableMapping;
 import com.sharifpro.util.PropertyProvider;
 import com.sharifpro.util.json.JsonUtil;
+import com.sharifpro.eurb.builder.dao.ReportChartDao;
+import com.sharifpro.eurb.builder.dao.ReportChartAxisDao;
+
 
 /**
  * Controller - Spring
@@ -58,8 +64,11 @@ public class ViewReportController {
 	private ReportDatasetDao reportDatasetDao;
 	private ReportColumnDao reportColumnDao;
 	private TableMappingDao tableMappingDao;
+	private ColumnMappingDao columnMappingDao;
 	private DbConfigDao dbConfigDao;
 	private ReportFilterDao reportFilterDao;
+	private ReportChartDao reportChartDao;
+	private ReportChartAxisDao reportChartAxisDao;
 	private JsonUtil jsonUtil;
 
 
@@ -84,12 +93,12 @@ public class ViewReportController {
 		//find report design with given id
 		ReportDesign reportDesign = reportDesignDao.findByPrimaryKey(report, version);
 		List<ReportColumn> columnList = reportColumnDao.findAllSortByColOrder(reportDesign);
-		
+
 		//UI
 		List<ExtStoreField> storeFields = new ArrayList<ExtStoreField>(columnList.size());
 		storeFields.add(new ExtStoreField("id"));
 		List<ExtGridColumn> gridColumns = new ArrayList<ExtGridColumn>(columnList.size());
-		
+
 		int totalWidth = 0;
 		for(ReportColumn col : columnList) {
 			String key = col.getColumnKey();
@@ -98,18 +107,18 @@ public class ViewReportController {
 			totalWidth += col.getColumnWidth();
 		}
 		gridColumns.add(0,new ExtGridColumn(PropertyProvider.get("eurb.app.builder.runreport.grid.radif"), "id", (int) (0.05 * totalWidth), "center", "direction:ltr;"));
-		
+
 		ModelAndView mv = new ModelAndView();
 		mv.addObject("report", report);
 		mv.addObject("reportVersion", version);
 		mv.addObject("reportName", reportDesign.getName());
 		mv.addObject("storeFields", jsonUtil.getJSONFromObject(storeFields));
 		mv.addObject("gridColumns", jsonUtil.getJSONFromObject(gridColumns));
-		
+
 		mv.setViewName("/builder/report/run-report");
 		return mv;
 	}
-	
+
 	@RequestMapping(value="/builder/report/get-reportdata{report}-v{version}.spy")
 	public @ResponseBody Map<String,? extends Object> executeRunReportData(@PathVariable Long report, @PathVariable Long version
 			,@RequestParam(required=false) String start
@@ -119,14 +128,14 @@ public class ViewReportController {
 		try{
 			//All Datasets must be in the same dbConfig
 			Long dbConfigId = null;
-			
+
 			//find report design with given id
 			ReportDesign reportDesign = reportDesignDao.findByPrimaryKey(report, version);
 			List<ReportDataset> datasetList = reportDatasetDao.findAll(reportDesign);
 			List<ReportColumn> columnList = reportColumnDao.findAll(reportDesign);
 			Map<Long, ReportColumn> columnMap = new HashMap<Long, ReportColumn>();
 			List<ReportFilter> reportFilters = reportFilterDao.findAll(reportDesign.getId());
-			
+
 			//Build QUERY
 			///Build SELECT Part
 			StringBuilder querySelectSB = new StringBuilder("Select ");	
@@ -138,7 +147,7 @@ public class ViewReportController {
 					querySelectSB.append(", ");
 				}
 				querySelectSB.append(col.getDatabaseKey());
-				
+
 				if(firstCol) {
 					firstCol = false;
 				}
@@ -183,7 +192,7 @@ public class ViewReportController {
 					}
 				}
 			}
-			
+
 			//Build ORDER BY part
 			StringBuilder querySortSB = new StringBuilder();
 			List<ReportColumn> sortCols = new LinkedList<ReportColumn>();
@@ -206,13 +215,13 @@ public class ViewReportController {
 					}
 				}
 			}
-			
+
 			String querySelect = querySelectSB.toString();
 			String queryFrom = queryFromSB.toString();
 			String queryWhere = queryWhereSB.toString();
 			String querySort = querySortSB.toString();
-			
-			
+
+
 			//Execute QUERY
 			DbConfig dbConf = dbConfigDao.findByPrimaryKey(dbConfigId);
 			ISQLConnection conn = null;
@@ -226,7 +235,7 @@ public class ViewReportController {
 				conn.setReadOnly(true);
 
 				HibernateDialect dialect = dbConf.getDialect();
-				
+
 				Map<String,Object> result;
 				DBBean db = new DBBean(dbConf.getDataSource());
 				String countQuery = dialect.buildCountQuery(querySelect, queryFrom, queryWhere);
@@ -249,7 +258,7 @@ public class ViewReportController {
 				if(db.result.next()) {
 					total = db.result.getInt(1);
 				}
-				
+
 				String finalQuery;
 				int counter = 1;
 				if(start == null || limit == null) {
@@ -290,7 +299,206 @@ public class ViewReportController {
 					conn.close();
 				}
 			}
+
+			return JsonUtil.getSuccessfulMap(resultList, total);
+
+		} catch (Exception e) {
+
+			return JsonUtil.getModelMapError(e.getMessage());
+		}
+	}
+
+
+	@RequestMapping(value="/builder/report/get-reportchart{report}-v{version}.spy")
+	public @ResponseBody Map<String,? extends Object> executeRunReportChart(@PathVariable Long report, @PathVariable Long version
+			,@RequestParam(required=false) String start
+			,@RequestParam(required=false) String limit
+			,@RequestParam(required=false) String sort
+			,@RequestParam(required=false) String dir) throws Exception {
+		try{
 			
+			List<ArrayList<Object>> resultList = new ArrayList<ArrayList<Object>>();
+			ArrayList<Object> resultConfig = new ArrayList<Object>();
+			
+			//find report design with given id
+			ReportDesign reportDesign = reportDesignDao.findByPrimaryKey(report, version);
+			List<ReportDataset> datasetList = reportDatasetDao.findAll(reportDesign);
+			List<ReportFilter> reportFilters = reportFilterDao.findAll(reportDesign.getId());
+
+			HashMap<Long, HashMap<Long, ColumnMapping>> datasetColumnMappingMap = new HashMap<Long, HashMap<Long, ColumnMapping>>();
+			HashMap<Long, ColumnMapping> colMap;
+			for(ReportDataset ds : datasetList){
+				colMap = new HashMap<Long, ColumnMapping>();
+				List<ColumnMapping> columns = columnMappingDao.findAllMapped(ds);
+				for(ColumnMapping c : columns){
+					colMap.put(c.getId(), c);
+				}
+				datasetColumnMappingMap.put(ds.getId(), colMap);
+			}
+			
+			//All Datasets must be in the same dbConfig
+			Long dbConfigId = reportDesign.getDbConfigId();
+
+
+			List<ReportChart> reportCharts = reportChartDao.findAll(reportDesign);
+			if(reportCharts == null || reportCharts.size() != 1){
+				throw new Exception("There is no charts to display");
+			}
+			ReportChart chart = reportCharts.get(0);
+			List<ReportChartAxis> reportChartAxis = reportChartAxisDao.findAll(chart);
+			if(reportChartAxis == null || reportChartAxis.size() != 2){
+				throw new Exception("There is wrong number of axis for the chart");
+			}
+			ReportChartAxis xAxis = null, yAxis = null;
+			for(ReportChartAxis rca : reportChartAxis){
+				if(rca.getType().equals("x")){
+					xAxis = rca;
+				}
+				else if(rca.getType().equals("y")){
+					yAxis = rca;
+				}
+			}
+			if(xAxis == null || yAxis == null){
+				throw new Exception("There is not an X and Y axis");
+			}
+			
+			resultConfig.add(chart.getType());
+			resultConfig.add(xAxis.getTitle());
+			resultConfig.add(yAxis.getTitle());
+
+
+			//Build QUERY
+			///Build SELECT Part
+			StringBuilder querySelectSB = new StringBuilder("Select ");	
+			String xAxisDatabaseKey = "t" + xAxis.getDatasetId() + "." + datasetColumnMappingMap.get(xAxis.getDatasetId()).get(xAxis.getColumnMappingId()).getColumnName();
+			querySelectSB.append(xAxisDatabaseKey);
+			querySelectSB.append(", ");
+			String yAxisDatabaseKey = "t" + yAxis.getDatasetId() + "." + datasetColumnMappingMap.get(yAxis.getDatasetId()).get(yAxis.getColumnMappingId()).getColumnName();
+			querySelectSB.append(yAxisDatabaseKey);
+
+
+			//Build FROM part
+			StringBuilder queryFromSB = new StringBuilder(" From ");
+			boolean firstDS = true;
+			for(ReportDataset ds : datasetList) {
+				if(DBBean.isValidIdentifier(ds.getTableMappingId())) { // is directly bound to table
+					TableMapping table = tableMappingDao.findByPrimaryKey(ds.getTableMappingId());
+					if(!firstDS){
+						queryFromSB.append(", ");
+					}
+					queryFromSB.append(table.getTableFullName()).append(" t").append(ds.getId());
+				} else { //is a report base on report
+					//TODO report based on report must be handled
+				}
+				if(firstDS) {
+					firstDS = false;
+				}
+			}
+			//Build Where part
+			StringBuilder queryWhereSB = new StringBuilder();
+			ReportFilter.ReportFilterOperator oper;
+			String databaseKey;
+			boolean firstFilter = true;
+			for(ReportFilter filter : reportFilters) {
+				oper = filter.getOperatorObj();
+				if(firstFilter) {
+					queryWhereSB.append(" WHERE ");
+					firstFilter = false;
+				}
+				databaseKey = "t" + filter.getReportDatasetId() + "." + datasetColumnMappingMap.get(filter.getReportDatasetId()).get(filter.getColumnMappingId()).getColumnName();
+				queryWhereSB.append(" ").append(databaseKey).append(" ").append(filter.getOperator()).append(" ");
+				if(oper.numberOfOperands == 0) {
+					queryWhereSB.append(oper.operator);
+				} else if(oper.numberOfOperands == 1) {
+					queryWhereSB.append("?");
+				} else if(oper.numberOfOperands == 2) {
+					queryWhereSB.append("? and ?");
+				}
+			}
+
+			
+
+			String querySelect = querySelectSB.toString();
+			String queryFrom = queryFromSB.toString();
+			String queryWhere = queryWhereSB.toString();
+
+
+			//Execute QUERY
+			DbConfig dbConf = dbConfigDao.findByPrimaryKey(dbConfigId);
+			ISQLConnection conn = null;
+			ArrayList<Object> xResult = new ArrayList<Object>();
+			ArrayList<Object> yResult = new ArrayList<Object>();
+			int total = 0;
+			try {
+				conn = dbConf.getConnection();
+				if(conn == null) {
+					throw new ReportExecutionHistoryDaoException(PropertyProvider.get("eurb.app.management.table.dbConfigIsInvalid"));
+				}
+				conn.setReadOnly(true);
+
+				HibernateDialect dialect = dbConf.getDialect();
+
+				DBBean db = new DBBean(dbConf.getDataSource());
+				String countQuery = dialect.buildCountQuery(querySelect, queryFrom, queryWhere);
+				if(queryWhere.isEmpty()) {
+					db.executeQuery(countQuery);
+				} else {
+					int index = 1;
+					db.prepareStatement(countQuery);
+					for(ReportFilter filter : reportFilters) {
+						oper = filter.getOperatorObj();
+						if(oper.numberOfOperands == 1) {
+							db.pstmt.setObject(index++, filter.getOperand1());
+						} else if(oper.numberOfOperands == 2) {
+							db.pstmt.setObject(index++, filter.getOperand1());
+							db.pstmt.setObject(index++, filter.getOperand2());
+						}
+					}
+					db.executePrepared();
+				}
+				if(db.result.next()) {
+					total = db.result.getInt(1);
+				}
+
+				String finalQuery;
+				if(start == null || limit == null) {
+					finalQuery = dialect.buildQuery(querySelect,queryFrom,queryWhere, "");
+				} else {
+					finalQuery = dialect.buildQuery(querySelect,queryFrom,queryWhere, "", Integer.parseInt(start), Integer.parseInt(limit));
+				}
+
+				if(queryWhere.isEmpty()) {
+					db.executeQuery(finalQuery);
+				} else {
+					int index = 1;
+					db.prepareStatement(finalQuery);
+					for(ReportFilter filter : reportFilters) {
+						oper = filter.getOperatorObj();
+						if(oper.numberOfOperands == 1) {
+							db.pstmt.setObject(index++, filter.getOperand1());
+						} else if(oper.numberOfOperands == 2) {
+							db.pstmt.setObject(index++, filter.getOperand1());
+							db.pstmt.setObject(index++, filter.getOperand2());
+						}
+					}
+					db.executePrepared();
+				}
+				while(db.result.next()) {
+					xResult.add(db.result.getObject(xAxisDatabaseKey));
+					yResult.add(db.result.getObject(yAxisDatabaseKey));
+				}
+			} catch (Exception e) {
+				throw e;
+			} finally {
+				if(conn != null) {
+					conn.close();
+				}
+			}
+			
+			resultList.add(resultConfig);
+			resultList.add(xResult);
+			resultList.add(yResult);
+
 			return JsonUtil.getSuccessfulMap(resultList, total);
 
 		} catch (Exception e) {
@@ -333,6 +541,21 @@ public class ViewReportController {
 	@Autowired
 	public void setReportFilterDao(ReportFilterDao reportFilterDao) {
 		this.reportFilterDao = reportFilterDao;
+	}
+
+	@Autowired
+	public void setReportChartDao(ReportChartDao reportChartDao){
+		this.reportChartDao = reportChartDao;
+	}
+
+	@Autowired 
+	public void setReportChartAxisDao(ReportChartAxisDao reportChartAxisDao){
+		this.reportChartAxisDao = reportChartAxisDao;
+	}
+
+	@Autowired
+	public void setColumnMappingDao(ColumnMappingDao columnMappingDao){
+		this.columnMappingDao = columnMappingDao;
 	}
 
 	@Autowired

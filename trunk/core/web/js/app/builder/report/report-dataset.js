@@ -216,15 +216,16 @@ EURB.ReportDataset.DatasetGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 	}
 	,showError:EURB.showError
 	,deleteRecord:function(record) {
-		this.getSelectionModel().selectRecords([record]);
 		this.deleteSelectedRecords();
 	}
 	,deleteSelectedRecords:function() {
-		var records = this.getSelectionModel().getSelections();
-		if(!records.length) {
+		var index = this.getSelectionModel().getSelectedCell();
+		if(!index) {
 			Ext.Msg.alert(Ext.MessageBox.title.warning, EURB.selectAtLeastOneRecordFisrt).setIcon(Ext.Msg.INFO);
 			return;
 		}
+		var record = this.store.getAt(index[0]);
+		records = [record];
 		Ext.Msg.show({
 			 title:EURB.areYouSureToDelTitle
 			,msg:String.format(EURB.areYouSureToDelete, records.length == 1 ? records[0].get('name') : EURB.records)

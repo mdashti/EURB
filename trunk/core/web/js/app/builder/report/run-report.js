@@ -1,8 +1,8 @@
 EURB.RunReport.Grid = Ext.extend(Ext.grid.GridPanel, {
 	// defaults - can be changed from outside
-	 layout:'fit'
-	,border:true
+	 border:true
 	,stateful:false
+	,height:700
 	,title: EURB.RunReport.viewReport
 	,initComponent:function() {
 		
@@ -57,8 +57,92 @@ EURB.RunReport.Grid = Ext.extend(Ext.grid.GridPanel, {
 // register xtype
 //Ext.reg('report.Grid', EURB.RunReport.Grid);
 EURB.RunReport.runReportGrid = new EURB.RunReport.Grid();
+
+EURB.RunReport.chartPanel = new Ext.Panel({
+    layout: 'border',
+    border: false,
+    width: '100%',
+    //html: '<div id="container" style="width: 50%; height: 400px; direction: ltr !important;"></div>'
+    items: [{
+	    		region:'north',
+	    		split:true,
+	    		height:300,
+    			autoEl: {
+	        		tag: 'div',
+	        		id: 'container'
+	        	}
+	    	}
+    		,{
+    			region:'center',
+    			width:'100%',
+    			items:EURB.RunReport.runReportGrid
+    		}
+    	]
+});
+
 // application main entry point
 Ext.onReady(function() {
-	EURB.mainPanel.items.add(EURB.RunReport.runReportGrid);
+	
+	updateChartData = function(data){
+		
+		var options = {
+	        chart: {
+	           type: data[0][0],
+	           renderTo: 'container',
+	           height:300
+	        },
+	        title: {
+	           text: 'Chart'
+	        },
+	        xAxis: {
+	           categories: data[1]
+	        },
+	        yAxis: {
+	           title: {
+	              text: 'Y Axis'
+	           }
+	        },
+	        series: [{
+				name : data[0][2],
+				data : data[2]
+	        }]
+	     };
+		
+		EURB.RunReport.chart = new Highcharts.Chart(options);
+	};
+	
+	chartRequestCallback = function(options, success, response) {
+		if(true !== success) {
+			this.showError(response.responseText);
+			return;
+		}
+		try {
+			var o = Ext.decode(response.responseText);
+		}
+		catch(e) {
+			this.showError(response.responseText, EURB.unableToDecodeJSON);
+			return;
+		}
+		if(true !== o.success) {
+			this.showError(o.error || EURB.unknownError);
+			return;
+		}
+		updateChartData(o.data);
+	};
+	var o = {
+			 url:EURB.RunReport.runChart
+			,method:'post'
+			,callback:chartRequestCallback
+			,scope:this
+			,params:{
+				cmd: 'storeData',
+				report:EURB.RunReport.design,
+				version:EURB.RunReport.version
+			}
+	};
+	Ext.Ajax.request(o);
+
+
+	EURB.mainPanel.items.add(EURB.RunReport.chartPanel);
     EURB.mainPanel.doLayout(); 
 });

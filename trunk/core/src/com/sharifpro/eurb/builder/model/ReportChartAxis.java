@@ -17,6 +17,12 @@ public class ReportChartAxis extends PersistableObject implements Serializable
 	 * This attribute maps to the column column_mapping_id in the report_chart_axis table.
 	 */
 	protected Long columnMappingId;
+	
+	/** 
+	 * This attribute maps to the column report_dataset_id in the report_chart_axis table.
+	 */
+	protected Long datasetId;
+	
 
 	/** 
 	 * This attribute maps to the column axis_type in the report_chart_axis table.
@@ -82,6 +88,25 @@ public class ReportChartAxis extends PersistableObject implements Serializable
 	public void setColumnMappingId(Long columnMappingId)
 	{
 		this.columnMappingId = columnMappingId;
+	}
+	
+	/**
+	 * Method 'getDatasetId
+	 * 
+	 * @return Long
+	 */
+	public Long getDatasetId()
+	{
+		return datasetId;
+	}
+	
+	/**
+	 * Method 'setDatasetId'
+	 * 
+	 * @param datasetId
+	 */
+	public void setDatasetId(Long datasetId){
+		this.datasetId = datasetId;
 	}
 
 	/**
