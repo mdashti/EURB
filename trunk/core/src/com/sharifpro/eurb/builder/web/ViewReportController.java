@@ -107,7 +107,7 @@ public class ViewReportController {
 			totalWidth += col.getColumnWidth();
 		}
 		gridColumns.add(0,new ExtGridColumn(PropertyProvider.get("eurb.app.builder.runreport.grid.radif"), "id", (int) (0.05 * totalWidth), "center", "direction:ltr;"));
-
+		
 		ModelAndView mv = new ModelAndView();
 		mv.addObject("report", report);
 		mv.addObject("reportVersion", version);
@@ -135,7 +135,7 @@ public class ViewReportController {
 			List<ReportColumn> columnList = reportColumnDao.findAll(reportDesign);
 			Map<Long, ReportColumn> columnMap = new HashMap<Long, ReportColumn>();
 			List<ReportFilter> reportFilters = reportFilterDao.findAll(reportDesign.getId());
-
+			
 			//Build QUERY
 			///Build SELECT Part
 			StringBuilder querySelectSB = new StringBuilder("Select ");	
@@ -146,8 +146,8 @@ public class ViewReportController {
 				if(!firstCol) {
 					querySelectSB.append(", ");
 				}
-				querySelectSB.append(col.getDatabaseKey());
-
+				querySelectSB.append(col.getDatabaseKey()).append(" AS ").append(col.getColumnKey());
+				
 				if(firstCol) {
 					firstCol = false;
 				}
@@ -192,7 +192,7 @@ public class ViewReportController {
 					}
 				}
 			}
-
+			
 			//Build ORDER BY part
 			StringBuilder querySortSB = new StringBuilder();
 			List<ReportColumn> sortCols = new LinkedList<ReportColumn>();
@@ -215,13 +215,13 @@ public class ViewReportController {
 					}
 				}
 			}
-
+			
 			String querySelect = querySelectSB.toString();
 			String queryFrom = queryFromSB.toString();
 			String queryWhere = queryWhereSB.toString();
 			String querySort = querySortSB.toString();
-
-
+			
+			
 			//Execute QUERY
 			DbConfig dbConf = dbConfigDao.findByPrimaryKey(dbConfigId);
 			ISQLConnection conn = null;
@@ -235,7 +235,7 @@ public class ViewReportController {
 				conn.setReadOnly(true);
 
 				HibernateDialect dialect = dbConf.getDialect();
-
+				
 				Map<String,Object> result;
 				DBBean db = new DBBean(dbConf.getDataSource());
 				String countQuery = dialect.buildCountQuery(querySelect, queryFrom, queryWhere);
@@ -288,7 +288,7 @@ public class ViewReportController {
 					result = new HashMap<String, Object>();
 					result.put("id", counter++);
 					for(ReportColumn col : columnList) {
-						result.put(col.getColumnKey(), db.result.getObject(col.getDatabaseKey()));
+						result.put(col.getColumnKey(), db.result.getObject(col.getColumnKey()));
 					}
 					resultList.add(result);
 				}
