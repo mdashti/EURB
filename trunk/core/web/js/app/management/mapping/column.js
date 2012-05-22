@@ -41,7 +41,7 @@ EURB.Column.mappingTypeCombo = new Ext.form.ComboBox({
 });
 EURB.Column.referencedTableStore = new Ext.data.JsonStore({
     url: EURB.Column.tableSearchAction,
-    baseParams: {onlyMappedTables:'true'},
+    baseParams: {onlyMappedTables:'true', dbconfig: EURB.Column.selectedDbConfig},
     fields: [
         {name:'id', type:'int'},
         'mappedName' 

@@ -36,6 +36,11 @@
 			EURB.DBConfig.username = '<spring:message code="eurb.app.management.dbconfig.username" />';
 			EURB.DBConfig.password = '<spring:message code="eurb.app.management.dbconfig.password" />';
 			EURB.DBConfig.testQuery = '<spring:message code="eurb.app.management.dbconfig.testQuery" />';
+			EURB.DBConfig.conStatus = '<spring:message code="eurb.app.management.dbconfig.conStatus" />';
+			EURB.DBConfig.incompletedata = '<spring:message code="eurb.app.management.dbconfig.conStatus.incompletedata" />';
+			EURB.DBConfig.valid = '<spring:message code="eurb.app.management.dbconfig.conStatus.valid" />';
+			EURB.DBConfig.invalid = '<spring:message code="eurb.app.management.dbconfig.conStatus.invalid" />';
+			EURB.DBConfig.inactive = '<spring:message code="eurb.app.management.dbconfig.conStatus.inactive" />';
 			
 			EURB.DBConfig.editTables = '<spring:message code="eurb.app.management.dbconfig.editTables" />';
 		</script>

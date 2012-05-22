@@ -11,7 +11,7 @@ EURB.DBConfig.store = new Ext.data.Store({
 			,{name:'driverUrl', type:'string'}
 			,{name:'username', type:'string'}
 			,{name:'password', type:'string'}
-			,{name:'testQuery', type:'string'}
+			/*,{name:'testQuery', type:'string'}*/
 		]
 	})
 	,proxy:new Ext.data.HttpProxy({
@@ -73,7 +73,24 @@ EURB.DBConfig.cols = [{
 	}
 	,hidden:true
 	,renderer: function() {return '';}
-},{
+}, {
+	header: EURB.DBConfig.conStatus
+	,id:'testCon'
+	,dataIndex:'testCon'
+	,width:30
+	,sortable:true
+	,renderer: function(value) {
+		if(value == 'dbconf-valid') {
+			return EURB.DBConfig.valid;
+		} else if(value == 'dbconf-invalidcon') {
+			return EURB.DBConfig.invalid;
+		} else if(value == 'dbconf-inactive') {
+			return EURB.DBConfig.inactive;
+		} else if(value == 'dbconf-incompletedata') {
+			return EURB.DBConfig.incompletedata;
+		}
+	}
+}/*,{
 	 header:EURB.DBConfig.testQuery
 	,id:'testQuery'
 	,dataIndex:'testQuery'
@@ -83,7 +100,7 @@ EURB.DBConfig.cols = [{
 		allowBlank:true
 	})
 	,hidden:true
-}];
+}*/];
 
 EURB.DBConfig.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 	// defaults - can be changed from outside
