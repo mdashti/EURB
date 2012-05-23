@@ -210,7 +210,7 @@ public class ReportChartDaoImpl extends AbstractDAO implements ParameterizedRowM
 	public List<ReportChart> findByReportDesign(Long designId, Long designVersionId) throws ReportChartDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.design_id = ? AND o.design_version_id = ? ORDER BY o.id", this,designId,designVersionId);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.design_id = ? AND o.design_version_id = ? ORDER BY o.ds_order", this,designId,designVersionId);
 		}
 		catch (Exception e) {
 			throw new ReportChartDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
