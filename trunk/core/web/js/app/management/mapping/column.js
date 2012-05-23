@@ -19,7 +19,8 @@ EURB.Column.mappingTypeCombo = new Ext.form.ComboBox({
     listeners:{
          'change': function(combo, newValue, oldValue){
          	var rec = EURB.Column.columnGrid.getSelectionModel().getSelected();
-         	rec.data['mappingType'] = newValue;
+         	rec.set('mappingType', newValue);
+         	EURB.Column.staticMappingStore.removeAll();
 			if(newValue == 2) {
 				EURB.Column.staticMappingGrid.show();
 			} else {
@@ -63,6 +64,9 @@ EURB.Column.referencedTableCombo = new Ext.form.ComboBox({
     editable: false,
     listeners:{
          'change': function(combo, newValue, oldValue){
+         	var rec = EURB.Column.columnGrid.getSelectionModel().getSelected();
+         	rec.set('referencedTable', newValue);
+
 			EURB.Column.referencedColIdCombo.setDisabled(true);
 			EURB.Column.referencedColValueCombo.setDisabled(true);
 			EURB.Column.referencedColIdCombo.setValue('');
@@ -103,7 +107,13 @@ EURB.Column.referencedColIdCombo = new Ext.form.ComboBox({
     displayField: 'mappedName',
     forceSelection: true,
     allowBlank: false,
-    editable: false
+    editable: false,
+    listeners:{
+         'change': function(combo, newValue, oldValue){
+         	var rec = EURB.Column.columnGrid.getSelectionModel().getSelected();
+         	rec.set('referencedIdCol', newValue);
+         }
+    }
 });
 EURB.Column.referencedColValueCombo = new Ext.form.ComboBox({
     typeAhead: true,
@@ -115,7 +125,13 @@ EURB.Column.referencedColValueCombo = new Ext.form.ComboBox({
     displayField: 'mappedName',
     forceSelection: true,
     allowBlank: false,
-    editable: false
+    editable: false,
+    listeners:{
+         'change': function(combo, newValue, oldValue){
+         	var rec = EURB.Column.columnGrid.getSelectionModel().getSelected();
+         	rec.set('referencedValueCol', newValue);
+         }
+    }
 });
 EURB.Column.store = new Ext.data.Store({
 	reader:new Ext.data.JsonReader({
@@ -136,7 +152,7 @@ EURB.Column.store = new Ext.data.Store({
 			,{name:'referencedIdCol', type:'string'}
 			,{name:'referencedTable', type:'string'}
 			,{name:'referencedValueCol', type:'string'}
-			,{name:'staticMapping', type:'string'}
+			,{name:'staticMapping'}
 			,{name:'colDataType', type:'int'}
 			,{name:'mappingType', type:'int'}
 		]
@@ -399,22 +415,50 @@ EURB.Column.ColGrid = Ext.extend(Ext.grid.GridPanel, {
 	    		,mappedName : (mappedName ? mappedName : '---')
 	    	});
 		} else if(mappedType == 1) {
-    		EURB.Column.mappingPropertyGrid.setSource({
-	    		columnName : rec.get('columnName')
-	    		,mappedName : (mappedName ? mappedName : '---')
-	    		,mappingType : mappedType
-				,referenced1Table: rec.get('referencedTable')
-				,referenced2IdCol: rec.get('referencedIdCol')
-				,referenced3ValueCol: rec.get('referencedValueCol')
-	    	});
-	    	EURB.Column.mappingPropertyGrid.nonEditableCells.referenced2IdCol = false;
-         	EURB.Column.mappingPropertyGrid.nonEditableCells.referenced3ValueCol = false;
+			var refTable = rec.get('referencedTable');
+			if(refTable) {
+				EURB.Column.referencedColStore.removeAll();
+				//reload region store and enable region 
+				EURB.Column.referencedColStore.reload({
+					params: { onlyMappedTables:'true', table: refTable }
+					,callback:function(){
+			    		EURB.Column.mappingPropertyGrid.setSource({
+				    		columnName : rec.get('columnName')
+				    		,mappedName : (mappedName ? mappedName : '---')
+				    		,mappingType : mappedType
+							,referenced1Table: refTable
+							,referenced2IdCol: rec.get('referencedIdCol')
+							,referenced3ValueCol: rec.get('referencedValueCol')
+				    	});
+				    	EURB.Column.mappingPropertyGrid.nonEditableCells.referenced2IdCol = false;
+			         	EURB.Column.mappingPropertyGrid.nonEditableCells.referenced3ValueCol = false;
+					}
+				});
+			} else {
+				EURB.Column.mappingPropertyGrid.setSource({
+		    		columnName : rec.get('columnName')
+		    		,mappedName : (mappedName ? mappedName : '---')
+		    		,mappingType : mappedType
+					,referenced1Table: refTable
+					,referenced2IdCol: ''
+					,referenced3ValueCol: ''
+		    	});
+		    	EURB.Column.mappingPropertyGrid.nonEditableCells.referenced2IdCol = true;
+	         	EURB.Column.mappingPropertyGrid.nonEditableCells.referenced3ValueCol = true;
+			}
     	} else {
 	    	EURB.Column.mappingPropertyGrid.setSource({
 	    		columnName : rec.get('columnName')
 	    		,mappedName : (mappedName ? mappedName : '---')
 	    		,mappingType : mappedType
 	    	});
+	    	if(mappedType == 2) {
+    			EURB.Column.staticMappingStore.removeAll();
+	    		var staticMappingValues = rec.get('staticMapping');
+	    		if(staticMappingValues) {
+	    			EURB.Column.staticMappingStore.loadData(staticMappingValues);
+	    		}
+	    	}
     	}
     }
 	,commitChanges:function() {
@@ -712,9 +756,25 @@ EURB.Column.mappingPropertyGrid = new Ext.grid.PropertyGrid({
     	,text: EURB.Column.cancelAll
     	,handler: function() {
     		var rec = EURB.Column.columnGrid.getSelectionModel().getSelected();
+    		rec.reject();
+    		EURB.Column.columnGrid.onRecordSelectionChange(rec);
+    	}
+    },{
+    	iconCls: 'icon-save-table',
+        text: EURB.Column.saveAll,
+        handler : function(){
+    		var rec = EURB.Column.columnGrid.getSelectionModel().getSelected();
     		rec.set('referencedTable', EURB.Column.referencedTableCombo.getValue());
     		rec.set('referencedIdCol', EURB.Column.referencedColIdCombo.getValue());
     		rec.set('referencedValueCol', EURB.Column.referencedColValueCombo.getValue());
+    		var sendRec = new EURB.Column.columnGrid.store.recordType({newRecord:false});
+            sendRec.fields.each(function(f) {
+            	if(f.name == 'staticMapping') {
+            		sendRec.data[f.name] = Ext.util.JSON.encode(rec.data[f.name]);
+            	} else {
+                	sendRec.data[f.name] = rec.data[f.name];
+            	}
+            });
     		var o = {
 				 url:EURB.Column.storeAction
 				,method:'post'
@@ -722,26 +782,12 @@ EURB.Column.mappingPropertyGrid = new Ext.grid.PropertyGrid({
 				,scope:this
 				,params:{
 					cmd: 'storeData',
-					data:Ext.encode([rec.data])
+					data:Ext.encode([sendRec.data])
 				}
 			};
 			Ext.Ajax.request(o);
     		rec.commit();
     	}
-    },{
-    	iconCls: 'icon-save-table',
-        text: EURB.Column.saveAll,
-        handler : function(){
-            // access the Record constructor through the grid's store
-            var Plant = EURB.Column.staticMappingGrid.getStore().recordType;
-            var p = new Plant({
-                idValue: '',
-                valueValue: ''
-            });
-            EURB.Column.staticMappingGrid.stopEditing();
-            store.insert(0, p);
-            EURB.Column.staticMappingGrid.startEditing(0, 0);
-        }
     }]
 });
 
@@ -777,32 +823,33 @@ var cm = new Ext.grid.ColumnModel({
 });
 
 // create the Data Store
-var store = new Ext.data.Store({
+EURB.Column.staticMappingStore = new Ext.data.ArrayStore({
     // destroy the store if the grid is destroyed
     autoDestroy: true,
-    
-    // load remote data using HTTP
-    url: 'plants.xml',
-
-    // specify a XmlReader (coincides with the XML format of the returned data)
-    reader: new Ext.data.XmlReader({
-        // records will have a 'plant' tag
-        record: 'map',
-        // use an Array of field definition objects to implicitly create a Record constructor
-        fields: [
-            // the 'name' below matches the tag name to read, except 'availDate'
-            // which is mapped to the tag 'availability'
-            {name: 'idValue', type: 'string'},
-            {name: 'valueValue', type: 'string'}
-        ]
-    }),
-
+    storeId: 'EURB.Column.staticMappingStore',
+	idIndex: 0,
+    fields: [
+        // the 'name' below matches the tag name to read, except 'availDate'
+        // which is mapped to the tag 'availability'
+        {name: 'idValue', type: 'string'},
+        {name: 'valueValue', type: 'string'}
+    ],
+	listeners: {
+		'update' : function(thizStore) {
+			var rec = EURB.Column.columnGrid.getSelectionModel().getSelected();
+			var mappings = thizStore.getRange();
+			var statMppingArr = [];
+			for(var i = 0 ; i < mappings.length; i++) {
+				statMppingArr.push([mappings[i].get('idValue'),mappings[i].get('valueValue')])
+			}
+			rec.data['staticMapping'] = statMppingArr;
+		}
+	},
     sortInfo: {field:'idValue', direction:'ASC'}
 });
-
 // create the editor grid
 EURB.Column.staticMappingGrid = new Ext.grid.EditorGridPanel({
-    store: store,
+    store: EURB.Column.staticMappingStore,
     cm: cm,
     width: '100%',
     height: 450,
@@ -817,13 +864,13 @@ EURB.Column.staticMappingGrid = new Ext.grid.EditorGridPanel({
         text: EURB.addRecord,
         handler : function(){
             // access the Record constructor through the grid's store
-            var Plant = EURB.Column.staticMappingGrid.getStore().recordType;
-            var p = new Plant({
+            var MappingRec = EURB.Column.staticMappingGrid.getStore().recordType;
+            var p = new MappingRec({
                 idValue: '',
                 valueValue: ''
             });
             EURB.Column.staticMappingGrid.stopEditing();
-            store.insert(0, p);
+            EURB.Column.staticMappingStore.insert(0, p);
             EURB.Column.staticMappingGrid.startEditing(0, 0);
         }
     }]

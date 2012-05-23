@@ -3,8 +3,10 @@ package com.sharifpro.eurb.management.mapping.model;
 import java.io.Serializable;
 
 import org.apache.commons.lang.StringUtils;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import com.sharifpro.db.meta.TableColumnInfo;
+import com.sharifpro.util.json.Json2DArraySerializer;
 
 public class ColumnMapping extends PersistableObject implements Serializable
 {
@@ -292,6 +294,7 @@ public class ColumnMapping extends PersistableObject implements Serializable
 	 * 
 	 * @return String
 	 */
+	@JsonSerialize(using=Json2DArraySerializer.class)
 	public String getStaticMapping()
 	{
 		return staticMapping;
@@ -565,6 +568,6 @@ public class ColumnMapping extends PersistableObject implements Serializable
 	}
 
 	public int getMappingType() {
-		return (referencedTable == null || referencedIdCol == null || referencedValueCol == null) ? (StringUtils.isEmpty(staticMapping) ? MAPPING_TYPE_NONE : MAPPING_TYPE_STATIC) : MAPPING_TYPE_DYNAMIC;
+		return (referencedTable == null && referencedIdCol == null && referencedValueCol == null) ? (StringUtils.isEmpty(staticMapping) || "[]".equals(staticMapping) ? MAPPING_TYPE_NONE : MAPPING_TYPE_STATIC) : MAPPING_TYPE_DYNAMIC;
 	}
 }

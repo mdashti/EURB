@@ -271,7 +271,7 @@ EURB.User.UserGrid = Ext.extend(Ext.grid.GridPanel, {
             });
             rec.commit();
             store.add(rec);
-            this.onRowAction(this, rec, 'icon-edit-record', 0, 0);
+            this.changePasswordWindow.show(this.getView().getCell(0, 0),this.changePasswordFor(rec,true),this);
             return rec;
         }
         return false;
@@ -283,23 +283,27 @@ EURB.User.UserGrid = Ext.extend(Ext.grid.GridPanel, {
             break;
 
             case 'icon-edit-record':
-                this.changePasswordWindow.show(grid.getView().getCell(row, col),this.changePasswordFor(record),this);
-            break;
-
-            case 'icon-copy':
-                this.copyRecord(record);
-            break;
-                
-            case 'icon-grid':
-            	window.location.href = EURB.baseURL+'management/mapping/db'+record.get(this.idName)+'-table.spy';
+                this.changePasswordWindow.show(grid.getView().getCell(row, col),this.changePasswordFor(record, false),this);
             break;
         }
     }
-    ,changePasswordFor:function(record) {
+    ,changePasswordFor:function(record, usernameEditable) {
     	var frm = this.changePasswordForm.getForm();
+    	var userNameField = frm.findField('username');
+    	if(usernameEditable) {
+    		userNameField.enable();
+    		userNameField.setReadOnly(false);
+    	} else {
+    		userNameField.disable();
+    		userNameField.setReadOnly(true);
+    	}
     	frm.reset();
     	frm.loadRecord(record);
-    	frm.findField('newpass').focus(false,500);
+    	if(usernameEditable) {
+    		userNameField.focus(false,500);
+    	} else {
+    		frm.findField('newpass').focus(false,500);
+    	}
     }
 	,commitChanges:function() {
 		var records = this.store.getModifiedRecords();
@@ -454,7 +458,7 @@ EURB.User.UserGrid = Ext.extend(Ext.grid.GridPanel, {
 		};
 		Ext.Ajax.request(o);
 	}
-	/*,listeners: {
+	,listeners: {
 		dblclick : function() {
 			var sm = this.getSelectionModel();
             var sel = sm.getSelections();
@@ -462,7 +466,7 @@ EURB.User.UserGrid = Ext.extend(Ext.grid.GridPanel, {
             	this.onRowAction(this, sel[0], 'icon-edit-record', 0, 0);
             }
 		}
-	}*/
+	}
 
 });
 
