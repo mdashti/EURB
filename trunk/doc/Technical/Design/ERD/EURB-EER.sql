@@ -340,8 +340,8 @@ DROP TABLE IF EXISTS `eurb`.`report_design` ;
 CREATE  TABLE IF NOT EXISTS `eurb`.`report_design` (
   `id` BIGINT UNSIGNED NOT NULL ,
   `version_id` BIGINT UNSIGNED NOT NULL ,
-  `name` VARCHAR(45) NULL ,
-  `description` VARCHAR(45) NULL ,
+  `name` VARCHAR(100) NULL ,
+  `description` LONGTEXT NULL ,
   `category_id` BIGINT UNSIGNED NULL ,
   `query_text` LONGTEXT NULL ,
   `select_part` LONGTEXT NULL ,
