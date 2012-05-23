@@ -133,20 +133,17 @@ public class ViewReportController {
 			ReportDesign reportDesign = reportDesignDao.findByPrimaryKey(report, version);
 			List<ReportDataset> datasetList = reportDatasetDao.findAll(reportDesign);
 			List<ReportColumn> columnList = reportColumnDao.findAll(reportDesign);
-			Map<Long, ReportColumn> columnMap = new HashMap<Long, ReportColumn>();
 			List<ReportFilter> reportFilters = reportFilterDao.findAll(reportDesign.getId());
-			
+
 			//Build QUERY
 			///Build SELECT Part
 			StringBuilder querySelectSB = new StringBuilder("Select ");	
 			boolean firstCol = true;
-			for(ReportColumn col : columnList) {
-				//@ TODO key for this map and all its usages must be col.getId()
-				columnMap.put(col.getColumnMappingId(), col);
+			for(ReportColumn rcol : columnList) {
 				if(!firstCol) {
 					querySelectSB.append(", ");
 				}
-				querySelectSB.append(col.getDatabaseKey()).append(" AS ").append(col.getColumnKey());
+				querySelectSB.append(rcol.getDatabaseKey()).append(" AS ").append(rcol.getColumnKey());
 				
 				if(firstCol) {
 					firstCol = false;
@@ -174,21 +171,39 @@ public class ViewReportController {
 			StringBuilder queryWhereSB = new StringBuilder();
 			ReportFilter.ReportFilterOperator oper;
 			boolean firstFilter = true;
-			for(ReportFilter filter : reportFilters) {
-				ReportColumn relatedCol = columnMap.get(filter.getColumnMappingId());
-				if(relatedCol != null) {
-					oper = filter.getOperatorObj();
-					if(firstFilter) {
-						queryWhereSB.append(" WHERE ");
-						firstFilter = false;
+			if(reportFilters != null && !reportFilters.isEmpty()) {
+				///////////GENERATING A COLUMN MAP FOR BUILDING FILTERS\\\\\\\\\\\\\\\
+				Map<Long, ColumnMapping> columnMap = new HashMap<Long, ColumnMapping>();
+				List<ReportDataset> reportDatasets = reportDatasetDao.findAll(reportDesign);
+				for(ReportDataset rds : reportDatasets){
+					List<ColumnMapping> columnMappings = columnMappingDao.findAllMapped(rds);
+					for(ColumnMapping cm : columnMappings){
+						columnMap.put(cm.getId(), cm);
 					}
-					queryWhereSB.append(" ").append(relatedCol.getDatabaseKey()).append(" ").append(filter.getOperator()).append(" ");
-					if(oper.numberOfOperands == 0) {
-						queryWhereSB.append(oper.operator);
-					} else if(oper.numberOfOperands == 1) {
-						queryWhereSB.append("?");
-					} else if(oper.numberOfOperands == 2) {
-						queryWhereSB.append("? and ?");
+				}
+				/////////////////////////////////////////////////////////////////////////
+				for(ReportFilter filter : reportFilters) {
+					ColumnMapping relatedRCol = columnMap.get(filter.getColumnMappingId());
+					if(relatedRCol != null) {
+						oper = filter.getOperatorObj();
+						if(firstFilter) {
+							queryWhereSB.append(" WHERE ");
+							firstFilter = false;
+						}
+						queryWhereSB.append(" ").append(relatedRCol.getDatabaseKey(filter.getReportDatasetId())).append(" ").append(filter.getOperator()).append(" ");
+						
+						if(oper.numberOfOperands == 0) {
+							queryWhereSB.append(oper.operator);
+						} else if(oper.numberOfOperands == 1) {
+							if(filter.isJoinFilter()) {
+								ColumnMapping oper1 = columnMap.get(filter.getOperand1ColumnMappingId());
+								queryWhereSB.append(oper1.getDatabaseKey(filter.getOperand1DatasetId()));
+							} else {
+								queryWhereSB.append("?");
+							}
+						} else if(oper.numberOfOperands == 2) {
+							queryWhereSB.append("? and ?");
+						}
 					}
 				}
 			}

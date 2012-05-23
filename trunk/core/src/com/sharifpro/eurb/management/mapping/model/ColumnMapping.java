@@ -541,6 +541,26 @@ public class ColumnMapping extends PersistableObject implements Serializable
 	}
 
 	/**
+	 * The return value is used as key referring to this column
+	 * usually used in UI elements
+	 * 
+	 * @return column key
+	 */
+	public String getColumnKey(Long datasetId) {
+		return "t"+datasetId+"_"+this.getColumnName() + this.getId();
+	}
+
+	/**
+	 * The return value is used as key referring to this column
+	 * usually used in queries
+	 * 
+	 * @return column key
+	 */
+	public String getDatabaseKey(Long datasetId) {
+		return "t"+datasetId+"."+this.getColumnName();
+	}
+
+	/**
 	 * Method 'toString'
 	 * 
 	 * @return String

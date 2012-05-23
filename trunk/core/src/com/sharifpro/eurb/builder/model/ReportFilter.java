@@ -2,10 +2,15 @@ package com.sharifpro.eurb.builder.model;
 
 import java.io.Serializable;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import com.sharifpro.eurb.management.mapping.model.PersistableObject;
 
 public class ReportFilter extends PersistableObject implements Serializable
 {
+	public static final Integer FILTER_TYPE_JOIN = new Integer(1);
+	public static final Integer FILTER_TYPE_NORMAL = new Integer(0);
+
 	private static final long serialVersionUID = -5852320298976109788L;
 
 	/** 
@@ -497,6 +502,11 @@ public class ReportFilter extends PersistableObject implements Serializable
 	public ReportFilterPk createPk()
 	{
 		return new ReportFilterPk(id);
+	}
+	
+	@JsonIgnore
+	public boolean isJoinFilter() {
+		return FILTER_TYPE_JOIN.equals(filterType);
 	}
 
 	/**

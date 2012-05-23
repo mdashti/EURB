@@ -653,7 +653,7 @@ public class ReportColumn extends PersistableObject implements Serializable
 	 * @return column key
 	 */
 	public String getColumnKey() {
-		return "t"+this.getDatasetId()+"_"+this.getColumnMapping().getColumnName() + this.getColumnMappingId();
+		return this.getColumnMapping().getColumnKey(this.getDatasetId());
 	}
 
 	/**
@@ -663,7 +663,7 @@ public class ReportColumn extends PersistableObject implements Serializable
 	 * @return column key
 	 */
 	public String getDatabaseKey() {
-		return "t"+this.getDatasetId()+"."+this.getColumnMapping().getColumnName();
+		return this.getColumnMapping().getDatabaseKey(this.getDatasetId());
 	}
 	
 	public static class ReportColumnSortOrderComparator implements Comparator<ReportColumn> {
