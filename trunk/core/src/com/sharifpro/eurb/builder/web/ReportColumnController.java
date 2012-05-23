@@ -152,6 +152,39 @@ public class ReportColumnController {
 			return JsonUtil.getModelMapError(e.getMessage());
 		}
 	}
+	
+	/*
+	@RequestMapping(value="/builder/report/reportColumnComboContent.spy")
+	public @ResponseBody Map<String,? extends Object> getComboContent(@RequestParam(required=true) Long reportDesign) throws Exception {
+		
+		try{
+			ReportDesign design = null;
+			if(reportDesign != null){
+				design = reportDesignDao.findByPrimaryKey(reportDesign);
+			}
+			else{
+				throw new NullPointerException("Report Design is null");
+			}
+			List<ColumnMapping> columnMappings = columnMappingDao.findAllMapped(design);
+			Object[][] columnMappingArr = new Object[columnMappings.size()][2];
+			for(int i = 0; i < columnMappings.size(); i++){
+				columnMappingArr[i][0] = columnMappings.get(i).getId();
+				columnMappingArr[i][1] = columnMappings.get(i).getMappedName();
+			}
+			
+			Map<String,Object> modelMap = new HashMap<String,Object>(3);
+			modelMap.put("totalCount", columnMappings.size());
+			modelMap.put("data", columnMappingArr);
+			modelMap.put("success", true);
+
+			return modelMap;
+
+		} catch (Exception e) {
+
+			return JsonUtil.getModelMapError(e.getMessage());
+		}
+	}
+*/
 
 	@Autowired
 	public void setColumnMappingDao(ColumnMappingDao columnMappingDao) {

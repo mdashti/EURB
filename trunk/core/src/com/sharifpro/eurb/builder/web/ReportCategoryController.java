@@ -15,6 +15,7 @@ import com.sharifpro.eurb.builder.dao.ReportCategoryDao;
 import com.sharifpro.eurb.builder.model.ReportCategory;
 import com.sharifpro.eurb.builder.model.ReportCategoryPk;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
+import com.sharifpro.util.PropertyProvider;
 import com.sharifpro.util.json.JsonUtil;
 
 /**
@@ -98,7 +99,7 @@ public class ReportCategoryController {
 
 		} catch (Exception e) {
 
-			return JsonUtil.getModelMapError(e.getMessage());
+			return JsonUtil.getModelMapError(PropertyProvider.get("eurb.category.hasreportexception"));
 		}
 	}
 	

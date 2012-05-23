@@ -97,6 +97,7 @@
 		EURB.selectAtLeastOneSavedRecordFisrt = '<spring:message code="eurb.selectAtLeastOneSavedRecordFisrt" />';
 		EURB.addEdit = '<spring:message code="eurb.addEdit" />';
 		EURB.records = '<spring:message code="eurb.records" />';
+		EURB.record = '<spring:message code="eurb.record" />';
 		EURB.item = '<spring:message code="eurb.item" />';
 		EURB.containing = '<spring:message code="eurb.containing" />';
 		EURB.returnBack = '<spring:message code="eurb.returnBack" />';

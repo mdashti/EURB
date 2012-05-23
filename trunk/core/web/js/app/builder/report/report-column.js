@@ -206,7 +206,7 @@ EURB.ReportColumn.cols = [{
 	,renderer:EURB.ReportDesign.comboRenderer(EURB.ReportColumn.dirCombo)
 }];
 
-EURB.ReportColumn.ColumnGrid = Ext.extend(Ext.grid.GridPanel, {
+EURB.ReportColumn.ColumnGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 	// defaults - can be changed from outside
 	 width: '100%'
 	,height: 300
@@ -455,7 +455,7 @@ EURB.ReportColumn.ColumnGrid = Ext.extend(Ext.grid.GridPanel, {
 		records = [record];
 		Ext.Msg.show({
 			 title:EURB.areYouSureToDelTitle
-			,msg:String.format(EURB.areYouSureToDelete, records.length == 1 ? records[0].get('name') : EURB.records)
+			,msg:String.format(EURB.areYouSureToDelete, records.length == 1 ? records[0].get('columnHeader') : EURB.records)
 			,icon:Ext.Msg.QUESTION
 			,buttons:Ext.Msg.YESNO
 			,scope:this
@@ -482,13 +482,6 @@ EURB.ReportColumn.ColumnGrid = Ext.extend(Ext.grid.GridPanel, {
 		});
 	}
 	,listeners: {
-		dblclick : function() {
-			var sm = this.getSelectionModel();
-            var sel = sm.getSelections();
-            if(sel.length > 0) {
-            	this.onRowAction(this, sel[0], 'icon-edit-record', 0, 0);
-            }
-		}
 	}
 
 });

@@ -8,7 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,8 +19,9 @@ import org.springframework.web.servlet.ModelAndView;
 import com.sharifpro.db.DBBean;
 import com.sharifpro.db.dialects.HibernateDialect;
 import com.sharifpro.db.meta.ISQLConnection;
-import com.sharifpro.db.meta.TableColumnInfo;
 import com.sharifpro.eurb.builder.dao.ReportCategoryDao;
+import com.sharifpro.eurb.builder.dao.ReportChartAxisDao;
+import com.sharifpro.eurb.builder.dao.ReportChartDao;
 import com.sharifpro.eurb.builder.dao.ReportColumnDao;
 import com.sharifpro.eurb.builder.dao.ReportDatasetDao;
 import com.sharifpro.eurb.builder.dao.ReportDesignDao;
@@ -39,16 +39,11 @@ import com.sharifpro.eurb.builder.model.ReportFilter;
 import com.sharifpro.eurb.management.mapping.dao.ColumnMappingDao;
 import com.sharifpro.eurb.management.mapping.dao.DbConfigDao;
 import com.sharifpro.eurb.management.mapping.dao.TableMappingDao;
-import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
-import com.sharifpro.eurb.management.mapping.exception.TableMappingDaoException;
 import com.sharifpro.eurb.management.mapping.model.ColumnMapping;
 import com.sharifpro.eurb.management.mapping.model.DbConfig;
-import com.sharifpro.eurb.management.mapping.model.PersistableObject;
 import com.sharifpro.eurb.management.mapping.model.TableMapping;
 import com.sharifpro.util.PropertyProvider;
 import com.sharifpro.util.json.JsonUtil;
-import com.sharifpro.eurb.builder.dao.ReportChartDao;
-import com.sharifpro.eurb.builder.dao.ReportChartAxisDao;
 
 
 /**
@@ -93,6 +88,10 @@ public class ViewReportController {
 		//find report design with given id
 		ReportDesign reportDesign = reportDesignDao.findByPrimaryKey(report, version);
 		List<ReportColumn> columnList = reportColumnDao.findAllSortByColOrder(reportDesign);
+		//check to see if report has any charts
+		//in the future it has to change to list of charts
+		List<ReportChart> reportCharts = reportChartDao.findAll(reportDesign);
+		Boolean hasChart = reportCharts != null && reportCharts.size() > 0 ;
 
 		//UI
 		List<ExtStoreField> storeFields = new ArrayList<ExtStoreField>(columnList.size());
@@ -114,6 +113,8 @@ public class ViewReportController {
 		mv.addObject("reportName", reportDesign.getName());
 		mv.addObject("storeFields", jsonUtil.getJSONFromObject(storeFields));
 		mv.addObject("gridColumns", jsonUtil.getJSONFromObject(gridColumns));
+		
+		mv.addObject("hasChart", hasChart);
 
 		mv.setViewName("/builder/report/run-report");
 		return mv;
@@ -378,6 +379,7 @@ public class ViewReportController {
 			}
 			
 			resultConfig.add(chart.getType());
+			resultConfig.add(chart.getName());
 			resultConfig.add(xAxis.getTitle());
 			resultConfig.add(yAxis.getTitle());
 
@@ -386,10 +388,12 @@ public class ViewReportController {
 			///Build SELECT Part
 			StringBuilder querySelectSB = new StringBuilder("Select ");	
 			String xAxisDatabaseKey = "t" + xAxis.getDatasetId() + "." + datasetColumnMappingMap.get(xAxis.getDatasetId()).get(xAxis.getColumnMappingId()).getColumnName();
-			querySelectSB.append(xAxisDatabaseKey);
+			String xAxisColumnKey = "t"+xAxis.getDatasetId()+"_"+datasetColumnMappingMap.get(xAxis.getDatasetId()).get(xAxis.getColumnMappingId()).getColumnName() + xAxis.getColumnMappingId();
+			querySelectSB.append(xAxisDatabaseKey).append(" AS ").append(xAxisColumnKey);
 			querySelectSB.append(", ");
 			String yAxisDatabaseKey = "t" + yAxis.getDatasetId() + "." + datasetColumnMappingMap.get(yAxis.getDatasetId()).get(yAxis.getColumnMappingId()).getColumnName();
-			querySelectSB.append(yAxisDatabaseKey);
+			String yAxisColumnKey = "t"+yAxis.getDatasetId()+"_"+datasetColumnMappingMap.get(yAxis.getDatasetId()).get(yAxis.getColumnMappingId()).getColumnName() + yAxis.getColumnMappingId();
+			querySelectSB.append(yAxisDatabaseKey).append(" AS ").append(yAxisColumnKey);
 
 
 			//Build FROM part
@@ -499,8 +503,8 @@ public class ViewReportController {
 					db.executePrepared();
 				}
 				while(db.result.next()) {
-					xResult.add(db.result.getObject(xAxisDatabaseKey));
-					yResult.add(db.result.getObject(yAxisDatabaseKey));
+					xResult.add(db.result.getObject(xAxisColumnKey));
+					yResult.add(db.result.getObject(yAxisColumnKey));
 				}
 			} catch (Exception e) {
 				throw e;

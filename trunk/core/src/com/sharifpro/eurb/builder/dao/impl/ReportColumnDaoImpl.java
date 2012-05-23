@@ -75,7 +75,7 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public void delete(ReportColumnPk pk) throws ReportColumnDaoException
 	{
 		try{
-			jdbcTemplate.update("DELETE FROM " + getTableName() + " WHERE r.id = ? ",pk.getId());
+			jdbcTemplate.update("DELETE FROM " + getTableName() + " WHERE id = ? ",pk.getId());
 			DaoFactory.createPersistableObjectDao().delete(pk);
 		}
 		catch (Exception e) {

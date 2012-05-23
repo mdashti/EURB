@@ -86,9 +86,6 @@ EURB.ReportCategory.CategoryGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 			},{
                  iconCls:'icon-edit-record'
                 ,qtip:EURB.editRecord
-            },{
-                 iconCls:'icon-copy'
-                ,qtip:EURB.copyRecord
             }]
             ,widthIntercept:Ext.isSafari ? 4 : 2
             ,id:'actions'
@@ -182,9 +179,6 @@ EURB.ReportCategory.CategoryGrid = Ext.extend(Ext.grid.EditorGridPanel, {
                 this.recordForm.show(record, grid.getView().getCell(row, col));
             break;
 
-            case 'icon-copy':
-                this.copyRecord(record);
-            break;
         }
     }
 	,commitChanges:function() {
@@ -234,25 +228,6 @@ EURB.ReportCategory.CategoryGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 		}
 	}
 	,showError:EURB.showError
-	,copyRecord: function(record) {
-		var store = this.store;
-        if(store.recordType) {
-            var rec = new store.recordType({newRecord:true});
-            rec.fields.each(function(f) {
-            	if(f.name != this.idName && f.name != "name") {
-                	rec.data[f.name] = record.data[f.name];
-            	} else {
-            		rec.data[f.name] = '';
-            	}
-            });
-            store.add(rec);
-            this.onRowAction(this, rec, 'icon-edit-record', 0, 0);
-            //this.bbar.pageSize++;
-            this.bbar.doLayout();
-            return rec;
-        }
-        return false;
-	}
 	,deleteRecord:function(record) {
 		this.deleteSelectedRecords();
 	}

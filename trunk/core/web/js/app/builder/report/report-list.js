@@ -322,11 +322,13 @@ EURB.Report.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
 		});
 	}
 	,activateSelectedRecords:function() {
-		var records = this.getSelectionModel().getSelections();
-		if(!records.length) {
+		var index = this.getSelectionModel().getSelectedCell();
+		if(!index) {
 			Ext.Msg.alert(Ext.MessageBox.title.warning, EURB.selectAtLeastOneRecordFisrt).setIcon(Ext.Msg.INFO);
 			return;
 		}
+		var record = this.store.getAt(index[0]);
+		records = [record];
 		var data = [];
 		Ext.each(records, function(r, i) {
 			data.push(r.get(this.idName));
@@ -344,12 +346,13 @@ EURB.Report.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
 		Ext.Ajax.request(o);
 	}
 	,deactivateSelectedRecords:function() {
-		var records = this.getSelectionModel().getSelections();
-		if(!records.length) {
+		var index = this.getSelectionModel().getSelectedCell();
+		if(!index) {
 			Ext.Msg.alert(Ext.MessageBox.title.warning, EURB.selectAtLeastOneRecordFisrt).setIcon(Ext.Msg.INFO);
 			return;
 		}
-		var data = [];
+		var record = this.store.getAt(index[0]);
+		records = [record];
 		Ext.each(records, function(r, i) {
 			data.push(r.get(this.idName));
 		}, this);

@@ -92,18 +92,18 @@ Ext.onReady(function() {
 	           height:300
 	        },
 	        title: {
-	           text: 'Chart'
+	           text: data[0][1]
 	        },
 	        xAxis: {
 	           categories: data[1]
 	        },
 	        yAxis: {
 	           title: {
-	              text: 'Y Axis'
+	              text: data[0][3]
 	           }
 	        },
 	        series: [{
-				name : data[0][2],
+				name : data[0][3],
 				data : data[2]
 	        }]
 	     };
@@ -113,18 +113,18 @@ Ext.onReady(function() {
 	
 	chartRequestCallback = function(options, success, response) {
 		if(true !== success) {
-			this.showError(response.responseText);
+			//this.showError(response.responseText);
 			return;
 		}
 		try {
 			var o = Ext.decode(response.responseText);
 		}
 		catch(e) {
-			this.showError(response.responseText, EURB.unableToDecodeJSON);
+			//this.showError(response.responseText, EURB.unableToDecodeJSON);
 			return;
 		}
 		if(true !== o.success) {
-			this.showError(o.error || EURB.unknownError);
+			//this.showError(o.error || EURB.unknownError);
 			return;
 		}
 		updateChartData(o.data);
@@ -140,9 +140,16 @@ Ext.onReady(function() {
 				version:EURB.RunReport.version
 			}
 	};
-	Ext.Ajax.request(o);
+	if(EURB.RunReport.hasChart){
+		Ext.Ajax.request(o);
+	}
 
 
-	EURB.mainPanel.items.add(EURB.RunReport.chartPanel);
+	if(EURB.RunReport.hasChart){
+		EURB.mainPanel.items.add(EURB.RunReport.chartPanel);
+	}
+	else{
+		EURB.mainPanel.items.add(EURB.RunReport.runReportGrid);
+	}
     EURB.mainPanel.doLayout(); 
 });

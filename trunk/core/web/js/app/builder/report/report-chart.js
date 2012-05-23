@@ -19,6 +19,30 @@ EURB.ReportChart.chartTypeCombo = new Ext.form.ComboBox({
     editable: false
 });
 
+
+////////////////////////////aggregation type combo box///////////////////////////////
+EURB.ReportChart.aggregationTypeCombo = new Ext.form.ComboBox({
+	fieldLabel:EURB.ReportChart.Aggregation,
+	hiddenName:'yAggregation',
+    typeAhead: true,
+    triggerAction: 'all',
+    lazyRender:true,
+    mode: 'local',
+    store: new Ext.data.ArrayStore({
+        id: 0,
+        fields: [
+            'aggregationValue',
+            'aggregationLabel'
+        ],
+        data: [['sum', EURB.ReportChart.sum], ['count', EURB.ReportChart.count], ['ave', EURB.ReportChart.average]]
+    }),
+    valueField: 'aggregationValue',
+    displayField: 'aggregationLabel',
+    forceSelection: true,
+    allowBlank: true,
+    editable: false
+});
+
 ////////////////////////////data set grid/////////////////////////////////////
 
 EURB.ReportChart.store = new Ext.data.Store({
@@ -120,14 +144,13 @@ EURB.ReportChart.ChartGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 					    ,allowBlank:true
 					    ,xtype: 'hidden'
 					},
-
-				    EURB.ReportChart.xAxisColumnCombo,
-					{
+				    {
 						fieldLabel: EURB.ReportChart.AxisTitle
 						,name: 'xTitle'
 						,xtype:'textfield'
 						,allowBlank:true
-					}
+					},
+					EURB.ReportChart.xAxisColumnCombo
 				]
 				
 			},{
@@ -145,13 +168,14 @@ EURB.ReportChart.ChartGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 					    ,allowBlank:true
 					    ,xtype: 'hidden'
 					},
-					EURB.ReportChart.yAxisColumnCombo,
 					{
 						fieldLabel: EURB.ReportChart.AxisTitle
 						,name: 'yTitle'
 						,xtype:'textfield'
 						,allowBlank:true
-					}
+					},
+					EURB.ReportChart.aggregationTypeCombo,
+					EURB.ReportChart.yAxisColumnCombo
 				]
 					
 			}]
@@ -335,7 +359,7 @@ EURB.ReportChart.ChartGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 			return;
 		}
 		data = o.data;
-		var RecordCons = Ext.data.Record.create(['id', 'xAxisId', 'xColumnMapping', 'xDataset', 'xTitle' , 'yAxisId', 'yDataset', 'yColumnMapping' , 'yTitle']);
+		var RecordCons = Ext.data.Record.create(['id', 'xAxisId', 'xColumnMapping', 'xDataset', 'xTitle' , 'yAxisId', 'yDataset', 'yColumnMapping' , 'yTitle', 'yAggregation']);
 		var record = new RecordCons(
 			{
 				id: data[0],
@@ -346,7 +370,8 @@ EURB.ReportChart.ChartGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 				yAxisId: data[5],
 				yColumnMapping: data[6],
 				yDataset: data[7],
-				yTitle: data[8]
+				yTitle: data[8],
+				yAggregation: data[9]
 			}
 		); 
 		var frm = this.axisForm.getForm();

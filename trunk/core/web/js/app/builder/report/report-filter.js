@@ -396,7 +396,7 @@ EURB.ReportFilter.FitlerGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 		records = [record];
 		Ext.Msg.show({
 			 title:EURB.areYouSureToDelTitle
-			,msg:String.format(EURB.areYouSureToDelete, records.length == 1 ? records[0].get('name') : EURB.records)
+			,msg:String.format(EURB.areYouSureToDelete, records.length == 1 ? EURB.record : EURB.records)
 			,icon:Ext.Msg.QUESTION
 			,buttons:Ext.Msg.YESNO
 			,scope:this

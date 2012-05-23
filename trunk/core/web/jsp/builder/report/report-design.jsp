@@ -125,6 +125,10 @@
 			EURB.ReportChart.AxisColumn = '<spring:message code="eurb.app.builder.report.chart.axisColumn" />';
 			EURB.ReportChart.AxisTitle = '<spring:message code="eurb.app.builder.report.chart.axisTitle" />';
 			EURB.ReportChart.yAxis = '<spring:message code="eurb.app.builder.report.chart.yAxis" />';
+			EURB.ReportChart.sum = '<spring:message code="eurb.app.builder.report.chart.sum" />';
+			EURB.ReportChart.count = '<spring:message code="eurb.app.builder.report.chart.count" />';
+			EURB.ReportChart.average = '<spring:message code="eurb.app.builder.report.chart.average" />';
+			EURB.ReportChart.Aggregation = '<spring:message code="eurb.app.builder.report.chart.aggregation" />';
 			
 			
 			
@@ -300,7 +304,7 @@
 			    }
 			});
 
-			updateReportColumnComboContent = function(){
+			/* updateReportColumnComboContent = function(){
 				var o = {
 					 url:EURB.ReportColumn.updateComboContent
 					,method:'post'
@@ -339,12 +343,14 @@
 			        ],
 			        data: o.data
 			    }));
-				EURB.ReportColumn.reportColumnGrid.colModel.getColumnAt(0).setEditor(EURB.ReportDesign.columnCombo); */
+				EURB.ReportColumn.reportColumnGrid.colModel.getColumnAt(0).setEditor(EURB.ReportDesign.columnCombo); 
 				window.location.href = EURB.baseURL+'builder/report/report'+EURB.ReportDesign.selectedDesign+'-design.spy';
 			};
+			 */
 			
-			
-			
+			 updateReportColumnComboContent = function(){
+				 window.location.href = EURB.baseURL+'builder/report/report'+EURB.ReportDesign.selectedDesign+'-design.spy';
+			 }
 			hideFormField = function(field){
 				field.hide();
 				field.container.up('div.x-form-item').setStyle('display', 'none');

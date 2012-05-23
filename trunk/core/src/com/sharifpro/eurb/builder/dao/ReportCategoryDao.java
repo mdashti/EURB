@@ -14,7 +14,7 @@ public interface ReportCategoryDao
 	 * @param dto
 	 * @return ReportCategoryPk
 	 */
-	public ReportCategoryPk insert(ReportCategory dto);
+	public ReportCategoryPk insert(ReportCategory dto) throws ReportCategoryDaoException;
 
 	/** 
 	 * Updates a single row in the report_category table.

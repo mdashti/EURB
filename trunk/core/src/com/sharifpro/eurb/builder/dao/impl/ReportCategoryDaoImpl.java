@@ -12,17 +12,18 @@ import com.sharifpro.eurb.builder.dao.ReportCategoryDao;
 import com.sharifpro.eurb.builder.exception.ReportCategoryDaoException;
 import com.sharifpro.eurb.builder.model.ReportCategory;
 import com.sharifpro.eurb.builder.model.ReportCategoryPk;
+import com.sharifpro.eurb.info.RecordStatus;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
 import com.sharifpro.eurb.management.mapping.dao.impl.PersistableObjectDaoImpl;
 import com.sharifpro.util.PropertyProvider;
 
 public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedRowMapper<ReportCategory>, ReportCategoryDao
 {
-	
+
 	private final static String QUERY_FROM_COLUMNS = "o.name, o.description";
 
 	private final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + " o " + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL_AND_JOIN;
-	
+
 	private final static String COUNT_QUERY = "SELECT count(distinct(o.id)) FROM " + getTableName() + " o ";
 
 	/**
@@ -30,15 +31,21 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	 * 
 	 * @param dto
 	 * @return ReportCategoryPk
+	 * @throws ReportCategoryDaoException 
 	 */
 	@Transactional(readOnly = false)
-	public ReportCategoryPk insert(ReportCategory dto)
+	public ReportCategoryPk insert(ReportCategory dto) throws ReportCategoryDaoException
 	{
-		ReportCategoryPk pk = new ReportCategoryPk();
-		DaoFactory.createPersistableObjectDao().insert(dto, pk);
-		
-		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, name, description ) VALUES ( ?, ?, ? )",pk.getId(),dto.getName(),dto.getDescription());
-		return pk;
+		try{
+			ReportCategoryPk pk = new ReportCategoryPk();
+			DaoFactory.createPersistableObjectDao().insert(dto, pk);
+
+			jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, name, description ) VALUES ( ?, ?, ? )",pk.getId(),dto.getName(),dto.getDescription());
+			return pk;
+		}
+		catch (Exception e) {
+			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
 	}
 
 	/** 
@@ -47,8 +54,14 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	@Transactional(readOnly = false)
 	public void update(ReportCategoryPk pk, ReportCategory dto) throws ReportCategoryDaoException
 	{
-		DaoFactory.createPersistableObjectDao().update(pk);
-		jdbcTemplate.update("UPDATE " + getTableName() + " SET name = ?, description = ? WHERE id = ?",dto.getName(),dto.getDescription(),pk.getId());
+		try{
+			DaoFactory.createPersistableObjectDao().update(pk);
+			jdbcTemplate.update("UPDATE " + getTableName() + " SET name = ?, description = ? WHERE id = ?",dto.getName(),dto.getDescription(),pk.getId());
+		}
+		catch (Exception e) {
+			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+
 	}
 
 	/** 
@@ -57,10 +70,24 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	@Transactional(readOnly = false)
 	public void delete(ReportCategoryPk pk) throws ReportCategoryDaoException
 	{
-		jdbcTemplate.update("DELETE FROM " + getTableName() + " WHERE id = ?",pk.getId());
-		DaoFactory.createPersistableObjectDao().delete(pk);
+		try{
+			//first we have to check for any active report for this category
+			int countActive = jdbcTemplate.queryForInt("SELECT count(id) FROM " + ReportDesignDaoImpl.getTableName() + " WHERE category_id = ? AND record_status <> ? ",pk.getId(), RecordStatus.DELETED.getId());
+			//if there is any active report for the category, user cannot delete it
+			if(countActive > 0){
+				throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE);
+			}
+			//else we have to change category_id for not active reports of this category
+			jdbcTemplate.update("UPDATE " + ReportDesignDaoImpl.getTableName() + " SET category_id = NULL WHERE category_id = ?", pk.getId());
+			//and then delete the category
+			jdbcTemplate.update("DELETE FROM " + getTableName() + " WHERE id = ?",pk.getId());
+			DaoFactory.createPersistableObjectDao().delete(pk);
+		}
+		catch (Exception e) {
+			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
 	}
-	
+
 	/** 
 	 * Deletes multiple rows in the report_category table.
 	 */
@@ -71,7 +98,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 			delete(pk);
 		}
 	}
-	
+
 
 	/**
 	 * Method 'mapRow'
@@ -114,7 +141,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 		catch (Exception e) {
 			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
-		
+
 	}
 
 	/** 
@@ -129,9 +156,9 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 		catch (Exception e) {
 			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
-		
+
 	}
-	
+
 	@Transactional
 	public int countAll() throws ReportCategoryDaoException
 	{
@@ -141,10 +168,10 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 		catch (Exception e) {
 			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
-		
+
 	}
-	
-	
+
+
 	/** 
 	 * Returns all rows from the report_category table that match the criteria '' limited by start and limit.
 	 */
@@ -157,7 +184,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 	}
-	
+
 	/** 
 	 * Returns all rows from the db_config table that match the criteria like query in onFields fields limited by start and limit.
 	 */
@@ -170,9 +197,9 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 		catch (Exception e) {
 			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
-		
+
 	}
-	
+
 	@Transactional
 	public int countAll(String query, List<String> onFields) throws ReportCategoryDaoException
 	{
@@ -182,9 +209,9 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 		catch (Exception e) {
 			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
-		
+
 	}
-	
+
 
 
 	/** 
@@ -199,7 +226,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 		catch (Exception e) {
 			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
-		
+
 	}
 
 	/** 
@@ -214,7 +241,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 		catch (Exception e) {
 			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
-		
+
 	}
 
 	/** 
@@ -229,10 +256,10 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 		catch (Exception e) {
 			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
-		
+
 	}
 
-	
+
 
 	/** 
 	 * Returns the rows from the report_category table that matches the specified primary-key value.
@@ -241,9 +268,9 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	{
 		return findByPrimaryKey( pk.getId() );
 	}
-	
 
-	
+
+
 	private static String getMultipleFieldWhereClause(String txt, List<String> fields) {
 		StringBuilder query = new StringBuilder();
 		String likeQuery = " LIKE '%"+txt+"%' OR ";

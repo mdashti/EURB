@@ -31,7 +31,8 @@ public class ReportChartAxisController {
 	@RequestMapping(value="/builder/report/chartAxisStore.spy")
 	public @ResponseBody Map<String,? extends Object> storeChartAxis(@RequestParam(required=true) Long id, 
 			@RequestParam Long xAxisId, @RequestParam(required=true) Long xColumnMapping, @RequestParam(required=true) Long xDataset, @RequestParam String xTitle, 
-			@RequestParam Long yAxisId, @RequestParam(required=true) Long yColumnMapping, @RequestParam(required=true) Long yDataset, @RequestParam String yTitle) throws Exception {
+			@RequestParam Long yAxisId, @RequestParam(required=true) Long yColumnMapping, @RequestParam(required=true) Long yDataset, @RequestParam String yTitle, @RequestParam String yAggregation)
+					throws Exception {
 		List<Long> insertIds = new ArrayList<Long>(2);
 		ReportChartAxisPk pk;
 		try{
@@ -59,6 +60,7 @@ public class ReportChartAxisController {
 				yAxis.setChartId(id);
 				yAxis.setColumnMappingId(yColumnMapping);
 				yAxis.setDatasetId(yDataset);
+				yAxis.setAggregation(yAggregation);
 				yAxis.setType("y");
 				yAxis.setTitle(yTitle);
 				pk = reportChartAxisDao.insert(yAxis);
@@ -68,6 +70,7 @@ public class ReportChartAxisController {
 				pk = yAxis.createPk();
 				yAxis.setColumnMappingId(yColumnMapping);
 				yAxis.setDatasetId(yDataset);
+				yAxis.setAggregation(yAggregation);
 				yAxis.setTitle(yTitle);
 				reportChartAxisDao.update(pk, yAxis);
 			}
@@ -112,6 +115,7 @@ public class ReportChartAxisController {
 				result.add(yAxis.getColumnMappingId());
 				result.add(yAxis.getDatasetId());
 				result.add(yAxis.getTitle());
+				result.add(yAxis.getAggregation());
 			}
 
 			return JsonUtil.getSuccessfulMap(result);

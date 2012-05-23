@@ -142,7 +142,7 @@ public class JsonUtil {
 	public static Map<String,Object> getModelMapError(String msg){
 
 		Map<String,Object> modelMap = new HashMap<String,Object>(2);
-		modelMap.put("message", msg);
+		modelMap.put("error", msg);
 		modelMap.put("success", false);
 
 		return modelMap;
