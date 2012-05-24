@@ -152,14 +152,7 @@ public class JsonUtil {
 		try {
 			List<String[]> colMappingList = jutil.getListFromRequest("[[\"hhhh\",\"jjjj\"],[\"kkkk\",\"hhhh\"],[\"bbb\",\"hhhhkkk\"]]", String[].class);
 			System.out.println(colMappingList);
-		} catch (JsonParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
