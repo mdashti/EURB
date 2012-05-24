@@ -879,9 +879,15 @@ Ext.onReady(function() {
 	EURB.mainPanel.items.add(EURB.Column.columnGrid);
     EURB.mainPanel.doLayout();
     wrc = Ext.getCmp('viewport-info-panel');
-	wrc.add({
-		layout:'border',
-	    items: [EURB.Column.mappingPropertyGrid,EURB.Column.staticMappingGrid]
-	});
+	wrc.add(new Ext.TabPanel({
+		activeTab : 0,
+		tabPosition : 'bottom',
+		items : [{
+			title : EURB.Column.mappingValues,
+			layout : 'border',
+			items : [EURB.Column.mappingPropertyGrid,
+					EURB.Column.staticMappingGrid]
+		}]
+	}));
 	wrc.doLayout();
 });
