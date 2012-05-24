@@ -355,7 +355,7 @@ EURB.ReportChart.ChartGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 			return;
 		}
 		if(true !== o.success) {
-			this.showError(o.error || EURB.unknownError);
+			this.showError(o.error || o.message || EURB.unknownError);
 			return;
 		}
 		data = o.data;
@@ -414,7 +414,7 @@ EURB.ReportChart.ChartGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 			return;
 		}
 		if(true !== o.success) {
-			this.showError(o.error || EURB.unknownError);
+			this.showError(o.error || o.message || EURB.unknownError);
 			return;
 		}
 		

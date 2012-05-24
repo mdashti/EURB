@@ -93,18 +93,18 @@ Ext.onReady(function() {
 	
 	chartRequestCallback = function(options, success, response) {
 		if(true !== success) {
-			//this.showError(response.responseText);
+			this.showError(response.responseText);
 			return;
 		}
 		try {
 			var o = Ext.decode(response.responseText);
 		}
 		catch(e) {
-			//this.showError(response.responseText, EURB.unableToDecodeJSON);
+			this.showError(response.responseText, EURB.unableToDecodeJSON);
 			return;
 		}
 		if(true !== o.success) {
-			//this.showError(o.error || EURB.unknownError);
+			this.showError(o.error || o.message || EURB.unknownError);
 			return;
 		}
 		updateChartData(o.data);

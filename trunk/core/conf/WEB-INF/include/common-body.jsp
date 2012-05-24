@@ -113,6 +113,7 @@
 		EURB.appMenu.category = '<spring:message code="eurb.app.menu.builder.category" />';
 		EURB.appMenu.report = '<spring:message code="eurb.app.menu.builder.report" />';
 		EURB.appMenu.user = '<spring:message code="eurb.app.menu.security.user" />';
+		EURB.appMenu.group = '<spring:message code="eurb.app.menu.security.group" />';
 		EURB.appMenu.showReport = '<spring:message code="eurb.app.menu.builder.showreport" />'
 		
 		EURB.showError = function(msg, title) {
@@ -187,7 +188,11 @@
 		    	'<li><a href="<spring:url value="/management/mapping/db-table.spy" />">'+EURB.appMenu.table+'</a></li>'+
 		    	'<li><a href="<spring:url value="/management/mapping/db-table-column.spy" />">'+EURB.appMenu.column+'</a></li>'+
 		    	'<li><a href="'+EURB.baseURL+'builder/category/category.spy">'+EURB.appMenu.category+'</a></li>'+
+		    	'</ul>'+
+		    	'<h3 class="headerbar"><a href="'+EURB.baseURL+'"><spring:message code="eurb.app.menu.management.security" /></a></h3>'+
+		    	'<ul class="submenu">'+
 		    	'<li><a href="<spring:url value="/management/security/user.spy" />">'+EURB.appMenu.user+'</a></li>'+
+		    	'<li><a href="<spring:url value="/management/security/group.spy" />">'+EURB.appMenu.group+'</a></li>'+
 		    	'</ul>'+
 		    	'<h3 class="headerbar"><a href="'+EURB.baseURL+'"><spring:message code="eurb.app.menu.reportbuilder" /></a></h3>'+
 		    	'<ul class="submenu">'+

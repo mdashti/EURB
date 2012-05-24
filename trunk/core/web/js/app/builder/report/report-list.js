@@ -250,7 +250,7 @@ EURB.Report.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
 			return;
 		}
 		if(true !== o.success) {
-			this.showError(o.error || EURB.unknownError);
+			this.showError(o.error || o.message || EURB.unknownError);
 			return;
 		}
 
