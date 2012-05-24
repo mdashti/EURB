@@ -219,7 +219,7 @@ EURB.ReportFilter.cols = [
 	,sortable:true
 	,hidden:true
 	,editor:new Ext.form.TextField({
-		allowBlank:false
+		allowBlank:true
 	})
 }
 ];

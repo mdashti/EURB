@@ -43,6 +43,7 @@ import com.sharifpro.eurb.management.mapping.model.ColumnMapping;
 import com.sharifpro.eurb.management.mapping.model.DbConfig;
 import com.sharifpro.eurb.management.mapping.model.TableMapping;
 import com.sharifpro.util.PropertyProvider;
+import com.sharifpro.util.StringUtilities;
 import com.sharifpro.util.json.JsonUtil;
 
 
@@ -330,11 +331,7 @@ public class ViewReportController {
 
 
 	@RequestMapping(value="/builder/report/get-reportchart{report}-v{version}.spy")
-	public @ResponseBody Map<String,? extends Object> executeRunReportChart(@PathVariable Long report, @PathVariable Long version
-			,@RequestParam(required=false) String start
-			,@RequestParam(required=false) String limit
-			,@RequestParam(required=false) String sort
-			,@RequestParam(required=false) String dir) throws Exception {
+	public @ResponseBody Map<String,? extends Object> executeRunReportChart(@PathVariable Long report, @PathVariable Long version) throws Exception {
 		try{
 
 			List<ArrayList<Object>> resultList = new ArrayList<ArrayList<Object>>();
@@ -397,7 +394,12 @@ public class ViewReportController {
 			querySelectSB.append(", ");
 			String yAxisDatabaseKey = "t" + yAxis.getDatasetId() + "." + datasetColumnMappingMap.get(yAxis.getDatasetId()).get(yAxis.getColumnMappingId()).getColumnName();
 			String yAxisColumnKey = "t"+yAxis.getDatasetId()+"_"+datasetColumnMappingMap.get(yAxis.getDatasetId()).get(yAxis.getColumnMappingId()).getColumnName() + yAxis.getColumnMappingId();
-			querySelectSB.append(yAxisDatabaseKey).append(" AS ").append(yAxisColumnKey);
+			if(yAxis.hasAggregation()){
+				querySelectSB.append(yAxis.getAggregation()).append(" (").append(yAxisDatabaseKey).append(")").append(" AS ").append(yAxisColumnKey);
+			}
+			else{
+				querySelectSB.append(yAxisDatabaseKey).append(" AS ").append(yAxisColumnKey);
+			}
 
 
 			//Build FROM part
@@ -444,11 +446,17 @@ public class ViewReportController {
 				}
 			}
 
+			
+			StringBuilder queryGroupBySB = new StringBuilder();
+			if(yAxis.hasAggregation()){
+				queryGroupBySB.append(" GROUP BY ").append(xAxisColumnKey);
+			}
 
 
 			String querySelect = querySelectSB.toString();
 			String queryFrom = queryFromSB.toString();
 			String queryWhere = queryWhereSB.toString();
+			String queryGroupBy = queryGroupBySB.toString(); 
 
 
 			//Execute QUERY
@@ -456,7 +464,6 @@ public class ViewReportController {
 			ISQLConnection conn = null;
 			ArrayList<Object> xResult = new ArrayList<Object>();
 			ArrayList<Object> yResult = new ArrayList<Object>();
-			int total = 0;
 			try {
 				conn = dbConf.getConnection();
 				if(conn == null) {
@@ -467,35 +474,10 @@ public class ViewReportController {
 				HibernateDialect dialect = dbConf.getDialect();
 
 				DBBean db = new DBBean(dbConf.getDataSource());
-				String countQuery = dialect.buildCountQuery(querySelect, queryFrom, queryWhere);
-				if(queryWhere.isEmpty()) {
-					db.executeQuery(countQuery);
-				} else {
-					int index = 1;
-					db.prepareStatement(countQuery);
-					for(ReportFilter filter : reportFilters) {
-						if(!filter.isJoinFilter()){
-							oper = filter.getOperatorObj();
-							if(oper.numberOfOperands == 1) {
-								db.pstmt.setObject(index++, filter.getOperand1());
-							} else if(oper.numberOfOperands == 2) {
-								db.pstmt.setObject(index++, filter.getOperand1());
-								db.pstmt.setObject(index++, filter.getOperand2());
-							}
-						}
-					}
-					db.executePrepared();
-				}
-				if(db.result.next()) {
-					total = db.result.getInt(1);
-				}
+				
 
 				String finalQuery;
-				if(start == null || limit == null) {
-					finalQuery = dialect.buildQuery(querySelect,queryFrom,queryWhere, "");
-				} else {
-					finalQuery = dialect.buildQuery(querySelect,queryFrom,queryWhere, "", Integer.parseInt(start), Integer.parseInt(limit));
-				}
+				finalQuery = dialect.buildQuery(querySelect,queryFrom,queryWhere, queryGroupBy);
 
 				if(queryWhere.isEmpty()) {
 					db.executeQuery(finalQuery);
@@ -531,7 +513,7 @@ public class ViewReportController {
 			resultList.add(xResult);
 			resultList.add(yResult);
 
-			return JsonUtil.getSuccessfulMap(resultList, total);
+			return JsonUtil.getSuccessfulMap(resultList);
 
 		} catch (Exception e) {
 

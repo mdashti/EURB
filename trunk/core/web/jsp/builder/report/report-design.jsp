@@ -119,6 +119,7 @@
 			EURB.ReportChart.title = '<spring:message code="eurb.app.builder.report.chart.title" />';
 			
 			EURB.ReportChart.line = '<spring:message code="eurb.app.builder.report.chart.line" />';
+			EURB.ReportChart.column = '<spring:message code="eurb.app.builder.report.chart.column" />';
 			EURB.ReportChart.bar = '<spring:message code="eurb.app.builder.report.chart.bar" />';
 			EURB.ReportChart.pie = '<spring:message code="eurb.app.builder.report.chart.pie" />';
 			EURB.ReportChart.xAxis = '<spring:message code="eurb.app.builder.report.chart.xAxis" />';

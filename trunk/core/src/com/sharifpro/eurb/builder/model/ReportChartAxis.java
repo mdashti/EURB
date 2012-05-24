@@ -158,6 +158,16 @@ public class ReportChartAxis extends PersistableObject implements Serializable
 	{
 		return aggregation;
 	}
+	
+	/**
+	 * Method 'hasAggregation'
+	 * 
+	 * @return true if aggregation is not empty
+	 */
+	public boolean hasAggregation()
+	{
+		return (aggregation != null && !aggregation.equals(""));
+	}
 
 	/**
 	 * Method 'setAggregation'
