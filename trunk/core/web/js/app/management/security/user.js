@@ -414,6 +414,14 @@ EURB.User.UserGrid = Ext.extend(Ext.grid.GridPanel, {
 			}
 		});
 	}
+	,activateUserInRow:function(row) {
+		this.getSelectionModel().selectRow(row);
+		this.activateSelectedRecords();
+	}
+	,deactivateUserInRow:function(row) {
+		this.getSelectionModel().selectRow(row);
+		this.deactivateSelectedRecords();
+	}
 	,activateSelectedRecords:function() {
 		var records = this.getSelectionModel().getSelections();
 		if(!records.length) {

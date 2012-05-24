@@ -14,6 +14,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.sharifpro.util.PropertyProvider;
+
 public class AuthenticationProcessingFilter extends UsernamePasswordAuthenticationFilter {
 	protected void successfulAuthentication(HttpServletRequest request,
 			HttpServletResponse response, FilterChain filterChain, Authentication authResult)
@@ -41,7 +43,7 @@ public class AuthenticationProcessingFilter extends UsernamePasswordAuthenticati
 
 		Writer out = responseWrapper.getWriter();
 
-		out.write("{ success: false, errors: { title: 'Error', errormsg: 'Login failed. Try again.' }}");
+		out.write("{success:false,errors:{title:'"+PropertyProvider.get("eurb.app.loginFailedTitle")+"',errormsg:'"+PropertyProvider.get("eurb.app.loginFailedMessage")+"'}}");
 		out.close();
 
 	}

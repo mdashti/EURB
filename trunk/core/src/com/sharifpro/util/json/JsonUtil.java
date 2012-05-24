@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 
 import net.sf.json.JSONArray;
 
-import com.sharifpro.eurb.management.mapping.model.ColumnMapping;
 import com.sharifpro.util.json.SharifProObjectMapper;
 
 /**
