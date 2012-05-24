@@ -31,12 +31,12 @@ public class GroupMembersDaoImpl extends AbstractDAO implements ParameterizedRow
 	}
 
 	/** 
-	 * Updates a single row in the group_members table.
+	 * Deletes a single row in the group_members table.
 	 */
 	@Transactional
-	public void update(GroupMembersPk pk, GroupMembers dto) throws GroupMembersDaoException
+	public void delete(GroupMembers dto) throws GroupMembersDaoException
 	{
-		jdbcTemplate.update("UPDATE " + getTableName() + " SET id = ?, username = ?, group_id = ? WHERE id = ?",dto.getId(),dto.getUsername(),dto.getGroupId(),pk.getId());
+		jdbcTemplate.update("DELETE FROM " + getTableName() + " WHERE username = ? AND group_id = ?",dto.getUsername(), dto.getGroupId());
 	}
 
 	/** 

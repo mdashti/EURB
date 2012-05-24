@@ -18,6 +18,13 @@ EURB.User.store = new Ext.data.Store({
     })
 	//,baseParams:{}
 	,remoteSort:true
+	,listeners:{
+		load: function(g) {
+			if(EURB.User.userGrid) {
+		    	EURB.User.userGrid.getSelectionModel().selectRow(0);
+			}
+		} // Allow rows to be rendered.
+	}
 });
 
 EURB.User.cols = [{
@@ -72,7 +79,8 @@ EURB.User.cols = [{
 
 EURB.User.UserGrid = Ext.extend(Ext.grid.GridPanel, {
 	// defaults - can be changed from outside
-	 layout:'fit'
+	region:'center'
+	,layout:'fit'
 	,border:true
 	,stateful:false
 	,idName:'id'
@@ -196,6 +204,14 @@ EURB.User.UserGrid = Ext.extend(Ext.grid.GridPanel, {
 		var config = {
 			store: EURB.User.store
 			,columns:EURB.User.cols
+			,sm: new Ext.grid.RowSelectionModel({
+				singleSelect: false,
+				listeners: {
+				    rowselect: function(sm, row, rec) {
+				    	EURB.User.userGrid.onRecordSelectionChange(rec);
+			        }
+			    }
+			})
 			,plugins:[new Ext.ux.grid.Search({
 				iconCls:'icon-zoom'
 				//,readonlyIndexes:['name']
@@ -286,6 +302,13 @@ EURB.User.UserGrid = Ext.extend(Ext.grid.GridPanel, {
                 this.changePasswordWindow.show(grid.getView().getCell(row, col),this.changePasswordFor(record, false),this);
             break;
         }
+    }
+    ,onRecordSelectionChange:function(rec) {
+    	var username = rec.get('username');
+    	EURB.User.Grp.otherGroupsStore.reload({params: {userName: username}});
+    	EURB.User.Grp.currentGroupsStore.reload({params: {userName: username}});
+    	EURB.User.Grp.currentGroupsGrid.setTitle(EURB.User.Grp.currentGroupsFor + username);
+    	EURB.User.Grp.otherGroupsGrid.setTitle(EURB.User.Grp.selectableGroupsFor + username);
     }
     ,changePasswordFor:function(record, usernameEditable) {
     	var frm = this.changePasswordForm.getForm();
@@ -481,8 +504,179 @@ EURB.User.UserGrid = Ext.extend(Ext.grid.GridPanel, {
 // register xtype
 //Ext.reg('dbconfig.dbgrid', EURB.User.UserGrid);
 EURB.User.userGrid = new EURB.User.UserGrid();
+
+// Generic fields array to use in both store defs.
+EURB.User.Grp.fields = [
+	{name: 'id', mapping : 'id', type:'int'},
+	{name: 'groupName', mapping : 'groupName', type:'string'}
+];
+
+// create the data store
+EURB.User.Grp.currentGroupsStore = new Ext.data.JsonStore({
+	fields : EURB.User.Grp.fields,
+	root   : 'data',
+	proxy:new Ext.data.HttpProxy({
+		url:EURB.User.Grp.findCurrentGroupsAction
+        ,listeners: {
+        	'exception' : EURB.proxyExceptionHandler
+        }
+    }),
+	//baseParams:{},
+	remoteSort:false
+});
+// Column Model shortcut array
+EURB.User.Grp.cols = [
+	{ id : 'groupName', header: EURB.User.Grp.groupName, width: 160, sortable: true, dataIndex: 'groupName'}
+];
+
+// declare the source Grid
+EURB.User.Grp.currentGroupsGrid = new Ext.grid.GridPanel({
+ddGroup          : 'secondGridDDGroup',
+    store            : EURB.User.Grp.currentGroupsStore,
+    columns          : EURB.User.Grp.cols,
+enableDragDrop   : true,
+    stripeRows       : true,
+    autoExpandColumn : 'groupName',
+    title            : EURB.User.Grp.currentGroupsFor + '...'
+});
+
+EURB.User.Grp.otherGroupsStore = new Ext.data.JsonStore({
+    fields : EURB.User.Grp.fields,
+	root   : 'data',
+	proxy:new Ext.data.HttpProxy({
+		url:EURB.User.Grp.findSelectableGroupsAction
+        ,listeners: {
+        	'exception' : EURB.proxyExceptionHandler
+        }
+    }),
+	//baseParams:{},
+	remoteSort:false
+});
+
+// create the destination Grid
+EURB.User.Grp.otherGroupsGrid = new Ext.grid.GridPanel({
+ddGroup          : 'firstGridDDGroup',
+    store            : EURB.User.Grp.otherGroupsStore,
+    columns          : EURB.User.Grp.cols,
+enableDragDrop   : true,
+    stripeRows       : true,
+    autoExpandColumn : 'groupName',
+    title            : EURB.User.Grp.selectableGroupsFor + '...'
+});
 // application main entry point
 Ext.onReady(function() {
-	EURB.mainPanel.items.add(EURB.User.userGrid);
-    EURB.mainPanel.doLayout(); 
+	EURB.mainPanel.items.add(new Ext.Panel({
+		layout: 'border',
+		items: [new Ext.Panel({
+			split:true,
+			region:'south',
+			height: 300,
+			layout       : 'hbox',
+			defaults     : { flex : 1 }, //auto stretch
+			layoutConfig : { align : 'stretch' },
+			items        : [
+				EURB.User.Grp.currentGroupsGrid,
+				EURB.User.Grp.otherGroupsGrid
+			]/*,
+			bbar    : [
+				'->', // Fill
+				{
+					text    : 'Reset both grids',
+					handler : function() {
+						//refresh source grid
+						firstGridStore.loadData(myData);
+	
+						//purge destination grid
+						secondGridStore.removeAll();
+					}
+				}
+			]*/
+		}),EURB.User.userGrid]
+	}));
+    EURB.mainPanel.doLayout();
+
+    /****
+	 * Setup Drop Targets
+	 ***/
+	// This will make sure we only drop to the  view scroller element
+	var firstGridDropTargetEl = EURB.User.Grp.currentGroupsGrid.getView().scroller.dom;
+	var firstGridDropTarget = new Ext.dd.DropTarget(firstGridDropTargetEl, {
+		ddGroup : 'firstGridDDGroup',
+		notifyDrop : function(ddSource, e, data) {
+			var records = ddSource.dragData.selections;
+			var selectedUser = EURB.User.userGrid.getSelectionModel().getSelected();
+			var groupsArr = [];
+			Ext.each(records, function(r, i) {
+				groupsArr.push(r.get('id'));
+			},this);
+			Ext.Ajax.request({
+				 url:EURB.User.Grp.addUserToGroupsAction
+				,method:'post'
+				,callback:function(options, success, response) {
+						try {
+							var o = Ext.decode(response.responseText);
+						} catch(e) {
+							EURB.User.userGrid.showError(response.responseText, EURB.unableToDecodeJSON);
+							return;
+						}
+						if(true !== o.success) {
+							EURB.User.userGrid.showError(o.error || o.message || EURB.unknownError);
+							return;
+						}
+						Ext.each(records, ddSource.grid.store.remove,
+								ddSource.grid.store);
+						EURB.User.Grp.currentGroupsGrid.store.add(records);
+						EURB.User.Grp.currentGroupsGrid.store.sort('groupName', 'ASC');
+					}
+				,scope:this
+				,params:{
+					cmd: 'addUserToGroupsAction',
+					userName: selectedUser.get('username'),
+					groupIds:Ext.encode(groupsArr)
+				}
+			});
+			return true;
+		}
+	});
+
+	// This will make sure we only drop to the view scroller element
+	var secondGridDropTargetEl = EURB.User.Grp.otherGroupsGrid.getView().scroller.dom;
+	var secondGridDropTarget = new Ext.dd.DropTarget(secondGridDropTargetEl, {
+		ddGroup : 'secondGridDDGroup',
+		notifyDrop : function(ddSource, e, data) {
+			var records = ddSource.dragData.selections;
+			var selectedUser = EURB.User.userGrid.getSelectionModel().getSelected();
+			var groupsArr = [];
+			Ext.each(records, function(r, i) {
+				groupsArr.push(r.get('id'));
+			},this);
+			Ext.Ajax.request({
+				 url:EURB.User.Grp.removeUserFromGroupsAction
+				,method:'post'
+				,callback:function(options, success, response) {
+						try {
+							var o = Ext.decode(response.responseText);
+						} catch(e) {
+							EURB.User.userGrid.showError(response.responseText, EURB.unableToDecodeJSON);
+							return;
+						}
+						if(true !== o.success) {
+							EURB.User.userGrid.showError(o.error || o.message || EURB.unknownError);
+							return;
+						}
+						Ext.each(records, ddSource.grid.store.remove,
+								ddSource.grid.store);
+						EURB.User.Grp.otherGroupsGrid.store.add(records);
+						EURB.User.Grp.otherGroupsGrid.store.sort('groupName', 'ASC');
+					}
+				,scope:this
+				,params:{
+					cmd: 'removeUserFromGroupsAction',
+					userName: selectedUser.get('username'),
+					groupIds:Ext.encode(groupsArr)
+				}
+			});
+			return true;
+		}
+	});
 });

@@ -40,6 +40,16 @@
 			EURB.User.newPassword = '<spring:message code="eurb.app.management.user.newPassword" />';
 			EURB.User.confirmNewPassword = '<spring:message code="eurb.app.management.user.confirmNewPassword" />';
 			EURB.User.confirmDidNotMatch = '<spring:message code="eurb.app.management.user.confirmDidNotMatch" />';
+
+			EURB.User.Grp = {};
+			EURB.User.Grp.selectableGroupsFor = '<spring:message code="eurb.app.management.user.selectableGroupsFor" />';
+			EURB.User.Grp.currentGroupsFor = '<spring:message code="eurb.app.management.user.currentGroupsFor" />';
+			EURB.User.Grp.groupName = '<spring:message code="eurb.app.management.user.groupName" />';
+
+			EURB.User.Grp.findCurrentGroupsAction = '<spring:url value="/management/security/user/currentUserGroups.spy" />';
+			EURB.User.Grp.findSelectableGroupsAction = '<spring:url value="/management/security/user/selectableUserGroups.spy" />';
+			EURB.User.Grp.removeUserFromGroupsAction = '<spring:url value="/management/security/user/removeUserFromGroupsAction.spy" />';
+			EURB.User.Grp.addUserToGroupsAction = '<spring:url value="/management/security/user/addUserToGroupsAction.spy" />';
 		</script>
 		<script src="${resourcesUrl}/js/app/management/security/user.js"></script>
 	</body>

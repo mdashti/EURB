@@ -57,4 +57,18 @@ public interface GroupsDao
 	 */
 	public Groups findByPrimaryKey(GroupsPk pk) throws GroupsDaoException;
 
+	/**
+	 * Finds current users belonging to this group
+	 * @param userId
+	 * @return list of user groups
+	 */
+	public List<Groups> findCurrentGroupsForUser(String userId) throws GroupsDaoException;
+
+	/**
+	 * Finds current users not belonging to this group
+	 * @param userId
+	 * @return list of selectable groups for this user
+	 */
+	public List<Groups> findSelectableGroupsForUser(String userId) throws GroupsDaoException;
+
 }

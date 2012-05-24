@@ -167,4 +167,24 @@ public class GroupsDaoImpl extends AbstractDAO implements ParameterizedRowMapper
 		return findByPrimaryKey( pk.getId() );
 	}
 
+	@Override
+	public List<Groups> findCurrentGroupsForUser(String userName) throws GroupsDaoException {
+		try {
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.id IN (SELECT group_id FROM group_members WHERE username = ?) ORDER BY group_name", this,userName);
+		}
+		catch (Exception e) {
+			throw new GroupsDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+	}
+
+	@Override
+	public List<Groups> findSelectableGroupsForUser(String userName) throws GroupsDaoException {
+		try {
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.id NOT IN (SELECT group_id FROM group_members WHERE username = ?) ORDER BY group_name", this,userName);
+		}
+		catch (Exception e) {
+			throw new GroupsDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+	}
+
 }

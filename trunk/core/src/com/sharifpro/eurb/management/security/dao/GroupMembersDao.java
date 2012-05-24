@@ -18,12 +18,12 @@ public interface GroupMembersDao
 	public GroupMembersPk insert(GroupMembers dto);
 
 	/** 
-	 * Updates a single row in the group_members table.
+	 * Deletes a single row in the group_members table using username and group_id.
 	 */
-	public void update(GroupMembersPk pk, GroupMembers dto) throws GroupMembersDaoException;
+	public void delete(GroupMembers dto) throws GroupMembersDaoException;
 
 	/** 
-	 * Deletes a single row in the group_members table.
+	 * Deletes a single row in the group_members table using group_member.id.
 	 */
 	public void delete(GroupMembersPk pk) throws GroupMembersDaoException;
 

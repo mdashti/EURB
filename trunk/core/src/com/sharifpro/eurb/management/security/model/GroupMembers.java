@@ -28,6 +28,17 @@ public class GroupMembers extends PersistableObject implements Serializable
 	}
 
 	/**
+	 * Method 'GroupMembers'
+	 * 
+	 */
+	public GroupMembers(String username, Long groupId)
+	{
+		super();
+		this.username = username;
+		this.groupId = groupId;
+	}
+
+	/**
 	 * Method 'getUsername'
 	 * 
 	 * @return String

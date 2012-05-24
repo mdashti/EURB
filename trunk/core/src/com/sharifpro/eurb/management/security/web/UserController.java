@@ -11,8 +11,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.sharifpro.eurb.management.security.dao.GroupMembersDao;
+import com.sharifpro.eurb.management.security.dao.GroupsDao;
 import com.sharifpro.eurb.management.security.dao.UserDao;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
+import com.sharifpro.eurb.management.security.model.GroupMembers;
+import com.sharifpro.eurb.management.security.model.Groups;
 import com.sharifpro.eurb.management.security.model.User;
 import com.sharifpro.eurb.management.security.model.UserPk;
 import com.sharifpro.eurb.management.mapping.model.PersistableObject;
@@ -25,7 +29,10 @@ import com.sharifpro.util.json.JsonUtil;
  */
 @Controller
 public class UserController {
-
+	private GroupMembersDao groupMembersDao;
+	
+	private GroupsDao groupsDao;
+	
 	private UserDao userDao;
 	
 	private JsonUtil jsonUtil;
@@ -142,7 +149,70 @@ public class UserController {
 			return JsonUtil.getModelMapError(e.getMessage());
 		}
 	}
+	
+	@RequestMapping(value="/management/security/user/currentUserGroups.spy")
+	public @ResponseBody Map<String,? extends Object> findCurrentGroupsForUser(@RequestParam String userName) throws Exception {
+		try{
+			List<Groups> groupList = groupsDao.findCurrentGroupsForUser(userName);
+			return JsonUtil.getSuccessfulMap(groupList);
+		} catch (Exception e) {
+			return JsonUtil.getModelMapError(e.getMessage());
+		}
+	}
+	
+	@RequestMapping(value="/management/security/user/selectableUserGroups.spy")
+	public @ResponseBody Map<String,? extends Object> findSelectableGroupsForUser(@RequestParam String userName) throws Exception {
+		try{
+			List<Groups> groupList = groupsDao.findSelectableGroupsForUser(userName);
+			return JsonUtil.getSuccessfulMap(groupList);
+		} catch (Exception e) {
+			return JsonUtil.getModelMapError(e.getMessage());
+		}
+	}
+	
+	@RequestMapping(value="/management/security/user/addUserToGroupsAction.spy")
+	public @ResponseBody Map<String,? extends Object> addUserToGroups(@RequestParam String userName, @RequestParam Object groupIds) throws Exception {
+		try{
 
+			List<Integer> groupIdList = jsonUtil.getListFromRequest(groupIds, Integer.class);
+			for(Integer id : groupIdList) {
+				groupMembersDao.insert(new GroupMembers(userName, new Long(id)));
+			}
+			
+			return JsonUtil.getSuccessfulMapAfterStore(groupIdList);
+
+		} catch (Exception e) {
+
+			return JsonUtil.getModelMapError(e.getMessage());
+		}
+	}
+	
+	@RequestMapping(value="/management/security/user/removeUserFromGroupsAction.spy")
+	public @ResponseBody Map<String,? extends Object> removeUserFrom(@RequestParam String userName, @RequestParam Object groupIds) throws Exception {
+		try{
+
+			List<Integer> groupIdList = jsonUtil.getListFromRequest(groupIds, Integer.class);
+			for(Integer id : groupIdList) {
+				groupMembersDao.delete(new GroupMembers(userName, new Long(id)));
+			}
+			
+			return JsonUtil.getSuccessfulMapAfterStore(groupIdList);
+
+		} catch (Exception e) {
+
+			return JsonUtil.getModelMapError(e.getMessage());
+		}
+	}
+	
+	@Autowired
+	public void setGroupMembersDao(GroupMembersDao groupMembersDao) {
+		this.groupMembersDao = groupMembersDao;
+	}
+	
+	@Autowired
+	public void setGroupsDao(GroupsDao groupsDao) {
+		this.groupsDao = groupsDao;
+	}
 
 	@Autowired
 	public void setUserDao(UserDao userDao) {
