@@ -851,12 +851,11 @@ EURB.Column.staticMappingStore = new Ext.data.ArrayStore({
 EURB.Column.staticMappingGrid = new Ext.grid.EditorGridPanel({
     store: EURB.Column.staticMappingStore,
     cm: cm,
-    width: '100%',
-    height: 450,
-    viewConfig: {
-    	forceFit: true
-    },
-    autoExpandColumn: 'valueValue', // column with this id will be expanded
+    width: '100%'
+    ,layout:'fit'
+	,viewConfig: { forceFit: true }
+	,autoHeight:true
+    ,autoExpandColumn: 'valueValue', // column with this id will be expanded
     frame: false,
     clicksToEdit: 1,
     tbar: [{
