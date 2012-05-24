@@ -717,7 +717,7 @@ Ext.grid.PropertyColumnModel.prototype.isCellEditable = function(colIndex, rowIn
 };
 
 EURB.Column.mappingPropertyGrid = new Ext.grid.PropertyGrid({
-    autoHeight: true,
+    height: 200,
     source: {},
     propertyNames: {
         columnName : EURB.Column.columnName
@@ -735,10 +735,8 @@ EURB.Column.mappingPropertyGrid = new Ext.grid.PropertyGrid({
     	,referenced2IdCol : true
     	,referenced3ValueCol : true
     }
-    ,viewConfig : {
-        forceFit: true
-        //,scrollOffset: 2 // the grid will never have scrollbars
-    }
+    
+    ,region:'north'
     ,customRenderers: {
         mappingType: Ext.ux.comboRenderer(EURB.Column.mappingTypeCombo)
         ,referenced1Table: Ext.ux.comboRenderer(EURB.Column.referencedTableCombo)
@@ -852,12 +850,10 @@ EURB.Column.staticMappingGrid = new Ext.grid.EditorGridPanel({
     store: EURB.Column.staticMappingStore,
     cm: cm,
     width: '100%'
-    ,layout:'fit'
-	,viewConfig: { forceFit: true }
-	,autoHeight:true
+    ,region:'center'
     ,autoExpandColumn: 'valueValue', // column with this id will be expanded
     frame: false,
-    clicksToEdit: 1,
+    clicksToEdit: 2,
     tbar: [{
     	iconCls: 'icon-form-add',
         text: EURB.addRecord,
@@ -883,13 +879,9 @@ Ext.onReady(function() {
 	EURB.mainPanel.items.add(EURB.Column.columnGrid);
     EURB.mainPanel.doLayout();
     wrc = Ext.getCmp('viewport-info-panel');
-	wrc.add(new Ext.TabPanel({
-	    activeTab: 0,
-	    tabPosition: 'bottom',
-	    items: [{
-	        title: EURB.Column.mappingValues,
-	        items : [EURB.Column.mappingPropertyGrid,EURB.Column.staticMappingGrid]
-	    }]
-	}));
+	wrc.add({
+		layout:'border',
+	    items: [EURB.Column.mappingPropertyGrid,EURB.Column.staticMappingGrid]
+	});
 	wrc.doLayout();
 });

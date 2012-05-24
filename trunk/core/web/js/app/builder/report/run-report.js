@@ -2,9 +2,9 @@ EURB.RunReport.Grid = Ext.extend(Ext.grid.GridPanel, {
 	// defaults - can be changed from outside
 	 border:true
 	,stateful:false
-	,layout:'fit'
-	,viewConfig: { forceFit: true }
-	,autoHeight:true
+	,region:'center'
+	,loadMask:true
+	,stripeRows:true
 	,title: EURB.RunReport.viewReport
 	,initComponent:function() {
 		
@@ -128,6 +128,7 @@ Ext.onReady(function() {
 	if(EURB.RunReport.hasChart){
 		EURB.RunReport.chartPanel = new Ext.Panel({
 		    layout: 'border',
+			viewConfig: { forceFit: true },
 		    border: false,
 		    width: '100%',
 		    //html: '<div id="container" style="width: 50%; height: 400px; direction: ltr !important;"></div>'
@@ -140,11 +141,8 @@ Ext.onReady(function() {
 			        		id: 'container'
 			        	}
 			    	}
-		    		,{
-		    			region:'center',
-		    			width:'100%',
-		    			items:EURB.RunReport.runReportGrid
-		    		}
+		    		,
+		    			EURB.RunReport.runReportGrid
 		    	]
 		});
 		EURB.mainPanel.items.add(EURB.RunReport.chartPanel);
