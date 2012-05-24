@@ -106,14 +106,14 @@ public class ViewReportController {
 			totalWidth += col.getColumnWidth();
 		}
 		gridColumns.add(0,new ExtGridColumn(PropertyProvider.get("eurb.app.builder.runreport.grid.radif"), "id", (int) (0.05 * totalWidth), "center", "direction:ltr;"));
-		
+
 		ModelAndView mv = new ModelAndView();
 		mv.addObject("report", report);
 		mv.addObject("reportVersion", version);
 		mv.addObject("reportName", reportDesign.getName());
 		mv.addObject("storeFields", jsonUtil.getJSONFromObject(storeFields));
 		mv.addObject("gridColumns", jsonUtil.getJSONFromObject(gridColumns));
-		
+
 		mv.addObject("hasChart", hasChart);
 
 		mv.setViewName("/builder/report/run-report");
@@ -145,7 +145,7 @@ public class ViewReportController {
 					querySelectSB.append(", ");
 				}
 				querySelectSB.append(rcol.getDatabaseKey()).append(" AS ").append(rcol.getColumnKey());
-				
+
 				if(firstCol) {
 					firstCol = false;
 				}
@@ -192,7 +192,7 @@ public class ViewReportController {
 							firstFilter = false;
 						}
 						queryWhereSB.append(" ").append(relatedRCol.getDatabaseKey(filter.getReportDatasetId())).append(" ").append(filter.getOperator()).append(" ");
-						
+
 						if(oper.numberOfOperands == 0) {
 							queryWhereSB.append(oper.operator);
 						} else if(oper.numberOfOperands == 1) {
@@ -208,7 +208,7 @@ public class ViewReportController {
 					}
 				}
 			}
-			
+
 			//Build ORDER BY part
 			StringBuilder querySortSB = new StringBuilder();
 			List<ReportColumn> sortCols = new LinkedList<ReportColumn>();
@@ -231,13 +231,13 @@ public class ViewReportController {
 					}
 				}
 			}
-			
+
 			String querySelect = querySelectSB.toString();
 			String queryFrom = queryFromSB.toString();
 			String queryWhere = queryWhereSB.toString();
 			String querySort = querySortSB.toString();
-			
-			
+
+
 			//Execute QUERY
 			DbConfig dbConf = dbConfigDao.findByPrimaryKey(dbConfigId);
 			ISQLConnection conn = null;
@@ -251,7 +251,7 @@ public class ViewReportController {
 				conn.setReadOnly(true);
 
 				HibernateDialect dialect = dbConf.getDialect();
-				
+
 				Map<String,Object> result;
 				DBBean db = new DBBean(dbConf.getDataSource());
 				String countQuery = dialect.buildCountQuery(querySelect, queryFrom, queryWhere);
@@ -261,12 +261,14 @@ public class ViewReportController {
 					int index = 1;
 					db.prepareStatement(countQuery);
 					for(ReportFilter filter : reportFilters) {
-						oper = filter.getOperatorObj();
-						if(oper.numberOfOperands == 1) {
-							db.pstmt.setObject(index++, filter.getOperand1());
-						} else if(oper.numberOfOperands == 2) {
-							db.pstmt.setObject(index++, filter.getOperand1());
-							db.pstmt.setObject(index++, filter.getOperand2());
+						if(!filter.isJoinFilter()) {
+							oper = filter.getOperatorObj();
+							if(oper.numberOfOperands == 1) {
+								db.pstmt.setObject(index++, filter.getOperand1());
+							} else if(oper.numberOfOperands == 2) {
+								db.pstmt.setObject(index++, filter.getOperand1());
+								db.pstmt.setObject(index++, filter.getOperand2());
+							}
 						}
 					}
 					db.executePrepared();
@@ -290,12 +292,14 @@ public class ViewReportController {
 					int index = 1;
 					db.prepareStatement(finalQuery);
 					for(ReportFilter filter : reportFilters) {
-						oper = filter.getOperatorObj();
-						if(oper.numberOfOperands == 1) {
-							db.pstmt.setObject(index++, filter.getOperand1());
-						} else if(oper.numberOfOperands == 2) {
-							db.pstmt.setObject(index++, filter.getOperand1());
-							db.pstmt.setObject(index++, filter.getOperand2());
+						if(!filter.isJoinFilter()) {
+							oper = filter.getOperatorObj();
+							if(oper.numberOfOperands == 1) {
+								db.pstmt.setObject(index++, filter.getOperand1());
+							} else if(oper.numberOfOperands == 2) {
+								db.pstmt.setObject(index++, filter.getOperand1());
+								db.pstmt.setObject(index++, filter.getOperand2());
+							}
 						}
 					}
 					db.executePrepared();
@@ -332,10 +336,10 @@ public class ViewReportController {
 			,@RequestParam(required=false) String sort
 			,@RequestParam(required=false) String dir) throws Exception {
 		try{
-			
+
 			List<ArrayList<Object>> resultList = new ArrayList<ArrayList<Object>>();
 			ArrayList<Object> resultConfig = new ArrayList<Object>();
-			
+
 			//find report design with given id
 			ReportDesign reportDesign = reportDesignDao.findByPrimaryKey(report, version);
 			List<ReportDataset> datasetList = reportDatasetDao.findAll(reportDesign);
@@ -351,7 +355,7 @@ public class ViewReportController {
 				}
 				datasetColumnMappingMap.put(ds.getId(), colMap);
 			}
-			
+
 			//All Datasets must be in the same dbConfig
 			Long dbConfigId = reportDesign.getDbConfigId();
 
@@ -377,7 +381,7 @@ public class ViewReportController {
 			if(xAxis == null || yAxis == null){
 				throw new Exception("There is not an X and Y axis");
 			}
-			
+
 			resultConfig.add(chart.getType());
 			resultConfig.add(chart.getName());
 			resultConfig.add(xAxis.getTitle());
@@ -429,13 +433,18 @@ public class ViewReportController {
 				if(oper.numberOfOperands == 0) {
 					queryWhereSB.append(oper.operator);
 				} else if(oper.numberOfOperands == 1) {
-					queryWhereSB.append("?");
+					if(filter.isJoinFilter()) {
+						ColumnMapping oper1 = datasetColumnMappingMap.get(filter.getOperand1DatasetId()).get(filter.getOperand1ColumnMappingId());
+						queryWhereSB.append(oper1.getDatabaseKey(filter.getOperand1DatasetId()));
+					} else {
+						queryWhereSB.append("?");
+					}
 				} else if(oper.numberOfOperands == 2) {
 					queryWhereSB.append("? and ?");
 				}
 			}
 
-			
+
 
 			String querySelect = querySelectSB.toString();
 			String queryFrom = queryFromSB.toString();
@@ -465,12 +474,14 @@ public class ViewReportController {
 					int index = 1;
 					db.prepareStatement(countQuery);
 					for(ReportFilter filter : reportFilters) {
-						oper = filter.getOperatorObj();
-						if(oper.numberOfOperands == 1) {
-							db.pstmt.setObject(index++, filter.getOperand1());
-						} else if(oper.numberOfOperands == 2) {
-							db.pstmt.setObject(index++, filter.getOperand1());
-							db.pstmt.setObject(index++, filter.getOperand2());
+						if(!filter.isJoinFilter()){
+							oper = filter.getOperatorObj();
+							if(oper.numberOfOperands == 1) {
+								db.pstmt.setObject(index++, filter.getOperand1());
+							} else if(oper.numberOfOperands == 2) {
+								db.pstmt.setObject(index++, filter.getOperand1());
+								db.pstmt.setObject(index++, filter.getOperand2());
+							}
 						}
 					}
 					db.executePrepared();
@@ -492,12 +503,14 @@ public class ViewReportController {
 					int index = 1;
 					db.prepareStatement(finalQuery);
 					for(ReportFilter filter : reportFilters) {
-						oper = filter.getOperatorObj();
-						if(oper.numberOfOperands == 1) {
-							db.pstmt.setObject(index++, filter.getOperand1());
-						} else if(oper.numberOfOperands == 2) {
-							db.pstmt.setObject(index++, filter.getOperand1());
-							db.pstmt.setObject(index++, filter.getOperand2());
+						if(!filter.isJoinFilter()){
+							oper = filter.getOperatorObj();
+							if(oper.numberOfOperands == 1) {
+								db.pstmt.setObject(index++, filter.getOperand1());
+							} else if(oper.numberOfOperands == 2) {
+								db.pstmt.setObject(index++, filter.getOperand1());
+								db.pstmt.setObject(index++, filter.getOperand2());
+							}
 						}
 					}
 					db.executePrepared();
@@ -513,7 +526,7 @@ public class ViewReportController {
 					conn.close();
 				}
 			}
-			
+
 			resultList.add(resultConfig);
 			resultList.add(xResult);
 			resultList.add(yResult);

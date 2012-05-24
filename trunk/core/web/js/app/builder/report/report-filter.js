@@ -44,11 +44,12 @@ EURB.ReportFilter.operatorCombo = new Ext.form.ComboBox({
 
 
 joinFilter = function(){
-	formItems = EURB.ReportFilter.reportFilterGrid.recordForm.form.getForm().items;
-	operator = formItems.itemAt(2);
-	operand1 = formItems.itemAt(3);
-	operand2 = formItems.itemAt(4);
-	operand1Column = formItems.itemAt(5);
+	form = EURB.ReportFilter.reportFilterGrid.recordForm.form.getForm();
+	operator = form.findField('operator');
+	operand1 = form.findField('operand1');
+	operand2 = form.findField('operand2');
+	operand1Column = form.findField('operand1ColumnMappingId');
+	operand1Dataset = form.findField('operand1DatasetId');
 	
 	operand1.setDisabled(true);
 	operand1.allowBlank = true;
@@ -62,18 +63,24 @@ joinFilter = function(){
 	operand1Column.allowBlank = false;
 	operand1Column.setDisabled(false);
 	
+	hideFormField(operand1Dataset);
+	
 	operator.setValue('=');
 	operator.setReadOnly(true);
 }
 
 simpleFilter = function(){
-	formItems = EURB.ReportFilter.reportFilterGrid.recordForm.form.getForm().items;
-	operand1 = formItems.itemAt(3);
-	operand2 = formItems.itemAt(4);
-	operand1Column = formItems.itemAt(5);
+	form = EURB.ReportFilter.reportFilterGrid.recordForm.form.getForm();
+	operator = form.findField('operator');
+	operand1 = form.findField('operand1');
+	operand2 = form.findField('operand2');
+	operand1Column = form.findField('operand1ColumnMappingId');
+	operand1Dataset = form.findField('operand1DatasetId');
 	
 	operand1Column.allowBlank = true;
 	operand1Column.setDisabled(true);
+	
+	hideFormField(operand1Dataset);
 	
 	showFormField(operand1);
 	showFormField(operand2);
@@ -120,6 +127,7 @@ EURB.ReportFilter.store = new Ext.data.Store({
 			,{name:'operand1', type:'string'}
 			,{name:'operand2', type:'string'}
 			,{name:'operand1ColumnMappingId', type:'int'}
+			,{name:'operand1DatasetId', type:'int'}
 		]
 	})
 	,proxy:new Ext.data.HttpProxy({
@@ -200,8 +208,19 @@ EURB.ReportFilter.cols = [
 	,dataIndex:'operand1ColumnMappingId'
 	,width:50
 	,sortable:true
-	,editor:EURB.ReportFilter.columnCombo
+	,editor:EURB.ReportFilter.joinColumnCombo
 	,renderer:EURB.ReportDesign.comboRenderer(EURB.ReportFilter.columnCombo)
+},
+{
+	 header:EURB.ReportFilter.Operand1Column
+	,id:'operand1DatasetId'
+	,dataIndex:'operand1DatasetId'
+	,width:50
+	,sortable:true
+	,hidden:true
+	,editor:new Ext.form.TextField({
+		allowBlank:false
+	})
 }
 ];
 

@@ -244,6 +244,34 @@
 			    allowBlank: false
 			});
 			
+			EURB.ReportFilter.joinColumnCombo = new Ext.form.ComboBox({
+			    typeAhead: true,
+			    triggerAction: 'all',
+			    lazyRender:true,
+			    mode: 'local',
+			    store: new Ext.data.ArrayStore({
+			        id: 0,
+			        fields: [
+						'id',
+						'title',
+						'datasetId',
+						'mappedName',
+						'tableMappedName'
+			        ],
+			        data: ${columnMappingComboContent}
+			    }),
+			    valueField: 'id',
+			    displayField: 'title',
+			    forceSelection: true,
+			    allowBlank: false,
+			    listeners:{
+			    	select: function(combo,record,index){
+			    		form = EURB.ReportFilter.reportFilterGrid.recordForm.form.getForm();
+			    		form.findField('operand1DatasetId').setValue(record.get('datasetId'));
+			    	}
+			    }
+			});
+			
 			EURB.ReportChart.xAxisColumnCombo = new Ext.form.ComboBox({
 				fieldLabel:EURB.ReportChart.AxisColumn,
 				hiddenName:'xColumnMapping',

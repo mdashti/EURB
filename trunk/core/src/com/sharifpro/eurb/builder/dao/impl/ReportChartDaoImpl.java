@@ -67,6 +67,9 @@ public class ReportChartDaoImpl extends AbstractDAO implements ParameterizedRowM
 	public void delete(ReportChartPk pk) throws ReportChartDaoException
 	{
 		try{
+			//first delete all axis for the given chart
+			jdbcTemplate.update("DELETE FROM " + ReportChartAxisDaoImpl.getTableName() + " WHERE chart_id = ?", pk.getId());
+			//then delete the chart
 			jdbcTemplate.update("DELETE FROM " + getTableName() + " WHERE id = ?",pk.getId());
 			DaoFactory.createPersistableObjectDao().delete(pk);
 		}
@@ -210,7 +213,7 @@ public class ReportChartDaoImpl extends AbstractDAO implements ParameterizedRowM
 	public List<ReportChart> findByReportDesign(Long designId, Long designVersionId) throws ReportChartDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.design_id = ? AND o.design_version_id = ? ORDER BY o.ds_order", this,designId,designVersionId);
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.design_id = ? AND o.design_version_id = ? ORDER BY o.id", this,designId,designVersionId);
 		}
 		catch (Exception e) {
 			throw new ReportChartDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
