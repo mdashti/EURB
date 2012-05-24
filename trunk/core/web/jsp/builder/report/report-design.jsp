@@ -25,12 +25,14 @@
 		<!-- App js -->
 		<% 	String selectedDesign = (String) request.getAttribute("report");
 			String selectedVersion = (String) request.getAttribute("version"); 
+			String name = (String) request.getAttribute("name");
 		%>
 		<script type="text/javascript">
 
 			EURB.ReportDesign = {};
 			EURB.ReportDesign.selectedDesign = '<%=selectedDesign %>';
 			EURB.ReportDesign.selectedVersion = '<%=selectedVersion %>';
+			EURB.ReportDesign.name = '<%= name %>';
 			
 			EURB.ReportDesign.reportTab = '<spring:message code="eurb.app.builder.report.design.reportTab" />';
 			EURB.ReportDesign.reportChart = '<spring:message code="eurb.app.builder.report.design.reportChart" />';

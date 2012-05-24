@@ -38,7 +38,8 @@ Ext.onReady(function() {
 			title: EURB.ReportDesign.reportTab,
 			layout: 'border',
 			items: [{
-                region: 'east',
+				title: EURB.ReportDesign.name,
+				region: 'east',
                 width: '30%',
                 split: true,
                 items: [EURB.ReportDataset.reportDatasetGrid]

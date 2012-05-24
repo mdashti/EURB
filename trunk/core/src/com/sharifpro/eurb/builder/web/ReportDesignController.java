@@ -54,6 +54,7 @@ public class ReportDesignController {
 		//passing report desing's version with request
 		// TODO :  actually we should make a new version
 		mv.addObject("version", reportDesign.getVersionId().toString());
+		mv.addObject("name", reportDesign.getName());
 		HashMap<Long, String> tableMappingIdName = new HashMap<Long, String>();
 		List<TableMapping> tableMappings = tableMappingDao.findAllMapped(reportDesign);
 		Object[][] tableMappingArr = new Object[tableMappings.size()][2];
