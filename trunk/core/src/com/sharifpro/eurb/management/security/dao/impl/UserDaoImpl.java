@@ -352,4 +352,24 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 			deactivate(pk);
 		}
 	}
+
+	@Override
+	public List<User> findCurrentUsersForGroup(Long groupId) throws UserDaoException {
+		try {
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.username IN (SELECT username FROM group_members WHERE group_id = ?) ORDER BY o.username", this,groupId);
+		}
+		catch (Exception e) {
+			throw new UserDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+	}
+
+	@Override
+	public List<User> findSelectableUsersForGroup(Long groupId) throws UserDaoException {
+		try {
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.username NOT IN (SELECT username FROM group_members WHERE group_id = ?) ORDER BY o.username", this,groupId);
+		}
+		catch (Exception e) {
+			throw new UserDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+	}
 }

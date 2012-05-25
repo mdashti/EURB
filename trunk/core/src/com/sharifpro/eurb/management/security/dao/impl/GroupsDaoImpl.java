@@ -21,6 +21,8 @@ public class GroupsDaoImpl extends AbstractDAO implements ParameterizedRowMapper
 
 	private final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + " o " + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL_AND_JOIN;
 
+	private final static String COUNT_QUERY = "SELECT count(distinct(o.id)) FROM " + getTableName() + " o";
+
 	/**
 	 * Method 'insert'
 	 * 
@@ -52,6 +54,8 @@ public class GroupsDaoImpl extends AbstractDAO implements ParameterizedRowMapper
 	@Transactional
 	public void delete(GroupsPk pk) throws GroupsDaoException
 	{
+		jdbcTemplate.update("DELETE FROM " + GroupAuthoritiesDaoImpl.getTableName() + " WHERE group_id = ?",pk.getId());
+		jdbcTemplate.update("DELETE FROM " + GroupMembersDaoImpl.getTableName() + " WHERE group_id = ?",pk.getId());
 		jdbcTemplate.update("DELETE FROM " + getTableName() + " WHERE id = ?",pk.getId());
 		DaoFactory.createPersistableObjectDao().delete(pk);
 	}
@@ -162,12 +166,13 @@ public class GroupsDaoImpl extends AbstractDAO implements ParameterizedRowMapper
 	/** 
 	 * Returns the rows from the groups table that matches the specified primary-key value.
 	 */
+	@Transactional
 	public Groups findByPrimaryKey(GroupsPk pk) throws GroupsDaoException
 	{
 		return findByPrimaryKey( pk.getId() );
 	}
 
-	@Override
+	@Transactional
 	public List<Groups> findCurrentGroupsForUser(String userName) throws GroupsDaoException {
 		try {
 			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.id IN (SELECT group_id FROM group_members WHERE username = ?) ORDER BY group_name", this,userName);
@@ -177,13 +182,85 @@ public class GroupsDaoImpl extends AbstractDAO implements ParameterizedRowMapper
 		}
 	}
 
-	@Override
+	@Transactional
 	public List<Groups> findSelectableGroupsForUser(String userName) throws GroupsDaoException {
 		try {
 			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.id NOT IN (SELECT group_id FROM group_members WHERE username = ?) ORDER BY group_name", this,userName);
 		}
 		catch (Exception e) {
 			throw new GroupsDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+	}
+
+	private String getSortClause(String sortBy, String sortDir) {
+		StringBuilder result = new StringBuilder();
+		if("id".equals(sortBy)) {
+			result.append("o.id");
+		} else if("groupName".equals(sortBy)) {
+			result.append("o.group_name");
+		} else {
+			result.append("o.id");
+		}
+		result.append(" ").append(AbstractDAO.DESCENDING_SORT_ORDER.equals(sortDir) ? AbstractDAO.DESCENDING_SORT_ORDER : AbstractDAO.ASCENDING_SORT_ORDER);
+		return result.toString();
+	}
+	
+	private static String getMultipleFieldWhereClause(String txt, List<String> fields) {
+		StringBuilder query = new StringBuilder();
+		String likeQuery = " LIKE '%"+txt+"%' OR ";
+		if(fields.contains("groupName")) {
+			query.append("o.group_name").append(likeQuery);
+		}
+		if(query.length() > 0) {
+			return " WHERE " + query.substring(0,query.length()-3);
+		} else {
+			return "";
+		}
+	}
+
+	@Transactional
+	public List<Groups> findAll(Integer start, Integer limit, String sortBy, String sortDir) throws GroupsDaoException {
+		try {
+			return jdbcTemplate.query(QUERY_SELECT_PART + " ORDER BY "+getSortClause(sortBy, sortDir)+" limit ?, ?", this, start, limit);
+		} catch (Exception e) {
+			throw new GroupsDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+	}
+
+	@Transactional
+	public int countAll() throws GroupsDaoException {
+		try {
+			return jdbcTemplate.queryForInt(COUNT_QUERY);
+		} catch (Exception e) {
+			throw new GroupsDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+	}
+
+	@Transactional
+	public List<Groups> findAll(String query, List<String> onFields,
+			Integer start, Integer limit, String sortBy, String sortDir)
+			throws GroupsDaoException {
+		try {
+			return jdbcTemplate.query(QUERY_SELECT_PART + getMultipleFieldWhereClause(query, onFields) + " ORDER BY "+getSortClause(sortBy, sortBy)+" limit ?, ?", this, start, limit);
+		} catch (Exception e) {
+			throw new GroupsDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+	}
+
+	@Transactional
+	public int countAll(String query, List<String> onFields)
+			throws GroupsDaoException {
+		try {
+			return jdbcTemplate.queryForInt(COUNT_QUERY + getMultipleFieldWhereClause(query, onFields));
+		} catch (Exception e) {
+			throw new GroupsDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+	}
+
+	@Transactional
+	public void deleteAll(List<GroupsPk> pkList) throws GroupsDaoException {
+		for(GroupsPk pk : pkList) {
+			delete(pk);
 		}
 	}
 

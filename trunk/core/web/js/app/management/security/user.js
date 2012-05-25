@@ -380,25 +380,6 @@ EURB.User.UserGrid = Ext.extend(Ext.grid.GridPanel, {
 		}
 	}
 	,showError:EURB.showError
-	,copyRecord: function(record) {
-		var store = this.store;
-        if(store.recordType) {
-            var rec = new store.recordType({newRecord:true});
-            rec.fields.each(function(f) {
-            	if(f.name != this.idName && f.name != "name") {
-                	rec.data[f.name] = record.data[f.name];
-            	} else {
-            		rec.data[f.name] = '';
-            	}
-            });
-            store.add(rec);
-            this.onRowAction(this, rec, 'icon-edit-record', 0, 0);
-            //this.bbar.pageSize++;
-            this.bbar.doLayout();
-            return rec;
-        }
-        return false;
-	}
 	,deleteRecord:function(record) {
 		this.getSelectionModel().selectRecords([record]);
 		this.deleteSelectedRecords();

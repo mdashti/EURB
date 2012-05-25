@@ -2,12 +2,11 @@ package com.sharifpro.eurb.management.security.model;
 
 import java.io.Serializable;
 
-import com.sharifpro.eurb.management.mapping.model.PersistableObject;
-
-public class GroupMembers extends PersistableObject implements Serializable
+public class GroupMembers implements Serializable
 {
 	private static final long serialVersionUID = -4745387844493492387L;
 
+	protected Long id;
 	/** 
 	 * This attribute maps to the column username in the group_members table.
 	 */
@@ -150,6 +149,14 @@ public class GroupMembers extends PersistableObject implements Serializable
 		ret.append( ", username=" + username );
 		ret.append( ", groupId=" + groupId );
 		return ret.toString();
+	}
+
+	public Long getId() {
+		return id;
+	}
+	
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 }

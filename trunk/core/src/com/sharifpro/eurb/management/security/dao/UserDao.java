@@ -1,8 +1,8 @@
 package com.sharifpro.eurb.management.security.dao;
 
 import com.sharifpro.eurb.management.security.exception.UserDaoException;
-import com.sharifpro.eurb.management.security.model.User;
 import com.sharifpro.eurb.management.security.dao.UserDao;
+import com.sharifpro.eurb.management.security.model.User;
 import com.sharifpro.eurb.management.security.model.UserPk;
 
 import java.util.List;
@@ -127,4 +127,22 @@ public interface UserDao
 	 * Deactivates multiple rows in the db_config table.
 	 */
 	public void deactivateAll(List<UserPk> pkList) throws UserDaoException;
+
+	/**
+	 * Finds current groups belonging to this user
+	 * 
+	 * @param groupId
+	 * @return list of users for group
+	 * @throws UserDaoException
+	 */
+	public List<User> findCurrentUsersForGroup(Long groupId) throws UserDaoException;
+
+	/**
+	 * Finds current groups not belonging to this user
+	 * 
+	 * @param groupId
+	 * @return list of selectable users for this group
+	 * @throws UserDaoException
+	 */
+	public List<User> findSelectableUsersForGroup(Long groupId) throws UserDaoException;
 }

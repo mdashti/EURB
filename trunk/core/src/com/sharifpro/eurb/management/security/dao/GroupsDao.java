@@ -71,4 +71,58 @@ public interface GroupsDao
 	 */
 	public List<Groups> findSelectableGroupsForUser(String userId) throws GroupsDaoException;
 
+	/**
+	 * Find All Groups
+	 * 
+	 * @param startBy
+	 * @param limitBy
+	 * @param sort
+	 * @param dir
+	 * @return
+	 * @throws GroupsDaoException
+	 */
+	public List<Groups> findAll(Integer start, Integer limit, String sortBy,
+			String sortDir) throws GroupsDaoException;
+
+	/**
+	 * Count All Groups
+	 * 
+	 * @return
+	 * @throws GroupsDaoException
+	 */
+	public int countAll() throws GroupsDaoException;
+
+	/**
+	 * Find All Groups According to Query
+	 * 
+	 * @param query
+	 * @param onFields
+	 * @param startBy
+	 * @param limitBy
+	 * @param sort
+	 * @param dir
+	 * @return
+	 * @throws GroupsDaoException
+	 */
+	public List<Groups> findAll(String query, List<String> onFields,
+			Integer start, Integer limit, String sortBy, String sortDir) throws GroupsDaoException;
+
+	/**
+	 * Count All Groups According to Query
+	 * 
+	 * @param query
+	 * @param onFields
+	 * @return
+	 * @throws GroupsDaoException
+	 */
+	public int countAll(String query, List<String> onFields) throws GroupsDaoException;
+
+	/**
+	 * Delete All Specified Groups
+	 * 
+	 * @param pkList
+	 * @throws GroupsDaoException
+	 */
+	public void deleteAll(List<GroupsPk> pkList) throws GroupsDaoException;
+
 }
