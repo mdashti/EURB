@@ -1,5 +1,5 @@
 ALTER TABLE `eurb`.`report_filter` DROP FOREIGN KEY `fk_report_filter_report_column_operand1` ;
-ALTER TABLE `eurb`.`report_filter` CHANGE COLUMN `operand1_column_id` `operand1_column_mapping_id` BIGINT(20) UNSIGNED NULL DEFAULT NULL  , CHANGE COLUMN `operand1_column_dataset_id` `operand1_dataset_id` BIGINT(20) UNSIGNED NULL DEFAULT NULL  , CHANGE COLUMN `operand1_column_design_id` `operand1_report_column_id` BIGINT(20) UNSIGNED NULL DEFAULT NULL  , 
+ALTER TABLE `eurb`.`report_filter` CHANGE COLUMN `operand1_column_id` `operand1_column_mapping_id` BIGINT(20) UNSIGNED NULL DEFAULT NULL  , CHANGE COLUMN `operand1_column_dataset_id` `operand1_dataset_id` BIGINT(20) UNSIGNED NULL DEFAULT NULL  , CHANGE COLUMN `operand1_column_design_id` `operand1_report_column_id` BIGINT(20) UNSIGNED NULL DEFAULT NULL  , 
   ADD CONSTRAINT `fk_report_filter_operand1_dataset`
   FOREIGN KEY (`operand1_dataset_id` )
   REFERENCES `eurb`.`report_dataset` (`id` )
