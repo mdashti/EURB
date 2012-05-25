@@ -167,23 +167,25 @@
 			    allowBlank: false
 			});
 			
+			EURB.ReportDesign.columnMappingStore = new Ext.data.ArrayStore({
+		        id: 0,
+		        fields: [
+		            'id',
+		            'title',
+		            'datasetId',
+		            'mappedName',
+		            'tableMappedName',
+		            'columnName'
+		        ],
+		        data: ${columnMappingComboContent}
+		    });
 			
 			EURB.ReportColumn.columnCombo = new Ext.form.ComboBox({
 			    typeAhead: true,
 			    triggerAction: 'all',
 			    lazyRender:true,
 			    mode: 'local',
-			    store: new Ext.data.ArrayStore({
-			        id: 0,
-			        fields: [
-			            'id',
-			            'title',
-			            'datasetId',
-			            'mappedName',
-			            'tableMappedName'
-			        ],
-			        data: ${columnMappingComboContent}
-			    }),
+			    store: EURB.ReportDesign.columnMappingStore,
 			    valueField: 'id',
 			    displayField: 'title',
 			    forceSelection: true,
@@ -202,24 +204,14 @@
 			    lazyRender:true,
 			    fieldLabel: EURB.ReportColumn.formulaColumns,
 			    mode: 'local',
-			    store: new Ext.data.ArrayStore({
-			        id: 0,
-			        fields: [
-						'id',
-						'title',
-						'datasetId',
-						'mappedName',
-						'tableMappedName'
-			        ],
-			        data: ${columnMappingComboContent}
-			    }),
+			    store: EURB.ReportDesign.columnMappingStore,
 			    valueField: 'id',
 			    displayField: 'title',
 			    forceSelection: true,
 			    allowBlank: true,
 			    listeners:{
 			    	select: function(combo,record,index){
-			    		addText('[' + record.get('mappedName') + '-' + record.get('id') + ']');
+			    		addText('[' + record.get('mappedName') + '__t' + record.get('datasetId') + '.' + record.get('columnName') + ']');
 			    	}
 			    }
 			});
@@ -230,17 +222,7 @@
 			    triggerAction: 'all',
 			    lazyRender:true,
 			    mode: 'local',
-			    store: new Ext.data.ArrayStore({
-			        id: 0,
-			        fields: [
-						'id',
-						'title',
-						'datasetId',
-						'mappedName',
-						'tableMappedName'
-			        ],
-			        data: ${columnMappingComboContent}
-			    }),
+			    store:EURB.ReportDesign.columnMappingStore,
 			    valueField: 'id',
 			    displayField: 'title',
 			    forceSelection: true,
@@ -252,17 +234,7 @@
 			    triggerAction: 'all',
 			    lazyRender:true,
 			    mode: 'local',
-			    store: new Ext.data.ArrayStore({
-			        id: 0,
-			        fields: [
-						'id',
-						'title',
-						'datasetId',
-						'mappedName',
-						'tableMappedName'
-			        ],
-			        data: ${columnMappingComboContent}
-			    }),
+			    store: EURB.ReportDesign.columnMappingStore,
 			    valueField: 'id',
 			    displayField: 'title',
 			    forceSelection: true,
@@ -282,17 +254,7 @@
 			    triggerAction: 'all',
 			    lazyRender:true,
 			    mode: 'local',
-			    store: new Ext.data.ArrayStore({
-			        id: 0,
-			        fields: [
-						'id',
-						'title',
-						'datasetId',
-						'mappedName',
-						'tableMappedName'
-			        ],
-			        data: ${columnMappingComboContent}
-			    }),
+			    store:EURB.ReportDesign.columnMappingStore,
 			    valueField: 'id',
 			    displayField: 'title',
 			    forceSelection: true,
@@ -312,17 +274,7 @@
 			    triggerAction: 'all',
 			    lazyRender:true,
 			    mode: 'local',
-			    store: new Ext.data.ArrayStore({
-			        id: 0,
-			        fields: [
-						'id',
-						'title',
-						'datasetId',
-						'mappedName',
-						'tableMappedName'
-			        ],
-			        data: ${columnMappingComboContent}
-			    }),
+			    store:EURB.ReportDesign.columnMappingStore,
 			    valueField: 'id',
 			    displayField: 'title',
 			    forceSelection: true,

@@ -75,6 +75,8 @@ EURB.RunReport.Grid = Ext.extend(Ext.grid.GridPanel, {
 	}
 });
 
+
+
 // register xtype
 //Ext.reg('report.Grid', EURB.RunReport.Grid);
 EURB.RunReport.runReportGrid = new EURB.RunReport.Grid();
@@ -82,84 +84,7 @@ EURB.RunReport.runReportGrid = new EURB.RunReport.Grid();
 // application main entry point
 Ext.onReady(function() {
 	
-	updateChartData = function(data){
-		var options;
-		if(data[0][0] == 'pie'){
-			var pieData = [];
-			for(i = 0; i < data[1].length; i++){
-				pieData.push([data[1][i], data[2][i]/500]);
-			}
-			options = {
-				chart :{
-					type: data[0][0],
-			        renderTo: 'container',
-			        height:300
-				},
-				title: {
-		           text: data[0][1]
-		        },
-		        plotOptions: {
-
-	                pie: {
-
-	                    allowPointSelect: true,
-
-	                    cursor: 'pointer',
-
-	                    dataLabels: {
-
-	                        enabled: true,
-
-	                        color: '#000000',
-
-	                        connectorColor: '#000000',
-
-	                        formatter: function() {
-
-	                            return '<b>'+ this.point.name +'</b>: '+ this.percentage +' %';
-
-	                        }
-
-	                    }
-
-	                }
-
-	            },
-		        series:[{
-		        	name: data[0][3],
-		        	data: pieData,
-		        	type: 'pie'
-		        }]
-			};
-		}
-		else{
-			options = {
-		        chart: {
-		           type: data[0][0],
-		           renderTo: 'container',
-		           height:300
-		        },
-		        title: {
-		           text: data[0][1]
-		        },
-		        xAxis: {
-		           categories: data[1]
-		        },
-		        yAxis: {
-		           title: {
-		              text: data[0][3]
-		           }
-		        },
-		        series: [{
-					name : data[0][3],
-					data : data[2]
-		        }]
-		     };
-		}
 		
-		EURB.RunReport.chart = new Highcharts.Chart(options);
-	};
-	
 	chartRequestCallback = function(options, success, response) {
 		if(true !== success) {
 			this.showError(response.responseText);
@@ -195,6 +120,20 @@ Ext.onReady(function() {
 
 
 	if(EURB.RunReport.hasChart){
+		if(EURB.RunReport.chartCount > 1){
+			cw = '50%';
+			ew = '50%';
+		}
+		else{
+			cw = '100%';
+			ew = '0%';
+		}
+		if(EURB.RunReport.chartCount > 2){
+			h = '50%';
+		}
+		else{
+			h = '100%';
+		}
 		EURB.RunReport.chartPanel = new Ext.Panel({
 		    layout: 'border',
 			viewConfig: { forceFit: true },
@@ -202,17 +141,53 @@ Ext.onReady(function() {
 		    width: '100%',
 		    //html: '<div id="container" style="width: 50%; height: 400px; direction: ltr !important;"></div>'
 		    items: [{
-			    		region:'north',
-			    		split:true,
-			    		height:300,
-		    			autoEl: {
-			        		tag: 'div',
-			        		id: 'container'
-			        	}
-			    	}
-		    		,
-		    			EURB.RunReport.runReportGrid
-		    	]
+		    	region: 'north',
+		    	layout: 'border',
+		    	border: false,
+		    	height: 300,
+		    	items: [{
+		    
+					region: 'center',
+					split: true,
+					height: h,
+					width: cw,
+					autoEl: 
+					{
+						tag: 'div',
+						id: 'chart0'
+			        }
+			    },
+			    {
+			    	region: 'east',
+			    	split: true,
+					height: h,
+					width: ew,
+					autoEl: 
+					{
+						tag: 'div',
+						id: 'chart1'
+			        }
+			    },
+			    {
+			    	region: 'west',
+			    	split: true,
+					autoEl: 
+					{
+						tag: 'div',
+						id: 'chart2'
+			        }
+			    },
+			    {
+			    	region: 'south',
+			    	split: true,
+					autoEl: 
+					{
+						tag: 'div',
+						id: 'chart3'
+			        }
+			    }
+			]},
+		    EURB.RunReport.runReportGrid]
 		});
 		EURB.mainPanel.items.add(EURB.RunReport.chartPanel);
 	}

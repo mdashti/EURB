@@ -92,6 +92,7 @@ public class ViewReportController {
 		//in the future it has to change to list of charts
 		List<ReportChart> reportCharts = reportChartDao.findAll(reportDesign);
 		Boolean hasChart = reportCharts != null && reportCharts.size() > 0 ;
+		Integer chartCount = reportCharts.size();
 
 		//UI
 		List<ExtStoreField> storeFields = new ArrayList<ExtStoreField>(columnList.size());
@@ -123,6 +124,7 @@ public class ViewReportController {
 		mv.addObject("gridColumns", jsonUtil.getJSONFromObject(gridColumns));
 
 		mv.addObject("hasChart", hasChart);
+		mv.addObject("chartCount", chartCount);
 
 		mv.setViewName("/builder/report/run-report");
 		return mv;
@@ -221,7 +223,8 @@ public class ViewReportController {
 			StringBuilder querySortSB = new StringBuilder();
 			List<ReportColumn> sortCols = new LinkedList<ReportColumn>();
 			for(ReportColumn col : columnList) {
-				if(col.getSortType() != null && (ReportColumn.SORT_TYPE_ASC.equals(col.getSortType()) || ReportColumn.SORT_TYPE_DESC.equals(col.getSortType()))) {
+				if((col.getSortType() != null && (ReportColumn.SORT_TYPE_ASC.equals(col.getSortType()) || ReportColumn.SORT_TYPE_DESC.equals(col.getSortType()))) ||
+						(col.getGroupLevel() != null && col.getGroupLevel() > 0)){
 					sortCols.add(col);
 				}
 			}
@@ -233,7 +236,10 @@ public class ViewReportController {
 					if(!firstSort){
 						querySortSB.append(", ");
 					}
-					querySortSB.append(col.getDatabaseKey()).append(" ").append(col.getSortType() == ReportColumn.SORT_TYPE_DESC ? "DESC" : "ASC");
+					querySortSB.append(col.getDatabaseKey()).append(" ");
+					if(col.getGroupLevel() == null){
+						querySortSB.append(col.getSortType() == ReportColumn.SORT_TYPE_DESC ? "DESC" : "ASC");
+					}
 					if(firstSort) {
 						firstSort = false;
 					}
@@ -341,9 +347,7 @@ public class ViewReportController {
 	public @ResponseBody Map<String,? extends Object> executeRunReportChart(@PathVariable Long report, @PathVariable Long version) throws Exception {
 		try{
 
-			List<ArrayList<Object>> resultList = new ArrayList<ArrayList<Object>>();
-			ArrayList<Object> resultConfig = new ArrayList<Object>();
-
+			
 			//find report design with given id
 			ReportDesign reportDesign = reportDesignDao.findByPrimaryKey(report, version);
 			List<ReportDataset> datasetList = reportDatasetDao.findAll(reportDesign);
@@ -363,169 +367,179 @@ public class ViewReportController {
 			//All Datasets must be in the same dbConfig
 			Long dbConfigId = reportDesign.getDbConfigId();
 
-
-			List<ReportChart> reportCharts = reportChartDao.findAll(reportDesign);
-			if(reportCharts == null || reportCharts.size() != 1){
-				throw new Exception("There is no charts to display");
-			}
-			ReportChart chart = reportCharts.get(0);
-			List<ReportChartAxis> reportChartAxis = reportChartAxisDao.findAll(chart);
-			if(reportChartAxis == null || reportChartAxis.size() != 2){
-				throw new Exception("There is wrong number of axis for the chart");
-			}
-			ReportChartAxis xAxis = null, yAxis = null;
-			for(ReportChartAxis rca : reportChartAxis){
-				if(rca.getType().equals("x")){
-					xAxis = rca;
-				}
-				else if(rca.getType().equals("y")){
-					yAxis = rca;
-				}
-			}
-			if(xAxis == null || yAxis == null){
-				throw new Exception("There is not an X and Y axis");
-			}
-
-			resultConfig.add(chart.getType());
-			resultConfig.add(chart.getName());
-			resultConfig.add(xAxis.getTitle());
-			resultConfig.add(yAxis.getTitle());
-
-
-			//Build QUERY
-			///Build SELECT Part
-			StringBuilder querySelectSB = new StringBuilder("Select ");	
-			String xAxisDatabaseKey = "t" + xAxis.getDatasetId() + "." + datasetColumnMappingMap.get(xAxis.getDatasetId()).get(xAxis.getColumnMappingId()).getColumnName();
-			String xAxisColumnKey = "t"+xAxis.getDatasetId()+"_"+datasetColumnMappingMap.get(xAxis.getDatasetId()).get(xAxis.getColumnMappingId()).getColumnName() + xAxis.getColumnMappingId();
-			querySelectSB.append(xAxisDatabaseKey).append(" AS ").append(xAxisColumnKey);
-			querySelectSB.append(", ");
-			String yAxisDatabaseKey = "t" + yAxis.getDatasetId() + "." + datasetColumnMappingMap.get(yAxis.getDatasetId()).get(yAxis.getColumnMappingId()).getColumnName();
-			String yAxisColumnKey = "t"+yAxis.getDatasetId()+"_"+datasetColumnMappingMap.get(yAxis.getDatasetId()).get(yAxis.getColumnMappingId()).getColumnName() + yAxis.getColumnMappingId();
-			if(yAxis.hasAggregation()){
-				querySelectSB.append(yAxis.getAggregation()).append(" (").append(yAxisDatabaseKey).append(")").append(" AS ").append(yAxisColumnKey);
-			}
-			else{
-				querySelectSB.append(yAxisDatabaseKey).append(" AS ").append(yAxisColumnKey);
-			}
-
-
-			//Build FROM part
-			StringBuilder queryFromSB = new StringBuilder(" From ");
-			boolean firstDS = true;
-			for(ReportDataset ds : datasetList) {
-				if(DBBean.isValidIdentifier(ds.getTableMappingId())) { // is directly bound to table
-					TableMapping table = tableMappingDao.findByPrimaryKey(ds.getTableMappingId());
-					if(!firstDS){
-						queryFromSB.append(", ");
-					}
-					queryFromSB.append(table.getTableFullName()).append(" t").append(ds.getId());
-				} else { //is a report base on report
-					//TODO report based on report must be handled
-				}
-				if(firstDS) {
-					firstDS = false;
-				}
-			}
-			//Build Where part
-			StringBuilder queryWhereSB = new StringBuilder();
-			ReportFilter.ReportFilterOperator oper;
-			String databaseKey;
-			boolean firstFilter = true;
-			for(ReportFilter filter : reportFilters) {
-				oper = filter.getOperatorObj();
-				if(firstFilter) {
-					queryWhereSB.append(" WHERE ");
-					firstFilter = false;
-				}
-				databaseKey = "t" + filter.getReportDatasetId() + "." + datasetColumnMappingMap.get(filter.getReportDatasetId()).get(filter.getColumnMappingId()).getColumnName();
-				queryWhereSB.append(" ").append(databaseKey).append(" ").append(filter.getOperator()).append(" ");
-				if(oper.numberOfOperands == 0) {
-					queryWhereSB.append(oper.operator);
-				} else if(oper.numberOfOperands == 1) {
-					if(filter.isJoinFilter()) {
-						ColumnMapping oper1 = datasetColumnMappingMap.get(filter.getOperand1DatasetId()).get(filter.getOperand1ColumnMappingId());
-						queryWhereSB.append(oper1.getDatabaseKey(filter.getOperand1DatasetId()));
-					} else {
-						queryWhereSB.append("?");
-					}
-				} else if(oper.numberOfOperands == 2) {
-					queryWhereSB.append("? and ?");
-				}
-			}
-
+			List<Object> res = new ArrayList<Object>();
 			
-			StringBuilder queryGroupBySB = new StringBuilder();
-			if(yAxis.hasAggregation()){
-				queryGroupBySB.append(" GROUP BY ").append(xAxisColumnKey);
+			List<ReportChart> reportCharts = reportChartDao.findAll(reportDesign);
+			for(ReportChart chart : reportCharts){
+				List<ArrayList<Object>> resultList = getResultForChart(chart, datasetColumnMappingMap, datasetList, reportFilters, dbConfigId);
+				res.add(resultList);
 			}
-
-
-			String querySelect = querySelectSB.toString();
-			String queryFrom = queryFromSB.toString();
-			String queryWhere = queryWhereSB.toString();
-			String queryGroupBy = queryGroupBySB.toString(); 
-
-
-			//Execute QUERY
-			DbConfig dbConf = dbConfigDao.findByPrimaryKey(dbConfigId);
-			ISQLConnection conn = null;
-			ArrayList<Object> xResult = new ArrayList<Object>();
-			ArrayList<Object> yResult = new ArrayList<Object>();
-			try {
-				conn = dbConf.getConnection();
-				if(conn == null) {
-					throw new ReportExecutionHistoryDaoException(PropertyProvider.get("eurb.app.management.table.dbConfigIsInvalid"));
-				}
-				conn.setReadOnly(true);
-
-				HibernateDialect dialect = dbConf.getDialect();
-
-				DBBean db = new DBBean(dbConf.getDataSource());
-				
-
-				String finalQuery;
-				finalQuery = dialect.buildQuery(querySelect,queryFrom,queryWhere, queryGroupBy);
-
-				if(queryWhere.isEmpty()) {
-					db.executeQuery(finalQuery);
-				} else {
-					int index = 1;
-					db.prepareStatement(finalQuery);
-					for(ReportFilter filter : reportFilters) {
-						if(!filter.isJoinFilter()){
-							oper = filter.getOperatorObj();
-							if(oper.numberOfOperands == 1) {
-								db.pstmt.setObject(index++, filter.getOperand1());
-							} else if(oper.numberOfOperands == 2) {
-								db.pstmt.setObject(index++, filter.getOperand1());
-								db.pstmt.setObject(index++, filter.getOperand2());
-							}
-						}
-					}
-					db.executePrepared();
-				}
-				while(db.result.next()) {
-					xResult.add(db.result.getObject(xAxisColumnKey));
-					yResult.add(db.result.getObject(yAxisColumnKey));
-				}
-			} catch (Exception e) {
-				throw e;
-			} finally {
-				if(conn != null) {
-					conn.close();
-				}
-			}
-
-			resultList.add(resultConfig);
-			resultList.add(xResult);
-			resultList.add(yResult);
-
-			return JsonUtil.getSuccessfulMap(resultList);
+			
+			return JsonUtil.getSuccessfulMap(res);
 
 		} catch (Exception e) {
 
 			return JsonUtil.getModelMapError(e.getMessage());
 		}
+	}
+	
+	private List<ArrayList<Object>> getResultForChart(ReportChart chart, HashMap<Long, HashMap<Long, ColumnMapping>> datasetColumnMappingMap,
+			List<ReportDataset> datasetList, List<ReportFilter> reportFilters, Long dbConfigId) throws Exception{
+		List<ArrayList<Object>> resultList = new ArrayList<ArrayList<Object>>();
+		ArrayList<Object> resultConfig = new ArrayList<Object>();
+
+		List<ReportChartAxis> reportChartAxis = reportChartAxisDao.findAll(chart);
+		if(reportChartAxis == null || reportChartAxis.size() != 2){
+			throw new Exception("There is wrong number of axis for the chart");
+		}
+		ReportChartAxis xAxis = null, yAxis = null;
+		for(ReportChartAxis rca : reportChartAxis){
+			if(rca.getType().equals("x")){
+				xAxis = rca;
+			}
+			else if(rca.getType().equals("y")){
+				yAxis = rca;
+			}
+		}
+		if(xAxis == null || yAxis == null){
+			throw new Exception("There is not an X and Y axis");
+		}
+
+		resultConfig.add(chart.getType());
+		resultConfig.add(chart.getName());
+		resultConfig.add(xAxis.getTitle());
+		resultConfig.add(yAxis.getTitle());
+
+
+		//Build QUERY
+		///Build SELECT Part
+		StringBuilder querySelectSB = new StringBuilder("Select ");	
+		String xAxisDatabaseKey = "t" + xAxis.getDatasetId() + "." + datasetColumnMappingMap.get(xAxis.getDatasetId()).get(xAxis.getColumnMappingId()).getColumnName();
+		String xAxisColumnKey = "t"+xAxis.getDatasetId()+"_"+datasetColumnMappingMap.get(xAxis.getDatasetId()).get(xAxis.getColumnMappingId()).getColumnName() + xAxis.getColumnMappingId();
+		querySelectSB.append(xAxisDatabaseKey).append(" AS ").append(xAxisColumnKey);
+		querySelectSB.append(", ");
+		String yAxisDatabaseKey = "t" + yAxis.getDatasetId() + "." + datasetColumnMappingMap.get(yAxis.getDatasetId()).get(yAxis.getColumnMappingId()).getColumnName();
+		String yAxisColumnKey = "t"+yAxis.getDatasetId()+"_"+datasetColumnMappingMap.get(yAxis.getDatasetId()).get(yAxis.getColumnMappingId()).getColumnName() + yAxis.getColumnMappingId();
+		if(yAxis.hasAggregation()){
+			querySelectSB.append(yAxis.getAggregation()).append(" (").append(yAxisDatabaseKey).append(")").append(" AS ").append(yAxisColumnKey);
+		}
+		else{
+			querySelectSB.append(yAxisDatabaseKey).append(" AS ").append(yAxisColumnKey);
+		}
+
+
+		//Build FROM part
+		StringBuilder queryFromSB = new StringBuilder(" From ");
+		boolean firstDS = true;
+		for(ReportDataset ds : datasetList) {
+			if(DBBean.isValidIdentifier(ds.getTableMappingId())) { // is directly bound to table
+				TableMapping table = tableMappingDao.findByPrimaryKey(ds.getTableMappingId());
+				if(!firstDS){
+					queryFromSB.append(", ");
+				}
+				queryFromSB.append(table.getTableFullName()).append(" t").append(ds.getId());
+			} else { //is a report base on report
+				//TODO report based on report must be handled
+			}
+			if(firstDS) {
+				firstDS = false;
+			}
+		}
+		//Build Where part
+		StringBuilder queryWhereSB = new StringBuilder();
+		ReportFilter.ReportFilterOperator oper;
+		String databaseKey;
+		boolean firstFilter = true;
+		for(ReportFilter filter : reportFilters) {
+			oper = filter.getOperatorObj();
+			if(firstFilter) {
+				queryWhereSB.append(" WHERE ");
+				firstFilter = false;
+			}
+			databaseKey = "t" + filter.getReportDatasetId() + "." + datasetColumnMappingMap.get(filter.getReportDatasetId()).get(filter.getColumnMappingId()).getColumnName();
+			queryWhereSB.append(" ").append(databaseKey).append(" ").append(filter.getOperator()).append(" ");
+			if(oper.numberOfOperands == 0) {
+				queryWhereSB.append(oper.operator);
+			} else if(oper.numberOfOperands == 1) {
+				if(filter.isJoinFilter()) {
+					ColumnMapping oper1 = datasetColumnMappingMap.get(filter.getOperand1DatasetId()).get(filter.getOperand1ColumnMappingId());
+					queryWhereSB.append(oper1.getDatabaseKey(filter.getOperand1DatasetId()));
+				} else {
+					queryWhereSB.append("?");
+				}
+			} else if(oper.numberOfOperands == 2) {
+				queryWhereSB.append("? and ?");
+			}
+		}
+
+		
+		StringBuilder queryGroupBySB = new StringBuilder();
+		if(yAxis.hasAggregation()){
+			queryGroupBySB.append(" GROUP BY ").append(xAxisColumnKey);
+		}
+
+
+		String querySelect = querySelectSB.toString();
+		String queryFrom = queryFromSB.toString();
+		String queryWhere = queryWhereSB.toString();
+		String queryGroupBy = queryGroupBySB.toString(); 
+
+
+		//Execute QUERY
+		DbConfig dbConf = dbConfigDao.findByPrimaryKey(dbConfigId);
+		ISQLConnection conn = null;
+		ArrayList<Object> xResult = new ArrayList<Object>();
+		ArrayList<Object> yResult = new ArrayList<Object>();
+		try {
+			conn = dbConf.getConnection();
+			if(conn == null) {
+				throw new ReportExecutionHistoryDaoException(PropertyProvider.get("eurb.app.management.table.dbConfigIsInvalid"));
+			}
+			conn.setReadOnly(true);
+
+			HibernateDialect dialect = dbConf.getDialect();
+
+			DBBean db = new DBBean(dbConf.getDataSource());
+			
+
+			String finalQuery;
+			finalQuery = dialect.buildQuery(querySelect,queryFrom,queryWhere, queryGroupBy);
+
+			if(queryWhere.isEmpty()) {
+				db.executeQuery(finalQuery);
+			} else {
+				int index = 1;
+				db.prepareStatement(finalQuery);
+				for(ReportFilter filter : reportFilters) {
+					if(!filter.isJoinFilter()){
+						oper = filter.getOperatorObj();
+						if(oper.numberOfOperands == 1) {
+							db.pstmt.setObject(index++, filter.getOperand1());
+						} else if(oper.numberOfOperands == 2) {
+							db.pstmt.setObject(index++, filter.getOperand1());
+							db.pstmt.setObject(index++, filter.getOperand2());
+						}
+					}
+				}
+				db.executePrepared();
+			}
+			while(db.result.next()) {
+				xResult.add(db.result.getObject(xAxisColumnKey));
+				yResult.add(db.result.getObject(yAxisColumnKey));
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			if(conn != null) {
+				conn.close();
+			}
+		}
+
+		resultList.add(resultConfig);
+		resultList.add(xResult);
+		resultList.add(yResult);
+
+		return resultList;
 	}
 
 

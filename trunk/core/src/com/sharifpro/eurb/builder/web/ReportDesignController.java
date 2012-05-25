@@ -77,11 +77,12 @@ public class ReportDesignController {
 				info.add(rds.getId());
 				info.add(cm.getMappedName());
 				info.add(tableMappingIdName.get(rds.getTableMappingId()));
+				info.add(cm.getColumnName());
 				columns.put(cm.getId(), info);
 			}
 		}
 		Set<Long> ck = columns.keySet();
-		Object[][] columnMappingArr = new Object[ck.size()][5];
+		Object[][] columnMappingArr = new Object[ck.size()][6];
 		int i = 0;
 		for(Long key : ck){
 			ArrayList<Object> arr = columns.get(key);
@@ -90,6 +91,7 @@ public class ReportDesignController {
 			columnMappingArr[i][2] = arr.get(1);
 			columnMappingArr[i][3] = arr.get(2);
 			columnMappingArr[i][4] = arr.get(3);
+			columnMappingArr[i][5] = arr.get(4);
 			i++;
 		}
 		

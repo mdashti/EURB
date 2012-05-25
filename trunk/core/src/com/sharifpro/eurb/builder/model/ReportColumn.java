@@ -116,7 +116,7 @@ public class ReportColumn extends PersistableObject implements Serializable
 	 */
 	public Long getDatasetId()
 	{
-		if(datasetId == 0)
+		if(datasetId == null || datasetId == 0)
 			return null;
 		return datasetId;
 	}
@@ -653,7 +653,12 @@ public class ReportColumn extends PersistableObject implements Serializable
 	 * @return column key
 	 */
 	public String getColumnKey() {
-		return this.getColumnMapping().getColumnKey(this.getDatasetId());
+		if(this.formula != null && !this.formula.equals("")){
+			return "col" + this.getId();
+		}
+		else{
+			return this.getColumnMapping().getColumnKey(this.getDatasetId());
+		}
 	}
 
 	/**
@@ -663,7 +668,15 @@ public class ReportColumn extends PersistableObject implements Serializable
 	 * @return column key
 	 */
 	public String getDatabaseKey() {
-		return this.getColumnMapping().getDatabaseKey(this.getDatasetId());
+		if(this.formula != null && !this.formula.equals("")){
+			String formula = this.formula;
+			formula = formula.replaceAll("\\[([^_])*__", "");
+			formula = formula.replaceAll("\\]", "");
+			return formula;
+		}
+		else{
+			return this.getColumnMapping().getDatabaseKey(this.getDatasetId());
+		}
 	}
 	
 	public static class ReportColumnSortOrderComparator implements Comparator<ReportColumn> {
@@ -671,8 +684,20 @@ public class ReportColumn extends PersistableObject implements Serializable
 		@Override
 		public int compare(ReportColumn thiz, ReportColumn that) {
 			Integer thizSortOrder = thiz.getSortOrder();
+			Integer thizGroupLevel = thiz.getGroupLevel();
 			Integer thatSortOrder = that.getSortOrder();
+			Integer thatGroupLevel = that.getGroupLevel();
 			//NULL sortOrder columns must be added to end of the sort columns
+			if(thizGroupLevel != null && thatGroupLevel != null){
+				return thizGroupLevel - thatGroupLevel;
+			}
+			else if(thizGroupLevel != null){
+				return -1;
+			}
+			else if(thatGroupLevel != null){
+				return 1;
+			}
+			
 			if(thizSortOrder == null && thatSortOrder == null) {
 				return 0;
 			} else if(thizSortOrder == null) {

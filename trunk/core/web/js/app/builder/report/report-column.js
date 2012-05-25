@@ -299,9 +299,6 @@ EURB.ReportColumn.ColumnGrid = Ext.extend(Ext.grid.EditorGridPanel, {
             },{
             	iconCls:'icon-calculator'
             	,qtip:EURB.editFormula
-            },{
-            	iconCls:'icon-add-wage'
-            	,qtip:EURB.editFormula
             }]
             ,widthIntercept:Ext.isSafari ? 4 : 2
             ,id:'actions'
