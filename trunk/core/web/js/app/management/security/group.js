@@ -360,20 +360,8 @@ Ext.onReady(function() {
 			items        : [
 				EURB.Group.Usr.currentUsersGrid,
 				EURB.Group.Usr.otherUsersGrid
-			]/*,
-			bbar    : [
-				'->', // Fill
-				{
-					text    : 'Reset both grids',
-					handler : function() {
-						//refresh source grid
-						firstGridStore.loadData(myData);
-	
-						//purge destination grid
-						secondGridStore.removeAll();
-					}
-				}
-			]*/
+			],
+			bbar: [EURB.Group.Usr.userSelectDragDropHelp]
 		}),EURB.Group.groupGrid]
 	}));
     EURB.mainPanel.doLayout();

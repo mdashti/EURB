@@ -34,6 +34,7 @@
 			EURB.Group.Usr.selectableUsersFor = '<spring:message code="eurb.app.management.group.selectableUsersFor" />';
 			EURB.Group.Usr.currentUsersFor = '<spring:message code="eurb.app.management.group.currentUsersFor" />';
 			EURB.Group.Usr.userName = '<spring:message code="eurb.app.management.group.userName" />';
+			EURB.Group.Usr.userSelectDragDropHelp = '<spring:message code="eurb.app.management.group.userSelectDragDropHelp" />';
 
 			EURB.Group.Usr.findCurrentUsersAction = '<spring:url value="/management/security/group/currentGroupUsers.spy" />';
 			EURB.Group.Usr.findSelectableUsersAction = '<spring:url value="/management/security/group/selectableGroupUsers.spy" />';

@@ -558,20 +558,8 @@ Ext.onReady(function() {
 			items        : [
 				EURB.User.Grp.currentGroupsGrid,
 				EURB.User.Grp.otherGroupsGrid
-			]/*,
-			bbar    : [
-				'->', // Fill
-				{
-					text    : 'Reset both grids',
-					handler : function() {
-						//refresh source grid
-						firstGridStore.loadData(myData);
-	
-						//purge destination grid
-						secondGridStore.removeAll();
-					}
-				}
-			]*/
+			],
+			bbar: [EURB.User.Grp.groupSelectDragDropHelp]
 		}),EURB.User.userGrid]
 	}));
     EURB.mainPanel.doLayout();

@@ -45,6 +45,7 @@
 			EURB.User.Grp.selectableGroupsFor = '<spring:message code="eurb.app.management.user.selectableGroupsFor" />';
 			EURB.User.Grp.currentGroupsFor = '<spring:message code="eurb.app.management.user.currentGroupsFor" />';
 			EURB.User.Grp.groupName = '<spring:message code="eurb.app.management.user.groupName" />';
+			EURB.User.Grp.groupSelectDragDropHelp = '<spring:message code="eurb.app.management.user.groupSelectDragDropHelp" />';
 
 			EURB.User.Grp.findCurrentGroupsAction = '<spring:url value="/management/security/user/currentUserGroups.spy" />';
 			EURB.User.Grp.findSelectableGroupsAction = '<spring:url value="/management/security/user/selectableUserGroups.spy" />';
