@@ -13,40 +13,25 @@ public class GroupAggregation extends PersistableObject implements Serializable
 	 */
 	protected Long parentColumnId;
 
+	
 	/** 
-	 * This attribute maps to the column parent_column_dataset_id in the group_aggregation table.
+	 * This attribute maps to the column aggregated_column_mapping_id in the group_aggregation table.
 	 */
-	protected Long parentColumnDatasetId;
+	protected Long aggregatedColumnMappingId;
+	
 
 	/** 
-	 * This attribute maps to the column parent_column_design_id in the group_aggregation table.
+	 * This attribute maps to the column aggregated_column_dataset_id in the group_aggregation table.
 	 */
-	protected Long parentColumnDesignId;
+	protected Long aggregatedColumnDatasetId;
 
-	/** 
-	 * This attribute maps to the column parent_column_design_version_id in the group_aggregation table.
-	 */
-	protected Long parentColumnDesignVersionId;
+		
 
 	/** 
 	 * This attribute maps to the column aggregated_report_column_id in the group_aggregation table.
 	 */
 	protected Long aggregatedReportColumnId;
 
-	/** 
-	 * This attribute maps to the column aggregated_report_column_dataset_id in the group_aggregation table.
-	 */
-	protected Long aggregatedReportColumnDatasetId;
-
-	/** 
-	 * This attribute maps to the column aggregated_report_column_design_id in the group_aggregation table.
-	 */
-	protected Long aggregatedReportColumnDesignId;
-
-	/** 
-	 * This attribute maps to the column aggregated_report_column_design_version_id in the group_aggregation table.
-	 */
-	protected Long aggregatedReportColumnDesignVersionId;
 
 	/** 
 	 * This attribute maps to the column aggregation_function in the group_aggregation table.
@@ -87,66 +72,7 @@ public class GroupAggregation extends PersistableObject implements Serializable
 		this.parentColumnId = parentColumnId;
 	}
 
-	/**
-	 * Method 'getParentColumnDatasetId'
-	 * 
-	 * @return Long
-	 */
-	public Long getParentColumnDatasetId()
-	{
-		return parentColumnDatasetId;
-	}
-
-	/**
-	 * Method 'setParentColumnDatasetId'
-	 * 
-	 * @param parentColumnDatasetId
-	 */
-	public void setParentColumnDatasetId(Long parentColumnDatasetId)
-	{
-		this.parentColumnDatasetId = parentColumnDatasetId;
-	}
-
-	/**
-	 * Method 'getParentColumnDesignId'
-	 * 
-	 * @return Long
-	 */
-	public Long getParentColumnDesignId()
-	{
-		return parentColumnDesignId;
-	}
-
-	/**
-	 * Method 'setParentColumnDesignId'
-	 * 
-	 * @param parentColumnDesignId
-	 */
-	public void setParentColumnDesignId(Long parentColumnDesignId)
-	{
-		this.parentColumnDesignId = parentColumnDesignId;
-	}
-
-	/**
-	 * Method 'getParentColumnDesignVersionId'
-	 * 
-	 * @return Long
-	 */
-	public Long getParentColumnDesignVersionId()
-	{
-		return parentColumnDesignVersionId;
-	}
-
-	/**
-	 * Method 'setParentColumnDesignVersionId'
-	 * 
-	 * @param parentColumnDesignVersionId
-	 */
-	public void setParentColumnDesignVersionId(Long parentColumnDesignVersionId)
-	{
-		this.parentColumnDesignVersionId = parentColumnDesignVersionId;
-	}
-
+	
 	/**
 	 * Method 'getAggregatedReportColumnId'
 	 * 
@@ -167,66 +93,7 @@ public class GroupAggregation extends PersistableObject implements Serializable
 		this.aggregatedReportColumnId = aggregatedReportColumnId;
 	}
 
-	/**
-	 * Method 'getAggregatedReportColumnDatasetId'
-	 * 
-	 * @return Long
-	 */
-	public Long getAggregatedReportColumnDatasetId()
-	{
-		return aggregatedReportColumnDatasetId;
-	}
-
-	/**
-	 * Method 'setAggregatedReportColumnDatasetId'
-	 * 
-	 * @param aggregatedReportColumnDatasetId
-	 */
-	public void setAggregatedReportColumnDatasetId(Long aggregatedReportColumnDatasetId)
-	{
-		this.aggregatedReportColumnDatasetId = aggregatedReportColumnDatasetId;
-	}
-
-	/**
-	 * Method 'getAggregatedReportColumnDesignId'
-	 * 
-	 * @return Long
-	 */
-	public Long getAggregatedReportColumnDesignId()
-	{
-		return aggregatedReportColumnDesignId;
-	}
-
-	/**
-	 * Method 'setAggregatedReportColumnDesignId'
-	 * 
-	 * @param aggregatedReportColumnDesignId
-	 */
-	public void setAggregatedReportColumnDesignId(Long aggregatedReportColumnDesignId)
-	{
-		this.aggregatedReportColumnDesignId = aggregatedReportColumnDesignId;
-	}
-
-	/**
-	 * Method 'getAggregatedReportColumnDesignVersionId'
-	 * 
-	 * @return Long
-	 */
-	public Long getAggregatedReportColumnDesignVersionId()
-	{
-		return aggregatedReportColumnDesignVersionId;
-	}
-
-	/**
-	 * Method 'setAggregatedReportColumnDesignVersionId'
-	 * 
-	 * @param aggregatedReportColumnDesignVersionId
-	 */
-	public void setAggregatedReportColumnDesignVersionId(Long aggregatedReportColumnDesignVersionId)
-	{
-		this.aggregatedReportColumnDesignVersionId = aggregatedReportColumnDesignVersionId;
-	}
-
+	
 	/**
 	 * Method 'getAggregationFunction'
 	 * 
@@ -246,6 +113,43 @@ public class GroupAggregation extends PersistableObject implements Serializable
 	{
 		this.aggregationFunction = aggregationFunction;
 	}
+	
+	/**
+	 * Method 'getAggregatedColumnMappingId'
+	 * 
+	 * @return Long
+	 */
+	public Long getAggregatedColumnMappingId() {
+		return aggregatedColumnMappingId;
+	}
+
+	/**
+	 * Method 'setAggregatedColumnMappingId'
+	 * 
+	 * @param aggregatedColumnMappingId
+	 */
+	public void setAggregatedColumnMappingId(Long aggregatedColumnMappingId) {
+		this.aggregatedColumnMappingId = aggregatedColumnMappingId;
+	}
+
+	/**
+	 * Method 'getAggregatedColumnDatasetId'
+	 * 
+	  * @return Long
+	 */
+	public Long getAggregatedColumnDatasetId() {
+		return aggregatedColumnDatasetId;
+	}
+
+	/**
+	 * Method 'setAggregatedColumnDatasetId'
+	 * 
+	 * @param aggregatedColumnDatasetId
+	 */
+	public void setAggregatedColumnDatasetId(Long aggregatedColumnDatasetId) {
+		this.aggregatedColumnDatasetId = aggregatedColumnDatasetId;
+	}
+
 
 	/**
 	 * Method 'getPlace'
@@ -401,13 +305,9 @@ public class GroupAggregation extends PersistableObject implements Serializable
 		ret.append( "model.GroupAggregation: " );
 		ret.append( super.toString() );
 		ret.append( ", parentColumnId=" + parentColumnId );
-		ret.append( ", parentColumnDatasetId=" + parentColumnDatasetId );
-		ret.append( ", parentColumnDesignId=" + parentColumnDesignId );
-		ret.append( ", parentColumnDesignVersionId=" + parentColumnDesignVersionId );
+		ret.append( ", aggregatedColumnMappingId=" + aggregatedColumnMappingId );
+		ret.append( ", aggregatedColumnDatasetId=" + aggregatedColumnDatasetId );
 		ret.append( ", aggregatedReportColumnId=" + aggregatedReportColumnId );
-		ret.append( ", aggregatedReportColumnDatasetId=" + aggregatedReportColumnDatasetId );
-		ret.append( ", aggregatedReportColumnDesignId=" + aggregatedReportColumnDesignId );
-		ret.append( ", aggregatedReportColumnDesignVersionId=" + aggregatedReportColumnDesignVersionId );
 		ret.append( ", aggregationFunction=" + aggregationFunction );
 		ret.append( ", place=" + place );
 		return ret.toString();

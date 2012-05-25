@@ -167,6 +167,22 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 		}
 
 	}
+	
+	/** 
+	 * Returns all rows from the report_column table that match the criteria 'id = :id'.
+	 */
+	@Transactional
+	public ReportColumn findByPrimaryKey(Long id) throws ReportColumnDaoException
+	{
+		try {
+			List<ReportColumn> list = jdbcTemplate.query(QUERY_SELECT_PART + " WHERE r.id = ? ", this,id);
+			return list.size() == 0 ? null : list.get(0);
+		}
+		catch (Exception e) {
+			throw new ReportColumnDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+
+	}
 
 	/** 
 	 * Returns all rows from the report_column table that match the criteria ''.

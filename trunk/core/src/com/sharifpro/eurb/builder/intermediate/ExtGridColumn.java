@@ -2,14 +2,16 @@ package com.sharifpro.eurb.builder.intermediate;
 
 public class ExtGridColumn {
 	String header;
+	String groupName;
 	String id;
 	String dataIndex;
 	Integer width;
 	String align;
 	String css;
-	public ExtGridColumn(String header, String id, Integer width, String align, String css) {
+	public ExtGridColumn(String header, String groupName, String id, Integer width, String align, String css) {
 		super();
 		this.header = header;
+		this.groupName = groupName;
 		this.id = id;
 		this.dataIndex = id;
 		this.width = width;
@@ -51,5 +53,11 @@ public class ExtGridColumn {
 	}
 	public void setCss(String css) {
 		this.css = css;
+	}
+	public String getGroupName() {
+		return groupName;
+	}
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
 	}
 }

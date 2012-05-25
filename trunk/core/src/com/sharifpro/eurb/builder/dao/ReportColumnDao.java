@@ -39,6 +39,11 @@ public interface ReportColumnDao
 	public ReportColumn findByPrimaryKey(Long id, Long datasetId, Long designId, Long designVersionId) throws ReportColumnDaoException;
 
 	/** 
+	 * Returns all rows from the report_column table that match the criteria 'id = :id'.
+	 */
+	public ReportColumn findByPrimaryKey(Long id) throws ReportColumnDaoException;
+
+	/** 
 	 * Returns all rows from the report_column table that match the criteria ''.
 	 */
 	public List<ReportColumn> findAll() throws ReportColumnDaoException;

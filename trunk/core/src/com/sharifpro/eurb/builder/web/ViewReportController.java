@@ -43,7 +43,6 @@ import com.sharifpro.eurb.management.mapping.model.ColumnMapping;
 import com.sharifpro.eurb.management.mapping.model.DbConfig;
 import com.sharifpro.eurb.management.mapping.model.TableMapping;
 import com.sharifpro.util.PropertyProvider;
-import com.sharifpro.util.StringUtilities;
 import com.sharifpro.util.json.JsonUtil;
 
 
@@ -97,22 +96,30 @@ public class ViewReportController {
 		//UI
 		List<ExtStoreField> storeFields = new ArrayList<ExtStoreField>(columnList.size());
 		storeFields.add(new ExtStoreField("id"));
+		Boolean hasGroup = false;
+		List<String> groupFields = new ArrayList<String>();
 		List<ExtGridColumn> gridColumns = new ArrayList<ExtGridColumn>(columnList.size());
 
 		int totalWidth = 0;
 		for(ReportColumn col : columnList) {
 			String key = col.getColumnKey();
 			storeFields.add(new ExtStoreField(key));
-			gridColumns.add(new ExtGridColumn(col.getColumnHeader(), key, col.getColumnWidth(), col.getColumnAlign(), "direction:"+col.getColumnDir()+";"));
+			gridColumns.add(new ExtGridColumn(col.getColumnHeader(), col.getColumnHeader(), key, col.getColumnWidth(), col.getColumnAlign(), "direction:"+col.getColumnDir()+";"));
 			totalWidth += col.getColumnWidth();
+			if(col.getGroupLevel() != null && col.getGroupLevel() > 0){
+				hasGroup = true;
+				groupFields.add(col.getColumnKey());
+			}
 		}
-		gridColumns.add(0,new ExtGridColumn(PropertyProvider.get("eurb.app.builder.runreport.grid.radif"), "id", (int) (0.05 * totalWidth), "center", "direction:ltr;"));
+		gridColumns.add(0,new ExtGridColumn(PropertyProvider.get("eurb.app.builder.runreport.grid.radif"), PropertyProvider.get("eurb.app.builder.runreport.grid.radif"), "id", (int) (0.05 * totalWidth), "center", "direction:ltr;"));
 
 		ModelAndView mv = new ModelAndView();
 		mv.addObject("report", report);
 		mv.addObject("reportVersion", version);
 		mv.addObject("reportName", reportDesign.getName());
 		mv.addObject("storeFields", jsonUtil.getJSONFromObject(storeFields));
+		mv.addObject("hasGroup", hasGroup);
+		mv.addObject("groupFields", jsonUtil.getJSONFromObject(groupFields));
 		mv.addObject("gridColumns", jsonUtil.getJSONFromObject(gridColumns));
 
 		mv.addObject("hasChart", hasChart);

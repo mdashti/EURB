@@ -56,7 +56,10 @@
 		<%-- Highcharts --%>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/app/menu/jquery.min.js" ></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/Highcharts/js/highcharts.js" ></script>
-
+		
+		<%-- MutilGrouping --%>
+		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/multigrouping/MultiGrouping.js" ></script>
+		
 		<script src="<%=resourcesUrl%>/js/extjs/locale/ext-lang-fa.js"></script>
 		
 		<script type="text/javascript">

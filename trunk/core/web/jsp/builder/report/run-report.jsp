@@ -21,6 +21,7 @@
 			<jsp:param value="${resourcesUrl}" name="resourcesUrl"/>
 			<jsp:param value="${baseUrl}" name="baseUrl"/>
 		</jsp:include>
+		
 		<!-- App js -->
 		<script type="text/javascript">
 			
@@ -28,22 +29,45 @@
 			EURB.RunReport = {};
 			EURB.RunReport.viewReport = '<spring:message code="eurb.app.builder.runreport.title" /> ${reportName}';
 			EURB.RunReport.printCurrentPage = '<spring:message code="eurb.app.builder.runreport.grid.printCurrentPage" />';
-			EURB.RunReport.store = new Ext.data.Store({
-				reader:new Ext.data.JsonReader({
-					 id:'id'
-					,totalProperty:'totalCount'
-					,root:'data'
-					,fields: ${storeFields}
-				})
-				,proxy:new Ext.data.HttpProxy({
-					url: '<spring:url value="/builder/report/get-reportdata${report}-v${version}.spy" />'
-			        ,listeners: {
-			        	'exception' : EURB.proxyExceptionHandler
-			        }
-			    })
-				,baseParams:{start: 0, limit: EURB.defaultPageLimit}
-				,remoteSort:false
-			});
+			EURB.RunReport.HasGroup = ${hasGroup};
+			
+			if(EURB.RunReport.HasGroup){
+				EURB.RunReport.store = new Ext.ux.MultiGroupingStore({
+					reader:new Ext.data.JsonReader({
+						 id:'id'
+						,totalProperty:'totalCount'
+						,root:'data'
+						,fields: ${storeFields}
+					})
+					,proxy:new Ext.data.HttpProxy({
+						url: '<spring:url value="/builder/report/get-reportdata${report}-v${version}.spy" />'
+				        ,listeners: {
+				        	'exception' : EURB.proxyExceptionHandler
+				        }
+				    })
+					,baseParams:{start: 0, limit: EURB.defaultPageLimit}
+					,groupField: ${groupFields}
+					,remoteSort:false
+				});
+			}
+			else{
+				EURB.RunReport.store = new Ext.data.Store({
+					reader:new Ext.data.JsonReader({
+						 id:'id'
+						,totalProperty:'totalCount'
+						,root:'data'
+						,fields: ${storeFields}
+					})
+					,proxy:new Ext.data.HttpProxy({
+						url: '<spring:url value="/builder/report/get-reportdata${report}-v${version}.spy" />'
+				        ,listeners: {
+				        	'exception' : EURB.proxyExceptionHandler
+				        }
+				    })
+					,baseParams:{start: 0, limit: EURB.defaultPageLimit}
+					,remoteSort:false
+				});
+			}
 
 			EURB.RunReport.cols = ${gridColumns};
 			

@@ -5,6 +5,7 @@ import java.util.List;
 import com.sharifpro.eurb.DaoFactory;
 import com.sharifpro.eurb.builder.dao.GroupAggregationDao;
 import com.sharifpro.eurb.builder.model.GroupAggregation;
+import com.sharifpro.eurb.builder.model.ReportColumn;
 
 public class GroupAggregationDaoExample
 {
@@ -40,10 +41,10 @@ public class GroupAggregationDaoExample
 	 * 
 	 * @throws Exception
 	 */
-	public static void findAll() throws Exception
+	public static void findAll(ReportColumn reportColumn) throws Exception
 	{
 		GroupAggregationDao dao = DaoFactory.createGroupAggregationDao();
-		List<GroupAggregation> _result = dao.findAll();
+		List<GroupAggregation> _result = dao.findAll(reportColumn);
 		for (GroupAggregation dto : _result) {
 			display(dto);
 		}
@@ -75,34 +76,17 @@ public class GroupAggregationDaoExample
 	 * @param parentColumnDesignVersionId
 	 * @throws Exception
 	 */
-	public static void findByReportColumn(Long parentColumnId, Long parentColumnDatasetId, Long parentColumnDesignId, Long parentColumnDesignVersionId) throws Exception
+	public static void findByReportColumn(Long parentColumnId) throws Exception
 	{
 		GroupAggregationDao dao = DaoFactory.createGroupAggregationDao();
-		List<GroupAggregation> _result = dao.findByReportColumn(parentColumnId, parentColumnDatasetId, parentColumnDesignId, parentColumnDesignVersionId);
+		List<GroupAggregation> _result = dao.findByReportColumn(parentColumnId);
 		for (GroupAggregation dto : _result) {
 			display(dto);
 		}
 		
 	}
 
-	/**
-	 * Method 'findByReportColumn2'
-	 * 
-	 * @param aggregatedReportColumnId
-	 * @param aggregatedReportColumnDatasetId
-	 * @param aggregatedReportColumnDesignId
-	 * @param aggregatedReportColumnDesignVersionId
-	 * @throws Exception
-	 */
-	public static void findByReportColumn2(Long aggregatedReportColumnId, Long aggregatedReportColumnDatasetId, Long aggregatedReportColumnDesignId, Long aggregatedReportColumnDesignVersionId) throws Exception
-	{
-		GroupAggregationDao dao = DaoFactory.createGroupAggregationDao();
-		List<GroupAggregation> _result = dao.findByReportColumn2(aggregatedReportColumnId, aggregatedReportColumnDatasetId, aggregatedReportColumnDesignId, aggregatedReportColumnDesignVersionId);
-		for (GroupAggregation dto : _result) {
-			display(dto);
-		}
-		
-	}
+	
 
 	/**
 	 * Method 'findWhereIdEquals'
@@ -120,166 +104,7 @@ public class GroupAggregationDaoExample
 		
 	}
 
-	/**
-	 * Method 'findWhereParentColumnIdEquals'
-	 * 
-	 * @param parentColumnId
-	 * @throws Exception
-	 */
-	public static void findWhereParentColumnIdEquals(Long parentColumnId) throws Exception
-	{
-		GroupAggregationDao dao = DaoFactory.createGroupAggregationDao();
-		List<GroupAggregation> _result = dao.findWhereParentColumnIdEquals(parentColumnId);
-		for (GroupAggregation dto : _result) {
-			display(dto);
-		}
-		
-	}
-
-	/**
-	 * Method 'findWhereParentColumnDatasetIdEquals'
-	 * 
-	 * @param parentColumnDatasetId
-	 * @throws Exception
-	 */
-	public static void findWhereParentColumnDatasetIdEquals(Long parentColumnDatasetId) throws Exception
-	{
-		GroupAggregationDao dao = DaoFactory.createGroupAggregationDao();
-		List<GroupAggregation> _result = dao.findWhereParentColumnDatasetIdEquals(parentColumnDatasetId);
-		for (GroupAggregation dto : _result) {
-			display(dto);
-		}
-		
-	}
-
-	/**
-	 * Method 'findWhereParentColumnDesignIdEquals'
-	 * 
-	 * @param parentColumnDesignId
-	 * @throws Exception
-	 */
-	public static void findWhereParentColumnDesignIdEquals(Long parentColumnDesignId) throws Exception
-	{
-		GroupAggregationDao dao = DaoFactory.createGroupAggregationDao();
-		List<GroupAggregation> _result = dao.findWhereParentColumnDesignIdEquals(parentColumnDesignId);
-		for (GroupAggregation dto : _result) {
-			display(dto);
-		}
-		
-	}
-
-	/**
-	 * Method 'findWhereParentColumnDesignVersionIdEquals'
-	 * 
-	 * @param parentColumnDesignVersionId
-	 * @throws Exception
-	 */
-	public static void findWhereParentColumnDesignVersionIdEquals(Long parentColumnDesignVersionId) throws Exception
-	{
-		GroupAggregationDao dao = DaoFactory.createGroupAggregationDao();
-		List<GroupAggregation> _result = dao.findWhereParentColumnDesignVersionIdEquals(parentColumnDesignVersionId);
-		for (GroupAggregation dto : _result) {
-			display(dto);
-		}
-		
-	}
-
-	/**
-	 * Method 'findWhereAggregatedReportColumnIdEquals'
-	 * 
-	 * @param aggregatedReportColumnId
-	 * @throws Exception
-	 */
-	public static void findWhereAggregatedReportColumnIdEquals(Long aggregatedReportColumnId) throws Exception
-	{
-		GroupAggregationDao dao = DaoFactory.createGroupAggregationDao();
-		List<GroupAggregation> _result = dao.findWhereAggregatedReportColumnIdEquals(aggregatedReportColumnId);
-		for (GroupAggregation dto : _result) {
-			display(dto);
-		}
-		
-	}
-
-	/**
-	 * Method 'findWhereAggregatedReportColumnDatasetIdEquals'
-	 * 
-	 * @param aggregatedReportColumnDatasetId
-	 * @throws Exception
-	 */
-	public static void findWhereAggregatedReportColumnDatasetIdEquals(Long aggregatedReportColumnDatasetId) throws Exception
-	{
-		GroupAggregationDao dao = DaoFactory.createGroupAggregationDao();
-		List<GroupAggregation> _result = dao.findWhereAggregatedReportColumnDatasetIdEquals(aggregatedReportColumnDatasetId);
-		for (GroupAggregation dto : _result) {
-			display(dto);
-		}
-		
-	}
-
-	/**
-	 * Method 'findWhereAggregatedReportColumnDesignIdEquals'
-	 * 
-	 * @param aggregatedReportColumnDesignId
-	 * @throws Exception
-	 */
-	public static void findWhereAggregatedReportColumnDesignIdEquals(Long aggregatedReportColumnDesignId) throws Exception
-	{
-		GroupAggregationDao dao = DaoFactory.createGroupAggregationDao();
-		List<GroupAggregation> _result = dao.findWhereAggregatedReportColumnDesignIdEquals(aggregatedReportColumnDesignId);
-		for (GroupAggregation dto : _result) {
-			display(dto);
-		}
-		
-	}
-
-	/**
-	 * Method 'findWhereAggregatedReportColumnDesignVersionIdEquals'
-	 * 
-	 * @param aggregatedReportColumnDesignVersionId
-	 * @throws Exception
-	 */
-	public static void findWhereAggregatedReportColumnDesignVersionIdEquals(Long aggregatedReportColumnDesignVersionId) throws Exception
-	{
-		GroupAggregationDao dao = DaoFactory.createGroupAggregationDao();
-		List<GroupAggregation> _result = dao.findWhereAggregatedReportColumnDesignVersionIdEquals(aggregatedReportColumnDesignVersionId);
-		for (GroupAggregation dto : _result) {
-			display(dto);
-		}
-		
-	}
-
-	/**
-	 * Method 'findWhereAggregationFunctionEquals'
-	 * 
-	 * @param aggregationFunction
-	 * @throws Exception
-	 */
-	public static void findWhereAggregationFunctionEquals(String aggregationFunction) throws Exception
-	{
-		GroupAggregationDao dao = DaoFactory.createGroupAggregationDao();
-		List<GroupAggregation> _result = dao.findWhereAggregationFunctionEquals(aggregationFunction);
-		for (GroupAggregation dto : _result) {
-			display(dto);
-		}
-		
-	}
-
-	/**
-	 * Method 'findWherePlaceEquals'
-	 * 
-	 * @param place
-	 * @throws Exception
-	 */
-	public static void findWherePlaceEquals(Integer place) throws Exception
-	{
-		GroupAggregationDao dao = DaoFactory.createGroupAggregationDao();
-		List<GroupAggregation> _result = dao.findWherePlaceEquals(place);
-		for (GroupAggregation dto : _result) {
-			display(dto);
-		}
-		
-	}
-
+	
 	/**
 	 * Method 'display'
 	 * 
@@ -292,21 +117,7 @@ public class GroupAggregationDaoExample
 		buf.append( ", " );
 		buf.append( dto.getParentColumnId() );
 		buf.append( ", " );
-		buf.append( dto.getParentColumnDatasetId() );
-		buf.append( ", " );
-		buf.append( dto.getParentColumnDesignId() );
-		buf.append( ", " );
-		buf.append( dto.getParentColumnDesignVersionId() );
-		buf.append( ", " );
-		buf.append( dto.getAggregatedReportColumnId() );
-		buf.append( ", " );
-		buf.append( dto.getAggregatedReportColumnDatasetId() );
-		buf.append( ", " );
-		buf.append( dto.getAggregatedReportColumnDesignId() );
-		buf.append( ", " );
-		buf.append( dto.getAggregatedReportColumnDesignVersionId() );
-		buf.append( ", " );
-		buf.append( dto.getAggregationFunction() );
+			buf.append( dto.getAggregationFunction() );
 		buf.append( ", " );
 		buf.append( dto.getPlace() );
 		System.out.println( buf.toString() );

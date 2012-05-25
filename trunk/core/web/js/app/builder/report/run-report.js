@@ -1,3 +1,17 @@
+EURB.RunReport.groupView = new Ext.ux.MultiGroupingView({ 
+		hideGroupedColumn :true,
+        forceFit: true,
+        emptyGroupText: 'All Group Fields Empty',
+        displayEmptyFields: true, //you can choose to show the group fields, even when they have no values
+        groupTextTpl: '{text}', 
+        displayFieldSeperator: ', ' //you can control how the display fields are seperated
+});
+  
+ 
+ 
+ 
+ 
+ 
 EURB.RunReport.Grid = Ext.extend(Ext.grid.GridPanel, {
 	// defaults - can be changed from outside
 	 border:true
@@ -12,8 +26,13 @@ EURB.RunReport.Grid = Ext.extend(Ext.grid.GridPanel, {
 		var config = {
 			store: EURB.RunReport.store
 			,columns:EURB.RunReport.cols
-			,viewConfig:{forceFit:true}
 		};
+		if(EURB.RunReport.HasGroup){
+			config.view = EURB.RunReport.groupView; 
+		}
+		else{
+			config.viewConfig = {forceFit: true};
+		}
 
 		// apply config
 		Ext.apply(this, config);
