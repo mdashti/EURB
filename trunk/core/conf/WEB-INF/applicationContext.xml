@@ -30,18 +30,18 @@
 		<property name="enableAuthorities" value="false"/>
 	</bean>
 	
-	<bean class="org.springframework.security.authentication.dao.ReflectionSaltSource" id="saltSource">
+	<!--bean class="org.springframework.security.authentication.dao.ReflectionSaltSource" id="saltSource">
 		<property name="userPropertyToUse" value="username"/>
-	</bean>
+	</bean-->
 
-	<bean class="org.springframework.security.authentication.encoding.ShaPasswordEncoder" id="passwordEncoder"/>
+	<bean class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" id="passwordEncoder" />
     
 	<!--security:debug /-->
 	
 	<security:authentication-manager id="authManager">
 		<security:authentication-provider user-service-ref="userDetailsService">
 			<security:password-encoder ref="passwordEncoder"> 
-				<security:salt-source ref="saltSource"/>
+				<!--security:salt-source ref="saltSource"/-->
 			</security:password-encoder>
 		</security:authentication-provider>
 	</security:authentication-manager>

@@ -10,6 +10,6 @@ public class SecurityUtil {
 		//UserDetails user =userDetailsService.loadUserByUsername("admin");
 		PasswordEncoder encoder = ((PasswordEncoder)SharifProApplicationContext.getApplicationContext().getBean("passwordEncoder"));
 		//SaltSource saltSource = ((SaltSource)SharifProApplicationContext.getApplicationContext().getBean("saltSource"));
-		return encoder.encodePassword(password, username /*saltSource.getSalt(user)*/);
+		return encoder.encodePassword(password, null /*saltSource.getSalt(user)*/);
 	}
 }

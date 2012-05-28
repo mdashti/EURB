@@ -50,6 +50,7 @@ public class InsertInitialData {
 	
 	public InsertInitialData() {
 		INITIAL_USERS = new String[][] {
+				new String[]{"admin", "mohamad"},
 				new String[]{"dashti", "mohamad"},
 				new String[]{"sadeghi", "alireza"},
 				new String[]{"keshavarz", "behrouz"}

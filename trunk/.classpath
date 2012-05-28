@@ -75,5 +75,6 @@
 	<classpathentry kind="lib" path="core/lib/hibernate-commons-annotations.jar"/>
 	<classpathentry kind="lib" path="core/lib/hibernate-entitymanager.jar"/>
 	<classpathentry kind="lib" path="core/lib/hibernate.jar"/>
+	<classpathentry kind="lib" path="core/lib/poi-3.8-20120326.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
