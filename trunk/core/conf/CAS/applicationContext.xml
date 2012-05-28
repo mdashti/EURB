@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+	http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd
+	http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd">
+	<util:properties id="applicationProps" location="/WEB-INF/application.properties"/>
+	
+	<bean id="contextApplicationContextProvider" class="com.sharifpro.util.SharifProApplicationContext"></bean> 
+
+	<bean id="EURBDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://127.0.0.1:3306/eurb?useUnicode=yes&amp;characterEncoding=UTF-8" />
+		<property name="username" value="root" />
+		<property name="password" value="ROOT" />
+	</bean>
+
+	<!--
+		Enable security, let the casAuthenticationEntryPoint handle all intercepted urls.
+		The CAS_FILTER needs to be in the right position within the filter chain.
+	-->
+	<security:http pattern="/resources-#{applicationProps['application.version']}/**" security="none" />
+	<security:http entry-point-ref="casAuthenticationEntryPoint" auto-config="false" authentication-manager-ref="authenticationManager">
+		<security:intercept-url pattern="/**" access="ROLE_MAPPING_MANAGEMENT" />
+		<security:custom-filter position="CAS_FILTER" ref="casAuthenticationFilter"></security:custom-filter>
+		<security:logout logout-url="/logout.spy" logout-success-url="/"/>
+		<security:custom-filter ref="requestSingleLogoutFilter" before="LOGOUT_FILTER"/>
+		<security:custom-filter ref="singleLogoutFilter" before="CAS_FILTER"/>
+	</security:http>
+
+	<!-- This filter handles a Single Logout Request from the CAS Server -->
+	<bean id="singleLogoutFilter" class="org.jasig.cas.client.session.SingleSignOutFilter"/>
+	<!-- This filter redirects to the CAS Server to signal Single Logout should be performed -->
+	<bean id="requestSingleLogoutFilter" class="org.springframework.security.web.authentication.logout.LogoutFilter">
+		<constructor-arg value="http://localhost:8080/eurb/logout.spy"/>
+		<constructor-arg>
+			<bean class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler"/>
+		</constructor-arg>
+		<property name="filterProcessesUrl" value="/j_spring_cas_security_logout"/>
+	</bean>
+	<!--
+		Required for the casProcessingFilter, so define it explicitly set and
+		specify an Id Even though the authenticationManager is created by
+		default when namespace based config is used.
+	-->
+	<security:authentication-manager alias="authenticationManager">
+		<security:authentication-provider ref="casAuthenticationProvider"></security:authentication-provider>
+	</security:authentication-manager>
+
+	<!--
+		This section is used to configure CAS. The service is the
+		actual redirect that will be triggered after the CAS login sequence.
+	-->
+	<bean id="serviceProperties" class="org.springframework.security.cas.ServiceProperties">
+		<property name="service" value="http://localhost:8080/eurb/j_spring_cas_security_check"></property>
+		<property name="sendRenew" value="false"></property>
+	</bean>	
+
+        <!--
+		The CAS filter handles the redirect from the CAS server and starts the ticket validation.
+	-->
+	<bean id="casAuthenticationFilter" class="org.springframework.security.cas.web.CasAuthenticationFilter">
+		<property name="authenticationManager" ref="authenticationManager"></property>
+	</bean>
+
+	<!--
+		The entryPoint intercepts all the CAS authentication requests.
+		It redirects to the CAS loginUrl for the CAS login page.
+	-->
+	<bean id="casAuthenticationEntryPoint" class="org.springframework.security.cas.web.CasAuthenticationEntryPoint">
+		<property name="loginUrl" value="http://localhost:8080/cas-server-webapp-3.4.12/login"></property>
+		<property name="serviceProperties" ref="serviceProperties"></property>
+	</bean>
+
+	<!--
+		Handles the CAS ticket processing.
+	 -->
+	<bean id="casAuthenticationProvider" class="org.springframework.security.cas.authentication.CasAuthenticationProvider">
+		<property name="userDetailsService" ref="userDetailsService"></property>
+		<property name="serviceProperties" ref="serviceProperties"></property>
+		<property name="ticketValidator">
+			<bean class="org.jasig.cas.client.validation.Cas20ServiceTicketValidator">
+				<constructor-arg index="0" value="http://localhost:8080/cas-server-webapp-3.4.12"></constructor-arg>
+			</bean>
+		</property>
+		<property name="key" value="cas"></property>
+	</bean>
+
+	<!--
+		The users available for this application.
+	-->
+	<bean id="userDetailsService" class="org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl">
+		<property name="dataSource" ref="EURBDataSource"/>
+		<property name="enableGroups" value="true"/>
+		<property name="enableAuthorities" value="false"/>
+	</bean>
+	
+	<!--bean class="org.springframework.security.authentication.dao.ReflectionSaltSource" id="saltSource">
+		<property name="userPropertyToUse" value="username"/>
+	</bean-->
+
+	<bean class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" id="passwordEncoder" />
+    
+	<!--security:debug /-->
+	
+	<tx:annotation-driven transaction-manager="txManager" />
+	
+	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager" >
+		<property name="dataSource" ref="EURBDataSource" />
+	</bean>
+	
+	<!-- Application Message Bundle -->
+	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basename" value="/WEB-INF/messages/messages" />
+		<property name="cacheSeconds" value="0" />
+	</bean>
+	
+	<!-- Scans the classpath of this application for @Components to deploy as 
+		beans -->
+	<context:component-scan base-package="com.sharifpro" />
+
+	<!-- Configures the @Controller programming model -->
+	<mvc:annotation-driven />
+
+	<!-- misc -->
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+	<!-- Forwards requests to the "/" resource to the "welcome" view -->
+	<mvc:view-controller path="/" view-name="index"/>
+
+	<!-- Configures Handler Interceptors -->
+	<!-- mvc:interceptors>
+			<!- Changes the locale when a 'locale' request parameter is sent; e.g. /?locale=de ->
+			<bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" />
+		</mvc:interceptors-->
+
+	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources/ directory -->
+	<mvc:resources mapping="/resources-#{applicationProps['application.version']}/**" location="/resources/" cache-period="31556926"/>
+
+	<!-- Saves a locale change using a cookie -->
+	<!-- bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver" /-->
+
+	<!-- Application Message Bundle -->
+	<!-- bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+			<property name="basename" value="/WEB-INF/messages/messages" />
+			<property name="cacheSeconds" value="0" />
+		</bean-->
+		
+	<bean id="AuthoritiesDao" class="com.sharifpro.eurb.management.security.dao.impl.AuthoritiesDaoImpl" scope="singleton">
+		<property name="dataSource" ref="EURBDataSource" />
+	</bean>
+	<bean id="ColumnMappingDao" class="com.sharifpro.eurb.management.mapping.dao.impl.ColumnMappingDaoImpl" scope="singleton">
+		<property name="dataSource" ref="EURBDataSource" />
+	</bean>
+	<bean id="DbConfigDao" class="com.sharifpro.eurb.management.mapping.dao.impl.DbConfigDaoImpl" scope="singleton">
+		<property name="dataSource" ref="EURBDataSource" />
+	</bean>
+	<bean id="GroupAggregationDao" class="com.sharifpro.eurb.builder.dao.impl.GroupAggregationDaoImpl" scope="singleton">
+		<property name="dataSource" ref="EURBDataSource" />
+	</bean>
+	<bean id="GroupAuthoritiesDao" class="com.sharifpro.eurb.management.security.dao.impl.GroupAuthoritiesDaoImpl" scope="singleton">
+		<property name="dataSource" ref="EURBDataSource" />
+	</bean>
+	<bean id="GroupMembersDao" class="com.sharifpro.eurb.management.security.dao.impl.GroupMembersDaoImpl" scope="singleton">
+		<property name="dataSource" ref="EURBDataSource" />
+	</bean>
+	<bean id="GroupsDao" class="com.sharifpro.eurb.management.security.dao.impl.GroupsDaoImpl" scope="singleton">
+		<property name="dataSource" ref="EURBDataSource" />
+	</bean>
+	<bean id="PersistableObjectDao" class="com.sharifpro.eurb.management.mapping.dao.impl.PersistableObjectDaoImpl" scope="singleton">
+		<property name="dataSource" ref="EURBDataSource" />
+	</bean>
+	<bean id="ReportCategoryDao" class="com.sharifpro.eurb.builder.dao.impl.ReportCategoryDaoImpl" scope="singleton">
+		<property name="dataSource" ref="EURBDataSource" />
+	</bean>
+	<bean id="ReportColumnDao" class="com.sharifpro.eurb.builder.dao.impl.ReportColumnDaoImpl" scope="singleton">
+		<property name="dataSource" ref="EURBDataSource" />
+	</bean>
+	<bean id="ReportDatasetDao" class="com.sharifpro.eurb.builder.dao.impl.ReportDatasetDaoImpl" scope="singleton">
+		<property name="dataSource" ref="EURBDataSource" />
+	</bean>
+	<bean id="ReportChartDao" class="com.sharifpro.eurb.builder.dao.impl.ReportChartDaoImpl" scope="singleton">
+		<property name="dataSource" ref="EURBDataSource" />
+	</bean>
+	<bean id="ReportChartAxisDao" class="com.sharifpro.eurb.builder.dao.impl.ReportChartAxisDaoImpl" scope="singleton">
+		<property name="dataSource" ref="EURBDataSource" />
+	</bean>
+	<bean id="ObjectConfigDao" class="com.sharifpro.eurb.builder.dao.impl.ObjectConfigDaoImpl" scope="singleton">
+		<property name="dataSource" ref="EURBDataSource" />
+	</bean>
+	<bean id="ReportDesignDao" class="com.sharifpro.eurb.builder.dao.impl.ReportDesignDaoImpl" scope="singleton">
+		<property name="dataSource" ref="EURBDataSource" />
+	</bean>
+	<bean id="ReportExecutionHistoryDao" class="com.sharifpro.eurb.builder.dao.impl.ReportExecutionHistoryDaoImpl" scope="singleton">
+		<property name="dataSource" ref="EURBDataSource" />
+	</bean>
+	<bean id="ReportFilterDao" class="com.sharifpro.eurb.builder.dao.impl.ReportFilterDaoImpl" scope="singleton">
+		<property name="dataSource" ref="EURBDataSource" />
+	</bean>
+	<bean id="ReportFormatDao" class="com.sharifpro.eurb.builder.dao.impl.ReportFormatDaoImpl" scope="singleton">
+		<property name="dataSource" ref="EURBDataSource" />
+	</bean>
+	<bean id="TableMappingDao" class="com.sharifpro.eurb.management.mapping.dao.impl.TableMappingDaoImpl" scope="singleton">
+		<property name="dataSource" ref="EURBDataSource" />
+	</bean>
+	<bean id="UsersDao" class="com.sharifpro.eurb.management.security.dao.impl.UserDaoImpl" scope="singleton">
+		<property name="dataSource" ref="EURBDataSource" />
+	</bean>
+</beans>

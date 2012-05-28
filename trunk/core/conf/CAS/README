@@ -1,0 +1,115 @@
+This document's aim is to help using the Central Authentication Service (CAS).
+
+First, you should install the CAS on your server, otherwise you can use a pre-installed CAS server:
+1- Download "cas-server-3.4.12-release.zip" (it also exists in tools folder of this project)
+2- Extract it and copy "modules/cas-server-webapp-3.4.12.war" to your "webapp" folder in apache tomcat
+3- Add commons-* libraries (from this project) and cas-server-support-jdbc-3.4.12.jar  (from cas extracted folder) to "WEB-INF/lib" in cas WAR file
+3- Edit "deployerConfigContext.xml" in this war file, in order to read the credentials from a database:
+	I- Add a datasource:
+		<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+			<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+			<property name="url" value="jdbc:mysql://127.0.0.1:3306/eurb?useUnicode=yes&amp;characterEncoding=UTF-8" />
+			<property name="username" value="root" />
+			<property name="password" value="ROOT" />
+		</bean>
+	II- Add a MD5 password encoder:
+		<bean id="md5PassEnc" class="org.jasig.cas.authentication.handler.DefaultPasswordEncoder" p:characterEncoding="UTF-8" >
+			<constructor-arg index="0" value="MD5" />
+		</bean>
+	III- Add a QueryDatabaseAuthenticationHandler under authenticationHandlers:
+		<bean class="org.jasig.cas.adaptors.jdbc.QueryDatabaseAuthenticationHandler">
+			<property name="dataSource" ref="dataSource" />
+			<property name="sql" value="select password from users where username = ?" />
+			<property name="passwordEncoder" ref="md5PassEnc" />
+		</bean>
+
+Second, you should change EURB configuration in order to use CAS. Please be careful that all users should exist in EURB database, so you can specify their groups and authorities.
+After adding "cas-client-core-3.1.3.jar" from cas extracted archive to EURB project classpath, you should:
+1- Replace CAS specific configurations in "applicationContext.xml":
+	<security:http entry-point-ref="casAuthenticationEntryPoint" auto-config="false" authentication-manager-ref="authenticationManager">
+		<security:intercept-url pattern="/**" access="ROLE_MAPPING_MANAGEMENT" />
+		<security:custom-filter position="CAS_FILTER" ref="casAuthenticationFilter"></security:custom-filter>
+		<security:logout logout-url="/logout.spy" logout-success-url="/"/>
+		<security:custom-filter ref="requestSingleLogoutFilter" before="LOGOUT_FILTER"/>
+		<security:custom-filter ref="singleLogoutFilter" before="CAS_FILTER"/>
+	</security:http>
+
+	<!-- This filter handles a Single Logout Request from the CAS Server -->
+	<bean id="singleLogoutFilter" class="org.jasig.cas.client.session.SingleSignOutFilter"/>
+	<!-- This filter redirects to the CAS Server to signal Single Logout should be performed -->
+	<bean id="requestSingleLogoutFilter" class="org.springframework.security.web.authentication.logout.LogoutFilter">
+		<constructor-arg value="http://localhost:8080/eurb/logout.spy"/>
+		<constructor-arg>
+			<bean class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler"/>
+		</constructor-arg>
+		<property name="filterProcessesUrl" value="/j_spring_cas_security_logout"/>
+	</bean>
+	<!--
+		Required for the casProcessingFilter, so define it explicitly set and
+		specify an Id Even though the authenticationManager is created by
+		default when namespace based config is used.
+	-->
+	<security:authentication-manager alias="authenticationManager">
+		<security:authentication-provider ref="casAuthenticationProvider"></security:authentication-provider>
+	</security:authentication-manager>
+
+	<!--
+		This section is used to configure CAS. The service is the
+		actual redirect that will be triggered after the CAS login sequence.
+	-->
+	<bean id="serviceProperties" class="org.springframework.security.cas.ServiceProperties">
+		<property name="service" value="http://localhost:8080/eurb/j_spring_cas_security_check"></property>
+		<property name="sendRenew" value="false"></property>
+	</bean>	
+
+        <!--
+		The CAS filter handles the redirect from the CAS server and starts the ticket validation.
+	-->
+	<bean id="casAuthenticationFilter" class="org.springframework.security.cas.web.CasAuthenticationFilter">
+		<property name="authenticationManager" ref="authenticationManager"></property>
+	</bean>
+
+	<!--
+		The entryPoint intercepts all the CAS authentication requests.
+		It redirects to the CAS loginUrl for the CAS login page.
+	-->
+	<bean id="casAuthenticationEntryPoint" class="org.springframework.security.cas.web.CasAuthenticationEntryPoint">
+		<property name="loginUrl" value="http://localhost:8080/cas-server-webapp-3.4.12/login"></property>
+		<property name="serviceProperties" ref="serviceProperties"></property>
+	</bean>
+
+	<!--
+		Handles the CAS ticket processing.
+	 -->
+	<bean id="casAuthenticationProvider" class="org.springframework.security.cas.authentication.CasAuthenticationProvider">
+		<property name="userDetailsService" ref="userDetailsService"></property>
+		<property name="serviceProperties" ref="serviceProperties"></property>
+		<property name="ticketValidator">
+			<bean class="org.jasig.cas.client.validation.Cas20ServiceTicketValidator">
+				<constructor-arg index="0" value="http://localhost:8080/cas-server-webapp-3.4.12"></constructor-arg>
+			</bean>
+		</property>
+		<property name="key" value="cas"></property>
+	</bean>
+
+	<!--
+		The users available for this application.
+	-->
+	<bean id="userDetailsService" class="org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl">
+		<property name="dataSource" ref="EURBDataSource"/>
+		<property name="enableGroups" value="true"/>
+		<property name="enableAuthorities" value="false"/>
+	</bean>
+	
+	<!--bean class="org.springframework.security.authentication.dao.ReflectionSaltSource" id="saltSource">
+		<property name="userPropertyToUse" value="username"/>
+	</bean-->
+
+	<bean class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" id="passwordEncoder" />
+
+2- Replace CAS specific configurations in "web.xml" and add a listener for single sign out:
+	<listener>
+		<listener-class>org.jasig.cas.client.session.SingleSignOutHttpSessionListener</listener-class>
+	</listener>
+	
+Third, now restart your apache tomcat and enjoy it!
