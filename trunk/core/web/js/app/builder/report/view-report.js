@@ -62,7 +62,7 @@ EURB.ViewReport.Grid = Ext.extend(Ext.grid.GridPanel, {
 		this.rowActions = new Ext.ux.grid.RowActions({
 			 actions:[{
                  iconCls:'icon-grid'
-                 ,qtip:EURB.ViewReport.editTables
+                 ,qtip:EURB.ViewReport.viewReport
             }]
             ,widthIntercept:Ext.isSafari ? 4 : 2
             ,id:'actions'

@@ -139,6 +139,16 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 		
 	}
 
+	@Transactional(readOnly=true)
+	public List<User> findAllActive() throws UserDaoException {
+		try {
+			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.enabled=1 ORDER BY o.username", this);
+		}
+		catch (Exception e) {
+			throw new UserDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+	}
+
 	/** 
 	 * Returns all rows from the users table that match the criteria 'id = :id'.
 	 */

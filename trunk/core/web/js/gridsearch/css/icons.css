@@ -367,5 +367,13 @@
 .icon-up {
 	background-image:url(../../../img/icon/arr-up16.png) ! important;
 }
+
+.icon-interactive {
+	background-image:url(../../../img/icon/feature_interactive.png) ! important;
+}
+
+.icon-calendar {
+	background-image:url(../../../img/icon/fam/calendar.png) ! important;
+}
 /*  Icon Classes end */
 

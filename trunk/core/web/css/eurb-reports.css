@@ -407,3 +407,11 @@ background: black;
 	text-align: left;
 	direction: ltr;
 }
+
+.x-form-check-wrap input {
+	float: right;
+}
+
+.ext-gecko .x-window-body .x-form-item {
+	overflow: hidden;
+}

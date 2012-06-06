@@ -49,7 +49,9 @@
 			EURB.Report.category = '<spring:message code="eurb.app.builder.report.category" />';
 			
 			EURB.Report.editDesign = '<spring:message code="eurb.app.builder.report.editDesign" />';
-			
+			EURB.Report.editReport = '<spring:message code="eurb.app.builder.report.editReport" />';
+			EURB.Report.viewInteractiveReport = '<spring:message code="eurb.app.builder.report.viewInteractiveReport" />';
+			EURB.Report.scheduleReport = '<spring:message code="eurb.app.builder.report.scheduleReport" />';
 			EURB.Report.comboRenderer = function(combo){
 			    return function(value){
 			        var record = combo.findRecord(combo.valueField, value);

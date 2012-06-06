@@ -49,7 +49,7 @@ EURB.Report.cols = [{
 	})
 }];
 
-EURB.Report.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
+EURB.Report.Grid = Ext.extend(Ext.grid.GridPanel, {
 	// defaults - can be changed from outside
 	 layout:'fit'
 	,border:true
@@ -93,7 +93,13 @@ EURB.Report.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
                 ,qtip:EURB.copyRecord
             },{
                  iconCls:'icon-grid'
-                 ,qtip:EURB.Report.editTables
+                 ,qtip:EURB.Report.editReport
+            },{
+            	iconCls:'icon-interactive'
+            	,qtip:EURB.Report.viewInteractiveReport
+            },{
+            	iconCls:'icon-calendar'
+            	,qtip:EURB.Report.scheduleReport
             }]
             ,widthIntercept:Ext.isSafari ? 4 : 2
             ,id:'actions'
@@ -142,14 +148,14 @@ EURB.Report.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
 					 scope:this
 					,click:{fn:this.deactivateSelectedRecords,buffer:200}
 				}
-			},{
+			}/*,{
 				 text:EURB.saveRecords
 					,iconCls:'icon-save'
 					,listeners:{
 						 scope:this
 						,click:{fn:this.commitChanges,buffer:200}
 					}
-			}]
+			}*/]
 		};
 
 		// apply config
@@ -205,9 +211,13 @@ EURB.Report.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
             case 'icon-copy':
                 this.copyRecord(record);
             break;
-                
+
             case 'icon-grid':
             	window.location.href = EURB.baseURL+'builder/report/report'+record.get(this.idName)+'-design.spy';
+            break;
+
+            case 'icon-interactive':
+            	window.location.href = EURB.baseURL+'builder/report/run-report'+record.get(this.idName)+'-v'+record.get('versionId')+'.spy';
             break;
         }
     }
@@ -369,6 +379,13 @@ EURB.Report.Grid = Ext.extend(Ext.grid.EditorGridPanel, {
 		Ext.Ajax.request(o);
 	}
 	,listeners: {
+		dblclick : function() {
+			var sm = this.getSelectionModel();
+            var sel = sm.getSelections();
+            if(sel.length > 0) {
+            	this.onRowAction(this, sel[0], 'icon-interactive', 0, 0);
+            }
+		}
 	}
 
 });

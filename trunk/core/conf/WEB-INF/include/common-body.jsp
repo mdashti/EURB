@@ -117,7 +117,8 @@
 		EURB.appMenu.report = '<spring:message code="eurb.app.menu.builder.report" />';
 		EURB.appMenu.user = '<spring:message code="eurb.app.menu.security.user" />';
 		EURB.appMenu.group = '<spring:message code="eurb.app.menu.security.group" />';
-		EURB.appMenu.showReport = '<spring:message code="eurb.app.menu.builder.showreport" />'
+		EURB.appMenu.showReport = '<spring:message code="eurb.app.menu.builder.showreport" />';
+		EURB.appMenu.schedule = '<spring:message code="eurb.app.menu.builder.schedule" />';
 		
 		EURB.showError = function(msg, title) {
 			Ext.Msg.show({
@@ -201,7 +202,8 @@
 		    	'<ul class="submenu">'+
 		    	/*'<li><a href="'+EURB.baseURL+'" ><spring:message code="eurb.app.menu.reportbuilder.reports" /></a></li>'+*/
 		    	'<li><a href="'+EURB.baseURL+'builder/report/report-list.spy">'+EURB.appMenu.report+'</a></li>'+
-		    	'<li><a href="'+EURB.baseURL+'builder/report/view-report.spy">'+EURB.appMenu.showReport+'</a></li>'+
+		    	'<li><a href="'+EURB.baseURL+'builder/schedule/schedule.spy">'+EURB.appMenu.schedule+'</a></li>'+
+		    	/*'<li><a href="'+EURB.baseURL+'builder/report/view-report.spy">'+EURB.appMenu.showReport+'</a></li>'+*/
 		    	'</ul>'+
 		    	/*'<h3 class="headerbar"><a href="'+EURB.baseURL+'"><spring:message code="eurb.app.menu.sample" /></a></h3>'+
 		    	'<ul class="submenu">'+

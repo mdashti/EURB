@@ -2,6 +2,8 @@ package com.sharifpro.eurb.management.security.model;
 
 import java.io.Serializable;
 
+import org.springframework.security.core.userdetails.UserDetails;
+
 import com.sharifpro.eurb.management.mapping.model.PersistableObject;
 
 public class User extends PersistableObject implements Serializable
@@ -23,6 +25,8 @@ public class User extends PersistableObject implements Serializable
 	 */
 	protected boolean enabled;
 
+	protected UserDetails userDetails;
+
 	/**
 	 * Method 'Users'
 	 * 
@@ -30,6 +34,13 @@ public class User extends PersistableObject implements Serializable
 	public User()
 	{
 		super();
+	}
+
+	public User(UserDetails ud) {
+		userDetails = ud;
+		username = ud.getUsername();
+		password = ud.getPassword();
+		enabled = ud.isEnabled();
 	}
 
 	/**
@@ -90,6 +101,14 @@ public class User extends PersistableObject implements Serializable
 	public void setEnabled(boolean enabled)
 	{
 		this.enabled = enabled;
+	}
+
+	public UserDetails getUserDetails() {
+		return userDetails;
+	}
+
+	public void setUserDetails(UserDetails userDetails) {
+		this.userDetails = userDetails;
 	}
 
 	/**
@@ -170,6 +189,11 @@ public class User extends PersistableObject implements Serializable
 		ret.append( ", password=" + password );
 		ret.append( ", enabled=" + enabled );
 		return ret.toString();
+	}
+
+	public String getEmail() {
+		// TODO Auto-generated method stub
+		return "mdashti@gmail.com";
 	}
 
 }

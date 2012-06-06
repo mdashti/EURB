@@ -145,4 +145,6 @@ public interface UserDao
 	 * @throws UserDaoException
 	 */
 	public List<User> findSelectableUsersForGroup(Long groupId) throws UserDaoException;
+
+	public List<User> findAllActive() throws UserDaoException;
 }
