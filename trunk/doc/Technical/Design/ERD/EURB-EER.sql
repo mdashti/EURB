@@ -127,15 +127,18 @@ CREATE  TABLE IF NOT EXISTS `eurb`.`column_mapping` (
   `col_order` INT NOT NULL ,
   `format_pattern` VARCHAR(255) NULL ,
   `static_mapping` LONGTEXT NULL ,
-  `referenced_table` VARCHAR(255) NULL ,
-  `referenced_id_col` VARCHAR(255) NULL ,
-  `referenced_value_col` VARCHAR(255) NULL ,
+  `referenced_table` BIGINT UNSIGNED NULL ,
+  `referenced_id_col` BIGINT UNSIGNED NULL ,
+  `referenced_value_col` BIGINT UNSIGNED NULL ,
   `active_for_manager` TINYINT(1) NOT NULL DEFAULT 1 ,
   `active_for_user` TINYINT(1) NOT NULL DEFAULT 1 ,
   PRIMARY KEY (`id`, `table_mapping_id`, `db_config_id`) ,
   INDEX `fk_column_mapping_persistable_object` (`id` ASC) ,
   INDEX `fk_column_mapping_table_mapping` (`table_mapping_id` ASC) ,
   INDEX `fk_column_mapping_db_config` (`db_config_id` ASC) ,
+  INDEX `fk_column_mapping_table_mapping_referenced_table` (`referenced_table` ASC) ,
+  INDEX `fk_column_mapping_column_mapping_referenced_id_col` (`referenced_id_col` ASC) ,
+  INDEX `fk_column_mapping_column_mapping_referenced_value_col` (`referenced_value_col` ASC) ,
   CONSTRAINT `fk_column_mapping_persistable_object`
     FOREIGN KEY (`id` )
     REFERENCES `eurb`.`persistable_object` (`id` )
@@ -149,6 +152,21 @@ CREATE  TABLE IF NOT EXISTS `eurb`.`column_mapping` (
   CONSTRAINT `fk_column_mapping_db_config`
     FOREIGN KEY (`db_config_id` )
     REFERENCES `eurb`.`db_config` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_column_mapping_table_mapping_referenced_table`
+    FOREIGN KEY (`referenced_table` )
+    REFERENCES `eurb`.`table_mapping` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_column_mapping_column_mapping_referenced_id_col`
+    FOREIGN KEY (`referenced_id_col` )
+    REFERENCES `eurb`.`column_mapping` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_column_mapping_column_mapping_referenced_value_col`
+    FOREIGN KEY (`referenced_value_col` )
+    REFERENCES `eurb`.`column_mapping` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -587,6 +605,35 @@ CREATE  TABLE IF NOT EXISTS `eurb`.`report_format` (
   CONSTRAINT `fk_report_format_persistable_object1`
     FOREIGN KEY (`id` )
     REFERENCES `eurb`.`persistable_object` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `eurb`.`user_message`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `eurb`.`user_message` ;
+
+CREATE  TABLE IF NOT EXISTS `eurb`.`user_message` (
+  `id` BIGINT UNSIGNED NOT NULL ,
+  `username` VARCHAR(50) NOT NULL ,
+  `message` LONGTEXT NOT NULL ,
+  `type` INT NOT NULL DEFAULT 1 ,
+  `show` TINYINT(1) NOT NULL DEFAULT 1 ,
+  `available_from` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ,
+  INDEX `fk_user_message_persistable_object` (`id` ASC) ,
+  PRIMARY KEY (`id`) ,
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) ,
+  INDEX `fk_user_message_users` (`username` ASC) ,
+  CONSTRAINT `fk_user_message_persistable_object`
+    FOREIGN KEY (`id` )
+    REFERENCES `eurb`.`persistable_object` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_user_message_users`
+    FOREIGN KEY (`username` )
+    REFERENCES `eurb`.`users` (`username` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;

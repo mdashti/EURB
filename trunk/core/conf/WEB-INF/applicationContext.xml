@@ -251,4 +251,7 @@
 	<bean id="ReportScheduleDao" class="com.sharifpro.eurb.builder.dao.impl.ReportScheduleDaoImpl" scope="singleton" > 
 		<property name="scheduler" ref="scheduler" />
 	</bean>
+	<bean id="UserMessageDao" class="com.sharifpro.eurb.builder.dao.impl.UserMessageDaoImpl" scope="singleton">
+		<property name="dataSource" ref="EURBDataSource" />
+	</bean>
 </beans>

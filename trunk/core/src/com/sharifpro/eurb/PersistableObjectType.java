@@ -13,6 +13,7 @@ import com.sharifpro.eurb.builder.model.ReportDesign;
 import com.sharifpro.eurb.builder.model.ReportExecutionHistory;
 import com.sharifpro.eurb.builder.model.ReportFilter;
 import com.sharifpro.eurb.builder.model.ReportFormat;
+import com.sharifpro.eurb.builder.model.UserMessage;
 import com.sharifpro.eurb.management.mapping.model.ColumnMapping;
 import com.sharifpro.eurb.management.mapping.model.DbConfig;
 import com.sharifpro.eurb.management.mapping.model.PersistableObject;
@@ -34,6 +35,7 @@ public class PersistableObjectType {
 		OBJECT_TYPE_MAP.put(Groups.class.getName(), 200);
 		OBJECT_TYPE_MAP.put(GroupAuthorities.class.getName(), 250);
 		OBJECT_TYPE_MAP.put(GroupMembers.class.getName(), 300);
+		OBJECT_TYPE_MAP.put(UserMessage.class.getName(), 310);
 
 		OBJECT_TYPE_MAP.put(DbConfig.class.getName(), 350);
 		OBJECT_TYPE_MAP.put(TableMapping.class.getName(), 400);

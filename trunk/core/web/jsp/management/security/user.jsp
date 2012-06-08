@@ -40,6 +40,7 @@
 			EURB.User.newPassword = '<spring:message code="eurb.app.management.user.newPassword" />';
 			EURB.User.confirmNewPassword = '<spring:message code="eurb.app.management.user.confirmNewPassword" />';
 			EURB.User.confirmDidNotMatch = '<spring:message code="eurb.app.management.user.confirmDidNotMatch" />';
+			EURB.User.errorInStore = '<spring:message code="eurb.app.management.user.errorInStore" />';
 
 			EURB.User.Grp = {};
 			EURB.User.Grp.selectableGroupsFor = '<spring:message code="eurb.app.management.user.selectableGroupsFor" />';

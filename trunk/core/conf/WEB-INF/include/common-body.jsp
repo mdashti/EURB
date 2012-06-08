@@ -110,6 +110,7 @@
 		EURB.editChartAxis = '<spring:message code="eurb.editChartAxis" />';
 		
 		EURB.appMenu = {};
+		EURB.appMenu.homepage = '<spring:message code="eurb.app.menu.homepage" />';
 		EURB.appMenu.dbConfig = '<spring:message code="eurb.app.menu.management.db" />';
 		EURB.appMenu.table = '<spring:message code="eurb.app.menu.management.mapping" />';
 		EURB.appMenu.column = '<spring:message code="eurb.app.menu.management.column" />';
@@ -186,6 +187,9 @@
 		    EURB.mainMenu.add({
 		    	bodyBorder : false,
 		    	html:'<div class="urbangreymenu">'+
+		    	'<ul class="submenu">'+
+		    	'<li><a href="<spring:url value="/" />">'+EURB.appMenu.homepage+'</a></li>'+
+		    	'</ul>'+
 		    	'<h3 class="headerbar"><a href="'+EURB.baseURL+'"><spring:message code="eurb.app.menu.management" /></a></h3>'+
 		    	'<ul class="submenu">'+
 		    	'<li><a href="<spring:url value="/management/mapping/dbconfig.spy" />">'+EURB.appMenu.dbConfig+'</a></li>'+

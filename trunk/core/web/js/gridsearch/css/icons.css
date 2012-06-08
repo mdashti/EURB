@@ -313,6 +313,9 @@
 .icon-delete {
 	background-image:url(../../../img/icon/fam/bin_empty.png) ! important;
 }
+.icon-delete-cross {
+	background-image:url(../../../img/icon/delete.gif) ! important;
+}
 .icon-tree {
 	background-image:url(../../../img/icon/tree_16.png) ! important;
 }

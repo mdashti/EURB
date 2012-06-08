@@ -171,7 +171,16 @@ EURB.User.UserGrid = Ext.extend(Ext.grid.GridPanel, {
 		        text:Ext.MessageBox.buttonText.ok,
 		        handler: function() {
 		        	if(changePasswordForm.getForm().isValid()) {
-		        		Ext.Msg.alert('hiii');
+		        		changePasswordForm.getForm().submit({
+	                        url: EURB.User.storeAction,
+	                        success: function(form, action) {
+								editSchedWindow.hide();
+	                        	EURB.User.userGrid.store.reload();
+	                        },
+	                        failure: function(form, action) {
+	                            Ext.Msg.alert(EURB.User.errorInStore);
+	                        }
+	                    });
 		        	}
 		        }
 		    },{

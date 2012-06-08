@@ -69,8 +69,7 @@ public class ReportScheduleController {
 	}
 
 	@RequestMapping(value = "/builder/schedule/findAllUsersScheduled.spy")
-	public @ResponseBody
-	Map<String, ? extends Object> findAllUsersScheduled() {
+	public @ResponseBody Map<String, ? extends Object> findAllUsersScheduled() {
 		try {
 			List<ReportSchedule> scheduledReports = new ArrayList<ReportSchedule>();
 
