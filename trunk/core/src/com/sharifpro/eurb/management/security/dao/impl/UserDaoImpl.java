@@ -183,10 +183,11 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 	 * Returns all rows from the users table that match the criteria 'username = :username'.
 	 */
 	@Transactional(readOnly=true)
-	public List<User> findWhereUsernameEquals(String username) throws UserDaoException
+	public User findWhereUsernameEquals(String username) throws UserDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE username = ? ORDER BY username", this,username);
+			List<User> list = jdbcTemplate.query(QUERY_SELECT_PART + " WHERE username = ? ORDER BY username", this,username);
+			return list.size() == 0 ? null : list.get(0);
 		}
 		catch (Exception e) {
 			throw new UserDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);

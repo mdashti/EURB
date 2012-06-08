@@ -295,7 +295,7 @@ EURB.Schedule.ScheduleGrid = Ext.extend(Ext.grid.GridPanel, {
 								EURB.Schedule.scheduleGrid.getSelectionModel().clearSelections();
 	                        },
 	                        failure: function(form, action) {
-	                            Ext.Msg.alert(EURB.Schedule.errorInStore);
+	                            EURB.showError(EURB.Schedule.errorInStore);
 	                        }
 	                    });
 		        	}

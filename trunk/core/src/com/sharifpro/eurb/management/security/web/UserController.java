@@ -1,6 +1,7 @@
 package com.sharifpro.eurb.management.security.web;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -14,12 +15,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.sharifpro.eurb.management.security.dao.GroupMembersDao;
 import com.sharifpro.eurb.management.security.dao.GroupsDao;
 import com.sharifpro.eurb.management.security.dao.UserDao;
+import com.sharifpro.eurb.management.security.exception.UserDaoException;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
 import com.sharifpro.eurb.management.security.model.GroupMembers;
 import com.sharifpro.eurb.management.security.model.Groups;
 import com.sharifpro.eurb.management.security.model.User;
 import com.sharifpro.eurb.management.security.model.UserPk;
 import com.sharifpro.eurb.management.mapping.model.PersistableObject;
+import com.sharifpro.util.PropertyProvider;
 import com.sharifpro.util.json.JsonUtil;
 
 /**
@@ -68,24 +71,28 @@ public class UserController {
 	}
 
 	@RequestMapping(value="/management/security/user/userStore.spy")
-	public @ResponseBody Map<String,? extends Object> store(@RequestParam Object data) throws Exception {
+	public @ResponseBody Map<String,? extends Object> store(@RequestParam(required=true) String username
+			,@RequestParam(required=true) String newpass
+			,@RequestParam(required=true) String confirmnewpass) throws Exception {
 		try{
 
-			List<User> users = jsonUtil.getListFromRequest(data, User.class);
+			if(StringUtils.isEmpty(newpass) || !newpass.equals(confirmnewpass)){
+				throw new UserDaoException(PropertyProvider.get("eurb.app.management.user.confirmDidNotMatch"));
+			}
+			User theUser = userDao.findWhereUsernameEquals(username);
 			
-			List<Object[]> insertIds = new ArrayList<Object[]>(users.size());
-			UserPk pk;
-			for(User dbConf : users) {
-				if(dbConf.isNewRecord()) {
-					pk = userDao.insert(dbConf);
-				} else {
-					pk = dbConf.createPk();
-					userDao.update(pk,dbConf);
-				}
-				insertIds.add(new Object[] {pk.getId()});
+			if(theUser == null) {
+				theUser = new User();
+				theUser.setUsername(username);
+				theUser.setPassword(newpass);
+				theUser.setEnabled(true);
+				userDao.insert(theUser);
+			} else {
+				theUser.setPassword(newpass);
+				userDao.setPassword(theUser.createPk(), theUser);
 			}
 			
-			return JsonUtil.getSuccessfulMapAfterStore(insertIds);
+			return JsonUtil.getSuccessfulMapAfterStore(Arrays.asList(theUser.getId()));
 
 		} catch (Exception e) {
 			e.printStackTrace();

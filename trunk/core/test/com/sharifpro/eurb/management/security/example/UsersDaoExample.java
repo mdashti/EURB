@@ -82,10 +82,8 @@ public class UsersDaoExample
 	public static void findWhereUsernameEquals(String username) throws Exception
 	{
 		UserDao dao = DaoFactory.createUsersDao();
-		List<User> _result = dao.findWhereUsernameEquals(username);
-		for (User dto : _result) {
-			display(dto);
-		}
+		User dto = dao.findWhereUsernameEquals(username);
+		display(dto);
 		
 	}
 

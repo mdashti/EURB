@@ -23,8 +23,7 @@ public class UserOperationsTest extends InsertInitialData{
 		System.out.println(CollectionUtil.toString(dao.findAll()));
 		
 
-		List<User> adminUserList = dao.findWhereUsernameEquals("dashti");
-		User adminUser = adminUserList == null || adminUserList.isEmpty() ? null : adminUserList.get(0);
+		User adminUser = dao.findWhereUsernameEquals("dashti");
 		if (adminUser == null) {
 			System.out.println("Admin user not found! trying to make it...");
 

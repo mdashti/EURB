@@ -150,8 +150,7 @@ public class InsertInitialData {
 			String userName = theUser[0];
 			String password = theUser[1];
 			System.out.println("Looking for user : " + userName + "...");
-			List<User> users = dao.findWhereUsernameEquals(userName);
-			User user = users == null || users.isEmpty() ? null : users.get(0);
+			User user = dao.findWhereUsernameEquals(userName);
 			if (user == null) {
 				System.out.println("\tUser not found! trying to make it...");
 	

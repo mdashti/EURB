@@ -123,10 +123,11 @@ EURB.User.UserGrid = Ext.extend(Ext.grid.GridPanel, {
 			},{
 			    fieldLabel: EURB.User.username
 			    ,name: 'username'
+			    ,hiddenName: 'username'
 			    ,anchor:'100%'  // anchor width by percentage
 			    ,allowBlank:false
 				,readOnly: true
-				,disabled: true
+				//,disabled: true
 			    ,cls: 'left-align-txt'
 			},{
 			    fieldLabel: EURB.User.newPassword
@@ -174,11 +175,11 @@ EURB.User.UserGrid = Ext.extend(Ext.grid.GridPanel, {
 		        		changePasswordForm.getForm().submit({
 	                        url: EURB.User.storeAction,
 	                        success: function(form, action) {
-								editSchedWindow.hide();
+								changePasswordWindow.hide();
 	                        	EURB.User.userGrid.store.reload();
 	                        },
 	                        failure: function(form, action) {
-	                            Ext.Msg.alert(EURB.User.errorInStore);
+	                            EURB.showError(EURB.User.errorInStore);
 	                        }
 	                    });
 		        	}
@@ -295,7 +296,7 @@ EURB.User.UserGrid = Ext.extend(Ext.grid.GridPanel, {
                 rec.data[f.name] = f.defaultValue || null;
             });
             rec.commit();
-            store.add(rec);
+            //store.add(rec);
             this.changePasswordWindow.show(this.getView().getCell(0, 0),this.changePasswordFor(rec,true),this);
             return rec;
         }
@@ -323,10 +324,10 @@ EURB.User.UserGrid = Ext.extend(Ext.grid.GridPanel, {
     	var frm = this.changePasswordForm.getForm();
     	var userNameField = frm.findField('username');
     	if(usernameEditable) {
-    		userNameField.enable();
+    		//userNameField.enable();
     		userNameField.setReadOnly(false);
     	} else {
-    		userNameField.disable();
+    		//userNameField.disable();
     		userNameField.setReadOnly(true);
     	}
     	frm.reset();
