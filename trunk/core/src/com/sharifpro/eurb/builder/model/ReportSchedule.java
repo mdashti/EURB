@@ -8,10 +8,11 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 import com.sharifpro.eurb.management.security.model.User;
 import com.sharifpro.util.DateUtil;
+import com.sharifpro.util.PropertyProvider;
+import com.sharifpro.util.StringUtilities;
 import com.sharifpro.util.json.JsonDateSerializer;
 
-public class ReportSchedule implements Serializable
-{
+public class ReportSchedule implements Serializable {
 	private static final long serialVersionUID = -679355847466582944l;
 	
 	public static final int ONCE = 0;
@@ -47,7 +48,7 @@ public class ReportSchedule implements Serializable
     
     private Locale locale;
 	
-	private transient String scheduleDescription;
+	private String scheduleDescription;
 	private transient Date nextFireDate;
 	private transient String scheduleState;
 	
@@ -95,21 +96,21 @@ public class ReportSchedule implements Serializable
 		switch (scheduleType)
 		{
 			case ONCE:
-				return "Once";
+				return PropertyProvider.get("eurb.app.builder.schedule.scheduleTypeOnce");
 			case DAILY:
-				return "Daily";
+				return PropertyProvider.get("eurb.app.builder.schedule.scheduleTypeDaily");
 			case WEEKLY:
-				return "Weekly";
+				return PropertyProvider.get("eurb.app.builder.schedule.scheduleTypeWeekly");
 			case MONTHLY:
-				return "Monthly";
+				return PropertyProvider.get("eurb.app.builder.schedule.scheduleTypeMonthly");
 			case WEEKDAYS:
-				return "Weekdays";
+				return PropertyProvider.get("eurb.app.builder.schedule.scheduleTypeWeekdays");
 			case HOURLY:
-				return "Hourly";
+				return PropertyProvider.get("eurb.app.builder.schedule.scheduleTypeHourly");
 			case CRON:
-				return "Cron";
+				return PropertyProvider.get("eurb.app.builder.schedule.scheduleTypeCron");
 			default:
-				return "Unknown";
+				return PropertyProvider.get("eurb.app.builder.schedule.scheduleTypeUnknown");
 		}		
 	}	
 
@@ -118,6 +119,7 @@ public class ReportSchedule implements Serializable
 		this.scheduleType = scheduleType;
 	}
 
+	@JsonSerialize(using=JsonDateSerializer.class)
 	public Date getStartDate()
 	{
 		return startDate;
@@ -220,7 +222,7 @@ public class ReportSchedule implements Serializable
 	
 	public String getScheduleGroup()
 	{
-		return String.valueOf(user.getId());
+		return String.valueOf(user.getUsername());
 	}
 	
 	public Date getStartDateTime()
@@ -238,7 +240,7 @@ public class ReportSchedule implements Serializable
 	}
 	
 	public String getStartDateTimeString() {
-		return DateUtil.convertGregorianToPersianString(startDate) + " " + getAbsoluteStartHour() + ":" + startMinute;
+		return DateUtil.convertGregorianToPersianString(startDate) + " " + StringUtilities.toTwoDigitNum(getAbsoluteStartHour()) + ":" + StringUtilities.toTwoDigitNum(Integer.parseInt(startMinute));
 	}
 
 	public String getRecipients()
@@ -269,7 +271,7 @@ public class ReportSchedule implements Serializable
 	public String getNextFireDateString() {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(nextFireDate);
-		return DateUtil.convertGregorianToPersianString(nextFireDate) + " " + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE);
+		return DateUtil.convertGregorianToPersianString(nextFireDate) + " " + StringUtilities.toTwoDigitNum(calendar.get(Calendar.HOUR_OF_DAY)) + ":" + StringUtilities.toTwoDigitNum(calendar.get(Calendar.MINUTE));
 	}
 	
 	public void setNextFireDate(Date nextFireDate)

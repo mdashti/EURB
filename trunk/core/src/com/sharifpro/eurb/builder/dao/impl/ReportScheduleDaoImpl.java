@@ -138,7 +138,6 @@ public class ReportScheduleDaoImpl extends AbstractDAO implements ReportSchedule
     
     				ReportSchedule reportSchedule = (ReportSchedule) jobDetail.getJobDataMap().get(
     						REPORT_SCHEDULE);
-    				reportSchedule.setScheduleDescription(jobDetail.getDescription());
     				reportSchedule.setScheduleState(getTriggerStateName(jobKey.getName(), group));
     				
     				Trigger trigger = scheduler.getTrigger(new TriggerKey(jobKey.getName(), group));
@@ -168,7 +167,7 @@ public class ReportScheduleDaoImpl extends AbstractDAO implements ReportSchedule
 	{
         try
         {
-            String group = user.getId().toString();
+            String group = user.getUsername();
             scheduler.deleteJob(new JobKey(name, group));	
         }
         catch(SchedulerException e)
@@ -182,7 +181,7 @@ public class ReportScheduleDaoImpl extends AbstractDAO implements ReportSchedule
 	{
         try
         {
-    		String group = user.getId().toString();
+    		String group = user.getUsername();
     
     		JobDetail jobDetail = scheduler.getJobDetail(new JobKey(name, group));
     
@@ -203,7 +202,7 @@ public class ReportScheduleDaoImpl extends AbstractDAO implements ReportSchedule
 	{
         try
         {
-            scheduler.pauseJob(new JobKey(name, user.getId().toString()));
+            scheduler.pauseJob(new JobKey(name, user.getUsername()));
         }
         catch(SchedulerException e)
         {
@@ -216,7 +215,7 @@ public class ReportScheduleDaoImpl extends AbstractDAO implements ReportSchedule
 	{
         try
         {
-            scheduler.resumeJob(new JobKey(name, user.getId().toString()));
+            scheduler.resumeJob(new JobKey(name, user.getUsername()));
         }
         catch(SchedulerException e)
         {

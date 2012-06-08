@@ -11,7 +11,7 @@ EURB.Schedule.reportsStore = new Ext.data.JsonStore({
 
 EURB.Schedule.store = new Ext.data.Store({
 	reader:new Ext.data.JsonReader({
-		 id:'id'
+		 id:'scheduleName'
 		,totalProperty:'totalCount'
 		,root:'data'
 		,fields:[
@@ -23,6 +23,14 @@ EURB.Schedule.store = new Ext.data.Store({
 			,{name:'startDateTimeString', type:'string'}
 			,{name:'scheduleTypeName', type:'string'}
 			,{name:'nextFireDateString', type:'string'}
+			,{name:'scheduleType', type:'int'}
+			,{name:'startHour', type:'string'}
+			,{name:'startMinute', type:'string'}
+			,{name:'startAmPm', type:'string'}
+			,{name:'recipients', type:'string'}
+			,{name:'startDate', type:'string'}
+			,{name:'cronExpression', type:'string'}
+			,{name:'hours', type:'int'}
 		]
 	})
 	,proxy:new Ext.data.HttpProxy({
@@ -53,6 +61,7 @@ EURB.Schedule.cols = [{
 	,dataIndex:'startDateTimeString'
 	,width:40
 	,sortable:true
+	,css:'direction:ltr;text-align:right;'
 },{
 	 header:EURB.Schedule.scheduleTypeName
 	,id:'scheduleTypeName'
@@ -65,6 +74,7 @@ EURB.Schedule.cols = [{
 	,dataIndex:'nextFireDateString'
 	,width:40
 	,sortable:true
+	,css:'direction:ltr;text-align:right;'
 }];
 
 EURB.Schedule.ScheduleGrid = Ext.extend(Ext.grid.GridPanel, {
@@ -73,11 +83,11 @@ EURB.Schedule.ScheduleGrid = Ext.extend(Ext.grid.GridPanel, {
 	,layout:'fit'
 	,border:true
 	,stateful:false
-	,idName:'id'
+	,idName:'scheduleName'
 	,title: EURB.appMenu.schedule
 	,initComponent:function() {
 
-		var changePasswordForm = new Ext.form.FormPanel({
+		var editSchedForm = new Ext.form.FormPanel({
 					// form as the only item in window
 			xtype : 'form',
 			labelWidth : 80,
@@ -87,6 +97,7 @@ EURB.Schedule.ScheduleGrid = Ext.extend(Ext.grid.GridPanel, {
 			    ,allowBlank:true
 			    ,xtype: 'hidden'
 			},new Ext.form.ComboBox({
+				tabIndex: 1,
 				fieldLabel:EURB.Schedule.reportName,
 				hiddenName: 'reportId',
 			    typeAhead: true,
@@ -102,24 +113,48 @@ EURB.Schedule.ScheduleGrid = Ext.extend(Ext.grid.GridPanel, {
 			    anchor:'100%'  // anchor width by percentage
 
 			}),{
+				tabIndex: 2,
 			    fieldLabel: EURB.Schedule.scheduleDescription
-			    ,name: 'description'
+			    ,name: 'scheduleDescription'
 			    ,anchor:'100%'  // anchor width by percentage
 			    ,allowBlank:false
 			    ,xtype: 'textfield'
 			},{
 		        xtype: 'radiogroup',
 		        fieldLabel: EURB.Schedule.scheduleTypeName,
+		        id:'scheduleType',
 		        columns: 4,
 		        items: [
-		            {boxLabel: EURB.Schedule.scheduleTypeOnce, name: 'scheduleType', inputValue: 0},
-		            {boxLabel: EURB.Schedule.scheduleTypeHourly, name: 'scheduleType', inputValue: 5, checked: true},
-		            {boxLabel: EURB.Schedule.scheduleTypeDaily, name: 'scheduleType', inputValue: 1},
-		            {boxLabel: EURB.Schedule.scheduleTypeWeekdays, name: 'scheduleType', inputValue: 4},
-		            {boxLabel: EURB.Schedule.scheduleTypeWeekly, name: 'scheduleType', inputValue: 2},
-		            {boxLabel: EURB.Schedule.scheduleTypeMonthly, name: 'scheduleType', inputValue: 3},
-		            {boxLabel: EURB.Schedule.scheduleTypeCron, name: 'scheduleType', inputValue: 6}
-		        ]
+		            {boxLabel: EURB.Schedule.scheduleTypeOnce, name: 'scheduleType', inputValue: 0, tabIndex: 3},
+		            {boxLabel: EURB.Schedule.scheduleTypeHourly, name: 'scheduleType', inputValue: 5, tabIndex: 4},
+		            {boxLabel: EURB.Schedule.scheduleTypeDaily, name: 'scheduleType', inputValue: 1, tabIndex: 5, checked: true},
+		            {boxLabel: EURB.Schedule.scheduleTypeWeekdays, name: 'scheduleType', inputValue: 4, tabIndex: 6},
+		            {boxLabel: EURB.Schedule.scheduleTypeWeekly, name: 'scheduleType', inputValue: 2, tabIndex: 7},
+		            {boxLabel: EURB.Schedule.scheduleTypeMonthly, name: 'scheduleType', inputValue: 3, tabIndex: 8},
+		            {boxLabel: EURB.Schedule.scheduleTypeCron, name: 'scheduleType', inputValue: 6, tabIndex: 9}
+		        ],
+		        listeners: {
+		        	change: function(thiz, checkedRadio) {
+		        		var cronField = Ext.getCmp('cronField');
+		        		var hoursField = Ext.getCmp('hoursField');
+		        		if(checkedRadio && checkedRadio.getGroupValue() == '5') { // Hourly
+		        			hoursField.enable();
+		        			hoursField.setReadOnly(false);
+		        			cronField.disable();
+		        			cronField.setReadOnly(true);
+		        		} else if(checkedRadio && checkedRadio.getGroupValue() == '6') { // Cron
+		        			hoursField.disable();
+		        			hoursField.setReadOnly(true);
+		        			cronField.enable();
+		        			cronField.setReadOnly(false);
+		        		} else {
+		        			hoursField.disable();
+		        			hoursField.setReadOnly(true);
+		        			cronField.disable();
+		        			cronField.setReadOnly(true);
+		        		}
+		        	}
+		        }
 		    }, {
 			// column layout with 2 columns
 			layout : 'column'
@@ -139,6 +174,7 @@ EURB.Schedule.ScheduleGrid = Ext.extend(Ext.grid.GridPanel, {
 					anchor : '100%'
 				},
 				items : [new Ext.form.DateField({
+						tabIndex: 10,
 		            	plugins: [Ext.ux.JalaliDatePlugin],
 		                format: 'B/Q/R',
 		                allowBlank: false,
@@ -156,7 +192,7 @@ EURB.Schedule.ScheduleGrid = Ext.extend(Ext.grid.GridPanel, {
 			                //the other 2 items are given flex: 1, so will share the rest of the space
 			                width:          50,
 			
-			
+							tabIndex: 14,
 			                xtype:          'combo',
 			                mode:           'local',
 			                value:          'AM',
@@ -182,7 +218,8 @@ EURB.Schedule.ScheduleGrid = Ext.extend(Ext.grid.GridPanel, {
 			               xtype: 'numberfield',
 			               width: 48,
 			               allowBlank: false,
-			               cls: 'left-align-txt'
+			               cls: 'left-align-txt',
+			               tabIndex: 13
 			           }, {
 			               xtype: 'displayfield',
 			               value: ':'
@@ -191,7 +228,8 @@ EURB.Schedule.ScheduleGrid = Ext.extend(Ext.grid.GridPanel, {
 			               xtype: 'numberfield',
 			               width: 48,
 			               allowBlank: false,
-			               cls: 'left-align-txt'
+			               cls: 'left-align-txt',
+			               tabIndex: 12
 			           }
 			        ]
 			    }]}, {
@@ -202,15 +240,23 @@ EURB.Schedule.ScheduleGrid = Ext.extend(Ext.grid.GridPanel, {
 					},
 					bodyStyle : 'padding:0 18px 0 0',
 					items : [{
+						id: 'cronField',
 						xtype : 'textfield',
 						fieldLabel : EURB.Schedule.cronExpression,
-						name : 'cron',
-						cls: 'left-align-txt'
+						name : 'cronExpression',
+						cls: 'left-align-txt',
+						disabled: true,
+						readOnly: true,
+						tabIndex: 11
 					},{
 						xtype : 'textfield',
 						fieldLabel : EURB.Schedule.numberOfHours,
+						id: 'hoursField',
 						name : 'hours',
-						cls: 'left-align-txt'
+						cls: 'left-align-txt',
+						disabled: true,
+						readOnly: true,
+						tabIndex: 15
 					}]
 				}]
 			}, {
@@ -219,12 +265,14 @@ EURB.Schedule.ScheduleGrid = Ext.extend(Ext.grid.GridPanel, {
 				xtype : 'textarea',
 				anchor : '-18 -80',
 				name : 'recipients',
-				cls: 'left-align-txt'
+				cls: 'left-align-txt',
+				tabIndex: 16
 			}]
 		});
-        this.changePasswordForm = changePasswordForm;
-        var changePasswordWindow = new Ext.Window({
-			title: EURB.Schedule.changePassword,
+        this.editSchedForm = editSchedForm;
+        var editSchedWindow = new Ext.Window({
+        	modal: true,
+			title: EURB.addEdit+' '+EURB.Schedule.schedule,
 			width: 600,
 			height:350,
 			minWidth: 300,
@@ -234,31 +282,41 @@ EURB.Schedule.ScheduleGrid = Ext.extend(Ext.grid.GridPanel, {
 			plain:true,
 			bodyStyle:'padding:5px;',
 			buttonAlign:'center',
-			items: changePasswordForm,
+			items: editSchedForm,
 		    buttons: [{
 		        text:Ext.MessageBox.buttonText.ok,
 		        handler: function() {
-		        	if(changePasswordForm.getForm().isValid()) {
-		        		changePasswordForm.getForm().submit({
+		        	if(editSchedForm.getForm().isValid()) {
+		        		editSchedForm.getForm().submit({
 	                        url: EURB.Schedule.storeAction,
 	                        success: function(form, action) {
-	                            alert('Yes! Success!');  // I don't get this
+								editSchedWindow.hide();
+	                        	EURB.Schedule.scheduleGrid.store.reload();
+								EURB.Schedule.scheduleGrid.getSelectionModel().clearSelections();
 	                        },
 	                        failure: function(form, action) {
-	                            alert('failed.');  // I don't get this
+	                            Ext.Msg.alert(EURB.Schedule.errorInStore);
 	                        }
 	                    });
 		        	}
-		        }
+		        },
+				tabIndex: 17
 		    },{
 		        text: Ext.MessageBox.buttonText.cancel,
 		        handler: function(){
-		            changePasswordWindow.hide();
-		        }
-		    }]
+		            editSchedWindow.hide();
+		        },
+				tabIndex: 18
+		    }],
+		    listeners: {
+		    	show: function(thiz) {
+		    		var reportField = editSchedForm.getForm().findField('reportId');
+    				if(reportField) reportField.focus(false,500);
+		    	}
+		    }
 		});
-		this.changePasswordWindow = changePasswordWindow;
-		
+		this.editSchedWindow = editSchedWindow;
+		editSchedWindow.render(Ext.getBody());
 		// create row actions
 		this.rowActions = new Ext.ux.grid.RowActions({
 			 actions:[{
@@ -267,7 +325,7 @@ EURB.Schedule.ScheduleGrid = Ext.extend(Ext.grid.GridPanel, {
 				,style:'margin:0 0 0 3px'
 			},{
                  iconCls:'icon-edit-record'
-                ,qtip:EURB.Schedule.changePassword
+                ,qtip:EURB.editRecord
             }]
             ,widthIntercept:Ext.isSafari ? 4 : 2
             ,id:'actions'
@@ -334,7 +392,7 @@ EURB.Schedule.ScheduleGrid = Ext.extend(Ext.grid.GridPanel, {
                 rec.data[f.name] = f.defaultValue || null;
             });
             rec.commit();
-            this.changePasswordWindow.show(this,this.changePasswordFor(rec,true),this);
+            this.editSchedWindow.show(this,this.editSchedFor(rec,true),this);
             return rec;
         }
         return false;
@@ -346,23 +404,25 @@ EURB.Schedule.ScheduleGrid = Ext.extend(Ext.grid.GridPanel, {
             break;
 
             case 'icon-edit-record':
-                this.changePasswordWindow.show(grid.getView().getCell(row, col),this.changePasswordFor(record, false),this);
+                this.editSchedWindow.show(grid.getView().getCell(row, col),this.editSchedFor(record, false),this);
             break;
         }
     }
     ,onRecordSelectionChange:function(rec) {
     	var schedulename = rec.get('schedulename');
-    	EURB.Schedule.Grp.otherGroupsStore.reload({params: {scheduleName: schedulename}});
-    	EURB.Schedule.Grp.currentGroupsStore.reload({params: {scheduleName: schedulename}});
-    	EURB.Schedule.Grp.currentGroupsGrid.setTitle(EURB.Schedule.Grp.currentGroupsFor + schedulename);
-    	EURB.Schedule.Grp.otherGroupsGrid.setTitle(EURB.Schedule.Grp.selectableGroupsFor + schedulename);
     }
-    ,changePasswordFor:function(record, schedulenameEditable) {
-    	var frm = this.changePasswordForm.getForm();
-    	var reportField = frm.findField('reportId');
+    ,editSchedFor:function(record, schedulenameEditable) {
+    	var frm = this.editSchedForm.getForm();
     	frm.reset();
-    	frm.loadRecord(record);
-		if(reportField) reportField.focus(false,500);
+    	if(!record.get('newRecord')) {
+	    	frm.loadRecord(record);
+	    	var scheduleTypeField = frm.findField('scheduleType');
+	    	var scheduleTypeVal = record.get('scheduleType');
+	    	if(scheduleTypeVal == null) {
+	    		scheduleTypeVal = 1;
+	    	}
+	    	Ext.setCheckedValue(scheduleTypeField,scheduleTypeVal);
+    	}
     }
 	,commitChanges:function() {
 		var records = this.store.getModifiedRecords();
@@ -428,7 +488,7 @@ EURB.Schedule.ScheduleGrid = Ext.extend(Ext.grid.GridPanel, {
 		}
 		Ext.Msg.show({
 			 title:EURB.areYouSureToDelTitle
-			,msg:String.format(EURB.areYouSureToDelete, records.length == 1 ? records[0].get('name') : EURB.records)
+			,msg:String.format(EURB.areYouSureToDelete, records.length == 1 ? EURB.Schedule.schedule + ' ' + records[0].get('reportName') : EURB.records)
 			,icon:Ext.Msg.QUESTION
 			,buttons:Ext.Msg.YESNO
 			,scope:this

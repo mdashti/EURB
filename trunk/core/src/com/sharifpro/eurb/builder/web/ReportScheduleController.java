@@ -40,6 +40,7 @@ public class ReportScheduleController {
 	private UserDao userDao;
 	private ReportDesignDao reportDesignDao;
 	private ReportAlertDao reportAlertDao;
+	private JsonUtil jsonUtil;
 
 	@RequestMapping(value = "/builder/schedule/findUserScheduled.spy")
 	public @ResponseBody
@@ -89,7 +90,7 @@ public class ReportScheduleController {
 		}
 	}
 
-	@RequestMapping(value = "/builder/schedule/findSchedule.spy")
+	/*@RequestMapping(value = "/builder/schedule/findSchedule.spy")
 	public @ResponseBody
 	Map<String, ? extends Object> findSchedule(
 			@RequestParam(required = false) Long userId,
@@ -134,11 +135,10 @@ public class ReportScheduleController {
 		} catch (Exception e) {
 			return JsonUtil.getModelMapError(e.getMessage());
 		}
-	}
+	}*/
 
 	@RequestMapping(value = "/builder/schedule/scheduleStore.spy")
-	public @ResponseBody
-	Map<String, ? extends Object> scheduleStore(
+	public @ResponseBody Map<String, ? extends Object> scheduleStore(
 			@RequestParam(required = false) Long userId,
 			@RequestParam(required = false) String recipients,
 			@RequestParam(required = false) String startDate,
@@ -147,11 +147,11 @@ public class ReportScheduleController {
 			@RequestParam(required = false) String startAmPm,
 			@RequestParam(required = false) String scheduleName,
 			@RequestParam(required = false) Long reportId,
-			@RequestParam(required = false) String exportType,
+			@RequestParam(required = false, defaultValue= "1") String exportType,
 			@RequestParam(required = false) Integer scheduleType,
-			@RequestParam(required = false) Integer hours,
-			@RequestParam(required = false) String cron,
-			@RequestParam(required = false) String description,
+			@RequestParam(required = false, defaultValue= "0") Integer hours,
+			@RequestParam(required = false) String cronExpression,
+			@RequestParam(required = false) String scheduleDescription,
 			@RequestParam(required = false, defaultValue = "true") Boolean runToFile,
 			@RequestParam(required = false, defaultValue = "-1") Integer alertId,
 			@RequestParam(required = false) Integer alertLimit,
@@ -214,9 +214,9 @@ public class ReportScheduleController {
 			reportSchedule.setStartMinute(startMinute);
 			reportSchedule.setStartAmPm(startAmPm);
 			reportSchedule.setRecipients(recipients);
-			reportSchedule.setScheduleDescription(description);
-			reportSchedule.setHours(hours);
-			reportSchedule.setCronExpression(cron);
+			reportSchedule.setScheduleDescription(scheduleDescription);
+			reportSchedule.setHours(hours == null ? 0 : hours);
+			reportSchedule.setCronExpression(cronExpression);
 
 			if (runToFile) {
 				reportSchedule.setDeliveryMethods(new String[] { DeliveryMethod.FILE.getName() });
@@ -252,6 +252,27 @@ public class ReportScheduleController {
 		return JsonUtil.getSuccessfulMapAfterStore(Arrays.asList(reportSchedule.getScheduleName()));
 	}
 
+	@RequestMapping(value = "/builder/schedule/scheduleRemove.spy")
+	public @ResponseBody Map<String, ? extends Object>  scheduleRemove(@RequestParam Object data) {
+		try {
+			User reportUser = null;
+
+			//if (userId != null) {
+			//	reportUser = userDao.findByPrimaryKey(userId);
+			//} else {
+				reportUser = SessionManager.getCurrentUser();;
+			//}
+			List<String> deleteScheduleNames = jsonUtil.getListFromRequest(data, String.class);
+			for(String scheduleName : deleteScheduleNames) { 
+				ReportSchedule reportSchedule = reportScheduleDao.getScheduledReport(reportUser, scheduleName);
+				reportScheduleDao.deleteScheduledReport(reportUser, reportSchedule.getScheduleName());
+			}
+			return  JsonUtil.getSuccessfulMapAfterStore(deleteScheduleNames);
+		} catch (Exception e) {
+			return JsonUtil.getModelMapError(e.getMessage());
+		}
+	}
+	
 	private Map<String, Object> getReportParameters() {
 		// TODO Auto-generated method stub
 		return new HashMap<String, Object>();
@@ -281,5 +302,10 @@ public class ReportScheduleController {
 	@Autowired
 	public void setReportAlertDao(ReportAlertDao reportAlertDao) {
 		this.reportAlertDao = reportAlertDao;
+	}
+
+	@Autowired
+	public void setJsonUtil(JsonUtil jsonUtil) {
+		this.jsonUtil = jsonUtil;
 	}
 }

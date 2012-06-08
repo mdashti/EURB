@@ -1,6 +1,10 @@
 package com.sharifpro.eurb.info;
 
-public class RecordStatus {
+import java.io.Serializable;
+
+public class RecordStatus implements Serializable{
+	private static final long serialVersionUID = 909411946957187318L;
+
 	private String id;
 	
 	public static RecordStatus ACTIVE = new RecordStatus("A");

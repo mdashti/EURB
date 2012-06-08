@@ -283,4 +283,8 @@ public class StringUtilities
       buf = buf.replaceAll("\"", "&quot;");
       return buf;
    }
+
+public static String toTwoDigitNum(int num) {
+	return num < 10 && num >= 0 ? "0"+num : ""+num;
+}
 }

@@ -31,6 +31,7 @@
 			EURB.Schedule.reportSearchAction = '<spring:url value="/builder/report/reportSearch.spy" />';
 
 			EURB.Schedule.reportName = '<spring:message code="eurb.app.builder.schedule.reportName" />';
+			EURB.Schedule.schedule = '<spring:message code="eurb.app.builder.schedule.schedule" />';
 			EURB.Schedule.scheduleDescription = '<spring:message code="eurb.app.builder.schedule.scheduleDescription" />';
 			EURB.Schedule.startDateTimeString = '<spring:message code="eurb.app.builder.schedule.startDateTimeString" />';
 			EURB.Schedule.startDate = '<spring:message code="eurb.app.builder.schedule.startDate" />';
@@ -39,6 +40,7 @@
 			EURB.Schedule.startTimePM = '<spring:message code="eurb.app.builder.schedule.startTimePM" />';
 			EURB.Schedule.scheduleTypeName = '<spring:message code="eurb.app.builder.schedule.scheduleTypeName" />';
 			EURB.Schedule.nextFireDateString = '<spring:message code="eurb.app.builder.schedule.nextFireDateString" />';
+			EURB.Schedule.errorInStore = '<spring:message code="eurb.app.builder.schedule.errorInStore" />';
 
 			EURB.Schedule.scheduleTypeOnce = '<spring:message code="eurb.app.builder.schedule.scheduleTypeOnce" />';
 			EURB.Schedule.scheduleTypeHourly = '<spring:message code="eurb.app.builder.schedule.scheduleTypeHourly" />';
