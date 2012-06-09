@@ -133,7 +133,8 @@ public class UserDetailsServiceImpl extends AbstractDAO implements UserDetailsSe
         Assert.isTrue(enableAuthorities || enableGroups, "Use of either authorities or groups must be enabled");
     }
 
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    @SuppressWarnings("deprecation")
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         List<User> users = loadUsersByUsername(username);
 
         if (users.size() == 0) {

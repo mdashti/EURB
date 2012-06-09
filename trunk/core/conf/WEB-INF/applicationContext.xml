@@ -57,6 +57,7 @@
 			<concurrency-control max-sessions="1" error-if-maximum-exceeded="true" session-authentication-error-url="/error.spy" />
 		</security:session-management-->
 		<security:logout logout-url="/logout.spy" logout-success-url="/login.spy" delete-cookies="JSESSIONID"/>
+		<security:remember-me data-source-ref="EURBDataSource"/>
 	</security:http>
 	
 	<bean id="authenticationProcessingFilter" class="com.sharifpro.filter.AuthenticationProcessingFilter">
