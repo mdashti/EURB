@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -82,10 +83,7 @@ public class UserController {
 			User theUser = userDao.findWhereUsernameEquals(username);
 			
 			if(theUser == null) {
-				theUser = new User();
-				theUser.setUsername(username);
-				theUser.setPassword(newpass);
-				theUser.setEnabled(true);
+				theUser = new User(null, username, newpass, AuthorityUtils.NO_AUTHORITIES);
 				userDao.insert(theUser);
 			} else {
 				theUser.setPassword(newpass);

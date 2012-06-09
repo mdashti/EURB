@@ -32,7 +32,7 @@ public class ObjectConfigDaoImpl extends AbstractDAO implements ParameterizedRow
 	{
 		try{
 			ObjectConfigPk pk = new ObjectConfigPk(dto.getObjectId(), dto.getKey()); 
-			jdbcTemplate.update("INSERT INTO " + getTableName() + " ( object_id, key, value) VALUES ( ?, ?, ?)",
+			getJdbcTemplate().update("INSERT INTO " + getTableName() + " ( object_id, key, value) VALUES ( ?, ?, ?)",
 					pk.getObjectId(),pk.getKey(),dto.getValue());
 			return pk;
 		}
@@ -48,7 +48,7 @@ public class ObjectConfigDaoImpl extends AbstractDAO implements ParameterizedRow
 	public void update(ObjectConfigPk pk, ObjectConfig dto) throws ObjectConfigDaoException
 	{
 		try{
-			jdbcTemplate.update("UPDATE " + getTableName() + " SET  value = ? WHERE object_id = ? AND key = ?",dto.getValue(), pk.getObjectId(), pk.getKey());
+			getJdbcTemplate().update("UPDATE " + getTableName() + " SET  value = ? WHERE object_id = ? AND key = ?",dto.getValue(), pk.getObjectId(), pk.getKey());
 		}
 		catch (Exception e) {
 			throw new ObjectConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -62,7 +62,7 @@ public class ObjectConfigDaoImpl extends AbstractDAO implements ParameterizedRow
 	public void delete(ObjectConfigPk pk) throws ObjectConfigDaoException
 	{
 		try{
-			jdbcTemplate.update("DELETE FROM " + getTableName() + " WHERE id = ? and key = ?",pk.getObjectId(), pk.getKey());
+			getJdbcTemplate().update("DELETE FROM " + getTableName() + " WHERE id = ? and key = ?",pk.getObjectId(), pk.getKey());
 		}
 		catch (Exception e) {
 			throw new ObjectConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -114,7 +114,7 @@ public class ObjectConfigDaoImpl extends AbstractDAO implements ParameterizedRow
 	public ObjectConfig findByPrimaryKey(Long objectId, String key) throws ObjectConfigDaoException
 	{
 		try {
-			List<ObjectConfig> list = jdbcTemplate.query(QUERY_SELECT_PART + " WHERE object_id = ? and key = ?", this, objectId, key);
+			List<ObjectConfig> list = getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE object_id = ? and key = ?", this, objectId, key);
 			return list.size() == 0 ? null : list.get(0);
 		}
 		catch (Exception e) {
@@ -130,7 +130,7 @@ public class ObjectConfigDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ObjectConfig> findAll() throws ObjectConfigDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " ORDER BY object_id, key", this);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " ORDER BY object_id, key", this);
 		}
 		catch (Exception e) {
 			throw new ObjectConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -155,7 +155,7 @@ public class ObjectConfigDaoImpl extends AbstractDAO implements ParameterizedRow
 	public int countAll() throws ObjectConfigDaoException
 	{
 		try{
-			return jdbcTemplate.queryForInt("SELECT COUNT(*) FROM " + getTableName());
+			return getJdbcTemplate().queryForInt("SELECT COUNT(*) FROM " + getTableName());
 		}
 		catch (Exception e) {
 			throw new ObjectConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -169,7 +169,7 @@ public class ObjectConfigDaoImpl extends AbstractDAO implements ParameterizedRow
 	public int countAll(PersistableObject object) throws ObjectConfigDaoException
 	{
 		try{
-			return jdbcTemplate.queryForInt("SELECT COUNT(distinct(key)) FROM" + getTableName() + " WHERE object_id = ?",object.getId());
+			return getJdbcTemplate().queryForInt("SELECT COUNT(distinct(key)) FROM" + getTableName() + " WHERE object_id = ?",object.getId());
 		}
 		catch (Exception e) {
 			throw new ObjectConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -184,7 +184,7 @@ public class ObjectConfigDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ObjectConfig> findByPersistableObject(Long id) throws ObjectConfigDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE object_id = ?", this, id);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE object_id = ?", this, id);
 		}
 		catch (Exception e) {
 			throw new ObjectConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);

@@ -6,6 +6,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.sharifpro.eurb.DaoFactory;
@@ -154,10 +155,7 @@ public class InsertInitialData {
 			if (user == null) {
 				System.out.println("\tUser not found! trying to make it...");
 	
-				user = new User();
-				user.setUsername(userName);
-				user.setPassword(password);
-				user.setEnabled(true);
+				user = new User(null, userName, password, AuthorityUtils.NO_AUTHORITIES);
 	
 				dao.insert(user);
 				System.out.println("\tUser added.");

@@ -26,10 +26,10 @@
 		<property name="maxActive" value="#{applicationProps['application.jdbc.maxActive']}" />
 	</bean>
 	
-	<bean id="userDetailsService" class="org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl">
+	<bean id="userDetailsService" class="com.sharifpro.eurb.management.security.dao.impl.UserDetailsServiceImpl">
 		<property name="dataSource" ref="EURBDataSource"/>
 		<property name="enableGroups" value="true"/>
-		<property name="enableAuthorities" value="false"/>
+		<property name="enableAuthorities" value="true"/>
 	</bean>
 	
 	<!--bean class="org.springframework.security.authentication.dao.ReflectionSaltSource" id="saltSource">
@@ -53,7 +53,10 @@
 		<security:intercept-url pattern="/login.spy*" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
 		<security:intercept-url pattern="/**" access="ROLE_MAPPING_MANAGEMENT" />
 		<security:custom-filter position="FORM_LOGIN_FILTER" ref="authenticationProcessingFilter"/>
-		<security:logout logout-url="/logout.spy" logout-success-url="/login.spy"/>
+		<!--security:session-management invalid-session-url="/login.spy" session-fixation-protection="migrateSession" >
+			<concurrency-control max-sessions="1" error-if-maximum-exceeded="true" session-authentication-error-url="/error.spy" />
+		</security:session-management-->
+		<security:logout logout-url="/logout.spy" logout-success-url="/login.spy" delete-cookies="JSESSIONID"/>
 	</security:http>
 	
 	<bean id="authenticationProcessingFilter" class="com.sharifpro.filter.AuthenticationProcessingFilter">
@@ -250,6 +253,7 @@
 	</bean>
 	<bean id="ReportScheduleDao" class="com.sharifpro.eurb.builder.dao.impl.ReportScheduleDaoImpl" scope="singleton" > 
 		<property name="scheduler" ref="scheduler" />
+		<property name="dataSource" ref="EURBDataSource" />
 	</bean>
 	<bean id="UserMessageDao" class="com.sharifpro.eurb.builder.dao.impl.UserMessageDaoImpl" scope="singleton">
 		<property name="dataSource" ref="EURBDataSource" />

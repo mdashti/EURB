@@ -37,7 +37,7 @@ public class UserMessageDaoImpl extends AbstractDAO implements ParameterizedRowM
 		try{
 			UserMessagePk pk = new UserMessagePk();
 			DaoFactory.createPersistableObjectDao().insert(dto, pk);
-			jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, username, message, type, `show`, available_from )" +
+			getJdbcTemplate().update("INSERT INTO " + getTableName() + " ( id, username, message, type, `show`, available_from )" +
 					" VALUES ( ?, ?, ?, ?, ?, ? )", new Object[] {pk.getId(),dto.getUsername(),dto.getMessage(),dto.getType(),
 					dto.isShow() ? 1 : 0,new Date(dto.getAvailableFrom().getTime())}, new int[] {Types.BIGINT, Types.VARCHAR, Types.CLOB, Types.INTEGER, Types.TINYINT, Types.TIMESTAMP});	
 			return pk;
@@ -55,7 +55,7 @@ public class UserMessageDaoImpl extends AbstractDAO implements ParameterizedRowM
 	{
 		try{
 			DaoFactory.createPersistableObjectDao().update(pk);
-			jdbcTemplate.update("UPDATE " + getTableName() + " SET username = ?, message = ?, type = ?, `show` = ?, " +
+			getJdbcTemplate().update("UPDATE " + getTableName() + " SET username = ?, message = ?, type = ?, `show` = ?, " +
 					"available_from = ? WHERE id = ?",new Object[] {dto.getUsername(),dto.getMessage(),dto.getType(),
 					dto.isShow() ? 1 : 0,new Date(dto.getAvailableFrom().getTime()),pk.getId()}, new int[] {Types.BIGINT, Types.VARCHAR, Types.CLOB, Types.INTEGER, Types.TINYINT, Types.TIMESTAMP});
 		} catch(Exception e){
@@ -70,7 +70,7 @@ public class UserMessageDaoImpl extends AbstractDAO implements ParameterizedRowM
 	public void delete(String username, UserMessagePk pk) throws UserMessageDaoException
 	{
 		try{
-			jdbcTemplate.update("DELETE FROM " + getTableName() + " WHERE id = ? and username = ?",pk.getId(), username);
+			getJdbcTemplate().update("DELETE FROM " + getTableName() + " WHERE id = ? and username = ?",pk.getId(), username);
 		} catch (Exception e) {
 			throw new UserMessageDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
@@ -127,7 +127,7 @@ public class UserMessageDaoImpl extends AbstractDAO implements ParameterizedRowM
 	public UserMessage findByPrimaryKey(Long id) throws UserMessageDaoException
 	{
 		try {
-			List<UserMessage> list = jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.id = ?", this,id);
+			List<UserMessage> list = getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.id = ?", this,id);
 			return list.size() == 0 ? null : list.get(0);
 		}
 		catch (Exception e) {
@@ -143,7 +143,7 @@ public class UserMessageDaoImpl extends AbstractDAO implements ParameterizedRowM
 	public List<UserMessage> findAllForUser(String username) throws UserMessageDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.username = ? ORDER BY o.id", this, username);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.username = ? ORDER BY o.id", this, username);
 		}
 		catch (Exception e) {
 			throw new UserMessageDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -158,7 +158,7 @@ public class UserMessageDaoImpl extends AbstractDAO implements ParameterizedRowM
 	public List<UserMessage> findByPersistableObject(Long id) throws UserMessageDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.id = ?", this,id);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.id = ?", this,id);
 		}
 		catch (Exception e) {
 			throw new UserMessageDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -173,7 +173,7 @@ public class UserMessageDaoImpl extends AbstractDAO implements ParameterizedRowM
 	public List<UserMessage> findWhereIdEquals(Long id) throws UserMessageDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.id = ? ORDER BY o.id", this, id);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.id = ? ORDER BY o.id", this, id);
 		}
 		catch (Exception e) {
 			throw new UserMessageDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);

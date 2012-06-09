@@ -40,7 +40,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 			ReportCategoryPk pk = new ReportCategoryPk();
 			DaoFactory.createPersistableObjectDao().insert(dto, pk);
 
-			jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, name, description ) VALUES ( ?, ?, ? )",pk.getId(),dto.getName(),dto.getDescription());
+			getJdbcTemplate().update("INSERT INTO " + getTableName() + " ( id, name, description ) VALUES ( ?, ?, ? )",pk.getId(),dto.getName(),dto.getDescription());
 			return pk;
 		}
 		catch (Exception e) {
@@ -56,7 +56,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	{
 		try{
 			DaoFactory.createPersistableObjectDao().update(pk);
-			jdbcTemplate.update("UPDATE " + getTableName() + " SET name = ?, description = ? WHERE id = ?",dto.getName(),dto.getDescription(),pk.getId());
+			getJdbcTemplate().update("UPDATE " + getTableName() + " SET name = ?, description = ? WHERE id = ?",dto.getName(),dto.getDescription(),pk.getId());
 		}
 		catch (Exception e) {
 			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -72,15 +72,15 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	{
 		try{
 			//first we have to check for any active report for this category
-			int countActive = jdbcTemplate.queryForInt("SELECT count(id) FROM " + ReportDesignDaoImpl.getTableName() + " WHERE category_id = ? AND record_status <> ? ",pk.getId(), RecordStatus.DELETED.getId());
+			int countActive = getJdbcTemplate().queryForInt("SELECT count(id) FROM " + ReportDesignDaoImpl.getTableName() + " WHERE category_id = ? AND record_status <> ? ",pk.getId(), RecordStatus.DELETED.getId());
 			//if there is any active report for the category, user cannot delete it
 			if(countActive > 0){
 				throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE);
 			}
 			//else we have to change category_id for not active reports of this category
-			jdbcTemplate.update("UPDATE " + ReportDesignDaoImpl.getTableName() + " SET category_id = NULL WHERE category_id = ?", pk.getId());
+			getJdbcTemplate().update("UPDATE " + ReportDesignDaoImpl.getTableName() + " SET category_id = NULL WHERE category_id = ?", pk.getId());
 			//and then delete the category
-			jdbcTemplate.update("DELETE FROM " + getTableName() + " WHERE id = ?",pk.getId());
+			getJdbcTemplate().update("DELETE FROM " + getTableName() + " WHERE id = ?",pk.getId());
 			DaoFactory.createPersistableObjectDao().delete(pk);
 		}
 		catch (Exception e) {
@@ -135,7 +135,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	public ReportCategory findByPrimaryKey(Long id) throws ReportCategoryDaoException
 	{
 		try {
-			List<ReportCategory> list = jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.id = ?", this,id);
+			List<ReportCategory> list = getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.id = ?", this,id);
 			return list.size() == 0 ? null : list.get(0);
 		}
 		catch (Exception e) {
@@ -151,7 +151,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	public List<ReportCategory> findAll() throws ReportCategoryDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " ORDER BY o.id", this);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " ORDER BY o.id", this);
 		}
 		catch (Exception e) {
 			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -163,7 +163,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	public int countAll() throws ReportCategoryDaoException
 	{
 		try {
-			return jdbcTemplate.queryForInt(COUNT_QUERY);
+			return getJdbcTemplate().queryForInt(COUNT_QUERY);
 		}
 		catch (Exception e) {
 			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -178,7 +178,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	@Transactional
 	public List<ReportCategory> findAll(Integer start, Integer limit) throws ReportCategoryDaoException{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " ORDER BY o.id limit ?, ?", this, start, limit);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " ORDER BY o.id limit ?, ?", this, start, limit);
 		}
 		catch (Exception e) {
 			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -192,7 +192,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	public List<ReportCategory> findAll(String query, List<String> onFields, Integer start, Integer limit) throws ReportCategoryDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE (" + getMultipleFieldWhereClause(query, onFields) + ") ORDER BY o.id limit ?, ?", this, start, limit);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE (" + getMultipleFieldWhereClause(query, onFields) + ") ORDER BY o.id limit ?, ?", this, start, limit);
 		}
 		catch (Exception e) {
 			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -204,7 +204,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	public int countAll(String query, List<String> onFields) throws ReportCategoryDaoException
 	{
 		try {
-			return jdbcTemplate.queryForInt(COUNT_QUERY + " WHERE (" + getMultipleFieldWhereClause(query, onFields) + ")");
+			return getJdbcTemplate().queryForInt(COUNT_QUERY + " WHERE (" + getMultipleFieldWhereClause(query, onFields) + ")");
 		}
 		catch (Exception e) {
 			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -221,7 +221,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	public List<ReportCategory> findByPersistableObject(Long id) throws ReportCategoryDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.id = ?", this,id);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.id = ?", this,id);
 		}
 		catch (Exception e) {
 			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -236,7 +236,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	public List<ReportCategory> findWhereIdEquals(Long id) throws ReportCategoryDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.id = ? ORDER BY id", this,id);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.id = ? ORDER BY id", this,id);
 		}
 		catch (Exception e) {
 			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -251,7 +251,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	public List<ReportCategory> findWhereNameEquals(String name) throws ReportCategoryDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.name = ? ORDER BY name", this,name);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.name = ? ORDER BY name", this,name);
 		}
 		catch (Exception e) {
 			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);

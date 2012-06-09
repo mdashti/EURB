@@ -2,6 +2,8 @@ package com.sharifpro.eurb.management.security.example;
 
 import java.util.List;
 
+import org.springframework.security.core.authority.AuthorityUtils;
+
 import com.sharifpro.eurb.DaoFactory;
 import com.sharifpro.eurb.InsertInitialData;
 import com.sharifpro.eurb.management.security.dao.UserDao;
@@ -27,10 +29,7 @@ public class UserOperationsTest extends InsertInitialData{
 		if (adminUser == null) {
 			System.out.println("Admin user not found! trying to make it...");
 
-			adminUser = new User();
-			adminUser.setUsername("dashti");
-			adminUser.setPassword("mohamad");
-			adminUser.setEnabled(true);
+			adminUser = new User(null, "dashti", "mohamad", AuthorityUtils.NO_AUTHORITIES);
 
 			dao.insert(adminUser);
 

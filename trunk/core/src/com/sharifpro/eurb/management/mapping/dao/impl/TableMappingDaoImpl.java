@@ -37,7 +37,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	{
 		TableMappingPk pk = new TableMappingPk();
 		DaoFactory.createPersistableObjectDao().insert(dto, pk);
-		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, db_config_id, `catalog`, `schema`, table_name, mapped_name, mapped_type, active_for_manager, active_for_user ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )",dto.getId(),dto.getDbConfigId(),dto.getCatalog(),dto.getSchema(),dto.getTableName(),dto.getMappedName(),dto.getMappedType(),dto.isActiveForManager(),dto.isActiveForUser());
+		getJdbcTemplate().update("INSERT INTO " + getTableName() + " ( id, db_config_id, `catalog`, `schema`, table_name, mapped_name, mapped_type, active_for_manager, active_for_user ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )",dto.getId(),dto.getDbConfigId(),dto.getCatalog(),dto.getSchema(),dto.getTableName(),dto.getMappedName(),dto.getMappedType(),dto.isActiveForManager(),dto.isActiveForUser());
 		return pk;
 	}
 
@@ -48,7 +48,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	public void update(TableMappingPk pk, TableMapping dto) throws TableMappingDaoException
 	{
 		DaoFactory.createPersistableObjectDao().update(pk);
-		jdbcTemplate.update("UPDATE " + getTableName() + " SET db_config_id = ?, `catalog` = ?, `schema` = ?, table_name = ?, mapped_name = ?, mapped_type = ?, active_for_manager = ?, active_for_user = ? WHERE id = ?",dto.getDbConfigId(),dto.getCatalog(),dto.getSchema(),dto.getTableName(),dto.getMappedName(),dto.getMappedType(),dto.isActiveForManager(),dto.isActiveForUser(),pk.getId());
+		getJdbcTemplate().update("UPDATE " + getTableName() + " SET db_config_id = ?, `catalog` = ?, `schema` = ?, table_name = ?, mapped_name = ?, mapped_type = ?, active_for_manager = ?, active_for_user = ? WHERE id = ?",dto.getDbConfigId(),dto.getCatalog(),dto.getSchema(),dto.getTableName(),dto.getMappedName(),dto.getMappedType(),dto.isActiveForManager(),dto.isActiveForUser(),pk.getId());
 	}
 
 	/** 
@@ -57,7 +57,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	@Transactional
 	public void delete(TableMappingPk pk) throws TableMappingDaoException
 	{
-		jdbcTemplate.update("DELETE FROM " + getTableName() + " WHERE id = ?",pk.getId());
+		getJdbcTemplate().update("DELETE FROM " + getTableName() + " WHERE id = ?",pk.getId());
 		DaoFactory.createPersistableObjectDao().delete(pk);
 	}
 
@@ -102,7 +102,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	public TableMapping findByPrimaryKey(Long id) throws TableMappingDaoException
 	{
 		try {
-			List<TableMapping> list = jdbcTemplate.query(QUERY_SELECT_PART + " WHERE id = ?", this,id);
+			List<TableMapping> list = getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE id = ?", this,id);
 			return list.size() == 0 ? null : list.get(0);
 		}
 		catch (Exception e) {
@@ -118,7 +118,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<TableMapping> findAll() throws TableMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " ORDER BY id", this);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " ORDER BY id", this);
 		}
 		catch (Exception e) {
 			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -138,7 +138,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 				return findAllMapped(reportDesign.getDbConfigId());
 			}
 			else{
-				return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.mapped_name IS NOT NULL ORDER BY id", this);
+				return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.mapped_name IS NOT NULL ORDER BY id", this);
 			}
 		}
 		catch (Exception e) {
@@ -151,7 +151,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	public int countAll() throws TableMappingDaoException
 	{
 		try {
-			return jdbcTemplate.queryForInt(COUNT_QUERY);
+			return getJdbcTemplate().queryForInt(COUNT_QUERY);
 		}
 		catch (Exception e) {
 			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -166,7 +166,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<TableMapping> findAll(String query, List<String> onFields) throws TableMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE (" + getMultipleFieldWhereClause(query, onFields) + ") ", this);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE (" + getMultipleFieldWhereClause(query, onFields) + ") ", this);
 		}
 		catch (Exception e) {
 			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -178,7 +178,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<TableMapping> findAllMapped(String query, List<String> onFields) throws TableMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE (" + getMultipleFieldWhereClause(query, onFields) + ") AND o.mapped_name IS NOT NULL ", this);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE (" + getMultipleFieldWhereClause(query, onFields) + ") AND o.mapped_name IS NOT NULL ", this);
 		}
 		catch (Exception e) {
 			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -190,7 +190,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	public int countAll(String query, List<String> onFields) throws TableMappingDaoException
 	{
 		try {
-			return jdbcTemplate.queryForInt(COUNT_QUERY + " WHERE (" + getMultipleFieldWhereClause(query, onFields) + ")");
+			return getJdbcTemplate().queryForInt(COUNT_QUERY + " WHERE (" + getMultipleFieldWhereClause(query, onFields) + ")");
 		}
 		catch (Exception e) {
 			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -205,7 +205,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<TableMapping> findByPersistableObject(Long id) throws TableMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE id = ?", this,id);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE id = ?", this,id);
 		}
 		catch (Exception e) {
 			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -220,7 +220,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<TableMapping> findByDbConfig(Long dbConfigId) throws TableMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE db_config_id = ?", this,dbConfigId);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE db_config_id = ?", this,dbConfigId);
 		}
 		catch (Exception e) {
 			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -235,7 +235,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<TableMapping> findWhereIdEquals(Long id) throws TableMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE id = ? ORDER BY id", this,id);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE id = ? ORDER BY id", this,id);
 		}
 		catch (Exception e) {
 			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -250,7 +250,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<TableMapping> findWhereDbConfigIdEquals(Long dbConfigId) throws TableMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE db_config_id = ? ORDER BY db_config_id", this,dbConfigId);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE db_config_id = ? ORDER BY db_config_id", this,dbConfigId);
 		}
 		catch (Exception e) {
 			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -265,7 +265,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<TableMapping> findWhereTableNameEquals(String tableName) throws TableMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE table_name = ? ORDER BY table_name", this,tableName);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE table_name = ? ORDER BY table_name", this,tableName);
 		}
 		catch (Exception e) {
 			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -280,7 +280,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<TableMapping> findWhereMappedNameEquals(String mappedName) throws TableMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE mapped_name = ? ORDER BY mapped_name", this,mappedName);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE mapped_name = ? ORDER BY mapped_name", this,mappedName);
 		}
 		catch (Exception e) {
 			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -295,7 +295,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<TableMapping> findWhereMappedTypeEquals(Integer mappedType) throws TableMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE mapped_type = ? ORDER BY mapped_type", this,mappedType);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE mapped_type = ? ORDER BY mapped_type", this,mappedType);
 		}
 		catch (Exception e) {
 			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -310,7 +310,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<TableMapping> findWhereActiveForManagerEquals(Short activeForManager) throws TableMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE active_for_manager = ? ORDER BY active_for_manager", this,activeForManager);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE active_for_manager = ? ORDER BY active_for_manager", this,activeForManager);
 		}
 		catch (Exception e) {
 			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -325,7 +325,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<TableMapping> findWhereActiveForUserEquals(Short activeForUser) throws TableMappingDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE active_for_user = ? ORDER BY active_for_user", this,activeForUser);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE active_for_user = ? ORDER BY active_for_user", this,activeForUser);
 		}
 		catch (Exception e) {
 			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -352,7 +352,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	public void activateAll(final List<TableMappingPk> pkList, String target)
 			throws TableMappingDaoException {
 		final String field = "user".equals(target) ? "active_for_user" : "active_for_manager";
-		jdbcTemplate
+		getJdbcTemplate()
 				.batchUpdate(
 						"UPDATE " + getTableName() + " SET "+field+" = 1 WHERE id = ?",
 						new BatchPreparedStatementSetter() {
@@ -371,7 +371,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	public void deactivateAll(final List<TableMappingPk> pkList, String target)
 			throws TableMappingDaoException {
 		final String field = "user".equals(target) ? "active_for_user" : "active_for_manager";
-		jdbcTemplate
+		getJdbcTemplate()
 				.batchUpdate(
 						"UPDATE " + getTableName() + " SET "+field+" = 0 WHERE id = ?",
 						new BatchPreparedStatementSetter() {
@@ -389,7 +389,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	@Transactional
 	public List<TableMapping> findAll(DbConfig dbConf, String query, List<String> onFields) throws TableMappingDaoException {
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.db_config_id=? AND (" + getMultipleFieldWhereClause(query, onFields) + ") ORDER BY o.id", this, dbConf.getId());
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.db_config_id=? AND (" + getMultipleFieldWhereClause(query, onFields) + ") ORDER BY o.id", this, dbConf.getId());
 		}
 		catch (Exception e) {
 			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -399,7 +399,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	@Transactional
 	public List<TableMapping> findAllMapped(Long dbConf, String query, List<String> onFields) throws TableMappingDaoException {
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.db_config_id=? AND (" + getMultipleFieldWhereClause(query, onFields) + ") AND o.mapped_name IS NOT NULL ORDER BY o.id", this, dbConf);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.db_config_id=? AND (" + getMultipleFieldWhereClause(query, onFields) + ") AND o.mapped_name IS NOT NULL ORDER BY o.id", this, dbConf);
 		}
 		catch (Exception e) {
 			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -410,7 +410,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<TableMapping> findAllMapped(Long dbConf)
 			throws TableMappingDaoException {
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.db_config_id=? AND o.mapped_name IS NOT NULL ORDER BY o.id", this, dbConf);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.db_config_id=? AND o.mapped_name IS NOT NULL ORDER BY o.id", this, dbConf);
 		}
 		catch (Exception e) {
 			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);

@@ -47,7 +47,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 	{
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		final String INSERT_SQL = "INSERT INTO persistable_object ( obj_type, creator" + /*", create_date, modifier, modify_date" +*/ " ) VALUES ( ?, ?"+/*", ?, ?, ?"+*/" )";
-		jdbcTemplate.update(
+		getJdbcTemplate().update(
 			new PreparedStatementCreator() {
 				public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 					PreparedStatement ps = connection.prepareStatement(INSERT_SQL, new String[] {"id"});
@@ -76,7 +76,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 	{
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		final String INSERT_SQL = "INSERT INTO persistable_object ( obj_type, creator" + /*", create_date, modifier, modify_date" +*/ " ) VALUES ( ?, ?"+/*", ?, ?, ?"+*/" )";
-		jdbcTemplate.update(
+		getJdbcTemplate().update(
 			new PreparedStatementCreator() {
 				public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 					PreparedStatement ps = connection.prepareStatement(INSERT_SQL, new String[] {"id"});
@@ -101,7 +101,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 	@Transactional
 	public void update(PersistableObjectPk pk)
 	{
-		jdbcTemplate.update("UPDATE persistable_object SET modifier = ?, modify_date = ? WHERE id = ?", SessionManager.getCurrentUserNameNotNull(),new Timestamp(new Date().getTime()),pk.getId());
+		getJdbcTemplate().update("UPDATE persistable_object SET modifier = ?, modify_date = ? WHERE id = ?", SessionManager.getCurrentUserNameNotNull(),new Timestamp(new Date().getTime()),pk.getId());
 	}
 
 	/** 
@@ -110,7 +110,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 	@Transactional
 	public void delete(PersistableObjectPk pk)
 	{
-		jdbcTemplate.update("DELETE FROM persistable_object WHERE id = ?",pk.getId());
+		getJdbcTemplate().update("DELETE FROM persistable_object WHERE id = ?",pk.getId());
 	}
 
 	/**
@@ -130,7 +130,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 	public PersistableObject findByPrimaryKey(Long id) throws PersistableObjectDaoException
 	{
 		try {
-			List<PersistableObject> list = jdbcTemplate.query("SELECT "
+			List<PersistableObject> list = getJdbcTemplate().query("SELECT "
 					+ PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS
 					+ " FROM persistable_object WHERE id = ?", new PersistableObjectRowMapper(),id);
 			return list.size() == 0 ? null : list.get(0);
@@ -148,7 +148,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 	public List<PersistableObject> findAllObjects() throws PersistableObjectDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT " + PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + " FROM persistable_object ORDER BY id", new PersistableObjectRowMapper());
+			return getJdbcTemplate().query("SELECT " + PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + " FROM persistable_object ORDER BY id", new PersistableObjectRowMapper());
 		}
 		catch (Exception e) {
 			throw new PersistableObjectDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -163,7 +163,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 	public List<PersistableObject> findByCreator(String creator) throws PersistableObjectDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT " + PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + " FROM persistable_object WHERE creator = ?", new PersistableObjectRowMapper(),creator);
+			return getJdbcTemplate().query("SELECT " + PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + " FROM persistable_object WHERE creator = ?", new PersistableObjectRowMapper(),creator);
 		}
 		catch (Exception e) {
 			throw new PersistableObjectDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -178,7 +178,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 	public List<PersistableObject> findByModifier(String modifier) throws PersistableObjectDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT " + PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + " FROM persistable_object WHERE modifier = ?", new PersistableObjectRowMapper(),modifier);
+			return getJdbcTemplate().query("SELECT " + PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + " FROM persistable_object WHERE modifier = ?", new PersistableObjectRowMapper(),modifier);
 		}
 		catch (Exception e) {
 			throw new PersistableObjectDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -193,7 +193,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 	public List<PersistableObject> findWhereObjectIdEquals(Long id) throws PersistableObjectDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT " + PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + " FROM persistable_object WHERE id = ? ORDER BY id", new PersistableObjectRowMapper(),id);
+			return getJdbcTemplate().query("SELECT " + PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + " FROM persistable_object WHERE id = ? ORDER BY id", new PersistableObjectRowMapper(),id);
 		}
 		catch (Exception e) {
 			throw new PersistableObjectDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -208,7 +208,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 	public List<PersistableObject> findWhereObjectTypeEquals(Integer objectType) throws PersistableObjectDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT " + PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + " FROM persistable_object WHERE obj_type = ? ORDER BY obj_type", new PersistableObjectRowMapper(),objectType);
+			return getJdbcTemplate().query("SELECT " + PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + " FROM persistable_object WHERE obj_type = ? ORDER BY obj_type", new PersistableObjectRowMapper(),objectType);
 		}
 		catch (Exception e) {
 			throw new PersistableObjectDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -223,7 +223,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 	public List<PersistableObject> findWhereCreatorEquals(String creator) throws PersistableObjectDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT " + PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + " FROM persistable_object WHERE creator = ? ORDER BY creator", new PersistableObjectRowMapper(),creator);
+			return getJdbcTemplate().query("SELECT " + PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + " FROM persistable_object WHERE creator = ? ORDER BY creator", new PersistableObjectRowMapper(),creator);
 		}
 		catch (Exception e) {
 			throw new PersistableObjectDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -238,7 +238,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 	public List<PersistableObject> findWhereCreateDateEquals(Date createDate) throws PersistableObjectDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT " + PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + " FROM persistable_object WHERE create_date = ? ORDER BY create_date", new PersistableObjectRowMapper(),createDate);
+			return getJdbcTemplate().query("SELECT " + PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + " FROM persistable_object WHERE create_date = ? ORDER BY create_date", new PersistableObjectRowMapper(),createDate);
 		}
 		catch (Exception e) {
 			throw new PersistableObjectDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -253,7 +253,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 	public List<PersistableObject> findWhereModifierEquals(String modifier) throws PersistableObjectDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT " + PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + " FROM persistable_object WHERE modifier = ? ORDER BY modifier", new PersistableObjectRowMapper(),modifier);
+			return getJdbcTemplate().query("SELECT " + PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + " FROM persistable_object WHERE modifier = ? ORDER BY modifier", new PersistableObjectRowMapper(),modifier);
 		}
 		catch (Exception e) {
 			throw new PersistableObjectDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -268,7 +268,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 	public List<PersistableObject> findWhereModifyDateEquals(Date modifyDate) throws PersistableObjectDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT " + PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + " FROM persistable_object WHERE modify_date = ? ORDER BY modify_date", new PersistableObjectRowMapper(),modifyDate);
+			return getJdbcTemplate().query("SELECT " + PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + " FROM persistable_object WHERE modify_date = ? ORDER BY modify_date", new PersistableObjectRowMapper(),modifyDate);
 		}
 		catch (Exception e) {
 			throw new PersistableObjectDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);

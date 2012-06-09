@@ -22,7 +22,7 @@ public class GroupAuthoritiesDaoImpl extends AbstractDAO implements Parameterize
 	@Transactional
 	public void insert(GroupAuthorities dto)
 	{
-		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( group_id, authority ) VALUES ( ?, ? )",dto.getGroupId(),dto.getAuthority());
+		getJdbcTemplate().update("INSERT INTO " + getTableName() + " ( group_id, authority ) VALUES ( ?, ? )",dto.getGroupId(),dto.getAuthority());
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class GroupAuthoritiesDaoImpl extends AbstractDAO implements Parameterize
 	public List<GroupAuthorities> findAll() throws GroupAuthoritiesDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT group_id, authority FROM " + getTableName() + "", this);
+			return getJdbcTemplate().query("SELECT group_id, authority FROM " + getTableName() + "", this);
 		}
 		catch (Exception e) {
 			throw new GroupAuthoritiesDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -73,7 +73,7 @@ public class GroupAuthoritiesDaoImpl extends AbstractDAO implements Parameterize
 	public List<GroupAuthorities> findByGroups(Long groupId) throws GroupAuthoritiesDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT group_id, authority FROM " + getTableName() + " WHERE group_id = ?", this,groupId);
+			return getJdbcTemplate().query("SELECT group_id, authority FROM " + getTableName() + " WHERE group_id = ?", this,groupId);
 		}
 		catch (Exception e) {
 			throw new GroupAuthoritiesDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -88,7 +88,7 @@ public class GroupAuthoritiesDaoImpl extends AbstractDAO implements Parameterize
 	public List<GroupAuthorities> findWhereGroupIdEquals(Long groupId) throws GroupAuthoritiesDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT group_id, authority FROM " + getTableName() + " WHERE group_id = ? ORDER BY group_id", this,groupId);
+			return getJdbcTemplate().query("SELECT group_id, authority FROM " + getTableName() + " WHERE group_id = ? ORDER BY group_id", this,groupId);
 		}
 		catch (Exception e) {
 			throw new GroupAuthoritiesDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -103,7 +103,7 @@ public class GroupAuthoritiesDaoImpl extends AbstractDAO implements Parameterize
 	public List<GroupAuthorities> findWhereAuthorityEquals(String authority) throws GroupAuthoritiesDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT group_id, authority FROM " + getTableName() + " WHERE authority = ? ORDER BY authority", this,authority);
+			return getJdbcTemplate().query("SELECT group_id, authority FROM " + getTableName() + " WHERE authority = ? ORDER BY authority", this,authority);
 		}
 		catch (Exception e) {
 			throw new GroupAuthoritiesDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);

@@ -23,7 +23,7 @@ public class ReportExecutionHistoryDaoImpl extends AbstractDAO implements Parame
 	@Transactional
 	public ReportExecutionHistoryPk insert(ReportExecutionHistory dto)
 	{
-		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, version_id, execution_result, is_current, record_status, report_design_id, report_design_version_id ) VALUES ( ?, ?, ?, ?, ?, ?, ? )",dto.getId(),dto.getVersionId(),dto.getExecutionResult(),dto.isCurrent(),dto.getRecordStatus(),dto.getReportDesignId(),dto.getReportDesignVersionId());
+		getJdbcTemplate().update("INSERT INTO " + getTableName() + " ( id, version_id, execution_result, is_current, record_status, report_design_id, report_design_version_id ) VALUES ( ?, ?, ?, ?, ?, ?, ? )",dto.getId(),dto.getVersionId(),dto.getExecutionResult(),dto.isCurrent(),dto.getRecordStatus(),dto.getReportDesignId(),dto.getReportDesignVersionId());
 		return dto.createPk();
 	}
 
@@ -33,7 +33,7 @@ public class ReportExecutionHistoryDaoImpl extends AbstractDAO implements Parame
 	@Transactional
 	public void update(ReportExecutionHistoryPk pk, ReportExecutionHistory dto) throws ReportExecutionHistoryDaoException
 	{
-		jdbcTemplate.update("UPDATE " + getTableName() + " SET id = ?, version_id = ?, execution_result = ?, is_current = ?, record_status = ?, report_design_id = ?, report_design_version_id = ? WHERE id = ? AND version_id = ?",dto.getId(),dto.getVersionId(),dto.getExecutionResult(),dto.isCurrent(),dto.getRecordStatus(),dto.getReportDesignId(),dto.getReportDesignVersionId(),pk.getId(),pk.getVersionId());
+		getJdbcTemplate().update("UPDATE " + getTableName() + " SET id = ?, version_id = ?, execution_result = ?, is_current = ?, record_status = ?, report_design_id = ?, report_design_version_id = ? WHERE id = ? AND version_id = ?",dto.getId(),dto.getVersionId(),dto.getExecutionResult(),dto.isCurrent(),dto.getRecordStatus(),dto.getReportDesignId(),dto.getReportDesignVersionId(),pk.getId(),pk.getVersionId());
 	}
 
 	/** 
@@ -42,7 +42,7 @@ public class ReportExecutionHistoryDaoImpl extends AbstractDAO implements Parame
 	@Transactional
 	public void delete(ReportExecutionHistoryPk pk) throws ReportExecutionHistoryDaoException
 	{
-		jdbcTemplate.update("DELETE FROM " + getTableName() + " WHERE id = ? AND version_id = ?",pk.getId(),pk.getVersionId());
+		getJdbcTemplate().update("DELETE FROM " + getTableName() + " WHERE id = ? AND version_id = ?",pk.getId(),pk.getVersionId());
 	}
 
 	/**
@@ -83,7 +83,7 @@ public class ReportExecutionHistoryDaoImpl extends AbstractDAO implements Parame
 	public ReportExecutionHistory findByPrimaryKey(Long id, Long versionId) throws ReportExecutionHistoryDaoException
 	{
 		try {
-			List<ReportExecutionHistory> list = jdbcTemplate.query("SELECT id, version_id, execution_result, is_current, record_status, report_design_id, report_design_version_id FROM " + getTableName() + " WHERE id = ? AND version_id = ?", this,id,versionId);
+			List<ReportExecutionHistory> list = getJdbcTemplate().query("SELECT id, version_id, execution_result, is_current, record_status, report_design_id, report_design_version_id FROM " + getTableName() + " WHERE id = ? AND version_id = ?", this,id,versionId);
 			return list.size() == 0 ? null : list.get(0);
 		}
 		catch (Exception e) {
@@ -99,7 +99,7 @@ public class ReportExecutionHistoryDaoImpl extends AbstractDAO implements Parame
 	public List<ReportExecutionHistory> findAll() throws ReportExecutionHistoryDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, version_id, execution_result, is_current, record_status, report_design_id, report_design_version_id FROM " + getTableName() + " ORDER BY id, version_id", this);
+			return getJdbcTemplate().query("SELECT id, version_id, execution_result, is_current, record_status, report_design_id, report_design_version_id FROM " + getTableName() + " ORDER BY id, version_id", this);
 		}
 		catch (Exception e) {
 			throw new ReportExecutionHistoryDaoException("Query failed", e);
@@ -114,7 +114,7 @@ public class ReportExecutionHistoryDaoImpl extends AbstractDAO implements Parame
 	public List<ReportExecutionHistory> findByReportDesign(Long reportDesignId, Long reportDesignVersionId) throws ReportExecutionHistoryDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, version_id, execution_result, is_current, record_status, report_design_id, report_design_version_id FROM " + getTableName() + " WHERE report_design_id = ? AND report_design_version_id = ?", this,reportDesignId,reportDesignVersionId);
+			return getJdbcTemplate().query("SELECT id, version_id, execution_result, is_current, record_status, report_design_id, report_design_version_id FROM " + getTableName() + " WHERE report_design_id = ? AND report_design_version_id = ?", this,reportDesignId,reportDesignVersionId);
 		}
 		catch (Exception e) {
 			throw new ReportExecutionHistoryDaoException("Query failed", e);
@@ -129,7 +129,7 @@ public class ReportExecutionHistoryDaoImpl extends AbstractDAO implements Parame
 	public List<ReportExecutionHistory> findByPersistableObject(Long id) throws ReportExecutionHistoryDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, version_id, execution_result, is_current, record_status, report_design_id, report_design_version_id FROM " + getTableName() + " WHERE id = ?", this,id);
+			return getJdbcTemplate().query("SELECT id, version_id, execution_result, is_current, record_status, report_design_id, report_design_version_id FROM " + getTableName() + " WHERE id = ?", this,id);
 		}
 		catch (Exception e) {
 			throw new ReportExecutionHistoryDaoException("Query failed", e);
@@ -144,7 +144,7 @@ public class ReportExecutionHistoryDaoImpl extends AbstractDAO implements Parame
 	public List<ReportExecutionHistory> findWhereIdEquals(Long id) throws ReportExecutionHistoryDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, version_id, execution_result, is_current, record_status, report_design_id, report_design_version_id FROM " + getTableName() + " WHERE id = ? ORDER BY id", this,id);
+			return getJdbcTemplate().query("SELECT id, version_id, execution_result, is_current, record_status, report_design_id, report_design_version_id FROM " + getTableName() + " WHERE id = ? ORDER BY id", this,id);
 		}
 		catch (Exception e) {
 			throw new ReportExecutionHistoryDaoException("Query failed", e);
@@ -159,7 +159,7 @@ public class ReportExecutionHistoryDaoImpl extends AbstractDAO implements Parame
 	public List<ReportExecutionHistory> findWhereVersionIdEquals(Long versionId) throws ReportExecutionHistoryDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, version_id, execution_result, is_current, record_status, report_design_id, report_design_version_id FROM " + getTableName() + " WHERE version_id = ? ORDER BY version_id", this,versionId);
+			return getJdbcTemplate().query("SELECT id, version_id, execution_result, is_current, record_status, report_design_id, report_design_version_id FROM " + getTableName() + " WHERE version_id = ? ORDER BY version_id", this,versionId);
 		}
 		catch (Exception e) {
 			throw new ReportExecutionHistoryDaoException("Query failed", e);
@@ -174,7 +174,7 @@ public class ReportExecutionHistoryDaoImpl extends AbstractDAO implements Parame
 	public List<ReportExecutionHistory> findWhereExecutionResultEquals(String executionResult) throws ReportExecutionHistoryDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, version_id, execution_result, is_current, record_status, report_design_id, report_design_version_id FROM " + getTableName() + " WHERE execution_result = ? ORDER BY execution_result", this,executionResult);
+			return getJdbcTemplate().query("SELECT id, version_id, execution_result, is_current, record_status, report_design_id, report_design_version_id FROM " + getTableName() + " WHERE execution_result = ? ORDER BY execution_result", this,executionResult);
 		}
 		catch (Exception e) {
 			throw new ReportExecutionHistoryDaoException("Query failed", e);
@@ -189,7 +189,7 @@ public class ReportExecutionHistoryDaoImpl extends AbstractDAO implements Parame
 	public List<ReportExecutionHistory> findWhereIsCurrentEquals(Short isCurrent) throws ReportExecutionHistoryDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, version_id, execution_result, is_current, record_status, report_design_id, report_design_version_id FROM " + getTableName() + " WHERE is_current = ? ORDER BY is_current", this,isCurrent);
+			return getJdbcTemplate().query("SELECT id, version_id, execution_result, is_current, record_status, report_design_id, report_design_version_id FROM " + getTableName() + " WHERE is_current = ? ORDER BY is_current", this,isCurrent);
 		}
 		catch (Exception e) {
 			throw new ReportExecutionHistoryDaoException("Query failed", e);
@@ -204,7 +204,7 @@ public class ReportExecutionHistoryDaoImpl extends AbstractDAO implements Parame
 	public List<ReportExecutionHistory> findWhereRecordStatusEquals(String recordStatus) throws ReportExecutionHistoryDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, version_id, execution_result, is_current, record_status, report_design_id, report_design_version_id FROM " + getTableName() + " WHERE record_status = ? ORDER BY record_status", this,recordStatus);
+			return getJdbcTemplate().query("SELECT id, version_id, execution_result, is_current, record_status, report_design_id, report_design_version_id FROM " + getTableName() + " WHERE record_status = ? ORDER BY record_status", this,recordStatus);
 		}
 		catch (Exception e) {
 			throw new ReportExecutionHistoryDaoException("Query failed", e);
@@ -219,7 +219,7 @@ public class ReportExecutionHistoryDaoImpl extends AbstractDAO implements Parame
 	public List<ReportExecutionHistory> findWhereReportDesignIdEquals(Long reportDesignId) throws ReportExecutionHistoryDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, version_id, execution_result, is_current, record_status, report_design_id, report_design_version_id FROM " + getTableName() + " WHERE report_design_id = ? ORDER BY report_design_id", this,reportDesignId);
+			return getJdbcTemplate().query("SELECT id, version_id, execution_result, is_current, record_status, report_design_id, report_design_version_id FROM " + getTableName() + " WHERE report_design_id = ? ORDER BY report_design_id", this,reportDesignId);
 		}
 		catch (Exception e) {
 			throw new ReportExecutionHistoryDaoException("Query failed", e);
@@ -234,7 +234,7 @@ public class ReportExecutionHistoryDaoImpl extends AbstractDAO implements Parame
 	public List<ReportExecutionHistory> findWhereReportDesignVersionIdEquals(Long reportDesignVersionId) throws ReportExecutionHistoryDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT id, version_id, execution_result, is_current, record_status, report_design_id, report_design_version_id FROM " + getTableName() + " WHERE report_design_version_id = ? ORDER BY report_design_version_id", this,reportDesignVersionId);
+			return getJdbcTemplate().query("SELECT id, version_id, execution_result, is_current, record_status, report_design_id, report_design_version_id FROM " + getTableName() + " WHERE report_design_version_id = ? ORDER BY report_design_version_id", this,reportDesignVersionId);
 		}
 		catch (Exception e) {
 			throw new ReportExecutionHistoryDaoException("Query failed", e);

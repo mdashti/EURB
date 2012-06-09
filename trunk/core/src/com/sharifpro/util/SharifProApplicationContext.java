@@ -7,7 +7,8 @@ import org.springframework.context.support.AbstractMessageSource;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class SharifProApplicationContext implements ApplicationContextAware {
-
+	public final static long SERIAL_VERSION_UID = 100L;
+	
     private static ApplicationContext appContext;
 
     @Override

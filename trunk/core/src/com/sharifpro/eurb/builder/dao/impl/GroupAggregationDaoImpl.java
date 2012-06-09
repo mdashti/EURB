@@ -35,7 +35,7 @@ public class GroupAggregationDaoImpl extends AbstractDAO implements Parameterize
 		try{
 			GroupAggregationPk pk = new GroupAggregationPk();
 			DaoFactory.createPersistableObjectDao().insert(dto, pk);
-			jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, parent_column_id, aggregated_column_mapping_id, aggregated_column_dataset_id, aggregated_report_column_id," +
+			getJdbcTemplate().update("INSERT INTO " + getTableName() + " ( id, parent_column_id, aggregated_column_mapping_id, aggregated_column_dataset_id, aggregated_report_column_id," +
 					" aggregation_function, place) VALUES ( ?, ?, ?, ?, ?, ?, ? )",pk.getId(),dto.getParentColumnId(),dto.getAggregatedColumnMappingId(),dto.getAggregatedColumnDatasetId(),
 					dto.getAggregatedReportColumnId(),dto.getAggregationFunction(),dto.getPlace());	
 			return pk;
@@ -54,7 +54,7 @@ public class GroupAggregationDaoImpl extends AbstractDAO implements Parameterize
 	{
 		try{
 			DaoFactory.createPersistableObjectDao().update(pk);
-			jdbcTemplate.update("UPDATE " + getTableName() + " SET parent_column_id = ?, aggregated_column_mapping_id = ?, aggregated_column_dataset_id = ?, aggregated_report_column_id = ?, " +
+			getJdbcTemplate().update("UPDATE " + getTableName() + " SET parent_column_id = ?, aggregated_column_mapping_id = ?, aggregated_column_dataset_id = ?, aggregated_report_column_id = ?, " +
 					"aggregation_function = ?, place = ? WHERE id = ?",dto.getParentColumnId(),dto.getAggregatedColumnMappingId(),dto.getAggregatedColumnDatasetId(),dto.getAggregatedReportColumnId(),
 					dto.getAggregationFunction(),dto.getPlace(),pk.getId());
 		}
@@ -70,7 +70,7 @@ public class GroupAggregationDaoImpl extends AbstractDAO implements Parameterize
 	public void delete(GroupAggregationPk pk) throws GroupAggregationDaoException
 	{
 		try{
-			jdbcTemplate.update("DELETE FROM " + getTableName() + " WHERE id = ?",pk.getId());
+			getJdbcTemplate().update("DELETE FROM " + getTableName() + " WHERE id = ?",pk.getId());
 		}
 		catch (Exception e) {
 			throw new GroupAggregationDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -129,7 +129,7 @@ public class GroupAggregationDaoImpl extends AbstractDAO implements Parameterize
 	public GroupAggregation findByPrimaryKey(Long id) throws GroupAggregationDaoException
 	{
 		try {
-			List<GroupAggregation> list = jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.id = ?", this,id);
+			List<GroupAggregation> list = getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.id = ?", this,id);
 			return list.size() == 0 ? null : list.get(0);
 		}
 		catch (Exception e) {
@@ -145,7 +145,7 @@ public class GroupAggregationDaoImpl extends AbstractDAO implements Parameterize
 	public List<GroupAggregation> findAll(ReportColumn parentColumn) throws GroupAggregationDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.parent_column_id = ? ORDER BY o.id", this, parentColumn.getId());
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.parent_column_id = ? ORDER BY o.id", this, parentColumn.getId());
 		}
 		catch (Exception e) {
 			throw new GroupAggregationDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -160,7 +160,7 @@ public class GroupAggregationDaoImpl extends AbstractDAO implements Parameterize
 	public List<GroupAggregation> findByPersistableObject(Long id) throws GroupAggregationDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.id = ?", this,id);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.id = ?", this,id);
 		}
 		catch (Exception e) {
 			throw new GroupAggregationDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -175,7 +175,7 @@ public class GroupAggregationDaoImpl extends AbstractDAO implements Parameterize
 	public List<GroupAggregation> findByReportColumn(Long parentColumnId) throws GroupAggregationDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.parent_column_id = ? ", this,parentColumnId);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.parent_column_id = ? ", this,parentColumnId);
 		}
 		catch (Exception e) {
 			throw new GroupAggregationDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -191,7 +191,7 @@ public class GroupAggregationDaoImpl extends AbstractDAO implements Parameterize
 	public List<GroupAggregation> findWhereIdEquals(Long id) throws GroupAggregationDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.id = ? ORDER BY o.id", this, id);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.id = ? ORDER BY o.id", this, id);
 		}
 		catch (Exception e) {
 			throw new GroupAggregationDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -206,7 +206,7 @@ public class GroupAggregationDaoImpl extends AbstractDAO implements Parameterize
 	public List<GroupAggregation> findWhereParentColumnIdEquals(Long parentColumnId) throws GroupAggregationDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.parent_column_id = ? ORDER BY o.id", this,parentColumnId);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.parent_column_id = ? ORDER BY o.id", this,parentColumnId);
 		}
 		catch (Exception e) {
 			throw new GroupAggregationDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);

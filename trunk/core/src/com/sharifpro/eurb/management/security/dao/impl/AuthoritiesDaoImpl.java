@@ -24,7 +24,7 @@ public class AuthoritiesDaoImpl extends AbstractDAO implements ParameterizedRowM
 	@Transactional
 	public AuthoritiesPk insert(Authorities dto)
 	{
-		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( username, authority ) VALUES ( ?, ? )",dto.getUsername(),dto.getAuthority());
+		getJdbcTemplate().update("INSERT INTO " + getTableName() + " ( username, authority ) VALUES ( ?, ? )",dto.getUsername(),dto.getAuthority());
 		return dto.createPk();
 	}
 
@@ -34,7 +34,7 @@ public class AuthoritiesDaoImpl extends AbstractDAO implements ParameterizedRowM
 	@Transactional
 	public void update(AuthoritiesPk pk, Authorities dto) throws AuthoritiesDaoException
 	{
-		jdbcTemplate.update("UPDATE " + getTableName() + " SET username = ?, authority = ? WHERE username = ? AND authority = ?",dto.getUsername(),dto.getAuthority(),pk.getUsername(),pk.getAuthority());
+		getJdbcTemplate().update("UPDATE " + getTableName() + " SET username = ?, authority = ? WHERE username = ? AND authority = ?",dto.getUsername(),dto.getAuthority(),pk.getUsername(),pk.getAuthority());
 	}
 
 	/** 
@@ -43,7 +43,7 @@ public class AuthoritiesDaoImpl extends AbstractDAO implements ParameterizedRowM
 	@Transactional
 	public void delete(AuthoritiesPk pk) throws AuthoritiesDaoException
 	{
-		jdbcTemplate.update("DELETE FROM " + getTableName() + " WHERE username = ? AND authority = ?",pk.getUsername(),pk.getAuthority());
+		getJdbcTemplate().update("DELETE FROM " + getTableName() + " WHERE username = ? AND authority = ?",pk.getUsername(),pk.getAuthority());
 	}
 
 	/**
@@ -79,7 +79,7 @@ public class AuthoritiesDaoImpl extends AbstractDAO implements ParameterizedRowM
 	public Authorities findByPrimaryKey(String username, String authority) throws AuthoritiesDaoException
 	{
 		try {
-			List<Authorities> list = jdbcTemplate.query("SELECT username, authority FROM " + getTableName() + " WHERE username = ? AND authority = ?", this,username,authority);
+			List<Authorities> list = getJdbcTemplate().query("SELECT username, authority FROM " + getTableName() + " WHERE username = ? AND authority = ?", this,username,authority);
 			return list.size() == 0 ? null : list.get(0);
 		}
 		catch (Exception e) {
@@ -95,7 +95,7 @@ public class AuthoritiesDaoImpl extends AbstractDAO implements ParameterizedRowM
 	public List<Authorities> findAll() throws AuthoritiesDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT username, authority FROM " + getTableName() + " ORDER BY username, authority", this);
+			return getJdbcTemplate().query("SELECT username, authority FROM " + getTableName() + " ORDER BY username, authority", this);
 		}
 		catch (Exception e) {
 			throw new AuthoritiesDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -110,7 +110,7 @@ public class AuthoritiesDaoImpl extends AbstractDAO implements ParameterizedRowM
 	public List<Authorities> findByUsers(String username) throws AuthoritiesDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT username, authority FROM " + getTableName() + " WHERE username = ?", this,username);
+			return getJdbcTemplate().query("SELECT username, authority FROM " + getTableName() + " WHERE username = ?", this,username);
 		}
 		catch (Exception e) {
 			throw new AuthoritiesDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -125,7 +125,7 @@ public class AuthoritiesDaoImpl extends AbstractDAO implements ParameterizedRowM
 	public List<Authorities> findWhereUsernameEquals(String username) throws AuthoritiesDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT username, authority FROM " + getTableName() + " WHERE username = ? ORDER BY username", this,username);
+			return getJdbcTemplate().query("SELECT username, authority FROM " + getTableName() + " WHERE username = ? ORDER BY username", this,username);
 		}
 		catch (Exception e) {
 			throw new AuthoritiesDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -140,7 +140,7 @@ public class AuthoritiesDaoImpl extends AbstractDAO implements ParameterizedRowM
 	public List<Authorities> findWhereAuthorityEquals(String authority) throws AuthoritiesDaoException
 	{
 		try {
-			return jdbcTemplate.query("SELECT username, authority FROM " + getTableName() + " WHERE authority = ? ORDER BY authority", this,authority);
+			return getJdbcTemplate().query("SELECT username, authority FROM " + getTableName() + " WHERE authority = ? ORDER BY authority", this,authority);
 		}
 		catch (Exception e) {
 			throw new AuthoritiesDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);

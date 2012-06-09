@@ -33,7 +33,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	{
 		DbConfigPk pk = new DbConfigPk();
 		DaoFactory.createPersistableObjectDao().insert(dto, pk);
-		jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, name, driver_class, driver_url, username, password, test_query, record_status ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )",pk.getId(),dto.getName(),dto.getDriverClass(),dto.getDriverUrl(),dto.getUsername(),dto.getPassword(),dto.getTestQuery(), dto.getRecordStatusString());
+		getJdbcTemplate().update("INSERT INTO " + getTableName() + " ( id, name, driver_class, driver_url, username, password, test_query, record_status ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )",pk.getId(),dto.getName(),dto.getDriverClass(),dto.getDriverUrl(),dto.getUsername(),dto.getPassword(),dto.getTestQuery(), dto.getRecordStatusString());
 		dto.resetDataSource();
 		return pk;
 	}
@@ -45,7 +45,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public void update(DbConfigPk pk, DbConfig dto) throws DbConfigDaoException
 	{
 		DaoFactory.createPersistableObjectDao().update(pk);
-		jdbcTemplate.update("UPDATE " + getTableName() + " SET name = ?, driver_class = ?, driver_url = ?, username = ?, password = ?, test_query = ?, record_status = 'A' WHERE id = ?",dto.getName(),dto.getDriverClass(),dto.getDriverUrl(),dto.getUsername(),dto.getPassword(),dto.getTestQuery(),pk.getId());
+		getJdbcTemplate().update("UPDATE " + getTableName() + " SET name = ?, driver_class = ?, driver_url = ?, username = ?, password = ?, test_query = ?, record_status = 'A' WHERE id = ?",dto.getName(),dto.getDriverClass(),dto.getDriverUrl(),dto.getUsername(),dto.getPassword(),dto.getTestQuery(),pk.getId());
 		dto.resetDataSource();
 	}
 	
@@ -56,7 +56,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public void activate(DbConfigPk pk) throws DbConfigDaoException
 	{
 		DaoFactory.createPersistableObjectDao().update(pk);
-		jdbcTemplate.update("UPDATE " + getTableName() + " SET record_status = '" + RecordStatus.ACTIVE.getId() + "' WHERE id = ?",pk.getId());
+		getJdbcTemplate().update("UPDATE " + getTableName() + " SET record_status = '" + RecordStatus.ACTIVE.getId() + "' WHERE id = ?",pk.getId());
 	}
 	
 	/** 
@@ -77,7 +77,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public void deactivate(DbConfigPk pk) throws DbConfigDaoException
 	{
 		DaoFactory.createPersistableObjectDao().update(pk);
-		jdbcTemplate.update("UPDATE " + getTableName() + " SET record_status = '" + RecordStatus.PASSIVE.getId() + "' WHERE id = ?",pk.getId());
+		getJdbcTemplate().update("UPDATE " + getTableName() + " SET record_status = '" + RecordStatus.PASSIVE.getId() + "' WHERE id = ?",pk.getId());
 	}
 	
 	/** 
@@ -98,7 +98,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public void delete(DbConfigPk pk) throws DbConfigDaoException
 	{
 		DaoFactory.createPersistableObjectDao().update(pk);
-		jdbcTemplate.update("UPDATE " + getTableName() + " SET record_status = '" + RecordStatus.DELETED.getId() + "' WHERE id = ?",pk.getId());
+		getJdbcTemplate().update("UPDATE " + getTableName() + " SET record_status = '" + RecordStatus.DELETED.getId() + "' WHERE id = ?",pk.getId());
 	}
 
 	/** 
@@ -152,7 +152,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public DbConfig findByPrimaryKey(Long id) throws DbConfigDaoException
 	{
 		try {
-			List<DbConfig> list = jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.id = ?", this,id);
+			List<DbConfig> list = getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.id = ?", this,id);
 			return list.size() == 0 ? null : list.get(0);
 		}
 		catch (Exception e) {
@@ -168,7 +168,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public List<DbConfig> findAll() throws DbConfigDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.record_status IN ('A', 'P') ORDER BY o.id", this);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.record_status IN ('A', 'P') ORDER BY o.id", this);
 		}
 		catch (Exception e) {
 			throw new DbConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -180,7 +180,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public int countAll() throws DbConfigDaoException
 	{
 		try {
-			return jdbcTemplate.queryForInt(COUNT_QUERY);
+			return getJdbcTemplate().queryForInt(COUNT_QUERY);
 		}
 		catch (Exception e) {
 			throw new DbConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -195,7 +195,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public List<DbConfig> findAll(Integer start, Integer limit, String sortBy, String sortDir) throws DbConfigDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.record_status IN ('A', 'P') ORDER BY "+getSortClause(sortBy, sortDir)+" limit ?, ?", this, start, limit);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.record_status IN ('A', 'P') ORDER BY "+getSortClause(sortBy, sortDir)+" limit ?, ?", this, start, limit);
 		}
 		catch (Exception e) {
 			throw new DbConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -210,7 +210,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public List<DbConfig> findAll(String query, List<String> onFields, Integer start, Integer limit, String sortBy, String sortDir) throws DbConfigDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.record_status IN ('A', 'P') AND (" + getMultipleFieldWhereClause(query, onFields) + ") ORDER BY "+getSortClause(sortBy, sortDir)+" limit ?, ?", this, start, limit);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.record_status IN ('A', 'P') AND (" + getMultipleFieldWhereClause(query, onFields) + ") ORDER BY "+getSortClause(sortBy, sortDir)+" limit ?, ?", this, start, limit);
 		}
 		catch (Exception e) {
 			throw new DbConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -222,7 +222,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public int countAll(String query, List<String> onFields) throws DbConfigDaoException
 	{
 		try {
-			return jdbcTemplate.queryForInt(COUNT_QUERY + " AND (" + getMultipleFieldWhereClause(query, onFields) + ")");
+			return getJdbcTemplate().queryForInt(COUNT_QUERY + " AND (" + getMultipleFieldWhereClause(query, onFields) + ")");
 		}
 		catch (Exception e) {
 			throw new DbConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -283,7 +283,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public List<DbConfig> findAllActive() throws DbConfigDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.record_status='A' ORDER BY o.id", this);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.record_status='A' ORDER BY o.id", this);
 		}
 		catch (Exception e) {
 			throw new DbConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -298,7 +298,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public List<DbConfig> findByPersistableObject(Long id) throws DbConfigDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.id = ?", this,id);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.id = ?", this,id);
 		}
 		catch (Exception e) {
 			throw new DbConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -313,7 +313,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public List<DbConfig> findWhereIdEquals(Long id) throws DbConfigDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.id = ? ORDER BY o.id", this,id);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.id = ? ORDER BY o.id", this,id);
 		}
 		catch (Exception e) {
 			throw new DbConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -328,7 +328,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public List<DbConfig> findWhereNameEquals(String name) throws DbConfigDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.name = ? ORDER BY o.name", this,name);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.name = ? ORDER BY o.name", this,name);
 		}
 		catch (Exception e) {
 			throw new DbConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -343,7 +343,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public List<DbConfig> findWhereDriverClassEquals(String driverClass) throws DbConfigDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.driver_class = ? ORDER BY o.driver_class", this,driverClass);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.driver_class = ? ORDER BY o.driver_class", this,driverClass);
 		}
 		catch (Exception e) {
 			throw new DbConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -358,7 +358,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public List<DbConfig> findWhereDriverUrlEquals(String driverUrl) throws DbConfigDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.driver_url = ? ORDER BY o.driver_url", this,driverUrl);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.driver_url = ? ORDER BY o.driver_url", this,driverUrl);
 		}
 		catch (Exception e) {
 			throw new DbConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -373,7 +373,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public List<DbConfig> findWhereUsernameEquals(String username) throws DbConfigDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.username = ? ORDER BY o.username", this,username);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.username = ? ORDER BY o.username", this,username);
 		}
 		catch (Exception e) {
 			throw new DbConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -388,7 +388,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public List<DbConfig> findWherePasswordEquals(String password) throws DbConfigDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.password = ? ORDER BY o.password", this,password);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.password = ? ORDER BY o.password", this,password);
 		}
 		catch (Exception e) {
 			throw new DbConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -403,7 +403,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public List<DbConfig> findWhereTestQueryEquals(String testQuery) throws DbConfigDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.test_query = ? ORDER BY o.test_query", this,testQuery);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.test_query = ? ORDER BY o.test_query", this,testQuery);
 		}
 		catch (Exception e) {
 			throw new DbConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);

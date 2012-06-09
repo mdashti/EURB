@@ -3,36 +3,19 @@ package com.sharifpro.eurb.management.mapping.dao.impl;
 import java.io.*;
 import java.sql.*;
 
-import javax.sql.DataSource;
-
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 /**
  * Generic Base class for DAO classes.
  *
  * This is a customizable template within FireStorm/DAO.
  */
-public class AbstractDAO
+public class AbstractDAO extends JdbcDaoSupport
 {
 	public final static int DEFAULT_PAGE_SIZE=25;
 	public final static String DEFAULT_PAGE_SIZE_STR=DEFAULT_PAGE_SIZE+"";
 	public static final String ASCENDING_SORT_ORDER = "ASC";
 	public static final String DESCENDING_SORT_ORDER = "DESC";
-	
-	protected JdbcTemplate jdbcTemplate;
-
-	protected DataSource dataSource;
-
-	/**
-	 * Method 'setDataSource'
-	 * 
-	 * @param dataSource
-	 */
-	public void setDataSource(DataSource dataSource)
-	{
-		this.dataSource = dataSource;
-		jdbcTemplate = new JdbcTemplate(dataSource);
-	}
 
     public static byte[] getBlobColumn(ResultSet rs, int columnIndex)
             throws SQLException

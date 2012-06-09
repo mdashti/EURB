@@ -35,7 +35,7 @@ public class ReportChartDaoImpl extends AbstractDAO implements ParameterizedRowM
 		try{
 			ReportChartPk pk = new ReportChartPk(); 
 			DaoFactory.createPersistableObjectDao().insert(dto, pk);
-			jdbcTemplate.update("INSERT INTO " + getTableName() + " ( id, design_id, design_version_id, chart_type, name) VALUES ( ?, ?, ?, ?, ?)",
+			getJdbcTemplate().update("INSERT INTO " + getTableName() + " ( id, design_id, design_version_id, chart_type, name) VALUES ( ?, ?, ?, ?, ?)",
 					pk.getId(),dto.getReportDesignId(),dto.getReportDesignVersionId(),dto.getType(), dto.getName());
 			return pk;
 		}
@@ -52,7 +52,7 @@ public class ReportChartDaoImpl extends AbstractDAO implements ParameterizedRowM
 	{
 		try{
 			DaoFactory.createPersistableObjectDao().update(pk);
-			jdbcTemplate.update("UPDATE " + getTableName() + " SET  chart_type = ? , name = ?" +
+			getJdbcTemplate().update("UPDATE " + getTableName() + " SET  chart_type = ? , name = ?" +
 					" WHERE id = ?",dto.getType(), dto.getName(), pk.getId());
 		}
 		catch (Exception e) {
@@ -68,9 +68,9 @@ public class ReportChartDaoImpl extends AbstractDAO implements ParameterizedRowM
 	{
 		try{
 			//first delete all axis for the given chart
-			jdbcTemplate.update("DELETE FROM " + ReportChartAxisDaoImpl.getTableName() + " WHERE chart_id = ?", pk.getId());
+			getJdbcTemplate().update("DELETE FROM " + ReportChartAxisDaoImpl.getTableName() + " WHERE chart_id = ?", pk.getId());
 			//then delete the chart
-			jdbcTemplate.update("DELETE FROM " + getTableName() + " WHERE id = ?",pk.getId());
+			getJdbcTemplate().update("DELETE FROM " + getTableName() + " WHERE id = ?",pk.getId());
 			DaoFactory.createPersistableObjectDao().delete(pk);
 		}
 		catch (Exception e) {
@@ -126,7 +126,7 @@ public class ReportChartDaoImpl extends AbstractDAO implements ParameterizedRowM
 	public ReportChart findByPrimaryKey(Long id) throws ReportChartDaoException
 	{
 		try {
-			List<ReportChart> list = jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.id = ? ", this,id);
+			List<ReportChart> list = getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.id = ? ", this,id);
 			return list.size() == 0 ? null : list.get(0);
 		}
 		catch (Exception e) {
@@ -142,7 +142,7 @@ public class ReportChartDaoImpl extends AbstractDAO implements ParameterizedRowM
 	public List<ReportChart> findAll() throws ReportChartDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " ORDER BY o.id", this);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " ORDER BY o.id", this);
 		}
 		catch (Exception e) {
 			throw new ReportChartDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -167,7 +167,7 @@ public class ReportChartDaoImpl extends AbstractDAO implements ParameterizedRowM
 	public int countAll() throws ReportChartDaoException
 	{
 		try{
-			return jdbcTemplate.queryForInt(COUNT_QUERY);
+			return getJdbcTemplate().queryForInt(COUNT_QUERY);
 		}
 		catch (Exception e) {
 			throw new ReportChartDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -181,7 +181,7 @@ public class ReportChartDaoImpl extends AbstractDAO implements ParameterizedRowM
 	public int countAll(ReportDesign reportDesign) throws ReportChartDaoException
 	{
 		try{
-			return jdbcTemplate.queryForInt(COUNT_QUERY + " WHERE o.design_id = ? AND o.design_version_id = ?",reportDesign.getId(), reportDesign.getVersionId());
+			return getJdbcTemplate().queryForInt(COUNT_QUERY + " WHERE o.design_id = ? AND o.design_version_id = ?",reportDesign.getId(), reportDesign.getVersionId());
 		}
 		catch (Exception e) {
 			throw new ReportChartDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -196,7 +196,7 @@ public class ReportChartDaoImpl extends AbstractDAO implements ParameterizedRowM
 	public List<ReportChart> findByPersistableObject(Long id) throws ReportChartDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.id = ?", this,id);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.id = ?", this,id);
 		}
 		catch (Exception e) {
 			throw new ReportChartDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -213,7 +213,7 @@ public class ReportChartDaoImpl extends AbstractDAO implements ParameterizedRowM
 	public List<ReportChart> findByReportDesign(Long designId, Long designVersionId) throws ReportChartDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.design_id = ? AND o.design_version_id = ? ORDER BY o.id", this,designId,designVersionId);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.design_id = ? AND o.design_version_id = ? ORDER BY o.id", this,designId,designVersionId);
 		}
 		catch (Exception e) {
 			throw new ReportChartDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -230,7 +230,7 @@ public class ReportChartDaoImpl extends AbstractDAO implements ParameterizedRowM
 	public List<ReportChart> findWhereIdEquals(Long id) throws ReportChartDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.id = ? ORDER BY o.id", this,id);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.id = ? ORDER BY o.id", this,id);
 		}
 		catch (Exception e) {
 			throw new ReportChartDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -245,7 +245,7 @@ public class ReportChartDaoImpl extends AbstractDAO implements ParameterizedRowM
 	public List<ReportChart> findWhereDesignIdEquals(Long designId) throws ReportChartDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.design_id = ? ORDER BY o.id", this,designId);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.design_id = ? ORDER BY o.id", this,designId);
 		}
 		catch (Exception e) {
 			throw new ReportChartDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -260,7 +260,7 @@ public class ReportChartDaoImpl extends AbstractDAO implements ParameterizedRowM
 	public List<ReportChart> findWhereDesignVersionIdEquals(Long designVersionId) throws ReportChartDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.design_version_id = ? ORDER BY o.id", this,designVersionId);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.design_version_id = ? ORDER BY o.id", this,designVersionId);
 		}
 		catch (Exception e) {
 			throw new ReportChartDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -274,7 +274,7 @@ public class ReportChartDaoImpl extends AbstractDAO implements ParameterizedRowM
 	public List<ReportChart> findWhereNameEquals(String name) throws ReportChartDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.name = ? ORDER BY o.id", this, name);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.name = ? ORDER BY o.id", this, name);
 		}
 		catch (Exception e) {
 			throw new ReportChartDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -289,7 +289,7 @@ public class ReportChartDaoImpl extends AbstractDAO implements ParameterizedRowM
 	public List<ReportChart> findWhereTypeEquals(String type) throws ReportChartDaoException
 	{
 		try {
-			return jdbcTemplate.query(QUERY_SELECT_PART + " WHERE o.chart_type = ? ORDER BY o.id", this, type);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.chart_type = ? ORDER BY o.id", this, type);
 		}
 		catch (Exception e) {
 			throw new ReportChartDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
