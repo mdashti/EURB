@@ -3,6 +3,7 @@ package com.sharifpro.util;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.support.AbstractMessageSource;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class SharifProApplicationContext implements ApplicationContextAware {
@@ -14,7 +15,7 @@ public class SharifProApplicationContext implements ApplicationContextAware {
         throws BeansException {
 
     	SharifProApplicationContext.appContext = globalAppContext;
-
+    	PropertyProvider.MESSAGES = (AbstractMessageSource) SharifProApplicationContext.getApplicationContext().getBean("messageSource");
     }
 
     public static ApplicationContext getApplicationContext() {

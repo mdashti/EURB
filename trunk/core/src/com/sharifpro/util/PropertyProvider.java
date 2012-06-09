@@ -4,7 +4,7 @@ import org.springframework.context.support.AbstractMessageSource;
 
 public class PropertyProvider {
 
-	public static final AbstractMessageSource MESSAGES = (AbstractMessageSource) SharifProApplicationContext.getApplicationContext().getBean("messageSource");
+	public static AbstractMessageSource MESSAGES = (AbstractMessageSource) SharifProApplicationContext.getApplicationContext().getBean("messageSource");
 
 	public static String get(String key, Object... args){
 		return MESSAGES.getMessage(key, args, key, null);
