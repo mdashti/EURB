@@ -2,6 +2,8 @@ package com.sharifpro.eurb.builder.web;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +17,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.sharifpro.eurb.builder.dao.ReportCategoryDao;
 import com.sharifpro.eurb.builder.dao.ReportDesignDao;
+import com.sharifpro.eurb.builder.exception.ReportCategoryDaoException;
+import com.sharifpro.eurb.builder.exception.ReportDesignDaoException;
 import com.sharifpro.eurb.builder.model.ReportCategory;
+import com.sharifpro.eurb.builder.model.ReportColumn;
 import com.sharifpro.eurb.builder.model.ReportDesign;
 import com.sharifpro.eurb.builder.model.ReportDesignPk;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
@@ -82,6 +87,82 @@ public class ReportListController {
 			return JsonUtil.getModelMapError(e.getMessage());
 		}
 	}
+	
+	
+	@RequestMapping(value="/builder/report/reportAndCategorySearch.spy")
+	public @ResponseBody Map<String,? extends Object> reportAndCategorySearch(@RequestParam(defaultValue="", required=false) String query
+			,@RequestParam(defaultValue="[]", required=false) String fields
+			,@RequestParam(defaultValue="0", required=false) String start
+			,@RequestParam(defaultValue=AbstractDAO.DEFAULT_PAGE_SIZE_STR, required=false) String limit
+			,@RequestParam(defaultValue=PersistableObject.IDENTIFIER_FIELD, required=false) String sort
+			,@RequestParam(defaultValue=AbstractDAO.ASCENDING_SORT_ORDER, required=false) String dir) throws Exception {
+
+		try{
+			List<ReportDesign> reportDesigns;
+			int totalCount;
+			Map<String,Object> modelMap = new HashMap<String,Object>(3);
+			
+			Integer startBy = StringUtils.isEmpty(start) ? 0 : Integer.parseInt(start);
+			Integer limitBy = StringUtils.isEmpty(limit) ? AbstractDAO.DEFAULT_PAGE_SIZE : Integer.parseInt(limit);
+			List<String> onFields = jsonUtil.getListFromRequest(fields, String.class);
+			//TODO : how to handle search here???
+			
+			/*if(StringUtils.isEmpty(query) || onFields == null || onFields.isEmpty()) {
+				reportDesigns = reportDesignDao.findAll(startBy, limitBy, sort, dir);
+				totalCount = reportDesignDao.countAll();
+			} else {
+				reportDesigns = reportDesignDao.findAll(query, onFields, startBy, limitBy, sort, dir);
+				totalCount = reportDesignDao.countAll(query, onFields);
+			}*/
+			
+			
+			//I need to find a better (faster) way to load the tree structure of categories and reports
+			//But for now I'll do it the simple way
+			List<ReportCategory> categories = reportCategoryDao.findAllWithoutParent();
+			
+			List<Object> objList = new ArrayList<Object>();
+			for(ReportCategory cat : categories){
+				objList.add(cat);
+				List<Object> children = findChildren(cat);
+				objList.addAll(children);
+			}
+			
+				
+			modelMap.put("data", objList);
+			modelMap.put("totalCount", objList.size());
+			modelMap.put("success", true);
+
+			return modelMap;
+
+		} catch (Exception e) {
+
+			return JsonUtil.getModelMapError(e.getMessage());
+		}
+	}
+	
+
+	/**
+	 * The awful recursive way to find the tree structure for a given category
+	 * 
+	 * @param parent
+	 * 
+	 * @return List of all children (including categories and reports)
+	 * 
+	 * @throws ReportCategoryDaoException
+	 * @throws ReportDesignDaoException
+	 */
+	private List<Object> findChildren(ReportCategory parent) throws ReportCategoryDaoException, ReportDesignDaoException {
+		List<Object> children = new ArrayList<Object>();
+		List<ReportCategory> childCategories = reportCategoryDao.findAll(parent.getId());
+		for(ReportCategory cc : childCategories){
+			children.add(cc);
+			children.addAll(findChildren(cc));
+		}
+		List<ReportDesign> childReports = reportDesignDao.findByReportCategory(parent.getId());
+		children.addAll(childReports);
+		return children;
+	}
+	
 
 	@RequestMapping(value="/builder/report/reportStore.spy")
 	public @ResponseBody Map<String,? extends Object> store(@RequestParam Object data) throws Exception {

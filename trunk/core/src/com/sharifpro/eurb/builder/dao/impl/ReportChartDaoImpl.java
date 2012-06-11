@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sharifpro.eurb.DaoFactory;
 import com.sharifpro.eurb.builder.dao.ReportChartDao;
 import com.sharifpro.eurb.builder.exception.ReportChartDaoException;
+import com.sharifpro.eurb.builder.model.ObjectConfig;
 import com.sharifpro.eurb.builder.model.ReportChart;
 import com.sharifpro.eurb.builder.model.ReportChartPk;
 import com.sharifpro.eurb.builder.model.ReportDesign;
@@ -69,6 +70,8 @@ public class ReportChartDaoImpl extends AbstractDAO implements ParameterizedRowM
 		try{
 			//first delete all axis for the given chart
 			getJdbcTemplate().update("DELETE FROM " + ReportChartAxisDaoImpl.getTableName() + " WHERE chart_id = ?", pk.getId());
+			//then delete all config for the given chart
+			getJdbcTemplate().update("DELETE FROM " + ObjectConfigDaoImpl.getTableName() + " WHERE object_id = ? ", pk.getId());
 			//then delete the chart
 			getJdbcTemplate().update("DELETE FROM " + getTableName() + " WHERE id = ?",pk.getId());
 			DaoFactory.createPersistableObjectDao().delete(pk);
@@ -213,7 +216,12 @@ public class ReportChartDaoImpl extends AbstractDAO implements ParameterizedRowM
 	public List<ReportChart> findByReportDesign(Long designId, Long designVersionId) throws ReportChartDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.design_id = ? AND o.design_version_id = ? ORDER BY o.id", this,designId,designVersionId);
+			List<ReportChart> charts = getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.design_id = ? AND o.design_version_id = ? ORDER BY o.id", this,designId,designVersionId);
+			for(ReportChart rc : charts){
+				List<ObjectConfig> config = getJdbcTemplate().query(ObjectConfigDaoImpl.QUERY_SELECT_PART + " WHERE object_id = ?", new ObjectConfigDaoImpl(), rc.getId());
+				rc.setConfig(config);
+			}
+			return charts;
 		}
 		catch (Exception e) {
 			throw new ReportChartDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);

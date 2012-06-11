@@ -43,6 +43,17 @@ public interface ReportCategoryDao
 	public List<ReportCategory> findAll() throws ReportCategoryDaoException;
 	
 	/** 
+	 * Returns all rows from the report_category table that match the criteria 'parent_category_id = :parentCategory'.
+	 */
+	public List<ReportCategory> findAll(Long parentCategory) throws ReportCategoryDaoException;
+	
+	/** 
+	 * Returns all rows from the report_category table that match the criteria 'parent_category_id is null'.
+	 */
+	public List<ReportCategory> findAllWithoutParent() throws ReportCategoryDaoException;
+	
+	
+	/** 
 	 * Counts all rows from the report_category table that match the criteria ''.
 	 */
 	public int countAll() throws ReportCategoryDaoException;
@@ -85,5 +96,8 @@ public interface ReportCategoryDao
 	 * Returns the rows from the report_category table that matches the specified primary-key value.
 	 */
 	public ReportCategory findByPrimaryKey(ReportCategoryPk pk) throws ReportCategoryDaoException;
+
+	
+	
 
 }

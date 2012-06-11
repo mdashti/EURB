@@ -20,7 +20,7 @@ import com.sharifpro.util.PropertyProvider;
 public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedRowMapper<ReportCategory>, ReportCategoryDao
 {
 
-	private final static String QUERY_FROM_COLUMNS = "o.name, o.description";
+	private final static String QUERY_FROM_COLUMNS = "o.name, o.description, o.parent_category_id";
 
 	private final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + " o " + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL_AND_JOIN;
 
@@ -40,7 +40,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 			ReportCategoryPk pk = new ReportCategoryPk();
 			DaoFactory.createPersistableObjectDao().insert(dto, pk);
 
-			getJdbcTemplate().update("INSERT INTO " + getTableName() + " ( id, name, description ) VALUES ( ?, ?, ? )",pk.getId(),dto.getName(),dto.getDescription());
+			getJdbcTemplate().update("INSERT INTO " + getTableName() + " ( id, name, description, parent_category_id ) VALUES ( ?, ?, ?, ? )",pk.getId(),dto.getName(),dto.getDescription(), dto.getParentCategory());
 			return pk;
 		}
 		catch (Exception e) {
@@ -56,7 +56,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	{
 		try{
 			DaoFactory.createPersistableObjectDao().update(pk);
-			getJdbcTemplate().update("UPDATE " + getTableName() + " SET name = ?, description = ? WHERE id = ?",dto.getName(),dto.getDescription(),pk.getId());
+			getJdbcTemplate().update("UPDATE " + getTableName() + " SET name = ?, description = ?, parent_category_id = ? WHERE id = ?",dto.getName(), dto.getDescription(), dto.getParentCategory(), pk.getId());
 		}
 		catch (Exception e) {
 			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -115,6 +115,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 		int i = PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS_COUNT;
 		dto.setName( rs.getString(++i) );
 		dto.setDescription( rs.getString(++i) );
+		dto.setParentCategory( new Long( rs.getLong(++i) ) );
 		return dto;
 	}
 
@@ -152,6 +153,37 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	{
 		try {
 			return getJdbcTemplate().query(QUERY_SELECT_PART + " ORDER BY o.id", this);
+		}
+		catch (Exception e) {
+			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+
+	}
+	
+	/** 
+	 * Returns all rows from the report_category table that match the criteria 'parent_category_id = :parentCategory'.
+	 */
+	@Transactional(readOnly = true)
+	public List<ReportCategory> findAll(Long parentCategory) throws ReportCategoryDaoException
+	{
+		try {
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.parent_category_id = ? ORDER BY o.id", this, parentCategory);
+		}
+		catch (Exception e) {
+			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+
+	}
+
+	
+	/** 
+	 * Returns all rows from the report_category table that match the criteria 'parent_category_id is null'.
+	 */
+	@Transactional(readOnly = true)
+	public List<ReportCategory> findAllWithoutParent() throws ReportCategoryDaoException
+	{
+		try {
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.parent_category_id IS NULL ORDER BY o.id", this);
 		}
 		catch (Exception e) {
 			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);

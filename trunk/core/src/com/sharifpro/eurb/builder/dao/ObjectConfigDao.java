@@ -70,4 +70,12 @@ public interface ObjectConfigDao
 	 */
 	public ObjectConfig findByPrimaryKey(ObjectConfigPk pk) throws ObjectConfigDaoException;
 
+	/**
+	 * Inserts all given ObjectConfig for the given object
+	 * @param id
+	 * @param config
+	 */
+	public void insertAll(Long id, List<ObjectConfig> config) throws ObjectConfigDaoException;
+
+
 }

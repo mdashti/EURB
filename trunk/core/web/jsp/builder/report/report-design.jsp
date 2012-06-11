@@ -132,7 +132,18 @@
 			EURB.ReportChart.count = '<spring:message code="eurb.app.builder.report.chart.count" />';
 			EURB.ReportChart.average = '<spring:message code="eurb.app.builder.report.chart.average" />';
 			EURB.ReportChart.Aggregation = '<spring:message code="eurb.app.builder.report.chart.aggregation" />';
+			EURB.ReportChart.titleFont = '<spring:message code="eurb.app.builder.report.chart.titleFont" />';
+			EURB.ReportChart.titleSize = '<spring:message code="eurb.app.builder.report.chart.titleSize" />';
+			EURB.ReportChart.titleColor = '<spring:message code="eurb.app.builder.report.chart.titleColor" />';
+			EURB.ReportChart.xAxisFont = '<spring:message code="eurb.app.builder.report.chart.xAxisFont" />';
+			EURB.ReportChart.xAxisSize = '<spring:message code="eurb.app.builder.report.chart.xAxisSize" />';
+			EURB.ReportChart.xAxisColor = '<spring:message code="eurb.app.builder.report.chart.xAxisColor" />';
+			EURB.ReportChart.yAxisFont = '<spring:message code="eurb.app.builder.report.chart.yAxisFont" />';
+			EURB.ReportChart.yAxisSize = '<spring:message code="eurb.app.builder.report.chart.yAxisSize" />';
+			EURB.ReportChart.yAxisColor = '<spring:message code="eurb.app.builder.report.chart.yAxisColor" />';
 			
+			EURB.ReportChart.saveAll = '<spring:message code="eurb.app.builder.report.chart.saveAll" />';
+			EURB.ReportChart.cancelAll = '<spring:message code="eurb.app.builder.report.chart.cancelAll" />';
 			
 			
 			

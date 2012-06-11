@@ -1,6 +1,9 @@
 package com.sharifpro.eurb.builder.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import com.sharifpro.eurb.management.mapping.model.PersistableObject;
 
@@ -28,7 +31,10 @@ public class ReportChart extends PersistableObject implements Serializable
 	 */
 	protected String name;
 
-	
+	protected List<ObjectConfig> config;
+	protected HashMap<String, Object> configMap;
+
+
 	/**
 	 * Method 'ReportChart'
 	 * 
@@ -36,9 +42,11 @@ public class ReportChart extends PersistableObject implements Serializable
 	public ReportChart()
 	{
 		super();
+		config = new ArrayList<ObjectConfig>();
+		configMap = new HashMap<String, Object>();
 	}
 
-	
+
 
 
 
@@ -122,7 +130,63 @@ public class ReportChart extends PersistableObject implements Serializable
 		this.name = name;
 	}
 
-	
+
+	public List<ObjectConfig> getConfig() {
+		updateConfigFromMap();
+		return config;
+	}
+
+
+
+
+
+	public void setConfig(List<ObjectConfig> config) {
+		this.config = config;
+		buildMapFromConfig();
+	}
+
+
+
+
+
+	public HashMap<String, Object> getConfigMap() {
+		buildMapFromConfig();
+		return configMap;
+	}
+
+
+
+
+
+	public void setConfigMap(HashMap<String, Object> configMap) {
+		this.configMap = configMap;
+		updateConfigFromMap();
+	}
+
+
+	private void buildMapFromConfig(){
+		this.configMap = new HashMap<String, Object>();
+		if(this.config != null){
+			for(ObjectConfig oc : this.config){
+				this.configMap.put(oc.key, oc.value);
+			}
+		}
+	}
+
+	private void updateConfigFromMap(){
+		this.config = new ArrayList<ObjectConfig>();
+		if(configMap != null){
+			for(String key : this.configMap.keySet()){
+				Object value = this.configMap.get(key);
+				this.config.add(new ObjectConfig(this.getId(), key, value.toString()));
+			}
+		}
+	}
+
+
+
+
+
 	/**
 	 * Method 'equals'
 	 * 
@@ -134,12 +198,12 @@ public class ReportChart extends PersistableObject implements Serializable
 		if (!super.equals(_other)) {
 			return false;
 		}
-		
+
 		if (!(_other instanceof ReportChart)) {
 			return false;
 		}
-		
-			
+
+
 		return true;
 	}
 
@@ -151,8 +215,8 @@ public class ReportChart extends PersistableObject implements Serializable
 	public int hashCode()
 	{
 		int _hashCode = super.hashCode();
-		
-				return _hashCode;
+
+		return _hashCode;
 	}
 
 	/**

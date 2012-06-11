@@ -407,9 +407,19 @@ public class ViewReportController {
 
 		resultConfig.add(chart.getType());
 		resultConfig.add(chart.getName());
+		resultConfig.add(chart.getConfigMap().get("titleFont"));
+		resultConfig.add(chart.getConfigMap().get("titleSize"));
+		resultConfig.add(chart.getConfigMap().get("titleColor"));
 		resultConfig.add(xAxis.getTitle());
+		resultConfig.add(chart.getConfigMap().get("chartColor"));
+		resultConfig.add(chart.getConfigMap().get("xAxisFont"));
+		resultConfig.add(chart.getConfigMap().get("xAxisSize"));
+		resultConfig.add(chart.getConfigMap().get("xAxisColor"));
 		resultConfig.add(yAxis.getTitle());
-
+		resultConfig.add(chart.getConfigMap().get("yAxisFont"));
+		resultConfig.add(chart.getConfigMap().get("yAxisSize"));
+		resultConfig.add(chart.getConfigMap().get("yAxisColor"));
+		
 
 		//Build QUERY
 		///Build SELECT Part

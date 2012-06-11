@@ -110,13 +110,13 @@ public class InsertInitialData {
 	public static void main(String[] args) throws Exception {
 		InsertInitialData initial = new InsertInitialData();
 		System.out.println("################# START ################");
-		initial.authenticate();
+		//initial.authenticate();
 		
 		initial.addUsers();
 		
-		initial.addGroups();
+		//initial.addGroups();
 		
-		initial.addCurrentDB();
+		//initial.addCurrentDB();
 		System.out.println("################ FINISH ################");
 	}
 

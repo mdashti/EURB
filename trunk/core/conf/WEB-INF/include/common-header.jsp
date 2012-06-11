@@ -18,8 +18,14 @@
 		<link rel="stylesheet" type="text/css" href="<%=resourcesUrl%>/js/extjs/resources/css/AwesomeUploader.css" />
 		<link rel="stylesheet" type="text/css" href="<%=resourcesUrl%>/js/extjs/examples/ux/statusbar/css/statusbar.css" />
 
+		<link rel="stylesheet" type="text/css" href="<%=resourcesUrl%>/js/extjs/resources/css/TreeGrid/TreeGrid.css"/>
+		<link rel="stylesheet" type="text/css" href="<%=resourcesUrl%>/js/extjs/resources/css/TreeGrid/TreeGridLevels.css"/>
+		
+		
 		<link rel="stylesheet" type="text/css" href="<%=resourcesUrl%>/js/gridsearch/css/icons.css">
 		<link rel="stylesheet" type="text/css" href="<%=resourcesUrl%>/js/gridsearch/css/Ext.ux.grid.RowActions.css">
 		<link rel="stylesheet" type="text/css" href="<%=resourcesUrl%>/js/gridsearch/css/recordform.css">
+		
+		<link rel="stylesheet" type="text/css" href="<%=resourcesUrl%>/js/extjs/resources/css/colorpicker.css">
 		
 		<link rel="stylesheet" type="text/css" href="<%=resourcesUrl%>/css/eurb-reports.css" />

@@ -1,3 +1,22 @@
+/////////////////////////////categories combo box///////////////////
+EURB.ReportCategory.categoriesCombo = new Ext.form.ComboBox({
+			    typeAhead: true,
+			    triggerAction: 'all',
+			    lazyRender:true,
+			    mode: 'local',
+			    store: EURB.ReportCategory.categoriesStore,
+			    valueField: 'id',
+			    displayField: 'name',
+			    forceSelection: true,
+			    allowBlank: true,
+			});
+EURB.ReportCategory.comboRenderer = function(combo){
+    return function(value){
+        var record = combo.findRecord(combo.valueField, value);
+        return record ? record.get(combo.displayField) : combo.valueNotFoundText;
+    }
+};
+
 EURB.ReportCategory.store = new Ext.data.Store({
 	reader:new Ext.data.JsonReader({
 		 id:'id'
@@ -7,6 +26,7 @@ EURB.ReportCategory.store = new Ext.data.Store({
 			 {name:'id', type:'int'}
 			,{name:'name', type:'string'}
 			,{name:'description', type:'string'}
+			,{name:'parentCategory', type:'int'}
 		]
 	})
 	,proxy:new Ext.data.HttpProxy({
@@ -44,6 +64,15 @@ EURB.ReportCategory.cols = [{
 	,editor:new Ext.form.TextField({
 		allowBlank:true
 	})
+},
+{
+	header:EURB.ReportCategory.Parent
+	,id:'parentCategory'
+	,dataIndex:'parentCategory'
+	,width:50
+	,sortable:true
+	,editor:EURB.ReportCategory.categoriesCombo
+	,renderer:EURB.ReportCategory.comboRenderer(EURB.ReportCategory.categoriesCombo)
 }];
 
 EURB.ReportCategory.CategoryGrid = Ext.extend(Ext.grid.EditorGridPanel, {

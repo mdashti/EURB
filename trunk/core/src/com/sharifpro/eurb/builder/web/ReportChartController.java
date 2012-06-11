@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.sharifpro.eurb.builder.dao.ObjectConfigDao;
 import com.sharifpro.eurb.builder.dao.ReportChartDao;
 import com.sharifpro.eurb.builder.dao.ReportDesignDao;
+import com.sharifpro.eurb.builder.model.ObjectConfig;
 import com.sharifpro.eurb.builder.model.ReportChart;
 import com.sharifpro.eurb.builder.model.ReportChartPk;
 import com.sharifpro.eurb.builder.model.ReportDesign;
@@ -27,6 +29,7 @@ public class ReportChartController {
 
 	private ReportDesignDao reportDesignDao;
 	private ReportChartDao reportChartDao;
+	private ObjectConfigDao objectConfigDao;
 	
 	private JsonUtil jsonUtil;
 
@@ -48,7 +51,7 @@ public class ReportChartController {
 				reportCharts = reportChartDao.findAll(design);
 				totalCount = reportChartDao.countAll(design);
 			}
-
+			
 			return JsonUtil.getSuccessfulMap(reportCharts, totalCount);
 
 		} catch (Exception e) {
@@ -62,7 +65,8 @@ public class ReportChartController {
 			, @RequestParam(required=true) Long reportVersion) throws Exception {
 		try{
 
-			List<ReportChart> reportCharts = jsonUtil.getListFromRequest(data, ReportChart.class);
+			List<ReportChart> reportCharts;
+			reportCharts = jsonUtil.getListFromRequest(data, ReportChart.class);
 			
 			List<Long> insertIds = new ArrayList<Long>(reportCharts.size());
 			ReportChartPk pk;
@@ -74,6 +78,7 @@ public class ReportChartController {
 				} else {
 					pk = reportChart.createPk();
 					reportChartDao.update(pk,reportChart);
+					objectConfigDao.insertAll(pk.getId(), reportChart.getConfig());
 				}
 				insertIds.add(pk.getId());
 			}
@@ -107,6 +112,10 @@ public class ReportChartController {
 	
 	
 
+	@Autowired
+	public void setObjectConfigDao(ObjectConfigDao objectConfigDao){
+		this.objectConfigDao = objectConfigDao;
+	}
 	
 	@Autowired
 	public void setReportChartDao(ReportChartDao reportChartDao) {

@@ -1,6 +1,7 @@
 package com.sharifpro.eurb.builder.model;
 
 import java.io.Serializable;
+import java.util.Comparator;
 
 import com.sharifpro.eurb.management.mapping.model.PersistableObject;
 
@@ -17,6 +18,15 @@ public class ReportCategory extends PersistableObject implements Serializable
 	 * This attribute maps to the column description in the report_category table.
 	 */
 	protected String description;
+	
+	/** 
+	 * This attribute maps to the column parent_category_id in the report_category table.
+	 */
+	protected Long parentCategory;
+	protected Long _parent;
+	protected Boolean _is_leaf = false;
+	
+
 
 	/**
 	 * Method 'ReportCategory'
@@ -66,6 +76,37 @@ public class ReportCategory extends PersistableObject implements Serializable
 	{
 		this.description = description;
 	}
+
+	
+	/**
+	 * Method 'getParentCategory'
+	 * 
+	 * @return String
+	 */
+	public Long getParentCategory() {
+		return parentCategory;
+	}
+	
+	public Long get_parent() {
+		return parentCategory;
+	}
+
+
+	public Boolean get_is_leaf() {
+		return false;
+	}
+
+	/**
+	 * Method 'setParentCategory'
+	 * 
+	 * @param parentCategory
+	 */
+	public void setParentCategory(Long parentCategory) {
+		this.parentCategory = parentCategory;
+		this._parent = parentCategory;
+	}
+	
+	
 
 	/**
 	 * Method 'equals'
@@ -140,5 +181,32 @@ public class ReportCategory extends PersistableObject implements Serializable
 		ret.append( ", description=" + description );
 		return ret.toString();
 	}
+	
+	/*public static class ReportCategoryAndDesignSortOrderComparator implements Comparator<Object> {
 
+		@Override
+		public int compare(Object thiz, Object that) {
+			if(that.getClass().equals(ReportCategory.class)){
+				ReportCategory thatC = (ReportCategory) that;
+				if(thiz.getClass().equals(ReportCategory.class)){
+					ReportCategory thizC = (ReportCategory) thiz;
+					if(thizC.getParentCategory() == thatC.getId()){
+						return 1;
+					}
+					else if(thizC.getId() == thatC.getParentCategory()){
+						return -1;
+					}
+				}
+				else if (that.getClass().equals(ReportDesign.class)){
+					ReportDesign thizD = (ReportDesign) thiz;
+					if(thizD.getCategoryId() == thatC.getId()){
+						return 1;
+					}
+				}
+			}
+			return 0;
+		}
+		
+	}
+*/
 }

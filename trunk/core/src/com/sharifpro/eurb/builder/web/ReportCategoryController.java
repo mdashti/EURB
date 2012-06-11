@@ -7,9 +7,11 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.sharifpro.eurb.builder.dao.ReportCategoryDao;
 import com.sharifpro.eurb.builder.model.ReportCategory;
@@ -29,6 +31,42 @@ public class ReportCategoryController {
 	private ReportCategoryDao reportCategoryDao;
 	
 	private JsonUtil jsonUtil;
+	
+	
+	@RequestMapping(value="/builder/category/report-category.spy")
+	public ModelAndView executeReportCategorySpy() throws Exception {
+		return executeReportCategorySpy(null);
+	}
+
+	@RequestMapping(value="/builder/category/report{category}-category.spy")
+	public ModelAndView executeReportCategorySpy(@PathVariable String category) throws Exception {
+		
+		List<ReportCategory> currentCategories;
+		if(category != null && !category.equals("")){
+			currentCategories = reportCategoryDao.findAll(Long.parseLong(category));
+		}
+		else{
+			currentCategories = reportCategoryDao.findAll();
+		}
+		
+		Object[][] categories = new Object[currentCategories.size()][3];
+		
+		ReportCategory cat;
+		for(int i = 0; i < currentCategories.size(); i++){
+			cat = currentCategories.get(i);
+			categories[i][0] = cat.getId();
+			categories[i][1] = cat.getName();
+			categories[i][2] = cat.getParentCategory();
+		}
+		
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("parent", category);
+		mv.addObject("categoriesJson", jsonUtil.getJSONFromObject(categories));
+		
+		mv.setViewName("/builder/category/report-category");
+		return mv;
+	}
+	
 
 	@RequestMapping(value="/builder/category/reportCategorySearch.spy")
 	public @ResponseBody Map<String,? extends Object> search(@RequestParam(defaultValue="", required=false) String query

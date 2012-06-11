@@ -28,6 +28,10 @@ public class ReportDesign extends PersistableObject implements Serializable
 	 * This attribute maps to the column category_id in the report_design table.
 	 */
 	protected Long categoryId;
+	
+	protected Long _parent;
+	
+	protected Boolean _is_leaf = true;
 
 	/** 
 	 * This attribute maps to the column query_text in the report_design table.
@@ -145,6 +149,14 @@ public class ReportDesign extends PersistableObject implements Serializable
 	{
 		return categoryId;
 	}
+	
+	public Long get_parent() {
+		return categoryId;
+	}
+
+	public Boolean get_is_leaf() {
+		return true;
+	}
 
 	/**
 	 * Method 'setCategoryId'
@@ -154,7 +166,10 @@ public class ReportDesign extends PersistableObject implements Serializable
 	public void setCategoryId(Long categoryId)
 	{
 		this.categoryId = categoryId;
+		this._parent = categoryId;
 	}
+
+	
 
 	/**
 	 * Method 'getQueryText'

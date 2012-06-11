@@ -31,6 +31,13 @@ public class ObjectConfig implements Serializable
 	{
 		super();
 	}
+	
+	
+	public ObjectConfig(Long objectId, String key, String value){
+		this.objectId = objectId;
+		this.key = key;
+		this.value = value;
+	}
 
 	
 

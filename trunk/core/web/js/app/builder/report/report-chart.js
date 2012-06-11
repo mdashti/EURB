@@ -43,7 +43,240 @@ EURB.ReportChart.aggregationTypeCombo = new Ext.form.ComboBox({
     editable: false
 });
 
-////////////////////////////data set grid/////////////////////////////////////
+////////////////////////////font type combo box///////////////////////////////
+EURB.ReportChart.fontStore = new Ext.data.ArrayStore({
+    id: 0,
+    fields: [
+        'fontValue',
+        'fontLabel'
+    ],
+    data: [['Tahoma', 'Tahoma'], ['Arial', 'Arial']]
+});
+EURB.ReportChart.titleFontCombo = new Ext.form.ComboBox({
+    typeAhead: true,
+    triggerAction: 'all',
+    lazyRender:true,
+    mode: 'local',
+    store: EURB.ReportChart.fontStore,
+    valueField: 'fontValue',
+    displayField: 'fontLabel',
+    forceSelection: true,
+    allowBlank: true,
+    editable: false
+});
+EURB.ReportChart.xAxisFontCombo = new Ext.form.ComboBox({
+    typeAhead: true,
+    triggerAction: 'all',
+    lazyRender:true,
+    mode: 'local',
+    store: EURB.ReportChart.fontStore,
+    valueField: 'fontValue',
+    displayField: 'fontLabel',
+    forceSelection: true,
+    allowBlank: true,
+    editable: false
+});
+EURB.ReportChart.yAxisFontCombo = new Ext.form.ComboBox({
+    typeAhead: true,
+    triggerAction: 'all',
+    lazyRender:true,
+    mode: 'local',
+    store: EURB.ReportChart.fontStore,
+    valueField: 'fontValue',
+    displayField: 'fontLabel',
+    forceSelection: true,
+    allowBlank: true,
+    editable: false
+});
+
+
+////////////////////////////font size combo box///////////////////////////////
+EURB.ReportChart.sizeStore = new Ext.data.ArrayStore({
+    id: 0,
+    fields: [
+        'sizeValue',
+        'sizeLabel'
+    ],
+    data: [['10',  '10'],['11',  '11'], ['12', '12'], ['14',  '14'],['16',  '16'],['18',  '18'],['20',  '20'],['22',  '22'],['24',  '24']]
+});
+EURB.ReportChart.titleSizeCombo = new Ext.form.ComboBox({
+    typeAhead: true,
+    triggerAction: 'all',
+    lazyRender:true,
+    mode: 'local',
+    store:EURB.ReportChart.sizeStore,
+    valueField: 'sizeValue',
+    displayField: 'sizeLabel',
+    forceSelection: false,
+    allowBlank: true,
+    editable: false
+});
+EURB.ReportChart.xAxisSizeCombo = new Ext.form.ComboBox({
+    typeAhead: true,
+    triggerAction: 'all',
+    lazyRender:true,
+    mode: 'local',
+    store:EURB.ReportChart.sizeStore,
+    valueField: 'sizeValue',
+    displayField: 'sizeLabel',
+    forceSelection: false,
+    allowBlank: true,
+    editable: false
+});
+EURB.ReportChart.yAxisSizeCombo = new Ext.form.ComboBox({
+    typeAhead: true,
+    triggerAction: 'all',
+    lazyRender:true,
+    mode: 'local',
+    store:EURB.ReportChart.sizeStore,
+    valueField: 'sizeValue',
+    displayField: 'sizeLabel',
+    forceSelection: false,
+    allowBlank: true,
+    editable: false
+});
+
+
+EURB.ReportChart.cellClickListener =  function(grid, rowIndex, columnIndex, e){
+	var record = grid.getStore().getAt(rowIndex);  // Get the Record
+	if(columnIndex == 0){
+		configMap = record.get("configMap");
+		if(configMap && configMap.titleFont){
+			EURB.ReportChart.chartPropertyGrid.setSource(configMap);
+		}
+		else{
+			//set default config values
+			EURB.ReportChart.chartPropertyGrid.setSource({titleFont:'Tahoma', titleColor: '000000', titleSize:'12',
+				xAxisFont:'Tahoma', xAxisColor: '000000', xAxisSize:'12',
+				yAxisFont:'Tahoma', yAxisColor: '000000', yAxisSize:'12',
+				chartColor: '000000'
+				});
+		}
+	}
+};
+
+EURB.ReportChart.colorRenderer = function(val, element){
+	if (/^[0-9a-fA-F]{6}$/.test(val)) {
+		element.style = '{background: #'+val+'; !important}';
+	}
+};
+///////////////chart properties///////////////////////////////
+
+EURB.ReportChart.chartPropertyGrid = new Ext.grid.PropertyGrid({
+    height: 200,
+    width: '30%',
+    source: {},
+    propertyNames: {
+        titleFont : EURB.ReportChart.titleFont
+		,titleSize : EURB.ReportChart.titleSize
+		,titleColor : EURB.ReportChart.titleColor
+		,xAxisFont : EURB.ReportChart.xAxisFont
+		,xAxisSize : EURB.ReportChart.xAxisSize
+		,xAxisColor : EURB.ReportChart.xAxisColor
+		,yAxisFont : EURB.ReportChart.yAxisFont
+		,yAxisSize : EURB.ReportChart.yAxisSize
+		,yAxisColor : EURB.ReportChart.yAxisColor
+		,chartColor: EURB.ReportChart.chartColor
+		
+	}
+   ,region:'west'
+    ,customRenderers: {
+        titleFont: Ext.ux.comboRenderer(EURB.ReportChart.titleFontCombo)
+        ,titleSize: Ext.ux.comboRenderer(EURB.ReportChart.titleSizeCombo)
+        ,titleColor: EURB.ReportChart.colorRenderer
+        ,xAxisFont: Ext.ux.comboRenderer(EURB.ReportChart.xAxisFontCombo)
+        ,xAxisSize: Ext.ux.comboRenderer(EURB.ReportChart.xAxisSizeCombo)
+        ,xAxisColor: EURB.ReportChart.colorRenderer
+        ,yAxisFont: Ext.ux.comboRenderer(EURB.ReportChart.yAxisFontCombo)
+        ,yAxisSize: Ext.ux.comboRenderer(EURB.ReportChart.yAxisSizeCombo)
+        ,yAxisColor: EURB.ReportChart.colorRenderer
+        ,chartColor: EURB.ReportChart.colorRenderer
+    }
+    ,customEditors: {
+        titleFont: new Ext.grid.GridEditor(EURB.ReportChart.titleFontCombo)
+		,titleSize: new Ext.grid.GridEditor(EURB.ReportChart.titleSizeCombo)
+    	,titleColor : new Ext.grid.GridEditor(new Ext.ux.form.ColorPickerField({
+    		listeners:{
+    			select:function(picker, value){
+    				source = EURB.ReportChart.chartPropertyGrid.propStore.getSource();
+    				source['titleColor'] = value;
+    				EURB.ReportChart.chartPropertyGrid.setSource(source);
+    			}
+    		}
+    	}))
+    	,xAxisFont: new Ext.grid.GridEditor(EURB.ReportChart.xAxisFontCombo)
+		,xAxisSize: new Ext.grid.GridEditor(EURB.ReportChart.xAxisSizeCombo)
+    	,xAxisColor : new Ext.grid.GridEditor(new Ext.ux.form.ColorPickerField({
+    		listeners:{
+    			select:function(picker, value){
+    				source = EURB.ReportChart.chartPropertyGrid.propStore.getSource();
+    				source['xAxisColor'] = value;
+    				EURB.ReportChart.chartPropertyGrid.setSource(source);
+    			}
+    		}
+    	}))
+    	,yAxisFont: new Ext.grid.GridEditor(EURB.ReportChart.yAxisFontCombo)
+		,yAxisSize: new Ext.grid.GridEditor(EURB.ReportChart.yAxisSizeCombo)
+    	,yAxisColor : new Ext.grid.GridEditor(new Ext.ux.form.ColorPickerField({
+    		listeners:{
+    			select:function(picker, value){
+    				source = EURB.ReportChart.chartPropertyGrid.propStore.getSource();
+    				source['yAxisColor'] = value;
+    				EURB.ReportChart.chartPropertyGrid.setSource(source);
+    			}
+    		}
+    	}))
+    	,chartColor : new Ext.grid.GridEditor(new Ext.ux.form.ColorPickerField({
+    		listeners:{
+    			select:function(picker, value){
+    				source = EURB.ReportChart.chartPropertyGrid.propStore.getSource();
+    				source['chartColor'] = value;
+    				EURB.ReportChart.chartPropertyGrid.setSource(source);
+    			}
+    		}
+    	}))
+    }
+    ,tbar: ['->',{
+    	iconCls: 'icon-cancel'
+    	,text: EURB.ReportChart.cancelAll
+    	,handler: function() {
+    		var rec = EURB.ReportChart.reportChartGrid.getSelectionModel().getSelected();
+    		rec.reject();
+    		EURB.ReportChart.reportChartGrid.onRecordSelectionChange(rec);
+    	}
+    },{
+    	iconCls: 'icon-save-table',
+        text: EURB.ReportChart.saveAll,
+        handler : function(){
+        	var index = EURB.ReportChart.reportChartGrid.getSelectionModel().getSelectedCell();
+    		var record = EURB.ReportChart.reportChartGrid.store.getAt(index[0]);
+    		var source = EURB.ReportChart.chartPropertyGrid.propStore.source; 
+        	record.set('configMap', source);
+    		var sendRec = new EURB.ReportChart.reportChartGrid.store.recordType({newRecord:false});
+            sendRec.fields.each(function(f) {
+            		sendRec.data[f.name] = record.data[f.name];
+            });
+    		var o = {
+				 url:EURB.ReportChart.storeAction
+				,method:'post'
+				,callback:this.requestCallback
+				,scope:this
+				,params:{
+					cmd: 'storeData',
+					data:Ext.encode([sendRec.data]),
+					reportDesign : EURB.ReportDesign.selectedDesign,
+					reportVersion: EURB.ReportDesign.selectedVersion
+				}
+			};
+			Ext.Ajax.request(o);
+    		record.commit();
+    	}
+    }]
+});
+
+
+
+////////////////////////////chart grid/////////////////////////////////////
 
 EURB.ReportChart.store = new Ext.data.Store({
 	reader:new Ext.data.JsonReader({
@@ -56,6 +289,7 @@ EURB.ReportChart.store = new Ext.data.Store({
 			,{name:'reportDesignVersionId', type:'int'}
 			,{name:'name', type:'string'}
 			,{name:'type', type:'string'}
+			,{name:'configMap', type: 'auto'}
 		]
 	})
 	,proxy:new Ext.data.HttpProxy({
@@ -93,10 +327,11 @@ EURB.ReportChart.cols = [{
 
 EURB.ReportChart.ChartGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 	// defaults - can be changed from outside
-	 width: '100%'
+	 width: '70%'
 	,height: 300
 	,border:true
 	,stateful:false
+	,region:'center'
 	,idName:'id'
 	,title: EURB.ReportChart.title
 	,initComponent:function() {
@@ -104,7 +339,7 @@ EURB.ReportChart.ChartGrid = Ext.extend(Ext.grid.EditorGridPanel, {
              title:EURB.addEdit+' '+ EURB.ReportChart.title
             ,iconCls:'icon-edit-record'
             ,columnCount:1
-            ,ignoreFields:{id:true,reportDesignId:true,reportDesignVersionId:true}
+            ,ignoreFields:{id:true,reportDesignId:true,reportDesignVersionId:true,configMap:true}
             ,formConfig:{
                  labelWidth:80
                 ,buttonAlign:'right'
@@ -311,7 +546,6 @@ EURB.ReportChart.ChartGrid = Ext.extend(Ext.grid.EditorGridPanel, {
             case 'icon-minus':
                 this.deleteRecord(record);
             break;
-
             case 'icon-edit-record':
                 this.recordForm.show(record, grid.getView().getCell(row, col));
             break;
@@ -321,6 +555,7 @@ EURB.ReportChart.ChartGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 
         }
     }
+	
 	,axisFor:function(record) {
 		var records = [record];
 		if(!records.length) {
@@ -467,6 +702,7 @@ EURB.ReportChart.ChartGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 		});
 	}
 	,listeners: {
+		cellclick: EURB.ReportChart.cellClickListener
 	}
 
 });

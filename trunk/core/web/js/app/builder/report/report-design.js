@@ -62,7 +62,8 @@ Ext.onReady(function() {
 		}
 		,{
 			title: EURB.ReportDesign.reportChart,
-			items: EURB.ReportChart.reportChartGrid
+			layout: 'border',
+			items: [EURB.ReportChart.reportChartGrid, EURB.ReportChart.chartPropertyGrid]
 		}]
 	});
 	

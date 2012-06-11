@@ -36,6 +36,7 @@
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/Ext.ux.plugin.PagingToolbarResizer.js"></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/Ext.ux.GridPrinter.js"></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/Select.js"></script>
+		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/TreeGrid.js"></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/examples/ux/statusbar/StatusBar.js"></script>
 		<%--<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/Ext.ux.form.FileUploadField.js"></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/Ext.ux.Exporter.js"></script>
@@ -59,6 +60,10 @@
 		
 		<%-- MutilGrouping --%>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/multigrouping/MultiGrouping.js" ></script>
+		
+		<%-- Color Picker Field --%>
+		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/colorpicker-field/colorpicker.js" ></script>
+		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/colorpicker-field/colorpickerfield.js" ></script>
 		
 		<script src="<%=resourcesUrl%>/js/extjs/locale/ext-lang-fa.js"></script>
 		
@@ -195,7 +200,7 @@
 		    	'<li><a href="<spring:url value="/management/mapping/dbconfig.spy" />">'+EURB.appMenu.dbConfig+'</a></li>'+
 		    	'<li><a href="<spring:url value="/management/mapping/db-table.spy" />">'+EURB.appMenu.table+'</a></li>'+
 		    	'<li><a href="<spring:url value="/management/mapping/db-table-column.spy" />">'+EURB.appMenu.column+'</a></li>'+
-		    	'<li><a href="'+EURB.baseURL+'builder/category/category.spy">'+EURB.appMenu.category+'</a></li>'+
+		    	'<li><a href="'+EURB.baseURL+'builder/category/report-category.spy">'+EURB.appMenu.category+'</a></li>'+
 		    	'</ul>'+
 		    	'<h3 class="headerbar"><a href="'+EURB.baseURL+'"><spring:message code="eurb.app.menu.management.security" /></a></h3>'+
 		    	'<ul class="submenu">'+

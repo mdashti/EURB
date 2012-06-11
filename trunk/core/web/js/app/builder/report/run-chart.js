@@ -15,31 +15,16 @@ createChart = function(data, index, heightValue){
 	           text: data[0][1]
 	        },
 	        plotOptions: {
-
                 pie: {
-
                     allowPointSelect: true,
-
                     cursor: 'pointer',
-
                     dataLabels: {
-
                         enabled: true,
-
-                        color: '#000000',
-
-                        connectorColor: '#000000',
-
                         formatter: function() {
-
                             return '<b>'+ this.point.name +'</b>: '+ this.percentage +' %';
-
                         }
-
                     }
-
                 }
-
             },
 	        series:[{
 	        	name: data[0][3],
@@ -49,27 +34,61 @@ createChart = function(data, index, heightValue){
 		};
 	}
 	else{
+		count = 0;
 		options = {
 	        chart: {
-	           type: data[0][0],
+	           type: data[0][count++],
 	           renderTo: 'chart' + index,
 	           height:heightValue
 	        },
 	        title: {
-	           text: data[0][1]
-	        },
-	        xAxis: {
-	           categories: data[1]
-	        },
-	        yAxis: {
-	           title: {
-	              text: data[0][3]
+	           text: data[0][count++],
+	           style:{
+	        	   fontFamily: data[0][count++],
+	        	   fontSize: data[0][count++] + 'px',
+	        	   color: '#' + data[0][count++]
 	           }
 	        },
 	        series: [{
-				name : data[0][3],
+				name : data[0][count++],
 				data : data[2]
-	        }]
+	        }],
+	        colors : [('#' + data[0][count++]),'#4572A7','#AA4643','#89A54E','#80699B','#3D96AE','#DB843D','#92A8CD','#A47D7C'],
+	        xAxis: {
+	           categories: data[1]
+	           ,labels : {
+	        	   style:{
+	        		   fontFamily: data[0][(count)],
+		        	   fontSize: data[0][(count + 1)] + 'px',
+		        	   color: '#' + data[0][(count + 2)]  
+	        	   }
+	           }
+	        },
+	        legend: {
+	        	itemStyle: {
+		           fontFamily: data[0][count++],
+			       fontSize: data[0][count++] + 'px',
+			       color: '#' + data[0][count++] 
+		        }
+	        },
+	        yAxis: {
+	        	title: {
+	        		text: data[0][count++]
+	        		,style: {
+		        		   fontFamily: data[0][(count)],
+			        	   fontSize: data[0][(count + 1)] + 'px',
+			        	   color: '#' + data[0][(count + 2)] 
+		        	   }
+		         }, 
+		         labels : {
+	        	   style:{
+	        		   fontFamily: data[0][count++],
+		        	   fontSize: data[0][count++] + 'px',
+		        	   color: '#' + data[0][count++] 
+	        	   }
+	           }
+	           	
+	        }
 	     };
 	}
 	
