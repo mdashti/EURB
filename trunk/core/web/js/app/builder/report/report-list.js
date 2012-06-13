@@ -296,13 +296,11 @@ EURB.Report.Grid = Ext.extend(Ext.grid.GridPanel, {
 		this.deleteSelectedRecords();
 	}
 	,deleteSelectedRecords:function() {
-		var index = this.getSelectionModel().getSelectedCell();
-		if(!index) {
+		var records = this.getSelectionModel().getSelections();
+		if(!records.length) {
 			Ext.Msg.alert(Ext.MessageBox.title.warning, EURB.selectAtLeastOneRecordFisrt).setIcon(Ext.Msg.INFO);
 			return;
 		}
-		var record = this.store.getAt(index[0]);
-		records = [record];
 		Ext.Msg.show({
 			 title:EURB.areYouSureToDelTitle
 			,msg:String.format(EURB.areYouSureToDelete, records.length == 1 ? records[0].get('name') : EURB.records)
@@ -332,13 +330,11 @@ EURB.Report.Grid = Ext.extend(Ext.grid.GridPanel, {
 		});
 	}
 	,activateSelectedRecords:function() {
-		var index = this.getSelectionModel().getSelectedCell();
-		if(!index) {
+		var records = this.getSelectionModel().getSelections();
+		if(!records.length) {
 			Ext.Msg.alert(Ext.MessageBox.title.warning, EURB.selectAtLeastOneRecordFisrt).setIcon(Ext.Msg.INFO);
 			return;
 		}
-		var record = this.store.getAt(index[0]);
-		records = [record];
 		var data = [];
 		Ext.each(records, function(r, i) {
 			data.push(r.get(this.idName));
@@ -356,13 +352,11 @@ EURB.Report.Grid = Ext.extend(Ext.grid.GridPanel, {
 		Ext.Ajax.request(o);
 	}
 	,deactivateSelectedRecords:function() {
-		var index = this.getSelectionModel().getSelectedCell();
-		if(!index) {
+		var records = this.getSelectionModel().getSelections();
+		if(!records.length) {
 			Ext.Msg.alert(Ext.MessageBox.title.warning, EURB.selectAtLeastOneRecordFisrt).setIcon(Ext.Msg.INFO);
 			return;
 		}
-		var record = this.store.getAt(index[0]);
-		records = [record];
 		Ext.each(records, function(r, i) {
 			data.push(r.get(this.idName));
 		}, this);
