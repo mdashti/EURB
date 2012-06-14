@@ -53,11 +53,32 @@
 	<security:http entry-point-ref="casAuthenticationEntryPoint" auto-config="false" authentication-manager-ref="authenticationManager">
 		<security:intercept-url pattern="/**" access="ROLE_MAPPING_MANAGEMENT" />
 		<security:custom-filter position="CAS_FILTER" ref="casAuthenticationFilter"></security:custom-filter>
-		<security:logout logout-url="/logout.spy" logout-success-url="/"/>
+		<security:custom-filter position="CONCURRENT_SESSION_FILTER" ref="concurrencyFilter" />
+		<security:custom-filter after="SESSION_MANAGEMENT_FILTER" ref="sessionRegistryFixFilter"/>
 		<security:custom-filter ref="requestSingleLogoutFilter" before="LOGOUT_FILTER"/>
-		<security:logout logout-url="/logout.spy" logout-success-url="/login.spy" delete-cookies="JSESSIONID"/>
+		<security:logout logout-url="/logout.spy" logout-success-url="/" delete-cookies="JSESSIONID"/>
 		<security:custom-filter ref="singleLogoutFilter" before="CAS_FILTER"/>
+		<security:session-management invalid-session-url="/" session-authentication-strategy-ref="sas">
+			<!--concurrency-control max-sessions="-1" error-if-maximum-exceeded="true" session-authentication-error-url="/" /-->
+		</security:session-management>
+		<security:remember-me data-source-ref="EURBDataSource"/>
 	</security:http>
+
+	<bean id="sessionRegistry" class="org.springframework.security.core.session.SessionRegistryImpl" />
+
+	<bean id="sessionRegistryFixFilter" class="com.sharifpro.util.filter.SessionRegistryFixFilter">
+		<property name="sessionRegistry" ref="sessionRegistry"/>
+	</bean>
+
+	<bean id="sas" class="org.springframework.security.web.authentication.session.ConcurrentSessionControlStrategy">
+		<constructor-arg name="sessionRegistry" ref="sessionRegistry" />
+		<property name="maximumSessions" value="-1" />
+	</bean>
+
+	<bean id="concurrencyFilter" class="org.springframework.security.web.session.ConcurrentSessionFilter">
+		<property name="sessionRegistry" ref="sessionRegistry" />
+		<property name="expiredUrl" value="/" />
+	</bean>
 
 	<!-- This filter handles a Single Logout Request from the CAS Server -->
 	<bean id="singleLogoutFilter" class="org.jasig.cas.client.session.SingleSignOutFilter"/>
@@ -87,11 +108,12 @@
 		<property name="sendRenew" value="false"></property>
 	</bean>	
 
-        <!--
+	<!--
 		The CAS filter handles the redirect from the CAS server and starts the ticket validation.
 	-->
 	<bean id="casAuthenticationFilter" class="org.springframework.security.cas.web.CasAuthenticationFilter">
 		<property name="authenticationManager" ref="authenticationManager"></property>
+		<property name="sessionAuthenticationStrategy" ref="sas" />
 	</bean>
 
 	<!--
