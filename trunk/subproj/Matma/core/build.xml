@@ -41,14 +41,14 @@
 			</fileset>
 		</copy-->
 
-		<copy todir="${app.root}">
+		<copy todir="${app.root}" overwrite="true">
 			<fileset dir="${matma.src.jsp.dir}">
 				<exclude name="**/.#*"/>
 				<include name="**/*.jsp"/>
 			</fileset>
 		</copy>
 
-		<copy todir="${app.webinf}">
+		<copy todir="${app.webinf}" overwrite="true">
 			<fileset dir="${matma.conf.dir}/WEB-INF">
 				<include name="**/*.jsp"/>
 			</fileset>
@@ -62,7 +62,7 @@
 			<classpath refid="matma.build.classpath"/>
 		</javac>
 
-		<copy todir="${app.root}/resources/img">
+		<copy todir="${app.root}/resources/img" overwrite="true">
 			<fileset dir="${matma.src.img.dir}">
 				<exclude name="**/.#*"/>
 				<include name="**/*.gif"/>
@@ -70,7 +70,7 @@
 			</fileset>
 		</copy>
 
-		<copy todir="${app.root}/resources/js">
+		<copy todir="${app.root}/resources/js" overwrite="true">
 			<fileset dir="${matma.src.js.dir}">
 				<exclude name="**/.#*"/>
 				<include name="**/*.js"/>
@@ -81,14 +81,14 @@
 			</fileset>
 		</copy>
 
-		<copy todir="${app.root}/resources/css">
+		<copy todir="${app.root}/resources/css" overwrite="true">
 			<fileset dir="${matma.src.css.dir}">
 				<exclude name="**/.#*"/>
 				<include name="**/*.css"/>
 			</fileset>
 		</copy>
 
-		<copy todir="${app.webinf.lib}">
+		<copy todir="${app.webinf.lib}" overwrite="true">
 			<fileset dir="${matma.lib.dir}">
 				<exclude name="**/.#*"/>
 				<exclude name="**/servlet*.jar"/>
@@ -96,7 +96,7 @@
 			</fileset>
 		</copy>
 
-		<copy todir="${app.metainf}">
+		<copy todir="${app.metainf}" overwrite="true">
 			<fileset dir="${matma.conf.dir}/META-INF">
 				<exclude name="**/.#*"/>
 				<include name="**/*.MF"/>
@@ -114,10 +114,10 @@
 			</fileset>
 	    </concat>
 		
-		<copy file="${app.webinf}/messages/messages.properties" tofile="${app.webinf}/messages/messages_en.properties" />
-		<copy file="${app.webinf}/messages/messages.properties" tofile="${app.webinf}/messages/messages_en_US.properties" />
+		<copy file="${app.webinf}/messages/messages.properties" tofile="${app.webinf}/messages/messages_en.properties" overwrite="true"/>
+		<copy file="${app.webinf}/messages/messages.properties" tofile="${app.webinf}/messages/messages_en_US.properties" overwrite="true"/>
 
-		<copy todir="${app.webinf}">
+		<copy todir="${app.webinf}" overwrite="true">
 			<fileset dir="${matma.conf.dir}/WEB-INF">
 				<exclude name="**/.#*"/>
 				<include name="**/*.xml"/>
