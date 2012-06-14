@@ -6,7 +6,7 @@ import com.sharifpro.eurb.DaoFactory;
 import com.sharifpro.eurb.management.security.dao.UserDao;
 import com.sharifpro.eurb.management.security.model.User;
 
-public class UsersDaoExample
+public class UserDaoExample
 {
 	/**
 	 * Method 'main'
@@ -33,7 +33,7 @@ public class UsersDaoExample
 	 */
 	public static void findAll() throws Exception
 	{
-		UserDao dao = DaoFactory.createUsersDao();
+		UserDao dao = DaoFactory.createUserDao();
 		List<User> _result = dao.findAll();
 		for (User dto : _result) {
 			display(dto);
@@ -49,7 +49,7 @@ public class UsersDaoExample
 	 */
 	public static void findByPersistableObject(Long id) throws Exception
 	{
-		UserDao dao = DaoFactory.createUsersDao();
+		UserDao dao = DaoFactory.createUserDao();
 		List<User> _result = dao.findByPersistableObject(id);
 		for (User dto : _result) {
 			display(dto);
@@ -65,7 +65,7 @@ public class UsersDaoExample
 	 */
 	public static void findWhereIdEquals(Long id) throws Exception
 	{
-		UserDao dao = DaoFactory.createUsersDao();
+		UserDao dao = DaoFactory.createUserDao();
 		List<User> _result = dao.findWhereIdEquals(id);
 		for (User dto : _result) {
 			display(dto);
@@ -81,7 +81,7 @@ public class UsersDaoExample
 	 */
 	public static void findWhereUsernameEquals(String username) throws Exception
 	{
-		UserDao dao = DaoFactory.createUsersDao();
+		UserDao dao = DaoFactory.createUserDao();
 		User dto = dao.findWhereUsernameEquals(username);
 		display(dto);
 		
@@ -95,7 +95,7 @@ public class UsersDaoExample
 	 */
 	public static void findWherePasswordEquals(String password) throws Exception
 	{
-		UserDao dao = DaoFactory.createUsersDao();
+		UserDao dao = DaoFactory.createUserDao();
 		List<User> _result = dao.findWherePasswordEquals(password);
 		for (User dto : _result) {
 			display(dto);
@@ -111,7 +111,7 @@ public class UsersDaoExample
 	 */
 	public static void findWhereEnabledEquals(Short enabled) throws Exception
 	{
-		UserDao dao = DaoFactory.createUsersDao();
+		UserDao dao = DaoFactory.createUserDao();
 		List<User> _result = dao.findWhereEnabledEquals(enabled);
 		for (User dto : _result) {
 			display(dto);

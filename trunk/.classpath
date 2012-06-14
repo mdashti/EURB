@@ -12,11 +12,9 @@
 	<classpathentry kind="lib" path="core/lib/jxl.jar"/>
 	<classpathentry kind="lib" path="core/lib/log4j.jar"/>
 	<classpathentry kind="lib" path="core/lib/nanoxml.jar"/>
-	<classpathentry kind="lib" path="core/lib/ojdbc14_g.jar"/>
 	<classpathentry kind="lib" path="core/lib/stringtemplate.jar"/>
 	<classpathentry kind="lib" path="core/lib/jstl.jar"/>
 	<classpathentry kind="lib" path="core/lib/jtds-1.2.5.jar"/>
-	<classpathentry kind="lib" path="core/lib/mysql-connector-java-5.1.18-bin.jar"/>
 	<classpathentry kind="lib" path="core/lib/servlet-api.jar"/>
 	<classpathentry kind="lib" path="core/lib/standard.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
@@ -80,5 +78,6 @@
 	<classpathentry kind="lib" path="core/lib/mail.jar"/>
 	<classpathentry kind="lib" path="core/lib/commons-io-2.3.jar"/>
 	<classpathentry kind="lib" path="core/lib/xstream-1.2.jar"/>
+	<classpathentry kind="lib" path="core/lib/ehcache-core-2.5.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

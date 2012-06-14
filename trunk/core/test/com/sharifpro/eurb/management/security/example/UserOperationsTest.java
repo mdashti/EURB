@@ -19,7 +19,7 @@ public class UserOperationsTest extends InsertInitialData{
 	}
 
 	private void addUser() throws UserDaoException {
-		UserDao dao = DaoFactory.createUsersDao();
+		UserDao dao = DaoFactory.createUserDao();
 
 		System.out.println("current users: ");
 		System.out.println(CollectionUtil.toString(dao.findAll()));

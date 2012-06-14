@@ -140,7 +140,7 @@ public class InsertInitialData {
 	}
 
 	private void addUsers() throws UserDaoException {
-		UserDao dao = DaoFactory.createUsersDao();
+		UserDao dao = DaoFactory.createUserDao();
 
 		System.out.println("----------Adding initial users----------");
 		System.out.println("Current Users: ");

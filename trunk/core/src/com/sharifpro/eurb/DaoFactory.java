@@ -182,13 +182,13 @@ public class DaoFactory
 	}
 
 	/**
-	 * Method 'createUsersDao'
+	 * Method 'createUserDao'
 	 * 
-	 * @return UsersDao
+	 * @return UserDao
 	 */
-	public static UserDao createUsersDao()
+	public static UserDao createUserDao()
 	{
-		return (UserDao) SharifProApplicationContext.getApplicationContext().getBean( "UsersDao" );
+		return (UserDao) SharifProApplicationContext.getApplicationContext().getBean( "UserDao" );
 	}
 
 }

@@ -6,13 +6,17 @@
 	xmlns:util="http://www.springframework.org/schema/util"
 	xmlns:security="http://www.springframework.org/schema/security"
 	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:ws="http://jax-ws.dev.java.net/spring/core"
+	xmlns:wss="http://jax-ws.dev.java.net/spring/servlet"
 	xsi:schemaLocation="
 	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
 	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
 	http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
 	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd
 	http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd
-	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd">
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+	http://jax-ws.dev.java.net/spring/core http://jax-ws.dev.java.net/spring/core.xsd
+	http://jax-ws.dev.java.net/spring/servlet http://jax-ws.dev.java.net/spring/servlet.xsd">
 	<util:properties id="applicationProps" location="/WEB-INF/application.properties"/>
 	
 	<bean id="contextApplicationContextProvider" class="com.sharifpro.util.SharifProApplicationContext"></bean> 
@@ -29,6 +33,7 @@
 		The CAS_FILTER needs to be in the right position within the filter chain.
 	-->
 	<security:http pattern="/resources-#{applicationProps['application.version']}/**" security="none" />
+	<security:http pattern="/ws/**" security="none" />
 	<security:http entry-point-ref="casAuthenticationEntryPoint" auto-config="false" authentication-manager-ref="authenticationManager">
 		<security:intercept-url pattern="/**" access="ROLE_MAPPING_MANAGEMENT" />
 		<security:custom-filter position="CAS_FILTER" ref="casAuthenticationFilter"></security:custom-filter>
@@ -216,7 +221,17 @@
 	<bean id="TableMappingDao" class="com.sharifpro.eurb.management.mapping.dao.impl.TableMappingDaoImpl" scope="singleton">
 		<property name="dataSource" ref="EURBDataSource" />
 	</bean>
-	<bean id="UsersDao" class="com.sharifpro.eurb.management.security.dao.impl.UserDaoImpl" scope="singleton">
+	<bean id="UserDao" class="com.sharifpro.eurb.management.security.dao.impl.UserDaoImpl" scope="singleton">
 		<property name="dataSource" ref="EURBDataSource" />
+	</bean>
+	
+	<wss:binding url="/ws/UserInfoService">
+		<wss:service>
+			<ws:service bean="#UserInfoService"/>
+		</wss:service>
+	</wss:binding>
+
+	<!-- Web service methods -->
+	<bean id="UserInfoService" class="com.sharifpro.matma.ws.UserInfoServiceEndpoint">
 	</bean>
 </beans>
