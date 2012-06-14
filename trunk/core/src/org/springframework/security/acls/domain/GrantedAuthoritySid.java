@@ -15,9 +15,10 @@
 package org.springframework.security.acls.domain;
 
 import org.springframework.security.acls.model.Sid;
-import org.springframework.security.core.GrantedAuthority;
 
 import org.springframework.util.Assert;
+
+import com.sharifpro.eurb.management.security.model.Groups;
 
 
 /**
@@ -30,20 +31,20 @@ import org.springframework.util.Assert;
 public class GrantedAuthoritySid implements Sid {
     //~ Instance fields ================================================================================================
 
-    private final String grantedAuthority;
+    private final String groupName;
 
     //~ Constructors ===================================================================================================
 
-    public GrantedAuthoritySid(String grantedAuthority) {
-        Assert.hasText(grantedAuthority, "GrantedAuthority required");
-        this.grantedAuthority = grantedAuthority;
+    public GrantedAuthoritySid(String groupName) {
+        Assert.hasText(groupName, "GroupName required");
+        this.groupName = groupName;
     }
 
-    public GrantedAuthoritySid(GrantedAuthority grantedAuthority) {
-        Assert.notNull(grantedAuthority, "GrantedAuthority required");
-        Assert.notNull(grantedAuthority.getAuthority(),
-            "This Sid is only compatible with GrantedAuthoritys that provide a non-null getAuthority()");
-        this.grantedAuthority = grantedAuthority.getAuthority();
+    public GrantedAuthoritySid(Groups group) {
+        Assert.notNull(group, "Group required");
+        Assert.notNull(group.getGroupName(),
+            "This Sid is only compatible with Groups that provide a non-null getGroupName()");
+        this.groupName = group.getGroupName();
     }
 
     //~ Methods ========================================================================================================
@@ -62,10 +63,10 @@ public class GrantedAuthoritySid implements Sid {
     }
 
     public String getGrantedAuthority() {
-        return grantedAuthority;
+        return groupName;
     }
 
     public String toString() {
-        return "GrantedAuthoritySid[" + this.grantedAuthority + "]";
+        return "GroupSid[" + this.groupName + "]";
     }
 }

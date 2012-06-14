@@ -1,0 +1,1 @@
+ALTER TABLE `eurb`.`groups` ADD UNIQUE INDEX `group_name_UNIQUE` (`group_name` ASC) , ADD UNIQUE INDEX `id_UNIQUE` (`id` ASC) ;

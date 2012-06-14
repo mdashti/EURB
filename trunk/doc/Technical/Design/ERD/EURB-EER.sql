@@ -197,6 +197,8 @@ CREATE  TABLE IF NOT EXISTS `eurb`.`groups` (
   `group_name` VARCHAR(50) NOT NULL ,
   PRIMARY KEY (`id`) ,
   INDEX `fk_groups_persistable_object` (`id` ASC) ,
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) ,
+  UNIQUE INDEX `group_name_UNIQUE` (`group_name` ASC) ,
   CONSTRAINT `fk_groups_persistable_object`
     FOREIGN KEY (`id` )
     REFERENCES `eurb`.`persistable_object` (`id` )

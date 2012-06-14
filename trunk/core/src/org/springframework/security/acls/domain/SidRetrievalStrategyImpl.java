@@ -19,13 +19,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.springframework.security.access.hierarchicalroles.NullRoleHierarchy;
-import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.acls.model.Sid;
 import org.springframework.security.acls.model.SidRetrievalStrategy;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.util.Assert;
+
+import com.sharifpro.eurb.DaoFactory;
+import com.sharifpro.eurb.management.security.dao.GroupsDao;
+import com.sharifpro.eurb.management.security.exception.GroupsDaoException;
+import com.sharifpro.eurb.management.security.model.Groups;
 
 /**
  * Basic implementation of {@link SidRetrievalStrategy} that creates a {@link Sid} for the principal, as well as
@@ -38,28 +40,33 @@ import org.springframework.util.Assert;
  */
 public class SidRetrievalStrategyImpl implements SidRetrievalStrategy {
 
-    private RoleHierarchy roleHierarchy = new NullRoleHierarchy();
+    private GroupsDao groupManager = DaoFactory.createGroupsDao();
 
     public SidRetrievalStrategyImpl() {
     }
 
-    public SidRetrievalStrategyImpl(RoleHierarchy roleHierarchy) {
-        Assert.notNull(roleHierarchy, "RoleHierarchy must not be null");
-        this.roleHierarchy = roleHierarchy;
+    public SidRetrievalStrategyImpl(GroupsDao groupManager) {
+        Assert.notNull(groupManager, "GroupsDao must not be null");
+        this.groupManager = groupManager;
     }
 
     //~ Methods ========================================================================================================
 
     public List<Sid> getSids(Authentication authentication) {
-        Collection<? extends GrantedAuthority> authorities = roleHierarchy.getReachableGrantedAuthorities(authentication.getAuthorities());
-        List<Sid> sids = new ArrayList<Sid>(authorities.size() + 1);
-
-        sids.add(new PrincipalSid(authentication));
-
-        for (GrantedAuthority authority : authorities) {
-            sids.add(new GrantedAuthoritySid(authority));
-        }
-
-        return sids;
+        Collection<Groups> groups;
+		try {
+			groups = groupManager.findCurrentGroupsForUser(authentication.getName());
+	        List<Sid> sids = new ArrayList<Sid>(groups.size() + 1);
+	
+	        sids.add(new PrincipalSid(authentication));
+	
+	        for (Groups grp : groups) {
+	            sids.add(new GrantedAuthoritySid(grp));
+	        }
+	
+	        return sids;
+		} catch (GroupsDaoException e) {
+			throw new RuntimeException(e);
+		}
     }
 }
