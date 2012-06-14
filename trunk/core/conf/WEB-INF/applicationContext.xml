@@ -43,7 +43,7 @@
 	<bean class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" id="passwordEncoder" />
     
 	<!--security:debug /-->
-	
+	<!-- Start Authentication/Auhorization Config -->
 	<security:authentication-manager id="authManager">
 		<security:authentication-provider user-service-ref="userDetailsService">
 			<security:password-encoder ref="passwordEncoder"> 
@@ -73,7 +73,8 @@
 		<property name="loginFormUrl" value="/login.spy" />
 		<property name="forceHttps" value="false" />
 	</bean>
-	
+	<!-- Finish Authentication/Auhorization Config -->
+
 	<tx:annotation-driven transaction-manager="txManager" />
 	
 	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager" >
