@@ -419,7 +419,7 @@ EURB.User.UserGrid = Ext.extend(Ext.grid.GridPanel, {
 		}
 		Ext.Msg.show({
 			 title:EURB.areYouSureToDelTitle
-			,msg:String.format(EURB.areYouSureToDelete, records.length == 1 ? records[0].get('name') : EURB.records)
+			,msg:String.format(EURB.areYouSureToDelete, records.length == 1 ? records[0].get('username') : EURB.records)
 			,icon:Ext.Msg.QUESTION
 			,buttons:Ext.Msg.YESNO
 			,scope:this
