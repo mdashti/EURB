@@ -51,10 +51,10 @@ public class InsertInitialData {
 	
 	public InsertInitialData() {
 		INITIAL_USERS = new String[][] {
-				new String[]{"admin", "mohamad"},
-				new String[]{"dashti", "mohamad"},
-				new String[]{"sadeghi", "alireza"},
-				new String[]{"keshavarz", "behrouz"}
+				new String[]{"admin", "mohamad", "me@mdashti.com"},
+				new String[]{"dashti", "mohamad", "mdashti@gmail.com"},
+				new String[]{"sadeghi", "alireza", "alireza.sadeghipour.1988@gmail.com"},
+				new String[]{"keshavarz", "behrouz", "keshavarz81@yahoo.com"}
 		};
 		
 		GROUP_NAME = new String[]{
@@ -110,13 +110,13 @@ public class InsertInitialData {
 	public static void main(String[] args) throws Exception {
 		InsertInitialData initial = new InsertInitialData();
 		System.out.println("################# START ################");
-		//initial.authenticate();
+		initial.authenticate();
 		
 		initial.addUsers();
 		
-		//initial.addGroups();
+		initial.addGroups();
 		
-		//initial.addCurrentDB();
+		initial.addCurrentDB();
 		System.out.println("################ FINISH ################");
 	}
 
@@ -150,18 +150,20 @@ public class InsertInitialData {
 		for(String[] theUser : INITIAL_USERS) {
 			String userName = theUser[0];
 			String password = theUser[1];
+			String email = theUser[2];
 			System.out.println("Looking for user : " + userName + "...");
 			User user = dao.findWhereUsernameEquals(userName);
 			if (user == null) {
 				System.out.println("\tUser not found! trying to make it...");
 	
 				user = new User(null, userName, password, AuthorityUtils.NO_AUTHORITIES);
-	
+				user.setEmail(email);
 				dao.insert(user);
 				System.out.println("\tUser added.");
 			} else {
 				System.out.println("\tUser exists.");
 				user.setPassword(password);
+				user.setEmail(email);
 				dao.setPassword(user.createPk(), user);
 			}
 		}

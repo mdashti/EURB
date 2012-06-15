@@ -1,0 +1,1 @@
+ALTER TABLE `eurb`.`users` ADD COLUMN `email` VARCHAR(200) NULL  AFTER `enabled` , ADD UNIQUE INDEX `email_UNIQUE` (`email` ASC) , ADD UNIQUE INDEX `username_UNIQUE` (`username` ASC) ;

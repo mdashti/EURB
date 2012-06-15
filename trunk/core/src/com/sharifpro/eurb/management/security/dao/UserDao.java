@@ -31,6 +31,11 @@ public interface UserDao
 	 * Sets password for a single user in the users table.
 	 */
 	public void setPassword(UserPk pk, User dto) throws UserDaoException;
+	
+	/** 
+	 * Sets email for a single user in the users table.
+	 */
+	public void setEmail(UserPk pk, User dto) throws UserDaoException;
 	/** 
 	 * Deletes a single row in the users table.
 	 */
@@ -57,9 +62,14 @@ public interface UserDao
 	public List<User> findWhereIdEquals(Long id) throws UserDaoException;
 
 	/** 
-	 * Returns all rows from the users table that match the criteria 'username = :username'.
+	 * Returns the row from the users table that match the criteria 'username = :username'.
 	 */
 	public User findWhereUsernameEquals(String username) throws UserDaoException;
+
+	/** 
+	 * Returns the row from the users table that match the criteria 'email = :email'.
+	 */
+	public User findByEmail(String email) throws UserDaoException;
 
 	/** 
 	 * Returns all rows from the users table that match the criteria 'password = :password'.
@@ -147,4 +157,10 @@ public interface UserDao
 	public List<User> findSelectableUsersForGroup(Long groupId) throws UserDaoException;
 
 	public List<User> findAllActive() throws UserDaoException;
+
+	public boolean userWithEmailExists(String exceptUsername, String email) throws UserDaoException;
+	
+	public boolean userWithEmailExists(String email) throws UserDaoException;
+
+	public boolean userWithUsernameExists(String username) throws UserDaoException;
 }

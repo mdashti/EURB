@@ -44,25 +44,28 @@
     
 	<!--security:debug /-->
 	<!-- Start Authentication/Auhorization Config -->
-	<!--
-		Enable security, let the casAuthenticationEntryPoint handle all intercepted urls.
-		The CAS_FILTER needs to be in the right position within the filter chain.
-	-->
+	<security:authentication-manager id="authManager">
+		<security:authentication-provider user-service-ref="userDetailsService">
+			<security:password-encoder ref="passwordEncoder"> 
+				<!--security:salt-source ref="saltSource"/-->
+			</security:password-encoder>
+		</security:authentication-provider>
+	</security:authentication-manager>
+
 	<security:http pattern="/resources-#{applicationProps['application.version']}/**" security="none" />
 	<security:http pattern="/ws/**" security="none" />
-	<security:http entry-point-ref="casAuthenticationEntryPoint" auto-config="false" authentication-manager-ref="authenticationManager">
+	<security:http auto-config="false" entry-point-ref="authenticationEntryPoint" authentication-manager-ref="authManager">
+		<security:intercept-url pattern="/login.spy*" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
 		<security:intercept-url pattern="/403.spy*" access="ROLE_USER"/>
 		<security:intercept-url pattern="/404.spy*" access="ROLE_USER"/>
 		<security:intercept-url pattern="/**" access="ROLE_USER" />
-		<security:custom-filter position="CAS_FILTER" ref="casAuthenticationFilter"></security:custom-filter>
+		<security:custom-filter position="FORM_LOGIN_FILTER" ref="authenticationProcessingFilter"/>
 		<security:custom-filter position="CONCURRENT_SESSION_FILTER" ref="concurrencyFilter" />
 		<security:custom-filter after="SESSION_MANAGEMENT_FILTER" ref="sessionRegistryFixFilter"/>
-		<security:custom-filter ref="requestSingleLogoutFilter" before="LOGOUT_FILTER"/>
-		<security:logout logout-url="/logout.spy" logout-success-url="/" delete-cookies="JSESSIONID"/>
-		<security:custom-filter ref="singleLogoutFilter" before="CAS_FILTER"/>
-		<security:session-management invalid-session-url="/" session-authentication-strategy-ref="sas">
-			<!--concurrency-control max-sessions="-1" error-if-maximum-exceeded="true" session-authentication-error-url="/" /-->
+		<security:session-management invalid-session-url="/login.spy" session-authentication-strategy-ref="sas">
+			<!--concurrency-control max-sessions="-1" error-if-maximum-exceeded="true" session-authentication-error-url="/login.spy" /-->
 		</security:session-management>
+		<security:logout logout-url="/logout.spy" logout-success-url="/login.spy" delete-cookies="JSESSIONID"/>
 		<security:remember-me data-source-ref="EURBDataSource"/>
 		<security:access-denied-handler error-page="/403.jsp"/>
 	</security:http>
@@ -81,69 +84,20 @@
 
 	<bean id="concurrencyFilter" class="org.springframework.security.web.session.ConcurrentSessionFilter">
 		<property name="sessionRegistry" ref="sessionRegistry" />
-		<property name="expiredUrl" value="/" />
+		<property name="expiredUrl" value="/login.spy" />
 	</bean>
 
-	<!-- This filter handles a Single Logout Request from the CAS Server -->
-	<bean id="singleLogoutFilter" class="org.jasig.cas.client.session.SingleSignOutFilter"/>
-	<!-- This filter redirects to the CAS Server to signal Single Logout should be performed -->
-	<bean id="requestSingleLogoutFilter" class="org.springframework.security.web.authentication.logout.LogoutFilter">
-		<constructor-arg value="http://matma.ptmco.ir:9161/eurb/logout.spy"/>
-		<constructor-arg>
-			<bean class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler"/>
-		</constructor-arg>
-		<property name="filterProcessesUrl" value="/j_spring_cas_security_logout"/>
-	</bean>
-	<!--
-		Required for the casProcessingFilter, so define it explicitly set and
-		specify an Id Even though the authenticationManager is created by
-		default when namespace based config is used.
-	-->
-	<security:authentication-manager alias="authenticationManager">
-		<security:authentication-provider ref="casAuthenticationProvider"></security:authentication-provider>
-	</security:authentication-manager>
-
-	<!--
-		This section is used to configure CAS. The service is the
-		actual redirect that will be triggered after the CAS login sequence.
-	-->
-	<bean id="serviceProperties" class="org.springframework.security.cas.ServiceProperties">
-		<property name="service" value="http://matma.ptmco.ir:9161/eurb/j_spring_cas_security_check"></property>
-		<property name="sendRenew" value="false"></property>
-	</bean>	
-
-	<!--
-		The CAS filter handles the redirect from the CAS server and starts the ticket validation.
-	-->
-	<bean id="casAuthenticationFilter" class="org.springframework.security.cas.web.CasAuthenticationFilter">
-		<property name="authenticationManager" ref="authenticationManager"></property>
+	<bean id="authenticationProcessingFilter" class="com.sharifpro.filter.AuthenticationProcessingFilter">
 		<property name="sessionAuthenticationStrategy" ref="sas" />
+		<property name="authenticationManager" ref="authManager" />
 		<property name="authenticationSuccessHandler">
 			<bean class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler" />
 		</property>
 	</bean>
-
-	<!--
-		The entryPoint intercepts all the CAS authentication requests.
-		It redirects to the CAS loginUrl for the CAS login page.
-	-->
-	<bean id="casAuthenticationEntryPoint" class="org.springframework.security.cas.web.CasAuthenticationEntryPoint">
-		<property name="loginUrl" value="http://192.168.1.103/cas-server-webapp-3.4.12/login"></property>
-		<property name="serviceProperties" ref="serviceProperties"></property>
-	</bean>
-
-	<!--
-		Handles the CAS ticket processing.
-	 -->
-	<bean id="casAuthenticationProvider" class="org.springframework.security.cas.authentication.CasAuthenticationProvider">
-		<property name="userDetailsService" ref="userDetailsService"></property>
-		<property name="serviceProperties" ref="serviceProperties"></property>
-		<property name="ticketValidator">
-			<bean class="org.jasig.cas.client.validation.Cas20ServiceTicketValidator">
-				<constructor-arg index="0" value="http://192.168.1.103/cas-server-webapp-3.4.12"></constructor-arg>
-			</bean>
-		</property>
-		<property name="key" value="cas"></property>
+	
+	<bean id="authenticationEntryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+		<property name="loginFormUrl" value="/login.spy" />
+		<property name="forceHttps" value="false" />
 	</bean>
 	<!-- Finish Authentication/Auhorization Config -->
 

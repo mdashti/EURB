@@ -101,4 +101,9 @@
 		<servlet-name>jaxws-servlet</servlet-name>
 		<url-pattern>/ws/*</url-pattern>
 	</servlet-mapping>
+	
+	<!--error-page>
+		<error-code>404</error-code>
+		<location>/404.spy</location>
+	</error-page-->
 </web-app>

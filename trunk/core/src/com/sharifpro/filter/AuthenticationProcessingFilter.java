@@ -9,12 +9,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.savedrequest.RequestCache;
+import org.springframework.security.web.savedrequest.SavedRequest;
 
 import com.sharifpro.util.PropertyProvider;
+import com.sharifpro.util.SharifProApplicationContext;
 
 public class AuthenticationProcessingFilter extends UsernamePasswordAuthenticationFilter {
 	protected void successfulAuthentication(HttpServletRequest request,
@@ -29,7 +33,13 @@ public class AuthenticationProcessingFilter extends UsernamePasswordAuthenticati
 		Writer out = responseWrapper.getWriter();
 
 		String targetUrl = "index.spy";
-		out.write("{success:true, targetUrl : \'" + targetUrl + "\'}");
+		String defaultTargetFormat = "{success:true, targetUrl : \'%s\'}";
+		SavedRequest req = new org.springframework.security.web.savedrequest.HttpSessionRequestCache().getRequest(request, response);
+		if(req != null && !StringUtils.isEmpty(req.getRedirectUrl())) {
+			out.write(String.format(defaultTargetFormat, req.getRedirectUrl()));
+		} else {
+			out.write(String.format(defaultTargetFormat, targetUrl));
+		}
 		out.close();
 
 	}
@@ -47,5 +57,4 @@ public class AuthenticationProcessingFilter extends UsernamePasswordAuthenticati
 		out.close();
 
 	}
-
 }

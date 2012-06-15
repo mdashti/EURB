@@ -868,7 +868,7 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `eurb`;
-INSERT INTO `eurb`.`group_authorities` (`group_id`, `authority`) VALUES (200, 'ROLE_MAPPING_MANAGEMENT_DB_LIST');
+INSERT INTO `eurb`.`group_authorities` (`group_id`, `authority`) VALUES (200, 'ROLE_USER');
 
 COMMIT;
 

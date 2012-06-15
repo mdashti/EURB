@@ -34,6 +34,7 @@
 			EURB.User.username = '<spring:message code="eurb.app.management.user.username" />';
 			EURB.User.password = '<spring:message code="eurb.app.management.user.password" />';
 			EURB.User.enabled = '<spring:message code="eurb.app.management.user.enabled" />';
+			EURB.User.email = '<spring:message code="eurb.app.management.user.email" />';
 			EURB.User.enabledEnabled = '<spring:message code="eurb.app.management.user.enabledEnabled" />';
 			EURB.User.enabledDisabled = '<spring:message code="eurb.app.management.user.enabledDisabled" />';
 			EURB.User.changePassword = '<spring:message code="eurb.app.management.user.changePassword" />';

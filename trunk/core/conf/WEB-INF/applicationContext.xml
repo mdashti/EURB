@@ -56,7 +56,9 @@
 	<security:http pattern="/ws/**" security="none" />
 	<security:http auto-config="false" entry-point-ref="authenticationEntryPoint" authentication-manager-ref="authManager">
 		<security:intercept-url pattern="/login.spy*" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
-		<security:intercept-url pattern="/**" access="ROLE_MAPPING_MANAGEMENT" />
+		<security:intercept-url pattern="/403.spy*" access="ROLE_USER"/>
+		<security:intercept-url pattern="/404.spy*" access="ROLE_USER"/>
+		<security:intercept-url pattern="/**" access="ROLE_USER" />
 		<security:custom-filter position="FORM_LOGIN_FILTER" ref="authenticationProcessingFilter"/>
 		<security:custom-filter position="CONCURRENT_SESSION_FILTER" ref="concurrencyFilter" />
 		<security:custom-filter after="SESSION_MANAGEMENT_FILTER" ref="sessionRegistryFixFilter"/>
@@ -65,7 +67,9 @@
 		</security:session-management>
 		<security:logout logout-url="/logout.spy" logout-success-url="/login.spy" delete-cookies="JSESSIONID"/>
 		<security:remember-me data-source-ref="EURBDataSource"/>
+		<security:access-denied-handler error-page="/403.jsp"/>
 	</security:http>
+	<security:global-method-security secured-annotations="enabled" />
 
 	<bean id="sessionRegistry" class="org.springframework.security.core.session.SessionRegistryImpl" />
 
@@ -86,6 +90,9 @@
 	<bean id="authenticationProcessingFilter" class="com.sharifpro.filter.AuthenticationProcessingFilter">
 		<property name="sessionAuthenticationStrategy" ref="sas" />
 		<property name="authenticationManager" ref="authManager" />
+		<property name="authenticationSuccessHandler">
+			<bean class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler" />
+		</property>
 	</bean>
 	
 	<bean id="authenticationEntryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
@@ -253,6 +260,7 @@
 	</bean>
 	<bean id="UserDao" class="com.sharifpro.eurb.management.security.dao.impl.UserDaoImpl" scope="singleton">
 		<property name="dataSource" ref="EURBDataSource" />
+		<property name="authoritiesDao" ref="AuthoritiesDao" />
 	</bean>
 	<bean id="MailProvider" class="com.sharifpro.eurb.builder.provider.MailProvider" scope="singleton">
 		<property name="dataSource" ref="EURBDataSource" />
@@ -283,15 +291,5 @@
 	</bean>
 	<bean id="UserMessageDao" class="com.sharifpro.eurb.builder.dao.impl.UserMessageDaoImpl" scope="singleton">
 		<property name="dataSource" ref="EURBDataSource" />
-	</bean>
-
-	<wss:binding url="/ws/UserInfoService">
-		<wss:service>
-			<ws:service bean="#UserInfoService"/>
-		</wss:service>
-	</wss:binding>
-
-	<!-- Web service methods -->
-	<bean id="UserInfoService" class="com.sharifpro.matma.ws.UserInfoServiceEndpoint">
 	</bean>
 </beans>

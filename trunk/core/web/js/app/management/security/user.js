@@ -7,6 +7,7 @@ EURB.User.store = new Ext.data.Store({
 			 {name:'id', type:'int'}
 			,{name:'username', type:'string'}
 			,{name:'password', type:'string'}
+			,{name:'email', type:'string'}
 			,{name:'enabled', type:'boolean'}
 		]
 	})
@@ -35,6 +36,17 @@ EURB.User.cols = [{
 	,sortable:true
 	,editor:new Ext.form.TextField({
 		allowBlank:false
+	})
+},{
+	 header:EURB.User.email
+	,id:'email'
+	,dataIndex:'email'
+	,width:40
+	,sortable:true
+	,cls:'left-align-txt'
+	,editor:new Ext.form.TextField({
+		allowBlank:false,
+		vtype: 'email'
 	})
 },{
 	 header:EURB.User.password
@@ -118,7 +130,6 @@ EURB.User.UserGrid = Ext.extend(Ext.grid.GridPanel, {
 			
 			items: [{
 			    name: 'id'
-			    ,allowBlank:false
 			    ,xtype: 'hidden'
 			},{
 			    fieldLabel: EURB.User.username
@@ -130,12 +141,18 @@ EURB.User.UserGrid = Ext.extend(Ext.grid.GridPanel, {
 				//,disabled: true
 			    ,cls: 'left-align-txt'
 			},{
+			    fieldLabel: EURB.User.email
+			    ,name: 'email'
+			    ,anchor:'100%'  // anchor width by percentage
+			    ,allowBlank:false
+				,vtype: 'email'
+			    ,cls: 'left-align-txt'
+			},{
 			    fieldLabel: EURB.User.newPassword
 			    ,name: 'newpass'
 			    ,anchor: '100%'  // anchor width by percentage
-			    ,allowBlank:false
 				,xtype: 'textfield'
-				,allowBlank:false
+				//,allowBlank:false
 				,inputType:'password'
 			    ,cls: 'left-align-txt'
 			}, {
@@ -143,7 +160,7 @@ EURB.User.UserGrid = Ext.extend(Ext.grid.GridPanel, {
 			    ,name: 'confirmnewpass'
 			    ,anchor: '100%' // anchor width by percentage
 				,xtype: 'textfield'
-				,allowBlank:false
+				//,allowBlank:false
 				,inputType:'password'
 			    ,cls: 'left-align-txt'
 			    ,validator: function(value) {
@@ -159,10 +176,10 @@ EURB.User.UserGrid = Ext.extend(Ext.grid.GridPanel, {
         var changePasswordWindow = new Ext.Window({
 			title: EURB.User.changePassword,
 			width: 300,
-			height:150,
+			height:180,
 			minWidth: 300,
 			closeAction: 'hide',
-			minHeight: 150,
+			minHeight: 180,
 			layout: 'fit',
 			plain:true,
 			bodyStyle:'padding:5px;',
@@ -179,7 +196,7 @@ EURB.User.UserGrid = Ext.extend(Ext.grid.GridPanel, {
 	                        	EURB.User.userGrid.store.reload();
 	                        },
 	                        failure: function(form, action) {
-	                            EURB.showError(EURB.User.errorInStore);
+	                            EURB.User.userGrid.requestCallback(action.options,true,action.response);
 	                        }
 	                    });
 		        	}

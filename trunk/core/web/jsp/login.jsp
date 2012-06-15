@@ -30,7 +30,11 @@
 			document.title = EURB.title + ' - ' + EURB.login;
 			var loginFormSubmitConf = {
 				success: function(f,a){
-					window.location.href = EURB.baseURL+a.result.targetUrl;
+					if(a.result.targetUrl && a.result.targetUrl.indexOf('http') == 0) {
+						window.location.href = a.result.targetUrl;
+					} else {
+						window.location.href = EURB.baseURL+a.result.targetUrl;
+					}
 				},
 				failure: function(f,a){
 					if (a.failureType === Ext.form.Action.CONNECT_FAILURE){

@@ -50,7 +50,7 @@ public class User extends PersistableObject implements UserDetails, Serializable
 	/** 
 	 * This attribute maps to the column email in the users table.
 	 */
-	protected String email = "mdashti@gmail.com";
+	protected String email;
 
 	/** 
 	 * This attribute maps to the column enabled in the users table.
@@ -189,6 +189,10 @@ public class User extends PersistableObject implements UserDetails, Serializable
 
 	public String getEmail() {
 		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public Collection<? extends GrantedAuthority> getAuthorities() {

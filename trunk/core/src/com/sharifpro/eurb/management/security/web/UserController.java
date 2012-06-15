@@ -72,22 +72,53 @@ public class UserController {
 	}
 
 	@RequestMapping(value="/management/security/user/userStore.spy")
-	public @ResponseBody Map<String,? extends Object> store(@RequestParam(required=true) String username
-			,@RequestParam(required=true) String newpass
-			,@RequestParam(required=true) String confirmnewpass) throws Exception {
+	public @ResponseBody Map<String,? extends Object> store(@RequestParam(required=false) Long id
+			,@RequestParam(required=true) String username
+			,@RequestParam(required=true) String email
+			,@RequestParam(required=false) String newpass
+			,@RequestParam(required=false) String confirmnewpass) throws Exception {
 		try{
-
-			if(StringUtils.isEmpty(newpass) || !newpass.equals(confirmnewpass)){
-				throw new UserDaoException(PropertyProvider.get("eurb.app.management.user.confirmDidNotMatch"));
-			}
-			User theUser = userDao.findWhereUsernameEquals(username);
-			
-			if(theUser == null) {
-				theUser = new User(null, username, newpass, AuthorityUtils.NO_AUTHORITIES);
-				userDao.insert(theUser);
-			} else {
-				theUser.setPassword(newpass);
-				userDao.setPassword(theUser.createPk(), theUser);
+			User theUser;
+			if(id == null) { //create
+				if(StringUtils.isEmpty(newpass)){
+					throw new UserDaoException(PropertyProvider.get("eurb.app.management.user.emptyPassword"));
+				} else if(!newpass.equals(confirmnewpass)) {
+					throw new UserDaoException(PropertyProvider.get("eurb.app.management.user.confirmDidNotMatch"));
+				} else if(userDao.userWithEmailExists(email)){
+					throw new UserDaoException(PropertyProvider.get("eurb.app.management.user.emailExists"));
+				} else if(userDao.userWithUsernameExists(username)){
+					throw new UserDaoException(PropertyProvider.get("eurb.app.management.user.usernameExists"));
+				} else {
+					theUser = new User(null, username, newpass, AuthorityUtils.NO_AUTHORITIES);
+					theUser.setEmail(email);
+					userDao.insert(theUser);
+				}
+			} else { //update
+				if(StringUtils.isEmpty(newpass)){
+					if(userDao.userWithEmailExists(username, email)){
+						throw new UserDaoException(PropertyProvider.get("eurb.app.management.user.emailExists"));
+					}
+					theUser = userDao.findByPrimaryKey(id);
+					if(theUser != null && theUser.getUsername().equals(username)) {
+						theUser.setEmail(email);
+						userDao.setEmail(theUser.createPk(), theUser);
+					} else {
+						throw new UserDaoException(PropertyProvider.get("eurb.app.management.user.userNotFoundForUpdate"));
+					}
+				} else if(!newpass.equals(confirmnewpass)) {
+					throw new UserDaoException(PropertyProvider.get("eurb.app.management.user.confirmDidNotMatch"));
+				} else if(userDao.userWithEmailExists(username, email)){
+					throw new UserDaoException(PropertyProvider.get("eurb.app.management.user.emailExists"));
+				} else {
+					theUser = userDao.findByPrimaryKey(id);
+					if(theUser != null && theUser.getUsername().equals(username)) {
+						theUser.setPassword(newpass);
+						theUser.setEmail(email);
+						userDao.setPassword(theUser.createPk(), theUser);
+					} else {
+						throw new UserDaoException(PropertyProvider.get("eurb.app.management.user.userNotFoundForUpdate"));
+					}
+				}
 			}
 			
 			return JsonUtil.getSuccessfulMapAfterStore(Arrays.asList(theUser.getId()));

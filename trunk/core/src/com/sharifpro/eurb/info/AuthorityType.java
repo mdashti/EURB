@@ -1,6 +1,9 @@
 package com.sharifpro.eurb.info;
 
 public class AuthorityType {
+
+	public final static String USER = "ROLE_USER";
+	
 	public final static String MAPPING_MANAGEMENT = "ROLE_MAPPING_MANAGEMENT";
 	public final static String MAPPING_MANAGEMENT_DB_LIST = MAPPING_MANAGEMENT + "_DB_LIST";
 	public final static String MAPPING_MANAGEMENT_DB = MAPPING_MANAGEMENT + "_DB";
