@@ -1,15 +1,14 @@
 package com.sharifpro.eurb.management.security.web;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.session.SessionInformation;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,20 +16,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.sharifpro.eurb.management.mapping.model.ColumnMapping;
-import com.sharifpro.eurb.management.mapping.model.ColumnMappingPk;
 import com.sharifpro.eurb.management.security.dao.AuthoritiesDao;
 import com.sharifpro.eurb.management.security.dao.GroupAuthoritiesDao;
 import com.sharifpro.eurb.management.security.dao.GroupsDao;
 import com.sharifpro.eurb.management.security.dao.UserDao;
+//import com.sharifpro.eurb.management.security.dao.impl.UserDetailsServiceImpl;
 import com.sharifpro.eurb.management.security.exception.AuthoritiesDaoException;
-import com.sharifpro.eurb.management.security.exception.UserDaoException;
 import com.sharifpro.eurb.management.security.model.Authorities;
 import com.sharifpro.eurb.management.security.model.AuthorityBundle;
 import com.sharifpro.eurb.management.security.model.GroupAuthorities;
 import com.sharifpro.eurb.management.security.model.Groups;
 import com.sharifpro.eurb.management.security.model.User;
 import com.sharifpro.util.PropertyProvider;
+import com.sharifpro.util.SessionManager;
 import com.sharifpro.util.json.JsonUtil;
 
 /**
@@ -50,13 +48,15 @@ public class AuthoritiesController {
 	
 	private JsonUtil jsonUtil;
 
+	//private UserDetailsServiceImpl userDetailsServiceImpl;
+
 	@RequestMapping(value="/management/security/authorities.spy")
-	public ModelAndView executeTableSpy() throws Exception {
-		return executeTableSpy(null);
+	public ModelAndView executeAuthoritiesSpy() throws Exception {
+		return executeAuthoritiesSpy(null);
 	}
 
 	@RequestMapping(value="/management/security/authorities{sid}.spy")
-	public ModelAndView executeTableSpy(@PathVariable Long sid) throws Exception {
+	public ModelAndView executeAuthoritiesSpy(@PathVariable Long sid) throws Exception {
 		ModelAndView mv = new ModelAndView();
 		List<User> userList = userDao.findAllActive();
 		List<Groups> groupList = groupsDao.findAll();
@@ -145,7 +145,6 @@ public class AuthoritiesController {
 				}
 			}
 			List<AuthorityBundle> authBundles = AuthorityBundle.poplulateAuthorityBundlesFromAuthorities(authSet);
-
 			return JsonUtil.getSuccessfulMap(authBundles);
 
 		} catch (Exception e) {
@@ -180,6 +179,7 @@ public class AuthoritiesController {
 			List<AuthorityBundle> authBundles = jsonUtil.getListFromRequest(data, AuthorityBundle.class);
 			SortedSet<String> authSet = AuthorityBundle.extractAuthSet(authBundles);
 			if(authSet != null) {
+				List<User> affectedUsers;
 				if(isPrincipal) {
 					authoritiesDao.clearUserAuthorities(foundUser.getUsername());
 					Authorities tmpAuth;
@@ -189,6 +189,7 @@ public class AuthoritiesController {
 						tmpAuth.setUsername(foundUser.getUsername());
 						authoritiesDao.insert(tmpAuth);
 					}
+					affectedUsers = Arrays.asList(foundUser);
 				} else {
 					groupAuthoritiesDao.clearGroupAuthorities(foundGroup.getId());
 					GroupAuthorities tmpAuth;
@@ -197,6 +198,26 @@ public class AuthoritiesController {
 						tmpAuth.setAuthority(a);
 						tmpAuth.setGroupId(foundGroup.getId());
 						groupAuthoritiesDao.insert(tmpAuth);
+					}
+					affectedUsers = userDao.findCurrentUsersForGroup(foundGroup.getId());
+				}
+
+				// Make this change to affect online users
+				SessionRegistry sessionRegistry = (SessionRegistry) org.springframework.web.context.ContextLoader.getCurrentWebApplicationContext().getBean("sessionRegistry");
+				for(User u : affectedUsers) {
+					if(!u.getUsername().equals(SessionManager.getCurrentUserName()) && sessionRegistry != null) {
+						List<SessionInformation> sessionInfoList = sessionRegistry.getAllSessions(u, false);
+						
+						if(sessionInfoList != null && !sessionInfoList.isEmpty()) {
+							for(SessionInformation si : sessionInfoList) {
+								//if(si.getPrincipal() instanceof User) {
+								//	User principal = ((User)si.getPrincipal());
+								//	principal.setAuthorities(userDetailsServiceImpl.loadUserByUsername(principal.getUsername()).getAuthorities());
+								//} else {
+									si.expireNow();
+								//}
+							}
+						}
 					}
 				}
 			}
@@ -229,6 +250,11 @@ public class AuthoritiesController {
 	public void setAuthoritiesDao(AuthoritiesDao authoritiesDao) {
 		this.authoritiesDao = authoritiesDao;
 	}
+
+	/*@Autowired
+	public void setUserDetailsServiceImpl(UserDetailsServiceImpl userDetailsServiceImpl) {
+		this.userDetailsServiceImpl = userDetailsServiceImpl;
+	}*/
 
 	@Autowired
 	public void setJsonUtil(JsonUtil jsonUtil) {

@@ -108,12 +108,13 @@ public class AuthorityBundle {
 	}
 
 	public static List<AuthorityBundle> poplulateAuthorityBundlesFromAuthorities(SortedSet<String> authSet) {
-		List<AuthorityBundle> result = new ArrayList<AuthorityBundle>(11);
+		List<AuthorityBundle> result = new ArrayList<AuthorityBundle>(12);
 		
 		result.add(new AuthorityBundle(AuthorityType.BASE_MANAGEMENT_MENU, authSet));
 		result.add(new AuthorityBundle(AuthorityType.BASE_DB_CONFIG, authSet));
 		result.add(new AuthorityBundle(AuthorityType.BASE_TABLE_MAPPING, authSet));
 		result.add(new AuthorityBundle(AuthorityType.BASE_COL_MAPPING, authSet));
+		result.add(new AuthorityBundle(AuthorityType.BASE_CATEGORY_MANAGEMENT, authSet));
 
 		result.add(new AuthorityBundle(AuthorityType.SECURITY_MANAGEMENT_MENU, authSet));
 		result.add(new AuthorityBundle(AuthorityType.SEC_USER_MANAGEMENT, authSet));

@@ -8,6 +8,8 @@ For preparing development environment:
 2- Download and extract apache-tomcat-6.0.35
 	- replace apache-tomcat-6.0.35/conf/context.xml with <EURB>/core/conf
 	- change email config in apache-tomcat-6.0.35/conf/context.xml
+	- disable session serialization by adding this line to apache-tomcat-6.0.35/conf/context.xml (for more information have a look at http://tomcat.apache.org/tomcat-6.0-doc/config/manager.html#Disable_Session_Persistence):
+		<Manager pathname="" />
 3- Download and install mysql-5.5.19
 	- put database user/pass in core/conf/WEB-INF/applicationContext.xml
 4- Import EURB project into eclipse

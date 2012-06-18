@@ -1,6 +1,10 @@
+<%@page import="com.sharifpro.eurb.info.AuthorityType"%>
 <%@page import="com.sharifpro.util.SessionManager,
 				com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib uri="http://jakarta.apache.org/taglibs/unstandard-1.0" prefix="un" %>
+<un:useConstants className="com.sharifpro.eurb.info.AuthorityType" var="authorityType" />
 <% String resourcesUrl = request.getParameter("resourcesUrl"); %>
 <% String baseUrl = request.getParameter("baseUrl"); %>
 <% boolean menuEnabled = !"false".equals(request.getParameter("menuEnabled")); %>
@@ -196,27 +200,52 @@
 		    	html:'<div class="urbangreymenu">'+
 		    	'<ul class="submenu">'+
 		    	'<li><a href="<spring:url value="/" />">'+EURB.appMenu.homepage+'</a></li>'+
+		    	'<li><a href="<spring:url value="/logout.spy" />">'+EURB.logout+'</a></li>'+
 		    	'</ul>'+
+		    	<sec:authorize access="hasRole('${authorityType.ROLE_BASE_MANAGEMENT_MENU_VIEW}')">
 		    	'<h3 class="headerbar"><a href="'+EURB.baseURL+'"><spring:message code="eurb.app.menu.management" /></a></h3>'+
 		    	'<ul class="submenu">'+
-		    	'<li><a href="<spring:url value="/management/mapping/dbconfig.spy" />">'+EURB.appMenu.dbConfig+'</a></li>'+
-		    	'<li><a href="<spring:url value="/management/mapping/db-table.spy" />">'+EURB.appMenu.table+'</a></li>'+
-		    	'<li><a href="<spring:url value="/management/mapping/db-table-column.spy" />">'+EURB.appMenu.column+'</a></li>'+
-		    	'<li><a href="'+EURB.baseURL+'builder/category/report-category.spy">'+EURB.appMenu.category+'</a></li>'+
+			    	<sec:authorize access="hasRole('${authorityType.ROLE_BASE_DB_CONFIG_VIEW_LIST}')">
+			    	'<li><a href="<spring:url value="/management/mapping/dbconfig.spy" />">'+EURB.appMenu.dbConfig+'</a></li>'+
+			    	</sec:authorize>
+			    	<sec:authorize access="hasRole('${authorityType.ROLE_BASE_TABLE_MAPPING_VIEW_LIST}')">
+			    	'<li><a href="<spring:url value="/management/mapping/db-table.spy" />">'+EURB.appMenu.table+'</a></li>'+
+			    	</sec:authorize>
+			    	<sec:authorize access="hasRole('${authorityType.ROLE_BASE_COL_MAPPING_VIEW_LIST}')">
+			    	'<li><a href="<spring:url value="/management/mapping/db-table-column.spy" />">'+EURB.appMenu.column+'</a></li>'+
+			    	</sec:authorize>
+			    	<sec:authorize access="hasRole('${authorityType.ROLE_BASE_CATEGORY_MANAGEMENT_VIEW_LIST}')">
+			    	'<li><a href="'+EURB.baseURL+'builder/category/report-category.spy">'+EURB.appMenu.category+'</a></li>'+
+			    	</sec:authorize>
 		    	'</ul>'+
+		    	</sec:authorize>
+		    	<sec:authorize access="hasRole('${authorityType.ROLE_SECURITY_MANAGEMENT_MENU_VIEW}')">
 		    	'<h3 class="headerbar"><a href="'+EURB.baseURL+'"><spring:message code="eurb.app.menu.management.security" /></a></h3>'+
 		    	'<ul class="submenu">'+
-		    	'<li><a href="<spring:url value="/management/security/user.spy" />">'+EURB.appMenu.user+'</a></li>'+
-		    	'<li><a href="<spring:url value="/management/security/group.spy" />">'+EURB.appMenu.group+'</a></li>'+
-		    	'<li><a href="<spring:url value="/management/security/authorities.spy" />">'+EURB.appMenu.authorities+'</a></li>'+
+			    	<sec:authorize access="hasRole('${authorityType.ROLE_SEC_USER_MANAGEMENT_VIEW_LIST}')">
+			    	'<li><a href="<spring:url value="/management/security/user.spy" />">'+EURB.appMenu.user+'</a></li>'+
+			    	</sec:authorize>
+			    	<sec:authorize access="hasRole('${authorityType.ROLE_SEC_GROUP_MANAGEMENT_VIEW_LIST}')">
+			    	'<li><a href="<spring:url value="/management/security/group.spy" />">'+EURB.appMenu.group+'</a></li>'+
+			    	</sec:authorize>
+			    	<sec:authorize access="hasRole('${authorityType.ROLE_SEC_ROLE_MANAGEMENT_VIEW_LIST}')">
+			    	'<li><a href="<spring:url value="/management/security/authorities.spy" />">'+EURB.appMenu.authorities+'</a></li>'+
+			    	</sec:authorize>
 		    	'</ul>'+
+		    	</sec:authorize>
+		    	<sec:authorize access="hasRole('${authorityType.ROLE_REPORT_GENERATOR_MENU_VIEW}')">
 		    	'<h3 class="headerbar"><a href="'+EURB.baseURL+'"><spring:message code="eurb.app.menu.reportbuilder" /></a></h3>'+
 		    	'<ul class="submenu">'+
 		    	/*'<li><a href="'+EURB.baseURL+'" ><spring:message code="eurb.app.menu.reportbuilder.reports" /></a></li>'+*/
-		    	'<li><a href="'+EURB.baseURL+'builder/report/report-list.spy">'+EURB.appMenu.report+'</a></li>'+
-		    	'<li><a href="'+EURB.baseURL+'builder/schedule/schedule.spy">'+EURB.appMenu.schedule+'</a></li>'+
+					<sec:authorize access="hasRole('${authorityType.ROLE_RPG_REPORT_BUILDER_VIEW_LIST}')">
+					'<li><a href="'+EURB.baseURL+'builder/report/report-list.spy">'+EURB.appMenu.report+'</a></li>'+
+					</sec:authorize>
+					<sec:authorize access="hasRole('${authorityType.ROLE_RPG_REPORT_SCHEDULER_VIEW_LIST}')">
+					'<li><a href="'+EURB.baseURL+'builder/schedule/schedule.spy">'+EURB.appMenu.schedule+'</a></li>'+
+					</sec:authorize>
 		    	/*'<li><a href="'+EURB.baseURL+'builder/report/view-report.spy">'+EURB.appMenu.showReport+'</a></li>'+*/
 		    	'</ul>'+
+		    	</sec:authorize>
 		    	/*'<h3 class="headerbar"><a href="'+EURB.baseURL+'"><spring:message code="eurb.app.menu.sample" /></a></h3>'+
 		    	'<ul class="submenu">'+
 		    	'<li><a href="<spring:url value="/sample" />" ><spring:message code="eurb.app.menu.sample.samplepage" /></a></li>'+	

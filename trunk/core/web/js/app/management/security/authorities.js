@@ -44,7 +44,7 @@ EURB.Authorities.isEditableCell = function(catId, colIndex) {
 			return false;
 		}
 	} else if(catId == 'TM' || catId == 'CM') {
-		if(colIndex == EXECUTE) {
+		if(colIndex == DEL || colIndex == EXECUTE) {
 			return false;
 		}
 	} else if(catId == 'UM' || catId == 'GM' || catId == 'RS') {

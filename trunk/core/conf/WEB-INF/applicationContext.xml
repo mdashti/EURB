@@ -54,11 +54,11 @@
 
 	<security:http pattern="/resources-#{applicationProps['application.version']}/**" security="none" />
 	<security:http pattern="/ws/**" security="none" />
-	<security:http auto-config="false" entry-point-ref="authenticationEntryPoint" authentication-manager-ref="authManager">
-		<security:intercept-url pattern="/login.spy*" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
-		<security:intercept-url pattern="/403.spy*" access="ROLE_USER"/>
-		<security:intercept-url pattern="/404.spy*" access="ROLE_USER"/>
-		<security:intercept-url pattern="/**" access="ROLE_USER" />
+	<security:http use-expressions="true" auto-config="false" entry-point-ref="authenticationEntryPoint" authentication-manager-ref="authManager">
+		<security:intercept-url pattern="/login.spy*" access="isAnonymous()"/>
+		<security:intercept-url pattern="/403.spy*" access="isAuthenticated()"/>
+		<security:intercept-url pattern="/404.spy*" access="isAuthenticated()"/>
+		<security:intercept-url pattern="/**" access="isAuthenticated()" />
 		<security:custom-filter position="FORM_LOGIN_FILTER" ref="authenticationProcessingFilter"/>
 		<security:custom-filter position="CONCURRENT_SESSION_FILTER" ref="concurrencyFilter" />
 		<security:custom-filter after="SESSION_MANAGEMENT_FILTER" ref="sessionRegistryFixFilter"/>
@@ -71,7 +71,7 @@
 	</security:http>
 	<security:global-method-security secured-annotations="enabled" />
 
-	<bean id="sessionRegistry" class="org.springframework.security.core.session.SessionRegistryImpl" />
+	<bean id="sessionRegistry" class="org.springframework.security.core.session.SessionRegistryImpl" scope="singleton" />
 
 	<bean id="sessionRegistryFixFilter" class="com.sharifpro.util.filter.SessionRegistryFixFilter">
 		<property name="sessionRegistry" ref="sessionRegistry"/>
