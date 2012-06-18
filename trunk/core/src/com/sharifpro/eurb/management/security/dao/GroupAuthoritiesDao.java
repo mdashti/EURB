@@ -35,4 +35,12 @@ public interface GroupAuthoritiesDao
 	 */
 	public List<GroupAuthorities> findWhereAuthorityEquals(String authority) throws GroupAuthoritiesDaoException;
 
+	/**
+	 * Deletes all authorities for this group
+	 * 
+	 * @param groupId
+	 * @throws GroupAuthoritiesDaoException
+	 */
+	public void clearGroupAuthorities(Long groupId) throws GroupAuthoritiesDaoException;
+
 }

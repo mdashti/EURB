@@ -415,3 +415,7 @@ background: black;
 .ext-gecko .x-window-body .x-form-item {
 	overflow: hidden;
 }
+
+.x-panel-body {
+	overflow: auto;
+}

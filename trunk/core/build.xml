@@ -106,12 +106,14 @@
 		<concat destfile="${app.webinf}/messages/messages.properties">
 			<fileset dir="${conf.dir}/WEB-INF">
 				<exclude name="**/.#*"/>
-				<include name="**/*.properties"/>
+				<include name="messages/messages_management.properties"/>
+				<include name="messages/messages_builder.properties"/>
 			</fileset>
 	    </concat>
 		
 		<copy file="${app.webinf}/messages/messages.properties" tofile="${app.webinf}/messages/messages_en.properties" />
 		<copy file="${app.webinf}/messages/messages.properties" tofile="${app.webinf}/messages/messages_en_US.properties" />
+		<copy file="${app.webinf}/messages/messages.properties" tofile="${conf.dir}/WEB-INF/messages/messages.properties" />
 
 		<copy todir="${app.webinf}">
 			<fileset dir="${conf.dir}/WEB-INF">

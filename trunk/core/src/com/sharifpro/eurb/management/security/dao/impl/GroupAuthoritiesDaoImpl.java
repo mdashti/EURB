@@ -25,6 +25,11 @@ public class GroupAuthoritiesDaoImpl extends AbstractDAO implements Parameterize
 		getJdbcTemplate().update("INSERT INTO " + getTableName() + " ( group_id, authority ) VALUES ( ?, ? )",dto.getGroupId(),dto.getAuthority());
 	}
 
+	@Transactional
+	public void clearGroupAuthorities(Long groupId) throws GroupAuthoritiesDaoException {
+		getJdbcTemplate().update("DELETE FROM " + getTableName() + " WHERE group_id = ?",groupId);
+	}
+
 	/**
 	 * Method 'mapRow'
 	 * 

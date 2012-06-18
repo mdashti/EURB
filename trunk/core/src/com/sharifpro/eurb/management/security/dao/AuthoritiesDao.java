@@ -57,4 +57,12 @@ public interface AuthoritiesDao
 	 */
 	public Authorities findByPrimaryKey(AuthoritiesPk pk) throws AuthoritiesDaoException;
 
+	/**
+	 * Deletes all authorities for this user
+	 * 
+	 * @param username
+	 * @throws AuthoritiesDaoException
+	 */
+	public void clearUserAuthorities(String username) throws AuthoritiesDaoException;
+
 }

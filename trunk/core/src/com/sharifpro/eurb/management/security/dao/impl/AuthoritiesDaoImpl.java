@@ -46,6 +46,11 @@ public class AuthoritiesDaoImpl extends AbstractDAO implements ParameterizedRowM
 		getJdbcTemplate().update("DELETE FROM " + getTableName() + " WHERE username = ? AND authority = ?",pk.getUsername(),pk.getAuthority());
 	}
 
+	@Transactional
+	public void clearUserAuthorities(String username) throws AuthoritiesDaoException {
+		getJdbcTemplate().update("DELETE FROM " + getTableName() + " WHERE username = ?",username);
+	}
+
 	/**
 	 * Method 'mapRow'
 	 * 
@@ -151,6 +156,7 @@ public class AuthoritiesDaoImpl extends AbstractDAO implements ParameterizedRowM
 	/** 
 	 * Returns the rows from the authorities table that matches the specified primary-key value.
 	 */
+	@Transactional(readOnly=true)
 	public Authorities findByPrimaryKey(AuthoritiesPk pk) throws AuthoritiesDaoException
 	{
 		return findByPrimaryKey( pk.getUsername(), pk.getAuthority() );

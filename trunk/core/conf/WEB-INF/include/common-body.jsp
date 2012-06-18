@@ -33,6 +33,7 @@
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/Ext.ux.menu.IconMenu.js"></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/Ext.ux.grid.RowActions.js"></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/Ext.ux.grid.RecordForm.js"></script>
+		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/Ext.ux.grid.CheckColumn.js"></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/Ext.ux.plugin.PagingToolbarResizer.js"></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/Ext.ux.GridPrinter.js"></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/Select.js"></script>
@@ -123,6 +124,7 @@
 		EURB.appMenu.report = '<spring:message code="eurb.app.menu.builder.report" />';
 		EURB.appMenu.user = '<spring:message code="eurb.app.menu.security.user" />';
 		EURB.appMenu.group = '<spring:message code="eurb.app.menu.security.group" />';
+		EURB.appMenu.authorities = '<spring:message code="eurb.app.menu.security.authorities" />';
 		EURB.appMenu.showReport = '<spring:message code="eurb.app.menu.builder.showreport" />';
 		EURB.appMenu.schedule = '<spring:message code="eurb.app.menu.builder.schedule" />';
 		
@@ -206,6 +208,7 @@
 		    	'<ul class="submenu">'+
 		    	'<li><a href="<spring:url value="/management/security/user.spy" />">'+EURB.appMenu.user+'</a></li>'+
 		    	'<li><a href="<spring:url value="/management/security/group.spy" />">'+EURB.appMenu.group+'</a></li>'+
+		    	'<li><a href="<spring:url value="/management/security/authorities.spy" />">'+EURB.appMenu.authorities+'</a></li>'+
 		    	'</ul>'+
 		    	'<h3 class="headerbar"><a href="'+EURB.baseURL+'"><spring:message code="eurb.app.menu.reportbuilder" /></a></h3>'+
 		    	'<ul class="submenu">'+

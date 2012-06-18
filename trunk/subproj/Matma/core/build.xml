@@ -106,7 +106,8 @@
 		<concat destfile="${app.webinf}/messages/messages.properties">
 			<fileset dir="${conf.dir}/WEB-INF">
 				<exclude name="**/.#*"/>
-				<include name="**/*.properties"/>
+				<include name="messages/messages_management.properties"/>
+				<include name="messages/messages_builder.properties"/>
 			</fileset>
 			<fileset dir="${matma.conf.dir}/WEB-INF">
 				<exclude name="**/.#*"/>
