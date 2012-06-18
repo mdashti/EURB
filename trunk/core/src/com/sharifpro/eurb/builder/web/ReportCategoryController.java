@@ -16,8 +16,11 @@ import org.springframework.web.servlet.ModelAndView;
 import com.sharifpro.eurb.builder.dao.ReportCategoryDao;
 import com.sharifpro.eurb.builder.model.ReportCategory;
 import com.sharifpro.eurb.builder.model.ReportCategoryPk;
+import com.sharifpro.eurb.info.AuthorityType;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
+import com.sharifpro.eurb.management.mapping.exception.DbConfigDaoException;
 import com.sharifpro.util.PropertyProvider;
+import com.sharifpro.util.SecurityUtil;
 import com.sharifpro.util.json.JsonUtil;
 
 /**
@@ -106,10 +109,18 @@ public class ReportCategoryController {
 			ReportCategoryPk pk;
 			for(ReportCategory reportCategory : reportCategories) {
 				if(reportCategory.isNewRecord()) {
-					pk = reportCategoryDao.insert(reportCategory);
+					if(SecurityUtil.hasRole(AuthorityType.ROLE_BASE_CATEGORY_MANAGEMENT_CREATE)) {
+						pk = reportCategoryDao.insert(reportCategory);
+					} else {
+						throw new DbConfigDaoException(PropertyProvider.ERROR_NOT_AUTHORIZED_TO_CREATE);
+					}
 				} else {
-					pk = reportCategory.createPk();
-					reportCategoryDao.update(pk,reportCategory);
+					if(SecurityUtil.hasRole(AuthorityType.ROLE_BASE_CATEGORY_MANAGEMENT_EDIT)) {
+						pk = reportCategory.createPk();
+						reportCategoryDao.update(pk,reportCategory);
+					} else {
+						throw new DbConfigDaoException(PropertyProvider.ERROR_NOT_AUTHORIZED_TO_EDIT);
+					}
 				}
 				insertIds.add(pk.getId());
 			}

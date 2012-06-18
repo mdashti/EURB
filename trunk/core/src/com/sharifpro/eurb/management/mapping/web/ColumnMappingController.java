@@ -20,10 +20,12 @@ import org.springframework.web.servlet.ModelAndView;
 import com.ibm.icu.text.UTF16.StringComparator;
 import com.sharifpro.db.meta.ISQLConnection;
 import com.sharifpro.db.meta.TableColumnInfo;
+import com.sharifpro.eurb.info.AuthorityType;
 import com.sharifpro.eurb.management.mapping.dao.ColumnMappingDao;
 import com.sharifpro.eurb.management.mapping.dao.DbConfigDao;
 import com.sharifpro.eurb.management.mapping.dao.TableMappingDao;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
+import com.sharifpro.eurb.management.mapping.exception.DbConfigDaoException;
 import com.sharifpro.eurb.management.mapping.exception.TableMappingDaoException;
 import com.sharifpro.eurb.management.mapping.model.ColumnMapping;
 import com.sharifpro.eurb.management.mapping.model.ColumnMappingPk;
@@ -31,6 +33,7 @@ import com.sharifpro.eurb.management.mapping.model.DbConfig;
 import com.sharifpro.eurb.management.mapping.model.PersistableObject;
 import com.sharifpro.eurb.management.mapping.model.TableMapping;
 import com.sharifpro.util.PropertyProvider;
+import com.sharifpro.util.SecurityUtil;
 import com.sharifpro.util.json.JsonUtil;
 
 /**
@@ -184,84 +187,6 @@ public class ColumnMappingController {
 		}
 	}
 
-/*	@RequestMapping(value="/management/mapping/column/mappedColumnSearch.spy")
-	public @ResponseBody Map<String,? extends Object> searchMapped(@RequestParam(required=false) Long table
-			,@RequestParam(defaultValue="", required=false) String query
-			,@RequestParam(defaultValue="[]", required=false) String fields
-			,@RequestParam(defaultValue="columnName", required=false) final String sort
-			,@RequestParam(defaultValue=AbstractDAO.ASCENDING_SORT_ORDER, required=false) final String dir) throws Exception {
-
-		try{
-			TableMapping tbl = null;
-
-			if(table != null){	
-				tbl = tableMappingDao.findByPrimaryKey(table);
-			}
-			List<ColumnMapping> columnMappings = new ArrayList<ColumnMapping>(0);
-
-			List<String> onFields = jsonUtil.getListFromRequest(fields, String.class);
-			if(StringUtils.isEmpty(query) || onFields == null || onFields.isEmpty()) {
-				if(tbl != null){
-					columnMappings = columnMappingDao.findMappedByTableMapping(tbl.getId());
-				}
-				else{
-					columnMappings = columnMappingDao.findAllMapped();
-				}
-				
-			} else {
-				if(tbl != null){
-					columnMappings = columnMappingDao.findAllMapped(tbl, query, onFields);
-				}
-				else{
-					columnMappings = columnMappingDao.findAllMapped(query, onFields);
-				}
-			}
-
-			final StringComparator strComp = new StringComparator();
-			final BooleanComparator boolComp = new BooleanComparator(true);
-			Collections.sort(columnMappings, new Comparator<ColumnMapping>() {
-
-				@Override
-				public int compare(ColumnMapping thiz, ColumnMapping other) {
-					int coef = AbstractDAO.DESCENDING_SORT_ORDER.equals(dir) ? -1 : 1;
-					if("colTypeName".equals(sort)) {
-						return coef * strComp.compare(thiz.getColTypeName(), other.getColTypeName());
-					} else if("columnName".equals(sort)) {
-						return coef * strComp.compare(thiz.getColumnName(), other.getColumnName());
-					} else if("formatPattern".equals(sort)) {
-						return coef * strComp.compare(thiz.getFormatPattern(), other.getFormatPattern());
-					} else if("mappedName".equals(sort)) {
-						return coef * strComp.compare(thiz.getMappedName(), other.getMappedName());
-					} else if("referencedIdCol".equals(sort)) {
-						return coef * strComp.compare(thiz.getReferencedIdCol(), other.getReferencedIdCol());
-					} else if("referencedTable".equals(sort)) {
-						return coef * strComp.compare(thiz.getReferencedTable(), other.getReferencedTable());
-					} else if("referencedValueCol".equals(sort)) {
-						return coef * strComp.compare(thiz.getReferencedValueCol(), other.getReferencedValueCol());
-					} else if("staticMapping".equals(sort)) {
-						return coef * strComp.compare(thiz.getStaticMapping(), other.getStaticMapping());
-					} else if("colDataType".equals(sort)) {
-						return coef * new Integer(thiz.getColDataType()).compareTo(other.getColDataType());
-					} else if("colOrder".equals(sort)) {
-						return coef * new Integer(thiz.getColOrder()).compareTo(other.getColOrder());
-					} else if("activeForManager".equals(sort)) {
-						return coef * boolComp.compare(thiz.isActiveForManager(), other.isActiveForManager());
-					} else if("activeForUser".equals(sort)) {
-						return coef * boolComp.compare(thiz.isActiveForUser(), other.isActiveForUser());
-					}
-					return 0;
-				}
-			});
-			return JsonUtil.getSuccessfulMap(columnMappings);
-
-		} catch (Exception e) {
-
-			return JsonUtil.getModelMapError(e.getMessage());
-		}
-	}*/
-	
-	
-
 	@RequestMapping(value="/management/mapping/column/columnStore.spy")
 	public @ResponseBody Map<String,? extends Object> store(@RequestParam Object data) throws Exception {
 		try{
@@ -272,10 +197,18 @@ public class ColumnMappingController {
 			ColumnMappingPk pk;
 			for(ColumnMapping col : columnMappings) {
 				if(col.isNewRecord()) {
-					pk = columnMappingDao.insert(col);
+					if(SecurityUtil.hasRole(AuthorityType.ROLE_BASE_COL_MAPPING_CREATE)) {
+						pk = columnMappingDao.insert(col);
+					} else {
+						throw new DbConfigDaoException(PropertyProvider.ERROR_NOT_AUTHORIZED_TO_CREATE);
+					}
 				} else {
-					pk = col.createPk();
-					columnMappingDao.update(pk,col);
+					if(SecurityUtil.hasRole(AuthorityType.ROLE_BASE_COL_MAPPING_EDIT)) {
+						pk = col.createPk();
+						columnMappingDao.update(pk,col);
+					} else {
+						throw new DbConfigDaoException(PropertyProvider.ERROR_NOT_AUTHORIZED_TO_EDIT);
+					}
 				}
 				insertIds.add(pk.getId());
 			}
@@ -284,25 +217,6 @@ public class ColumnMappingController {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			return JsonUtil.getModelMapError(e.getMessage());
-		}
-	}
-
-	@RequestMapping(value="/management/mapping/column/columnRemove.spy")
-	public @ResponseBody Map<String,? extends Object> delete(@RequestParam Object data) throws Exception {
-
-		try{
-			List<Integer> deleteIds = jsonUtil.getListFromRequest(data, Integer.class);
-			List<ColumnMappingPk> pkList = new ArrayList<ColumnMappingPk>(deleteIds.size());
-			for(Integer id : deleteIds) {
-				pkList.add(new ColumnMappingPk(new Long(id)));
-			}
-			columnMappingDao.deleteAll(pkList);
-
-			return JsonUtil.getSuccessfulMapAfterStore(deleteIds);
-
-		} catch (Exception e) {
-
 			return JsonUtil.getModelMapError(e.getMessage());
 		}
 	}

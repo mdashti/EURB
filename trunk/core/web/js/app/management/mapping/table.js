@@ -145,14 +145,7 @@ EURB.Table.TblGrid = Ext.extend(Ext.grid.GridPanel, {
 	            enableGroupingMenu: false,
 	            groupTextTpl: '<b>{text}</b> {[EURB.containing]} {[values.rs.length]} {[EURB.item]}'
         	})
-			,tbar:[EURB.Table.dbConfigCombo," ","-"," "/*,{
-				 text:EURB.delRecord
-				,iconCls:'icon-minus'
-				,listeners:{
-					 scope:this
-					,click:{fn:this.deleteSelectedRecords,buffer:200}
-				}
-			},"-"*/,{
+			,tbar:[EURB.Table.dbConfigCombo," ","-"," ",{
 				 text:EURB.enableRecord + ' ' + EURB.Table.forManager
 				,iconCls:'icon-activate'
 				,listeners:{
@@ -294,46 +287,6 @@ EURB.Table.TblGrid = Ext.extend(Ext.grid.GridPanel, {
 		}
 	}
 	,showError:EURB.showError
-	,deleteSelectedRecords:function() {
-		var selectedRecords = this.getSelectionModel().getSelections();
-		var records = [];
-		for(var i=0; i<selectedRecords.length; i++) {
-			if(selectedRecords[i].get('id')) {
-				records.push(selectedRecords[i]);
-			}
-		}
-		if(!records.length) {
-			Ext.Msg.alert(Ext.MessageBox.title.warning, EURB.selectAtLeastOneSavedRecordFisrt).setIcon(Ext.Msg.INFO);
-			return;
-		}
-		Ext.Msg.show({
-			 title:EURB.areYouSureToDelTitle
-			,msg:String.format(EURB.areYouSureToDelete, records.length == 1 ? records[0].get('tableName') : EURB.records)
-			,icon:Ext.Msg.QUESTION
-			,buttons:Ext.Msg.YESNO
-			,scope:this
-			,fn:function(response) {
-				if('yes' !== response) {
-					return;
-				}
-				var data = [];
-				Ext.each(records, function(r, i) {
-					data.push(r.get(this.idName));
-				}, this);
-				var o = {
-					 url:EURB.Table.removeAction
-					,method:'post'
-					,callback:this.requestCallback
-					,scope:this
-					,params:{
-						cmd: 'deleteData',
-						data:Ext.encode(data)
-					}
-				};
-				Ext.Ajax.request(o);
-			}
-		});
-	}
 	,activateForUserInRow:function(row) {
 		this.getSelectionModel().selectRow(row);
 		this.activateSelectedRecordsForUser();

@@ -19,15 +19,18 @@ import org.springframework.web.servlet.ModelAndView;
 import com.ibm.icu.text.UTF16.StringComparator;
 import com.sharifpro.db.meta.ISQLConnection;
 import com.sharifpro.db.meta.ITableInfo;
+import com.sharifpro.eurb.info.AuthorityType;
 import com.sharifpro.eurb.management.mapping.dao.DbConfigDao;
 import com.sharifpro.eurb.management.mapping.dao.TableMappingDao;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
+import com.sharifpro.eurb.management.mapping.exception.DbConfigDaoException;
 import com.sharifpro.eurb.management.mapping.exception.TableMappingDaoException;
 import com.sharifpro.eurb.management.mapping.model.DbConfig;
 import com.sharifpro.eurb.management.mapping.model.PersistableObject;
 import com.sharifpro.eurb.management.mapping.model.TableMapping;
 import com.sharifpro.eurb.management.mapping.model.TableMappingPk;
 import com.sharifpro.util.PropertyProvider;
+import com.sharifpro.util.SecurityUtil;
 import com.sharifpro.util.json.JsonUtil;
 
 /**
@@ -150,10 +153,18 @@ public class TableMappingController {
 			TableMappingPk pk;
 			for(TableMapping tbl : tableMappings) {
 				if(tbl.isNewRecord()) {
-					pk = tableMappingDao.insert(tbl);
+					if(SecurityUtil.hasRole(AuthorityType.ROLE_BASE_TABLE_MAPPING_CREATE)) {
+						pk = tableMappingDao.insert(tbl);
+					} else {
+						throw new DbConfigDaoException(PropertyProvider.ERROR_NOT_AUTHORIZED_TO_CREATE);
+					}
 				} else {
-					pk = tbl.createPk();
-					tableMappingDao.update(pk,tbl);
+					if(SecurityUtil.hasRole(AuthorityType.ROLE_BASE_TABLE_MAPPING_EDIT)) {
+						pk = tbl.createPk();
+						tableMappingDao.update(pk,tbl);
+					} else {
+						throw new DbConfigDaoException(PropertyProvider.ERROR_NOT_AUTHORIZED_TO_EDIT);
+					}
 				}
 				insertIds.add(pk.getId());
 			}
@@ -162,25 +173,6 @@ public class TableMappingController {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			return JsonUtil.getModelMapError(e.getMessage());
-		}
-	}
-
-	@RequestMapping(value="/management/mapping/table/tableRemove.spy")
-	public @ResponseBody Map<String,? extends Object> delete(@RequestParam Object data) throws Exception {
-
-		try{
-			List<Integer> deleteIds = jsonUtil.getListFromRequest(data, Integer.class);
-			List<TableMappingPk> pkList = new ArrayList<TableMappingPk>(deleteIds.size());
-			for(Integer id : deleteIds) {
-				pkList.add(new TableMappingPk(new Long(id)));
-			}
-			tableMappingDao.deleteAll(pkList);
-
-			return JsonUtil.getSuccessfulMapAfterStore(deleteIds);
-
-		} catch (Exception e) {
-
 			return JsonUtil.getModelMapError(e.getMessage());
 		}
 	}

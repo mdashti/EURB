@@ -11,11 +11,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.sharifpro.eurb.info.AuthorityType;
 import com.sharifpro.eurb.management.mapping.dao.DbConfigDao;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
+import com.sharifpro.eurb.management.mapping.exception.DbConfigDaoException;
 import com.sharifpro.eurb.management.mapping.model.DbConfig;
 import com.sharifpro.eurb.management.mapping.model.DbConfigPk;
 import com.sharifpro.eurb.management.mapping.model.PersistableObject;
+import com.sharifpro.util.PropertyProvider;
+import com.sharifpro.util.SecurityUtil;
 import com.sharifpro.util.json.JsonUtil;
 
 /**
@@ -70,10 +74,18 @@ public class DBConfigController {
 			DbConfigPk pk;
 			for(DbConfig dbConf : dbConfigs) {
 				if(dbConf.isNewRecord()) {
-					pk = dbConfigDao.insert(dbConf);
+					if(SecurityUtil.hasRole(AuthorityType.ROLE_BASE_DB_CONFIG_CREATE)) {
+						pk = dbConfigDao.insert(dbConf);
+					} else {
+						throw new DbConfigDaoException(PropertyProvider.ERROR_NOT_AUTHORIZED_TO_CREATE);
+					}
 				} else {
-					pk = dbConf.createPk();
-					dbConfigDao.update(pk,dbConf);
+					if(SecurityUtil.hasRole(AuthorityType.ROLE_BASE_DB_CONFIG_EDIT)) {
+						pk = dbConf.createPk();
+						dbConfigDao.update(pk,dbConf);
+					} else {
+						throw new DbConfigDaoException(PropertyProvider.ERROR_NOT_AUTHORIZED_TO_EDIT);
+					}
 				}
 				insertIds.add(new Object[] {pk.getId(), dbConf.getTestCon()});
 			}

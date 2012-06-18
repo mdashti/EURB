@@ -13,17 +13,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.sharifpro.eurb.info.AuthorityType;
 import com.sharifpro.eurb.management.security.dao.GroupMembersDao;
 import com.sharifpro.eurb.management.security.dao.GroupsDao;
 import com.sharifpro.eurb.management.security.dao.UserDao;
 import com.sharifpro.eurb.management.security.exception.UserDaoException;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
+import com.sharifpro.eurb.management.mapping.exception.DbConfigDaoException;
 import com.sharifpro.eurb.management.security.model.GroupMembers;
 import com.sharifpro.eurb.management.security.model.Groups;
 import com.sharifpro.eurb.management.security.model.User;
 import com.sharifpro.eurb.management.security.model.UserPk;
 import com.sharifpro.eurb.management.mapping.model.PersistableObject;
 import com.sharifpro.util.PropertyProvider;
+import com.sharifpro.util.SecurityUtil;
 import com.sharifpro.util.json.JsonUtil;
 
 /**
@@ -80,44 +83,52 @@ public class UserController {
 		try{
 			User theUser;
 			if(id == null) { //create
-				if(StringUtils.isEmpty(newpass)){
-					throw new UserDaoException(PropertyProvider.get("eurb.app.management.user.emptyPassword"));
-				} else if(!newpass.equals(confirmnewpass)) {
-					throw new UserDaoException(PropertyProvider.get("eurb.app.management.user.confirmDidNotMatch"));
-				} else if(userDao.userWithEmailExists(email)){
-					throw new UserDaoException(PropertyProvider.get("eurb.app.management.user.emailExists"));
-				} else if(userDao.userWithUsernameExists(username)){
-					throw new UserDaoException(PropertyProvider.get("eurb.app.management.user.usernameExists"));
+				if(SecurityUtil.hasRole(AuthorityType.ROLE_SEC_USER_MANAGEMENT_CREATE)) {
+					if(StringUtils.isEmpty(newpass)){
+						throw new UserDaoException(PropertyProvider.get("eurb.app.management.user.emptyPassword"));
+					} else if(!newpass.equals(confirmnewpass)) {
+						throw new UserDaoException(PropertyProvider.get("eurb.app.management.user.confirmDidNotMatch"));
+					} else if(userDao.userWithEmailExists(email)){
+						throw new UserDaoException(PropertyProvider.get("eurb.app.management.user.emailExists"));
+					} else if(userDao.userWithUsernameExists(username)){
+						throw new UserDaoException(PropertyProvider.get("eurb.app.management.user.usernameExists"));
+					} else {
+						theUser = new User(null, username, newpass, AuthorityUtils.NO_AUTHORITIES);
+						theUser.setEmail(email);
+						userDao.insert(theUser);
+					}
 				} else {
-					theUser = new User(null, username, newpass, AuthorityUtils.NO_AUTHORITIES);
-					theUser.setEmail(email);
-					userDao.insert(theUser);
+					throw new DbConfigDaoException(PropertyProvider.ERROR_NOT_AUTHORIZED_TO_CREATE);
 				}
 			} else { //update
-				if(StringUtils.isEmpty(newpass)){
-					if(userDao.userWithEmailExists(username, email)){
+				if(SecurityUtil.hasRole(AuthorityType.ROLE_SEC_USER_MANAGEMENT_EDIT)) {
+					if(StringUtils.isEmpty(newpass)){
+						if(userDao.userWithEmailExists(username, email)){
+							throw new UserDaoException(PropertyProvider.get("eurb.app.management.user.emailExists"));
+						}
+						theUser = userDao.findByPrimaryKey(id);
+						if(theUser != null && theUser.getUsername().equals(username)) {
+							theUser.setEmail(email);
+							userDao.setEmail(theUser.createPk(), theUser);
+						} else {
+							throw new UserDaoException(PropertyProvider.get("eurb.app.management.user.userNotFoundForUpdate"));
+						}
+					} else if(!newpass.equals(confirmnewpass)) {
+						throw new UserDaoException(PropertyProvider.get("eurb.app.management.user.confirmDidNotMatch"));
+					} else if(userDao.userWithEmailExists(username, email)){
 						throw new UserDaoException(PropertyProvider.get("eurb.app.management.user.emailExists"));
-					}
-					theUser = userDao.findByPrimaryKey(id);
-					if(theUser != null && theUser.getUsername().equals(username)) {
-						theUser.setEmail(email);
-						userDao.setEmail(theUser.createPk(), theUser);
 					} else {
-						throw new UserDaoException(PropertyProvider.get("eurb.app.management.user.userNotFoundForUpdate"));
+						theUser = userDao.findByPrimaryKey(id);
+						if(theUser != null && theUser.getUsername().equals(username)) {
+							theUser.setPassword(newpass);
+							theUser.setEmail(email);
+							userDao.setPassword(theUser.createPk(), theUser);
+						} else {
+							throw new UserDaoException(PropertyProvider.get("eurb.app.management.user.userNotFoundForUpdate"));
+						}
 					}
-				} else if(!newpass.equals(confirmnewpass)) {
-					throw new UserDaoException(PropertyProvider.get("eurb.app.management.user.confirmDidNotMatch"));
-				} else if(userDao.userWithEmailExists(username, email)){
-					throw new UserDaoException(PropertyProvider.get("eurb.app.management.user.emailExists"));
 				} else {
-					theUser = userDao.findByPrimaryKey(id);
-					if(theUser != null && theUser.getUsername().equals(username)) {
-						theUser.setPassword(newpass);
-						theUser.setEmail(email);
-						userDao.setPassword(theUser.createPk(), theUser);
-					} else {
-						throw new UserDaoException(PropertyProvider.get("eurb.app.management.user.userNotFoundForUpdate"));
-					}
+					throw new DbConfigDaoException(PropertyProvider.ERROR_NOT_AUTHORIZED_TO_EDIT);
 				}
 			}
 			

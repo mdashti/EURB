@@ -24,11 +24,14 @@ import com.sharifpro.eurb.builder.model.ReportDesign;
 import com.sharifpro.eurb.builder.model.ReportSchedule;
 import com.sharifpro.eurb.builder.model.ReportUserAlert;
 import com.sharifpro.eurb.builder.util.ReportConstants.DeliveryMethod;
+import com.sharifpro.eurb.info.AuthorityType;
+import com.sharifpro.eurb.management.mapping.exception.DbConfigDaoException;
 import com.sharifpro.eurb.management.mapping.exception.PersistableObjectDaoException;
 import com.sharifpro.eurb.management.security.dao.UserDao;
 import com.sharifpro.eurb.management.security.model.User;
 import com.sharifpro.util.DateProvider;
 import com.sharifpro.util.PropertyProvider;
+import com.sharifpro.util.SecurityUtil;
 import com.sharifpro.util.SessionManager;
 import com.sharifpro.util.json.JsonUtil;
 
@@ -54,7 +57,7 @@ public class ReportScheduleController {
 		}
 	}
 
-	@RequestMapping(value = "/builder/schedule/findUserFileDelivered.spy")
+	/*@RequestMapping(value = "/builder/schedule/findUserFileDelivered.spy")
 	public @ResponseBody
 	Map<String, ? extends Object> findUserFileDelivered() {
 		try {
@@ -89,7 +92,7 @@ public class ReportScheduleController {
 		}
 	}
 
-	/*@RequestMapping(value = "/builder/schedule/findSchedule.spy")
+	@RequestMapping(value = "/builder/schedule/findSchedule.spy")
 	public @ResponseBody
 	Map<String, ? extends Object> findSchedule(
 			@RequestParam(required = false) Long userId,
@@ -137,7 +140,7 @@ public class ReportScheduleController {
 	}*/
 
 	@RequestMapping(value = "/builder/schedule/scheduleStore.spy")
-	public @ResponseBody Map<String, ? extends Object> scheduleStore(
+	public @ResponseBody Map<String, ? extends Object> store(
 			@RequestParam(required = false) Long userId,
 			@RequestParam(required = false) String recipients,
 			@RequestParam(required = false) String startDate,
@@ -188,23 +191,30 @@ public class ReportScheduleController {
 					.getModelMapError(PropertyProvider.ERROR_DATEANDTIME_INVALID);
 		}
 
-		ReportSchedule reportSchedule = new ReportSchedule();
+		ReportSchedule reportSchedule;
 
 		try {
 			if (scheduleName != null && scheduleName.length() > 0) {
-				reportSchedule = reportScheduleDao.getScheduledReport(user,
-						scheduleName);
+				if(SecurityUtil.hasRole(AuthorityType.ROLE_BASE_CATEGORY_MANAGEMENT_EDIT)) {
+					reportSchedule = reportScheduleDao.getScheduledReport(user, scheduleName);
+				} else {
+					throw new DbConfigDaoException(PropertyProvider.ERROR_NOT_AUTHORIZED_TO_EDIT);
+				}
 			} else {
-				ReportDesign report = reportDesignDao
-						.findByPrimaryKey(reportId);
+				if(SecurityUtil.hasRole(AuthorityType.ROLE_BASE_CATEGORY_MANAGEMENT_CREATE)) {
+					ReportDesign report = reportDesignDao.findByPrimaryKey(reportId);
 
-				int exportTypeMode = Integer.parseInt(exportType);
+					int exportTypeMode = Integer.parseInt(exportType);
 
-				reportSchedule.setReport(report);
-				reportSchedule.setUser(user);
-				reportSchedule.setReportParameters(getReportParameters());
-				reportSchedule.setExportType(exportTypeMode);
-				reportSchedule.setScheduleName(report.getId() + "|" + new Date().getTime());
+					reportSchedule = new ReportSchedule();
+					reportSchedule.setReport(report);
+					reportSchedule.setUser(user);
+					reportSchedule.setReportParameters(getReportParameters());
+					reportSchedule.setExportType(exportTypeMode);
+					reportSchedule.setScheduleName(report.getId() + "|" + new Date().getTime());
+				} else {
+					throw new DbConfigDaoException(PropertyProvider.ERROR_NOT_AUTHORIZED_TO_CREATE);
+				}
 			}
 
 			reportSchedule.setScheduleType(scheduleType);

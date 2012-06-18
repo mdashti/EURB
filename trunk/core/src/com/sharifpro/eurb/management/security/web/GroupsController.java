@@ -11,15 +11,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.sharifpro.eurb.info.AuthorityType;
 import com.sharifpro.eurb.management.security.dao.GroupMembersDao;
 import com.sharifpro.eurb.management.security.dao.GroupsDao;
 import com.sharifpro.eurb.management.security.dao.UserDao;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
+import com.sharifpro.eurb.management.mapping.exception.DbConfigDaoException;
 import com.sharifpro.eurb.management.security.model.GroupMembers;
 import com.sharifpro.eurb.management.security.model.Groups;
 import com.sharifpro.eurb.management.security.model.GroupsPk;
 import com.sharifpro.eurb.management.security.model.User;
 import com.sharifpro.eurb.management.mapping.model.PersistableObject;
+import com.sharifpro.util.PropertyProvider;
+import com.sharifpro.util.SecurityUtil;
 import com.sharifpro.util.json.JsonUtil;
 
 /**
@@ -77,10 +81,18 @@ public class GroupsController {
 			GroupsPk pk;
 			for(Groups group : groups) {
 				if(group.isNewRecord()) {
-					pk = groupsDao.insert(group);
+					if(SecurityUtil.hasRole(AuthorityType.ROLE_SEC_GROUP_MANAGEMENT_CREATE)) {
+						pk = groupsDao.insert(group);
+					} else {
+						throw new DbConfigDaoException(PropertyProvider.ERROR_NOT_AUTHORIZED_TO_CREATE);
+					}
 				} else {
-					pk = group.createPk();
-					groupsDao.update(pk,group);
+					if(SecurityUtil.hasRole(AuthorityType.ROLE_SEC_GROUP_MANAGEMENT_EDIT)) {
+						pk = group.createPk();
+						groupsDao.update(pk,group);
+					} else {
+						throw new DbConfigDaoException(PropertyProvider.ERROR_NOT_AUTHORIZED_TO_EDIT);
+					}
 				}
 				insertIds.add(new Object[] {pk.getId()});
 			}

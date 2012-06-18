@@ -55,7 +55,6 @@
 			%>
 			EURB.Column.searchAction = '<spring:url value="/management/mapping/column/columnSearch.spy" />';
 			EURB.Column.storeAction = '<spring:url value="/management/mapping/column/columnStore.spy" />';
-			EURB.Column.removeAction = '<spring:url value="/management/mapping/column/columnRemove.spy" />';
 			EURB.Column.activateAction = '<spring:url value="/management/mapping/column/columnActivate.spy" />';
 			EURB.Column.deactivateAction = '<spring:url value="/management/mapping/column/columnDeactivate.spy" />';
 			EURB.Column.moveColumnAction = '<spring:url value="/management/mapping/column/columnMove.spy" />';

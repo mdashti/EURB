@@ -32,7 +32,6 @@
 			%>
 			EURB.Table.searchAction = '<spring:url value="/management/mapping/table/tableSearch.spy" />';
 			EURB.Table.storeAction = '<spring:url value="/management/mapping/table/tableStore.spy" />';
-			EURB.Table.removeAction = '<spring:url value="/management/mapping/table/tableRemove.spy" />';
 			EURB.Table.activateAction = '<spring:url value="/management/mapping/table/tableActivate.spy" />';
 			EURB.Table.deactivateAction = '<spring:url value="/management/mapping/table/tableDeactivate.spy" />';
 

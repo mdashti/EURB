@@ -468,12 +468,15 @@ EURB.Column.ColGrid = Ext.extend(Ext.grid.GridPanel, {
 		}
 		var data = [];
 		Ext.each(records, function(r, i) {
-			if(r.data.id) {
-				r.data.newRecord = false;
-			} else {
-				r.data.newRecord = true;
-			}
-			data.push(r.data);
+			var sendRec = new EURB.Column.columnGrid.store.recordType({newRecord: (r.data.id ? false : true)});
+            sendRec.fields.each(function(f) {
+            	if(f.name == 'staticMapping') {
+            		sendRec.data[f.name] = Ext.util.JSON.encode(r.data[f.name]);
+            	} else {
+                	sendRec.data[f.name] = r.data[f.name];
+            	}
+            });
+			data.push(sendRec.data);
 		}, this);
 		var o = {
 			 url:EURB.Column.storeAction
@@ -513,46 +516,6 @@ EURB.Column.ColGrid = Ext.extend(Ext.grid.GridPanel, {
 		}
 	}
 	,showError:EURB.showError
-	,deleteSelectedRecords:function() {
-		var selectedRecords = this.getSelectionModel().getSelections();
-		var records = [];
-		for(var i=0; i<selectedRecords.length; i++) {
-			if(selectedRecords[i].get('id')) {
-				records.push(selectedRecords[i]);
-			}
-		}
-		if(!records.length) {
-			Ext.Msg.alert(Ext.MessageBox.title.warning, EURB.selectAtLeastOneSavedRecordFisrt).setIcon(Ext.Msg.INFO);
-			return;
-		}
-		Ext.Msg.show({
-			 title:EURB.areYouSureToDelTitle
-			,msg:String.format(EURB.areYouSureToDelete, records.length == 1 ? records[0].get('columnName') : EURB.records)
-			,icon:Ext.Msg.QUESTION
-			,buttons:Ext.Msg.YESNO
-			,scope:this
-			,fn:function(response) {
-				if('yes' !== response) {
-					return;
-				}
-				var data = [];
-				Ext.each(records, function(r, i) {
-					data.push(r.get(this.idName));
-				}, this);
-				var o = {
-					 url:EURB.Column.removeAction
-					,method:'post'
-					,callback:this.requestCallback
-					,scope:this
-					,params:{
-						cmd: 'deleteData',
-						data:Ext.encode(data)
-					}
-				};
-				Ext.Ajax.request(o);
-			}
-		});
-	}
 	,moveColumn: function(grid, record, action, row, col, direction) {
 		if(record.get(this.idName)) {
 			var colOrder = record.get('colOrder');

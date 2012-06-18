@@ -35,7 +35,7 @@ public class IndexController {
 	private JsonUtil jsonUtil;
 	
 	@RequestMapping(value = "/index/findUserAlerts.spy")
-	public @ResponseBody Map<String, ? extends Object> findAllUsersScheduled() {
+	public @ResponseBody Map<String, ? extends Object> findUserAlerts() {
 		try {
 			List<UserMessage> userMessages = userMessageDao.findAllForUser(SessionManager.getCurrentUserName());
 
