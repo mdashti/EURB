@@ -110,7 +110,11 @@
 		<security:intercept-url pattern="/builder/schedule/findUserScheduled.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_RPG_REPORT_SCHEDULER_VIEW_LIST)" />
 		<security:intercept-url pattern="/builder/schedule/scheduleStore.spy*" access="hasAnyRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_RPG_REPORT_SCHEDULER_EDIT, T(com.sharifpro.eurb.info.AuthorityType).ROLE_RPG_REPORT_SCHEDULER_CREATE)" />
 		<security:intercept-url pattern="/builder/schedule/scheduleRemove.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_RPG_REPORT_SCHEDULER_DELETE)" />
+
+		<security:intercept-url pattern="/builder/report/report-list.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_RPG_REPORT_BUILDER_VIEW_LIST)" />
+
 		<security:intercept-url pattern="/**" access="isAuthenticated()" />
+
 		<security:custom-filter position="CAS_FILTER" ref="casAuthenticationFilter"></security:custom-filter>
 		<security:custom-filter position="CONCURRENT_SESSION_FILTER" ref="concurrencyFilter" />
 		<security:custom-filter after="SESSION_MANAGEMENT_FILTER" ref="sessionRegistryFixFilter"/>
@@ -145,7 +149,7 @@
 	<bean id="singleLogoutFilter" class="org.jasig.cas.client.session.SingleSignOutFilter"/>
 	<!-- This filter redirects to the CAS Server to signal Single Logout should be performed -->
 	<bean id="requestSingleLogoutFilter" class="org.springframework.security.web.authentication.logout.LogoutFilter">
-		<constructor-arg value="http://matma.ptmco.ir:9161/eurb/logout.spy"/>
+		<constructor-arg value="#{applicationProps['cas.eurb.logout.page']}"/>
 		<constructor-arg>
 			<bean class="org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler"/>
 		</constructor-arg>
@@ -165,7 +169,7 @@
 		actual redirect that will be triggered after the CAS login sequence.
 	-->
 	<bean id="serviceProperties" class="org.springframework.security.cas.ServiceProperties">
-		<property name="service" value="http://matma.ptmco.ir:9161/eurb/j_spring_cas_security_check"></property>
+		<property name="service" value="#{applicationProps['cas.eurb.sec.check.service']}"></property>
 		<property name="sendRenew" value="false"></property>
 	</bean>	
 
@@ -185,7 +189,7 @@
 		It redirects to the CAS loginUrl for the CAS login page.
 	-->
 	<bean id="casAuthenticationEntryPoint" class="org.springframework.security.cas.web.CasAuthenticationEntryPoint">
-		<property name="loginUrl" value="http://192.168.1.103/cas-server-webapp-3.4.12/login"></property>
+		<property name="loginUrl" value="#{applicationProps['cas.server.login']}"></property>
 		<property name="serviceProperties" ref="serviceProperties"></property>
 	</bean>
 
@@ -197,7 +201,7 @@
 		<property name="serviceProperties" ref="serviceProperties"></property>
 		<property name="ticketValidator">
 			<bean class="org.jasig.cas.client.validation.Cas20ServiceTicketValidator">
-				<constructor-arg index="0" value="http://192.168.1.103/cas-server-webapp-3.4.12"></constructor-arg>
+				<constructor-arg index="0" value="#{applicationProps['cas.server']}"></constructor-arg>
 			</bean>
 		</property>
 		<property name="key" value="cas"></property>
