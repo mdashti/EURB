@@ -170,6 +170,7 @@ EURB.DBConfig.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 			//				,menuStyle:'radio'
 			}), this.rowActions, this.recordForm]
 			,viewConfig:{forceFit:true}
+			,loadMask:true
 			,tbar:[{
 				 text:EURB.addRecord
 				,iconCls:'icon-plus'
@@ -218,7 +219,10 @@ EURB.DBConfig.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 	,onRender:function() {
 		// call parent
 		EURB.DBConfig.DBGrid.superclass.onRender.apply(this, arguments);
-
+		if(this.loadMask){
+            this.loadMask = new Ext.LoadMask(this.bwrap,
+                    Ext.apply({store:this.store}, this.loadMask));
+        }
 		// load store
 		this.store.load();
 

@@ -98,5 +98,6 @@
 	<classpathentry kind="lib" path="core/lib/streambuffer-1.5.jar"/>
 	<classpathentry kind="lib" path="core/lib/xbean-spring-2.7.jar"/>
 	<classpathentry kind="lib" path="core/lib/taglibs-unstandard.jar"/>
+	<classpathentry kind="lib" path="core/lib/sqljdbc4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

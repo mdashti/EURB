@@ -303,6 +303,7 @@ EURB.Column.ColGrid = Ext.extend(Ext.grid.GridPanel, {
 			//	,menuStyle:'radio'
 			}), this.rowActions, this.recordForm]
 			,viewConfig:{forceFit:true}
+			,loadMask:true
 			,tbar:[EURB.Column.dbConfigCombo," ","-"," "
 			,EURB.Column.tableCombo," ","-"," "/*,{
 				 text:EURB.delRecord
@@ -363,7 +364,10 @@ EURB.Column.ColGrid = Ext.extend(Ext.grid.GridPanel, {
 	,onRender:function() {
 		// call parent
 		EURB.Column.ColGrid.superclass.onRender.apply(this, arguments);
-
+		if(this.loadMask){
+            this.loadMask = new Ext.LoadMask(this.bwrap,
+                    Ext.apply({store:this.store}, this.loadMask));
+        }
 		// load store
 		this.store.load();
 

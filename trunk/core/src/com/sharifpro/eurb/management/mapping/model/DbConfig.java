@@ -479,4 +479,38 @@ public class DbConfig extends PersistableObject implements Serializable
 			return null;
 		}
 	}
+	
+	public static void main(String[] args) throws Exception {
+		String name = "MSSQLServer";
+		String driverClass = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
+		String driverUrl = "jdbc:sqlserver://10.211.55.6;user=sa;password=ROOT;";
+		String username = "sa";
+		String password = "ROOT";
+		String testQuery;
+		RecordStatus recordStatus = RecordStatus.ACTIVE;
+		DataSource dataSource = null;
+		
+		if(dataSource == null) {
+			Properties props = new Properties();
+			props.put("username", username);
+			props.put("password", password);
+			props.put("driverClassName", driverClass);
+			props.put("url", driverUrl/*.replaceAll("&", "&amp;")*/);
+
+			dataSource = DataSourceFactory.createDataSource(props);
+		}
+		
+		SQLDriver driver = new SQLDriver();
+		driver.setIdentifier(1L);
+		driver.setDriverClassName(driverClass);
+		driver.setName(name);
+		driver.setUrl(driverUrl);
+		
+		Connection conn =  dataSource.getConnection();
+		SQLDriverPropertyCollection connProps = new SQLDriverPropertyCollection();
+		SQLConnection sqlConn = new SQLConnection(conn, connProps, driver);
+		
+		sqlConn.setReadOnly(true);
+		sqlConn.close();
+	}
 }

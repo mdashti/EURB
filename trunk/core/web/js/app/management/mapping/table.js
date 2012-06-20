@@ -145,6 +145,7 @@ EURB.Table.TblGrid = Ext.extend(Ext.grid.GridPanel, {
 	            enableGroupingMenu: false,
 	            groupTextTpl: '<b>{text}</b> {[EURB.containing]} {[values.rs.length]} {[EURB.item]}'
         	})
+			,loadMask:true
 			,tbar:[EURB.Table.dbConfigCombo," ","-"," ",{
 				 text:EURB.enableRecord + ' ' + EURB.Table.forManager
 				,iconCls:'icon-activate'
@@ -197,7 +198,10 @@ EURB.Table.TblGrid = Ext.extend(Ext.grid.GridPanel, {
 	,onRender:function() {
 		// call parent
 		EURB.Table.TblGrid.superclass.onRender.apply(this, arguments);
-
+		if(this.loadMask){
+            this.loadMask = new Ext.LoadMask(this.bwrap,
+                    Ext.apply({store:this.store}, this.loadMask));
+        }
 		// load store
 		this.store.load();
 
