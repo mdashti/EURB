@@ -57,6 +57,20 @@ EURB.RunReport.Grid = Ext.extend(Ext.grid.GridPanel, {
 				 scope:this
 				,click:{fn: function() { Ext.ux.GridPrinter.print(EURB.RunReport.runReportGrid) },buffer:200}
 			}
+		}, {
+			 text:EURB.RunReport.exportAllReportToExcel
+			,iconCls:'icon-excel'
+			,listeners:{
+				 scope:this
+				,click:{fn: function() { window.location.href = EURB.baseURL+'builder/report/report'+EURB.RunReport.design+'-v'+EURB.RunReport.version+'.xls'; },buffer:200}
+			}
+		}, {
+			 text:EURB.RunReport.exportAllReportToWord
+			,iconCls:'icon-word'
+			,listeners:{
+				 scope:this
+				,click:{fn: function() { window.location.href = EURB.baseURL+'builder/report/report'+EURB.RunReport.design+'-v'+EURB.RunReport.version+'.docx'; },buffer:200}
+			}
 		}];
 
 		// call parent

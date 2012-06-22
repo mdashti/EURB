@@ -130,12 +130,37 @@ public class ViewReportController {
 		return mv;
 	}
 
+	@RequestMapping(value="/builder/report/report{report}-v{version}.xls")
+	public ModelAndView executeRunReportExcel(@PathVariable Long report, @PathVariable Long version) throws Exception {
+		ModelAndView mv = new ModelAndView();
+		mv.addAllObjects(executeRunReportDataInner(report, version, null, null, null, null, true));
+		mv.setView(new com.sharifpro.eurb.builder.view.ViewExcelReport());
+		return mv;
+	}
+
+	@RequestMapping(value="/builder/report/report{report}-v{version}.docx")
+	public ModelAndView executeRunReportWord(@PathVariable Long report, @PathVariable Long version) throws Exception {
+		ModelAndView mv = new ModelAndView();
+		mv.addAllObjects(executeRunReportDataInner(report, version, null, null, null, null, true));
+		mv.setView(new com.sharifpro.eurb.builder.view.ViewWordReport());
+		return mv;
+	}
+
 	@RequestMapping(value="/builder/report/get-reportdata{report}-v{version}.spy")
 	public @ResponseBody Map<String,? extends Object> executeRunReportData(@PathVariable Long report, @PathVariable Long version
 			,@RequestParam(required=false) String start
 			,@RequestParam(required=false) String limit
 			,@RequestParam(required=false) String sort
 			,@RequestParam(required=false) String dir) throws Exception {
+		return executeRunReportDataInner(report, version, start, limit, sort, dir, false);
+	}
+
+	private Map<String,? extends Object> executeRunReportDataInner(Long report, Long version
+			,String start
+			,String limit
+			,String sort
+			,String dir
+			, boolean includeMetaData) throws Exception {
 		try{
 			//All Datasets must be in the same dbConfig
 			Long dbConfigId = null;
@@ -370,8 +395,14 @@ public class ViewReportController {
 				}
 			}
 
-			return JsonUtil.getSuccessfulMap(resultList, total);
-
+			Map<String,Object> result = JsonUtil.getSuccessfulMap(resultList, total);
+			if(includeMetaData) {
+				result.put("reportDesign", reportDesign);
+				result.put("datasetList", datasetList);
+				result.put("columnList", columnList);
+				result.put("reportFilters", reportFilters);
+			}
+			return result;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return JsonUtil.getModelMapError(e.getMessage());

@@ -99,5 +99,8 @@
 	<classpathentry kind="lib" path="core/lib/xbean-spring-2.7.jar"/>
 	<classpathentry kind="lib" path="core/lib/taglibs-unstandard.jar"/>
 	<classpathentry kind="lib" path="core/lib/sqljdbc4.jar"/>
+	<classpathentry kind="lib" path="core/lib/poi-ooxml-3.8-20120326.jar"/>
+	<classpathentry kind="lib" path="core/lib/poi-ooxml-schemas-3.8-20120326.jar"/>
+	<classpathentry kind="lib" path="core/lib/xmlbeans-2.3.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -378,5 +378,11 @@
 .icon-calendar {
 	background-image:url(../../../img/icon/fam/calendar.png) ! important;
 }
+.icon-excel {
+	background-image:url(../../../img/icon/export/excel.png) ! important;
+}
+.icon-word {
+	background-image:url(../../../img/icon/export/word.png) ! important;
+}
 /*  Icon Classes end */
 
