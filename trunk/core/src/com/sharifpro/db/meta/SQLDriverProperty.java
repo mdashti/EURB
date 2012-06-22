@@ -3,7 +3,7 @@ package com.sharifpro.db.meta;
 import java.io.Serializable;
 import java.sql.DriverPropertyInfo;
 
-import com.sharifpro.util.Utilities;
+import com.sharifpro.db.util.Utilities;
 
 /**
  * This represents a property that can be specified when connecting to the database.

@@ -10,6 +10,9 @@ import com.sharifpro.db.meta.IDatabaseObjectInfo;
 import com.sharifpro.db.meta.ISQLDatabaseMetaData;
 import com.sharifpro.db.meta.ITableInfo;
 import com.sharifpro.db.meta.TableColumnInfo;
+import com.sharifpro.eurb.builder.model.ReportDataset;
+import com.sharifpro.eurb.management.mapping.exception.DaoException;
+import com.sharifpro.eurb.management.mapping.model.TableMapping;
 
 /**
  * An interface for methods implemented by database dialects for the purpose of
@@ -1246,6 +1249,7 @@ public interface HibernateDialect extends StringTemplateConstants {
 
 	/**
 	 * Building query based on current dialect with pagination
+	 * @param fromTablesList 
 	 * 
 	 * @param querySelect
 	 * @param queryFrom
@@ -1253,9 +1257,11 @@ public interface HibernateDialect extends StringTemplateConstants {
 	 * @param start
 	 * @param limit
 	 * @return
+	 * @throws DaoException 
+	 * @throws SQLException 
 	 */
-	String buildQuery(String querySelect, String queryFrom,
-			String queryWhere, String querySort, int start, int limit);
+	String buildQuery(List<ReportDataset> fromDSList, String querySelectOnlyAlias, String querySelect, String queryFrom,
+			String queryWhere, String querySort, String querySortOnlyAlias, int start, int limit) throws DaoException, SQLException;
 
 	/**
 	 * Building query based on current dialect

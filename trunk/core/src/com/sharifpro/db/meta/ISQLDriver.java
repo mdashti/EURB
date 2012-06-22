@@ -1,8 +1,11 @@
 package com.sharifpro.db.meta;
 
 import com.sharifpro.db.exception.ValidationException;
+import com.sharifpro.db.id.IHasIdentifier;
+import com.sharifpro.db.id.IIdentifier;
+import com.sharifpro.db.util.beanwrapper.StringWrapper;
 
-public interface ISQLDriver extends Comparable<ISQLDriver>
+public interface ISQLDriver extends IHasIdentifier, Comparable<ISQLDriver>
 {
 	/**
 	 * JavaBean property names for this class.
@@ -11,6 +14,8 @@ public interface ISQLDriver extends Comparable<ISQLDriver>
 	{
 		String DRIVER_CLASS = "driverClassName";
 		String ID = "identifier";
+		String JARFILE_NAME = "jarFileName";
+		String JARFILE_NAMES = "jarFileNames";
 		String NAME = "name";
 		String URL = "url";
         String WEBSITE_URL = "websiteUrl";
@@ -37,12 +42,31 @@ public interface ISQLDriver extends Comparable<ISQLDriver>
 	 */
 	int compareTo(ISQLDriver rhs);
 
-	long getIdentifier();
+	IIdentifier getIdentifier();
 
 	String getDriverClassName();
 
 	void setDriverClassName(String driverClassName)
 		throws ValidationException;
+
+	/**
+	 * @deprecated	Replaced by getJarFileURLs().
+	 */
+	String getJarFileName();
+
+	void setJarFileName(String value) throws ValidationException;
+
+	StringWrapper[] getJarFileNameWrappers();
+
+	StringWrapper getJarFileNameWrapper(int idx) throws ArrayIndexOutOfBoundsException;
+
+
+	void setJarFileNameWrappers(StringWrapper[] value);
+
+	void setJarFileNameWrapper(int idx, StringWrapper value) throws ArrayIndexOutOfBoundsException;
+
+	String[] getJarFileNames();
+	void setJarFileNames(String[] values);
 
 	String getUrl();
 
@@ -54,7 +78,7 @@ public interface ISQLDriver extends Comparable<ISQLDriver>
 
 	boolean isJDBCDriverClassLoaded();
 	void setJDBCDriverClassLoaded(boolean cl);
-    
+
     String getWebSiteUrl();
     
     void setWebSiteUrl(String url) throws ValidationException;

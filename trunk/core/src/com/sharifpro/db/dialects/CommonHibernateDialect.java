@@ -12,6 +12,8 @@ import com.sharifpro.db.meta.IDatabaseObjectInfo;
 import com.sharifpro.db.meta.ISQLDatabaseMetaData;
 import com.sharifpro.db.meta.ITableInfo;
 import com.sharifpro.db.meta.TableColumnInfo;
+import com.sharifpro.eurb.builder.model.ReportDataset;
+import com.sharifpro.eurb.management.mapping.exception.DaoException;
 
 /**
  * A base class for dialects where the most frequently implemented behavior can
@@ -930,9 +932,9 @@ public class CommonHibernateDialect implements HibernateDialect,
 	}
 
 	@Override
-	public String buildQuery(String querySelect,
-			String queryFrom, String queryWhere, String querySort, int start,
-			int limit) {
+	public String buildQuery(List<ReportDataset> fromDSList, String querySelectOnlyAlias, String querySelect,
+			String queryFrom, String queryWhere, String querySort, String querySortOnlyAlias, int start,
+			int limit) throws DaoException, SQLException {
 		
 		return buildQuery(querySelect, queryFrom, queryWhere, querySort) + " LIMIT " + limit + " OFFSET " + start;
 	}

@@ -1,5 +1,6 @@
 package com.sharifpro.db.dialects;
 
+import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,9 +10,18 @@ import com.sharifpro.db.meta.DatabaseObjectType;
 import com.sharifpro.db.meta.IDatabaseObjectInfo;
 import com.sharifpro.db.meta.ITableInfo;
 import com.sharifpro.db.meta.JDBCTypeMapper;
+import com.sharifpro.db.meta.PrimaryKeyInfo;
 import com.sharifpro.db.meta.TableColumnInfo;
+import com.sharifpro.eurb.DaoFactory;
+import com.sharifpro.eurb.builder.model.ReportDataset;
+import com.sharifpro.eurb.management.mapping.dao.DbConfigDao;
+import com.sharifpro.eurb.management.mapping.dao.TableMappingDao;
+import com.sharifpro.eurb.management.mapping.exception.DaoException;
+import com.sharifpro.eurb.management.mapping.model.DbConfig;
+import com.sharifpro.eurb.management.mapping.model.TableMapping;
 
 import org.antlr.stringtemplate.StringTemplate;
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.HibernateException;
 
 /**
@@ -542,4 +552,44 @@ public class SQLServerDialectExt extends SybaseDialectExt implements HibernateDi
 		return false;
 	}
 	
+	@Override
+	public String buildQuery(List<ReportDataset> fromDSList, String querySelectOnlyAlias, String querySelect,
+			String queryFrom, String queryWhere, String querySort, String querySortOnlyAlias, int start,
+			int limit) throws DaoException, SQLException {
+		if(StringUtils.isEmpty(querySort)) {
+			querySort = null;
+			querySortOnlyAlias = "";
+			DbConfigDao dbConfigDao = DaoFactory.createDbConfigDao();
+			TableMappingDao tableMappingDao = DaoFactory.createTableMappingDao();
+			DbConfig dbConf = null;
+			for(ReportDataset ds : fromDSList) {
+				if(ds.getTableMappingId() != null) {
+					TableMapping fromTable = tableMappingDao.findByPrimaryKey(ds.getTableMappingId());
+					if(dbConf == null) {
+						dbConf = dbConfigDao.findByPrimaryKey(fromTable.getDbConfigId());
+					}
+					PrimaryKeyInfo[] pkArr = dbConf.getPrimaryKeys(dbConf.getConnection(), fromTable);
+					if(pkArr != null && pkArr.length > 0) {
+						for(PrimaryKeyInfo pki : pkArr) {
+							if(querySort == null) {
+								querySort = " ORDER BY ";
+							} else {
+								querySort += ",";
+							}
+							querySort += "t"+ds.getId()+"."+pki.getColumnName() + " ASC ";
+						}
+					}
+				}
+			}
+			if(StringUtils.isEmpty(querySort)) {
+				querySort = " ORDER BY " + querySelect.substring("SELECT ".length(), querySelect.indexOf(" AS ")) + " ASC ";
+			}
+		}
+		StringBuilder query = new StringBuilder();
+		query.append(querySelectOnlyAlias).append(" FROM (").append(querySelect)
+			.append(", Row_Number() over (").append(querySort).append(") as __eurb_row_nr__")
+			.append(queryFrom).append(queryWhere).append(") Sub Where __eurb_row_nr__ BETWEEN ").append(start+1)
+			.append(" and ").append(start+limit).append(querySortOnlyAlias);
+		return query.toString();
+	}
 }

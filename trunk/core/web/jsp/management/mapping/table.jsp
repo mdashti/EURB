@@ -36,6 +36,7 @@
 			EURB.Table.deactivateAction = '<spring:url value="/management/mapping/table/tableDeactivate.spy" />';
 
 			EURB.Table.catalog = '<spring:message code="eurb.app.management.table.catalog" />';
+			EURB.Table.schema = '<spring:message code="eurb.app.management.table.schema" />';
 			EURB.Table.tableName = '<spring:message code="eurb.app.management.table.tableName" />';
 			EURB.Table.mappedName = '<spring:message code="eurb.app.management.table.mappedName" />';
 			EURB.Table.mappedType = '<spring:message code="eurb.app.management.table.mappedType" />';

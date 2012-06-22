@@ -384,6 +384,9 @@ public class TableMapping extends PersistableObject implements Serializable
 		if(!StringUtils.isEmpty(this.getCatalog())) {
 			fullName.append(this.getCatalog()).append(".");
 		}
+		if(!StringUtils.isEmpty(this.getSchema())) {
+			fullName.append(this.getSchema()).append(".");
+		}
 		fullName.append(this.getTableName());
 		return fullName.toString();
 	}

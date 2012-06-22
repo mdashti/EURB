@@ -1,19 +1,23 @@
 package com.sharifpro.db.meta;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.sharifpro.db.exception.ValidationException;
+import com.sharifpro.db.id.IIdentifier;
+import com.sharifpro.db.util.beanwrapper.StringWrapper;
 import com.sharifpro.util.PropertyProvider;
 
 /**
  * This represents a JDBC driver.
  * This class is a <CODE>JavaBean</CODE>.
+ *
+ * @author <A HREF="mailto:m_dashti@ce.sharif.edu">Mohammad Dashti</A>
  */
 public class SQLDriver implements ISQLDriver, Cloneable, Serializable
 {
     static final long serialVersionUID = 8506401259069527981L;
-    
-	/** Internationalized strings for this class. */
 
 	private interface IStrings
 	{
@@ -23,10 +27,18 @@ public class SQLDriver implements ISQLDriver, Cloneable, Serializable
 	}
 
 	/** The <CODE>IIdentifier</CODE> that uniquely identifies this object. */
-	private long _id;
+	private IIdentifier _id;
 
 	/** The name of this driver. */
 	private String _name;
+
+	/**
+	 * File name associated with <CODE>_jarFileURL</CODE>.
+	 */
+	private String _jarFileName = null;
+
+	/** Names for driver jar files. */
+	private List<String> _jarFileNamesList = new ArrayList<String>();
 
 	/** The class name of the JDBC driver. */
 	private String _driverClassName;
@@ -45,10 +57,11 @@ public class SQLDriver implements ISQLDriver, Cloneable, Serializable
 	 *
 	 * @param	id	Uniquely identifies this object.
 	 */
-	public SQLDriver(long id)
+	public SQLDriver(IIdentifier id)
 	{
 		_id = id;
 		_name = "";
+		_jarFileName = null;
 		_driverClassName = null;
 		_url = "";
         _websiteUrl = "";
@@ -75,6 +88,7 @@ public class SQLDriver implements ISQLDriver, Cloneable, Serializable
 		throws ValidationException
 	{
 		setName(rhs.getName());
+		setJarFileNames(rhs.getJarFileNames());
 		setDriverClassName(rhs.getDriverClassName());
 		setUrl(rhs.getUrl());
 		setJDBCDriverClassLoaded(rhs.isJDBCDriverClassLoaded());
@@ -91,7 +105,7 @@ public class SQLDriver implements ISQLDriver, Cloneable, Serializable
 		boolean rc = false;
 		if (rhs != null && rhs.getClass().equals(getClass()))
 		{
-			rc = ((ISQLDriver) rhs).getIdentifier() == getIdentifier();
+			rc = ((ISQLDriver) rhs).getIdentifier().equals(getIdentifier());
 		}
 		return rc;
 	}
@@ -101,7 +115,7 @@ public class SQLDriver implements ISQLDriver, Cloneable, Serializable
 	 */
 	public synchronized int hashCode()
 	{
-		return (int) getIdentifier();
+		return getIdentifier().hashCode();
 	}
 
 	/**
@@ -138,12 +152,12 @@ public class SQLDriver implements ISQLDriver, Cloneable, Serializable
 		return _name.compareTo(rhs.getName());
 	}
 
-	public long getIdentifier()
+	public IIdentifier getIdentifier()
 	{
 		return _id;
 	}
 
-	public void setIdentifier(long id)
+	public void setIdentifier(IIdentifier id)
 	{
 		_id = id;
 	}
@@ -163,10 +177,54 @@ public class SQLDriver implements ISQLDriver, Cloneable, Serializable
 		}
         if (!data.equals(_driverClassName))
 		{
+			final String oldValue = _driverClassName;
 			_driverClassName = data;
 		}
 	}
 
+	/**
+	 * @deprecated	Replaced by getJarFileNames().
+	 */
+	public String getJarFileName()
+	{
+		return _jarFileName;
+	}
+
+	public void setJarFileName(String value)
+	{
+		if (value == null)
+		{
+			value = "";
+		}
+		if (_jarFileName == null || !_jarFileName.equals(value))
+		{
+			final String oldValue = _jarFileName;
+			_jarFileName = value;
+		}
+	}
+
+	public synchronized String[] getJarFileNames()
+	{
+		return _jarFileNamesList.toArray(new String[_jarFileNamesList.size()]);
+	}
+
+	public synchronized void setJarFileNames(String[] values)
+	{
+		String[] oldValue =
+            _jarFileNamesList.toArray(new String[_jarFileNamesList.size()]);
+		_jarFileNamesList.clear();
+
+		if (values == null)
+		{
+			values = new String[0];
+		}
+
+		for (int i = 0; i < values.length; ++i)
+		{
+			_jarFileNamesList.add(values[i]);
+		}
+
+	}
 	public String getUrl()
 	{
 		return _url;
@@ -181,6 +239,7 @@ public class SQLDriver implements ISQLDriver, Cloneable, Serializable
 		}
 		if (!data.equals(_url))
 		{
+			final String oldValue = _url;
 			_url = data;
 		}
 	}
@@ -199,6 +258,7 @@ public class SQLDriver implements ISQLDriver, Cloneable, Serializable
 		}
         if (!data.equals(_name))
 		{
+			final String oldValue = _name;
 			_name = data;
 		}
 	}
@@ -213,6 +273,40 @@ public class SQLDriver implements ISQLDriver, Cloneable, Serializable
 		_jdbcDriverClassLoaded = cl;
 		//TODO: Decide whether this should be a bound property or not.
 		//		getPropertyChangeReporter().firePropertyChange(ISQLDriver.IPropertyNames.NAME, _name, _name);
+	}
+
+	public synchronized StringWrapper[] getJarFileNameWrappers()
+	{
+		StringWrapper[] wrappers = new StringWrapper[_jarFileNamesList.size()];
+		for (int i = 0; i < wrappers.length; ++i)
+		{
+			wrappers[i] = new StringWrapper(_jarFileNamesList.get(i));
+		}
+		return wrappers;
+	}
+
+	public StringWrapper getJarFileNameWrapper(int idx)
+		throws ArrayIndexOutOfBoundsException
+	{
+		return new StringWrapper(_jarFileNamesList.get(idx));
+	}
+
+	public void setJarFileNameWrappers(StringWrapper[] value)
+	{
+		_jarFileNamesList.clear();
+		if (value != null)
+		{
+			for (int i = 0; i < value.length; ++i)
+			{
+				_jarFileNamesList.add(value[i].getString());
+			}
+		}
+	}
+
+	public void setJarFileNameWrapper(int idx, StringWrapper value)
+		throws ArrayIndexOutOfBoundsException
+	{
+		_jarFileNamesList.set(idx, value.getString());
 	}
 
 	private String getString(String data)
@@ -233,7 +327,8 @@ public class SQLDriver implements ISQLDriver, Cloneable, Serializable
     public void setWebSiteUrl(String url) throws ValidationException { 
         String data = getString(url);
         if (!data.equals(_websiteUrl)) {
-            _websiteUrl = data;   
+            final String oldValue = _websiteUrl;
+            _websiteUrl = data;
         }
     }
     

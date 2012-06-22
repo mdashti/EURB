@@ -1,4 +1,4 @@
-package com.sharifpro.util;
+package com.sharifpro.db.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -14,6 +14,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
+
+import com.sharifpro.util.PropertyProvider;
 
 /**
  * General purpose utilities functions.

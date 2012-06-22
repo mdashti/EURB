@@ -6,10 +6,10 @@ import java.util.*;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
+import com.sharifpro.db.util.StringUtilities;
 import com.sharifpro.eurb.management.security.model.User;
 import com.sharifpro.util.DateUtil;
 import com.sharifpro.util.PropertyProvider;
-import com.sharifpro.util.StringUtilities;
 import com.sharifpro.util.json.JsonDateSerializer;
 
 public class ReportSchedule implements Serializable {

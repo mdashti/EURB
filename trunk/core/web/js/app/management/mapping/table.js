@@ -37,6 +37,12 @@ EURB.Table.cols = [{
 	,sortable:true
 	,hidden:true
 },{
+	 header:EURB.Table.schema
+	,id:'schema'
+	,dataIndex:'schema'
+	,width:30
+	,sortable:true
+},{
 	 header:EURB.Table.tableName
 	,id:'tableName'
 	,dataIndex:'tableName'

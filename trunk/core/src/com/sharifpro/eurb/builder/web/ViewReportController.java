@@ -148,14 +148,16 @@ public class ViewReportController {
 
 			//Build QUERY
 			///Build SELECT Part
-			StringBuilder querySelectSB = new StringBuilder("Select ");	
+			StringBuilder querySelectSB = new StringBuilder("Select ");
+			StringBuilder querySelectOnlyAliasSB = new StringBuilder("Select ");
 			boolean firstCol = true;
 			for(ReportColumn rcol : columnList) {
 				if(!firstCol) {
 					querySelectSB.append(", ");
+					querySelectOnlyAliasSB.append(", ");
 				}
 				querySelectSB.append(rcol.getDatabaseKey()).append(" AS ").append(rcol.getColumnKey());
-
+				querySelectOnlyAliasSB.append(rcol.getColumnKey());
 				if(firstCol) {
 					firstCol = false;
 				}
@@ -226,6 +228,7 @@ public class ViewReportController {
 
 			//Build ORDER BY part
 			StringBuilder querySortSB = new StringBuilder();
+			StringBuilder querySortOnlyAliasSB = new StringBuilder();
 			List<ReportColumn> sortCols = new LinkedList<ReportColumn>();
 			for(ReportColumn col : columnList) {
 				if((col.getSortType() != null && (ReportColumn.SORT_TYPE_ASC.equals(col.getSortType()) || ReportColumn.SORT_TYPE_DESC.equals(col.getSortType()))) ||
@@ -235,15 +238,19 @@ public class ViewReportController {
 			}
 			if(!sortCols.isEmpty()) {
 				querySortSB.append(" ORDER BY ");
+				querySortOnlyAliasSB.append(" ORDER BY ");
 				Collections.sort(sortCols, new ReportColumn.ReportColumnSortOrderComparator());
 				boolean firstSort = true;
 				for(ReportColumn col : sortCols) {
 					if(!firstSort){
 						querySortSB.append(", ");
+						querySortOnlyAliasSB.append(", ");
 					}
 					querySortSB.append(col.getDatabaseKey()).append(" ");
+					querySortOnlyAliasSB.append(col.getColumnKey()).append(" ");
 					if(col.getGroupLevel() == null){
 						querySortSB.append(col.getSortType() == ReportColumn.SORT_TYPE_DESC ? "DESC" : "ASC");
+						querySortOnlyAliasSB.append(col.getSortType() == ReportColumn.SORT_TYPE_DESC ? "DESC" : "ASC");
 					}
 					if(firstSort) {
 						firstSort = false;
@@ -252,9 +259,11 @@ public class ViewReportController {
 			}
 
 			String querySelect = querySelectSB.toString();
+			String querySelectOnlyAlias = querySelectOnlyAliasSB.toString();
 			String queryFrom = queryFromSB.toString();
 			String queryWhere = queryWhereSB.toString();
 			String querySort = querySortSB.toString();
+			String querySortOnlyAlias = querySortOnlyAliasSB.toString();
 
 
 			//Execute QUERY
@@ -312,7 +321,7 @@ public class ViewReportController {
 				if(start == null || limit == null) {
 					finalQuery = dialect.buildQuery(querySelect,queryFrom,queryWhere, querySort);
 				} else {
-					finalQuery = dialect.buildQuery(querySelect,queryFrom,queryWhere, querySort, Integer.parseInt(start), Integer.parseInt(limit));
+					finalQuery = dialect.buildQuery(datasetList, querySelectOnlyAlias, querySelect,queryFrom,queryWhere, querySort, querySortOnlyAlias, Integer.parseInt(start), Integer.parseInt(limit));
 					counter += Integer.parseInt(start);
 				}
 
@@ -364,7 +373,7 @@ public class ViewReportController {
 			return JsonUtil.getSuccessfulMap(resultList, total);
 
 		} catch (Exception e) {
-
+			e.printStackTrace();
 			return JsonUtil.getModelMapError(e.getMessage());
 		}
 	}

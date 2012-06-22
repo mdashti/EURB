@@ -18,10 +18,12 @@ import com.sharifpro.db.dialects.MySQLDialectExt;
 import com.sharifpro.db.dialects.PostgreSQLDialectExt;
 import com.sharifpro.db.dialects.SQLServerDialectExt;
 import com.sharifpro.db.exception.ValidationException;
+import com.sharifpro.db.id.UidIdentifierFactory;
 import com.sharifpro.db.meta.ISQLConnection;
 import com.sharifpro.db.meta.ISQLDatabaseMetaData;
 import com.sharifpro.db.meta.ISQLDriver;
 import com.sharifpro.db.meta.ITableInfo;
+import com.sharifpro.db.meta.PrimaryKeyInfo;
 import com.sharifpro.db.meta.SQLConnection;
 import com.sharifpro.db.meta.SQLDriver;
 import com.sharifpro.db.meta.SQLDriverPropertyCollection;
@@ -406,7 +408,7 @@ public class DbConfig extends PersistableObject implements Serializable
 	@JsonIgnore
 	public ISQLDriver getDriver() throws ValidationException {
 		SQLDriver driver = new SQLDriver();
-		driver.setIdentifier(getId());
+		driver.setIdentifier(new UidIdentifierFactory().createIdentifier());
 		driver.setDriverClassName(getDriverClass());
 		driver.setName(getName());
 		driver.setUrl(getDriverUrl());
@@ -466,6 +468,12 @@ public class DbConfig extends PersistableObject implements Serializable
 		return metaData.getColumnInfo(tbl.getCatalog(), tbl.getSchema(), tbl.getTableName());
 	}
 
+	@JsonIgnore
+	public PrimaryKeyInfo[] getPrimaryKeys(ISQLConnection conn, TableMapping tbl) throws SQLException{
+		ISQLDatabaseMetaData metaData = getMetaData(conn);
+		return metaData.getPrimaryKey(tbl.getCatalog(), tbl.getSchema(), tbl.getTableName());
+	}
+
 	public HibernateDialect getDialect() {
 		if(getDriverClass().toLowerCase().contains("mysql")) {
 			return new MySQLDialectExt();
@@ -486,8 +494,8 @@ public class DbConfig extends PersistableObject implements Serializable
 		String driverUrl = "jdbc:sqlserver://10.211.55.6;user=sa;password=ROOT;";
 		String username = "sa";
 		String password = "ROOT";
-		String testQuery;
-		RecordStatus recordStatus = RecordStatus.ACTIVE;
+		//String testQuery;
+		//RecordStatus recordStatus = RecordStatus.ACTIVE;
 		DataSource dataSource = null;
 		
 		if(dataSource == null) {
@@ -501,7 +509,7 @@ public class DbConfig extends PersistableObject implements Serializable
 		}
 		
 		SQLDriver driver = new SQLDriver();
-		driver.setIdentifier(1L);
+		driver.setIdentifier(new UidIdentifierFactory().createIdentifier());
 		driver.setDriverClassName(driverClass);
 		driver.setName(name);
 		driver.setUrl(driverUrl);
