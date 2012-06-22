@@ -578,4 +578,14 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 		return result.toString();
 	}
 
+	@Override
+	public List<ReportDesign> findAllWithoutCategory() throws ReportDesignDaoException {
+		try {
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE " + QUERY_ACTIVE_AND_PASSIVE_WHERE + " AND category_id IS NULL ORDER BY o.id, o.version_id", this);
+		}
+		catch (Exception e) {
+			throw new ReportDesignDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+	}
+
 }

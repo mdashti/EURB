@@ -238,7 +238,7 @@
 		    	'<ul class="submenu">'+
 		    	/*'<li><a href="'+EURB.baseURL+'" ><spring:message code="eurb.app.menu.reportbuilder.reports" /></a></li>'+*/
 					<sec:authorize access="hasRole('${authorityType.ROLE_RPG_REPORT_BUILDER_VIEW_LIST}')">
-					'<li><a href="'+EURB.baseURL+'builder/report/report-list.spy">'+EURB.appMenu.report+'</a></li>'+
+					'<li><a href="'+EURB.baseURL+'builder/report/report-tree-list.spy">'+EURB.appMenu.report+'</a></li>'+
 					</sec:authorize>
 					<sec:authorize access="hasRole('${authorityType.ROLE_RPG_REPORT_SCHEDULER_VIEW_LIST}')">
 					'<li><a href="'+EURB.baseURL+'builder/schedule/schedule.spy">'+EURB.appMenu.schedule+'</a></li>'+

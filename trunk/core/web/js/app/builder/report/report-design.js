@@ -4,32 +4,6 @@ EURB.ReportFilter.reportFilterGrid = new EURB.ReportFilter.FitlerGrid();
 EURB.ReportChart.reportChartGrid = new EURB.ReportChart.ChartGrid();
 // application main entry point
 Ext.onReady(function() {
-	EURB.ReportDesign.panel = new Ext.Panel({
-            layout: 'border',
-            border: false,
-            width: '100%',
-            items: [{
-                region: 'east',
-                width: '30%',
-                split: true,
-                items: [EURB.ReportDataset.reportDatasetGrid]
-            },{
-                region: 'center',
-                width: '70%',
-                split: true,
-                items: [{
-                    region: 'center',
-                    width: '100%',
-                    split: true,
-                    items: [EURB.ReportColumn.reportColumnGrid]
-                },{
-                    region: 'south',
-                    width: '100%',
-                    split: true,
-                    items: [EURB.ReportFilter.reportFilterGrid]
-                }]
-            }]
-	});
 	
 	EURB.ReportDesign.tabPanel = new Ext.TabPanel({
 		layoutOnTabChange:true,
@@ -38,11 +12,10 @@ Ext.onReady(function() {
 			title: EURB.ReportDesign.reportTab,
 			layout: 'border',
 			items: [{
-				title: EURB.ReportDesign.name,
 				region: 'east',
                 width: '30%',
                 split: true,
-                items: [EURB.ReportDataset.reportDatasetGrid]
+                items: [EURB.ReportDesign.InfoForm,EURB.ReportDataset.reportDatasetGrid]
             },{
                 region: 'center',
                 width: '70%',
@@ -66,6 +39,9 @@ Ext.onReady(function() {
 			items: [EURB.ReportChart.reportChartGrid, EURB.ReportChart.chartPropertyGrid]
 		}]
 	});
+	
+	EURB.ReportDesign.InfoForm.getForm().load({url:EURB.ReportDesign.searchAction, params:{reportDesign : EURB.ReportDesign.selectedDesign,reportVersion: EURB.ReportDesign.selectedVersion}} );
+
 	
 	
 	EURB.mainPanel.items.add(EURB.ReportDesign.tabPanel);

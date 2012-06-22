@@ -36,6 +36,14 @@
 			
 			EURB.ReportDesign.reportTab = '<spring:message code="eurb.app.builder.report.design.reportTab" />';
 			EURB.ReportDesign.reportChart = '<spring:message code="eurb.app.builder.report.design.reportChart" />';
+			EURB.ReportDesign.NameField = '<spring:message code="eurb.app.builder.report.name" />';
+			EURB.ReportDesign.DescriptionField = '<spring:message code="eurb.app.builder.report.description" />';
+			EURB.ReportDesign.CategoryField = '<spring:message code="eurb.app.builder.report.category" />';
+			EURB.ReportDesign.Info = '<spring:message code="eurb.app.builder.report.design.info" />';
+			
+			EURB.ReportDesign.searchAction = '<spring:url value="/builder/report/reportSearch.spy" />';
+			EURB.ReportDesign.storeAction = '<spring:url value="/builder/report/reportStore.spy" />';
+			
 			
 			
 			
@@ -124,6 +132,7 @@
 			EURB.ReportChart.column = '<spring:message code="eurb.app.builder.report.chart.column" />';
 			EURB.ReportChart.bar = '<spring:message code="eurb.app.builder.report.chart.bar" />';
 			EURB.ReportChart.pie = '<spring:message code="eurb.app.builder.report.chart.pie" />';
+			EURB.ReportChart.gauge = '<spring:message code="eurb.app.builder.report.chart.gauge" />';
 			EURB.ReportChart.xAxis = '<spring:message code="eurb.app.builder.report.chart.xAxis" />';
 			EURB.ReportChart.AxisColumn = '<spring:message code="eurb.app.builder.report.chart.axisColumn" />';
 			EURB.ReportChart.AxisTitle = '<spring:message code="eurb.app.builder.report.chart.axisTitle" />';
@@ -141,14 +150,32 @@
 			EURB.ReportChart.yAxisFont = '<spring:message code="eurb.app.builder.report.chart.yAxisFont" />';
 			EURB.ReportChart.yAxisSize = '<spring:message code="eurb.app.builder.report.chart.yAxisSize" />';
 			EURB.ReportChart.yAxisColor = '<spring:message code="eurb.app.builder.report.chart.yAxisColor" />';
+			EURB.ReportChart.chartColor = '<spring:message code="eurb.app.builder.report.chart.chartColor" />';
 			
 			EURB.ReportChart.saveAll = '<spring:message code="eurb.app.builder.report.chart.saveAll" />';
 			EURB.ReportChart.cancelAll = '<spring:message code="eurb.app.builder.report.chart.cancelAll" />';
 			
 			
 			
-			
-			
+			EURB.ReportDesign.categoryCombo = new Ext.form.ComboBox({
+			    typeAhead: true,
+			    triggerAction: 'all',
+			    lazyRender:true,
+			    mode: 'local',
+			    fieldLabel: EURB.ReportDesign.CategoryField,
+			    hiddenName: 'categoryId',
+			    anchor:'100%',  // anchor width by percentage
+				store: new Ext.data.ArrayStore({
+			        id: 0,
+			        fields: [
+			            'id',
+			            'name'
+			        ],
+			        data: ${categoriesComboContent}
+			    }),
+			    valueField: 'id',
+			    displayField: 'name'
+			});
 			
 			
 			
@@ -201,6 +228,7 @@
 			    displayField: 'title',
 			    forceSelection: true,
 			    allowBlank: true,
+			    width:400,
 			    listeners:{
 			    	select: function(combo,record,index){
 			    		rform = EURB.ReportColumn.reportColumnGrid.recordForm.form.getForm();
@@ -220,6 +248,7 @@
 			    displayField: 'title',
 			    forceSelection: true,
 			    allowBlank: true,
+			    width:300,
 			    listeners:{
 			    	select: function(combo,record,index){
 			    		addText('[' + record.get('mappedName') + '__t' + record.get('datasetId') + '.' + record.get('columnName') + ']');
@@ -237,6 +266,7 @@
 			    valueField: 'id',
 			    displayField: 'title',
 			    forceSelection: true,
+			    width:400,
 			    allowBlank: false
 			});
 			
@@ -250,6 +280,7 @@
 			    displayField: 'title',
 			    forceSelection: true,
 			    allowBlank: false,
+			    width:400,
 			    listeners:{
 			    	select: function(combo,record,index){
 			    		form = EURB.ReportFilter.reportFilterGrid.recordForm.form.getForm();
@@ -270,6 +301,7 @@
 			    displayField: 'title',
 			    forceSelection: true,
 			    allowBlank: false,
+			    width:300,
 			    listeners:{
 			    	select: function(combo,record,index){
 			    		dsField = EURB.ReportChart.reportChartGrid.axisForm.getForm().findField('xDataset');
@@ -290,6 +322,7 @@
 			    displayField: 'title',
 			    forceSelection: true,
 			    allowBlank: false,
+			    width:300,
 			    listeners:{
 			    	select: function(combo,record,index){
 			    		dsField = EURB.ReportChart.reportChartGrid.axisForm.getForm().findField('yDataset');
@@ -360,6 +393,7 @@
 		<script src="${resourcesUrl}/js/app/builder/report/report-dataset.js"></script>
 		<script src="${resourcesUrl}/js/app/builder/report/report-column.js"></script>
 		<script src="${resourcesUrl}/js/app/builder/report/report-filter.js"></script>
+		<script src="${resourcesUrl}/js/app/builder/report/report-info.js"></script>
 		
 		<script src="${resourcesUrl}/js/app/builder/report/report-chart.js"></script>
 		

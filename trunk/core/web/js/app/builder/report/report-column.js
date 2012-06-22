@@ -65,7 +65,7 @@ EURB.ReportColumn.sortTypeCombo = new Ext.form.ComboBox({
 
 
 
-////////////////////////////data set grid/////////////////////////////////////
+////////////////////////////report column grid/////////////////////////////////////
 
 EURB.ReportColumn.store = new Ext.data.Store({
 	reader:new Ext.data.JsonReader({

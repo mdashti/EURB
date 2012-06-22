@@ -182,6 +182,7 @@ public class ViewReportController {
 			StringBuilder queryWhereSB = new StringBuilder();
 			ReportFilter.ReportFilterOperator oper;
 			boolean firstFilter = true;
+			List<Integer> reportFilterTypes = new ArrayList<Integer>(reportFilters.size());
 			if(reportFilters != null && !reportFilters.isEmpty()) {
 				///////////GENERATING A COLUMN MAP FOR BUILDING FILTERS\\\\\\\\\\\\\\\
 				Map<Long, ColumnMapping> columnMap = new HashMap<Long, ColumnMapping>();
@@ -196,10 +197,14 @@ public class ViewReportController {
 				for(ReportFilter filter : reportFilters) {
 					ColumnMapping relatedRCol = columnMap.get(filter.getColumnMappingId());
 					if(relatedRCol != null) {
+						reportFilterTypes.add(relatedRCol.getColDataType());
 						oper = filter.getOperatorObj();
 						if(firstFilter) {
 							queryWhereSB.append(" WHERE ");
 							firstFilter = false;
+						}
+						else {
+							queryWhereSB.append(" AND ");
 						}
 						queryWhereSB.append(" ").append(relatedRCol.getDatabaseKey(filter.getReportDatasetId())).append(" ").append(filter.getOperator()).append(" ");
 
@@ -274,14 +279,25 @@ public class ViewReportController {
 				} else {
 					int index = 1;
 					db.prepareStatement(countQuery);
-					for(ReportFilter filter : reportFilters) {
+					for(int i = 0; i < reportFilters.size(); i++) {
+						ReportFilter filter = reportFilters.get(i);
+						int type = reportFilterTypes.get(i);
 						if(!filter.isJoinFilter()) {
 							oper = filter.getOperatorObj();
+							Object operand1 , operand2;
+							if(type == 2){
+								operand1 = (filter.getOperand1() == null || filter.getOperand1().equals("")) ? null : Integer.parseInt(filter.getOperand1());
+								operand2 = (filter.getOperand2() == null || filter.getOperand2().equals("")) ? null : Integer.parseInt(filter.getOperand2());
+							}
+							else{
+								operand1 = filter.getOperand1();
+								operand2 = filter.getOperand2();
+							}
 							if(oper.numberOfOperands == 1) {
-								db.pstmt.setObject(index++, filter.getOperand1());
+								db.pstmt.setObject(index++, operand1);
 							} else if(oper.numberOfOperands == 2) {
-								db.pstmt.setObject(index++, filter.getOperand1());
-								db.pstmt.setObject(index++, filter.getOperand2());
+								db.pstmt.setObject(index++, operand1);
+								db.pstmt.setObject(index++, operand2);
 							}
 						}
 					}
@@ -305,14 +321,25 @@ public class ViewReportController {
 				} else {
 					int index = 1;
 					db.prepareStatement(finalQuery);
-					for(ReportFilter filter : reportFilters) {
+					for(int i = 0; i < reportFilters.size(); i++) {
+						ReportFilter filter = reportFilters.get(i);
+						int type = reportFilterTypes.get(i);
 						if(!filter.isJoinFilter()) {
 							oper = filter.getOperatorObj();
+							Object operand1 , operand2;
+							if(type == 2){
+								operand1 = (filter.getOperand1() == null || filter.getOperand1().equals("")) ? null : Integer.parseInt(filter.getOperand1());
+								operand2 = (filter.getOperand2() == null || filter.getOperand2().equals("")) ? null : Integer.parseInt(filter.getOperand2());
+							}
+							else{
+								operand1 = filter.getOperand1();
+								operand2 = filter.getOperand2();
+							}
 							if(oper.numberOfOperands == 1) {
-								db.pstmt.setObject(index++, filter.getOperand1());
+								db.pstmt.setObject(index++, operand1);
 							} else if(oper.numberOfOperands == 2) {
-								db.pstmt.setObject(index++, filter.getOperand1());
-								db.pstmt.setObject(index++, filter.getOperand2());
+								db.pstmt.setObject(index++, operand1);
+								db.pstmt.setObject(index++, operand2);
 							}
 						}
 					}

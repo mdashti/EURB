@@ -38,8 +38,6 @@
 		<script type="text/javascript">
 
 			EURB.Report = {};
-			EURB.Report.searchAction = '<spring:url value="/builder/report/reportSearch.spy" />';
-			EURB.Report.storeAction = '<spring:url value="/builder/report/reportStore.spy" />';
 			EURB.Report.removeAction = '<spring:url value="/builder/report/reportRemove.spy" />';
 			EURB.Report.activateAction = '<spring:url value="/builder/report/reportActivate.spy" />';
 			EURB.Report.deactivateAction = '<spring:url value="/builder/report/reportDeactivate.spy" />';

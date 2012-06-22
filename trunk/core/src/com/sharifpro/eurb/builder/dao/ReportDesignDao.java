@@ -82,18 +82,18 @@ public interface ReportDesignDao
 	public int countAll() throws ReportDesignDaoException;
 	
 	/** 
-	 * Returns all rows from the report_category table that match the criteria '' limited by start and limit.
+	 * Returns all rows from the report_design table that match the criteria '' limited by start and limit.
 	 */
 	public List<ReportDesign> findAll(Integer start, Integer limit, String sort, String dir) throws ReportDesignDaoException;
 
 	/** 
-	 * Returns all rows from the report_category table that match the like query in onFields fields limited by start and limit.
+	 * Returns all rows from the report_design table that match the like query in onFields fields limited by start and limit.
 	 */
 	public List<ReportDesign> findAll(String query, List<String> onFields, Integer start, Integer limit, String sort, String dir) throws ReportDesignDaoException;
 
 	
 	/** 
-	 * Counts all rows from the report_category table that match the like query in onFields fields.
+	 * Counts all rows from the report_design table that match the like query in onFields fields.
 	 */
 	public int countAll(String query, List<String> onFields) throws ReportDesignDaoException;
 	
@@ -173,5 +173,11 @@ public interface ReportDesignDao
 	 * Returns the rows from the report_design table that matches the specified primary-key value.
 	 */
 	public ReportDesign findByPrimaryKey(ReportDesignPk pk) throws ReportDesignDaoException;
+
+	/** 
+	 * Returns the rows from the report_design table that matches the criteria 'category_id is null'.
+	 * @throws ReportDesignDaoException 
+	 */
+	public List<ReportDesign> findAllWithoutCategory() throws ReportDesignDaoException;
 
 }

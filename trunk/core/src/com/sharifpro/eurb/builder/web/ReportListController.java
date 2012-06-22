@@ -2,7 +2,6 @@ package com.sharifpro.eurb.builder.web;
 
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +19,6 @@ import com.sharifpro.eurb.builder.dao.ReportDesignDao;
 import com.sharifpro.eurb.builder.exception.ReportCategoryDaoException;
 import com.sharifpro.eurb.builder.exception.ReportDesignDaoException;
 import com.sharifpro.eurb.builder.model.ReportCategory;
-import com.sharifpro.eurb.builder.model.ReportColumn;
 import com.sharifpro.eurb.builder.model.ReportDesign;
 import com.sharifpro.eurb.builder.model.ReportDesignPk;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
@@ -58,7 +56,7 @@ public class ReportListController {
 		return mv;
 	}
 
-	@RequestMapping(value="/builder/report/reportSearch.spy")
+/*	@RequestMapping(value="/builder/report/reportSearch.spy")
 	public @ResponseBody Map<String,? extends Object> search(@RequestParam(defaultValue="", required=false) String query
 			,@RequestParam(defaultValue="[]", required=false) String fields
 			,@RequestParam(defaultValue="0", required=false) String start
@@ -86,7 +84,7 @@ public class ReportListController {
 
 			return JsonUtil.getModelMapError(e.getMessage());
 		}
-	}
+	}*/
 	
 	
 	@RequestMapping(value="/builder/report/reportAndCategorySearch.spy")
@@ -98,13 +96,13 @@ public class ReportListController {
 			,@RequestParam(defaultValue=AbstractDAO.ASCENDING_SORT_ORDER, required=false) String dir) throws Exception {
 
 		try{
-			List<ReportDesign> reportDesigns;
-			int totalCount;
+			//List<ReportDesign> reportDesigns;
+			//int totalCount;
 			Map<String,Object> modelMap = new HashMap<String,Object>(3);
 			
-			Integer startBy = StringUtils.isEmpty(start) ? 0 : Integer.parseInt(start);
-			Integer limitBy = StringUtils.isEmpty(limit) ? AbstractDAO.DEFAULT_PAGE_SIZE : Integer.parseInt(limit);
-			List<String> onFields = jsonUtil.getListFromRequest(fields, String.class);
+			//Integer startBy = StringUtils.isEmpty(start) ? 0 : Integer.parseInt(start);
+			//Integer limitBy = StringUtils.isEmpty(limit) ? AbstractDAO.DEFAULT_PAGE_SIZE : Integer.parseInt(limit);
+			//List<String> onFields = jsonUtil.getListFromRequest(fields, String.class);
 			//TODO : how to handle search here???
 			
 			/*if(StringUtils.isEmpty(query) || onFields == null || onFields.isEmpty()) {
@@ -127,6 +125,8 @@ public class ReportListController {
 				objList.addAll(children);
 			}
 			
+			List<ReportDesign> reports = reportDesignDao.findAllWithoutCategory();
+			objList.addAll(reports);
 				
 			modelMap.put("data", objList);
 			modelMap.put("totalCount", objList.size());
@@ -164,31 +164,7 @@ public class ReportListController {
 	}
 	
 
-	@RequestMapping(value="/builder/report/reportStore.spy")
-	public @ResponseBody Map<String,? extends Object> store(@RequestParam Object data) throws Exception {
-		try{
-
-			List<ReportDesign> reportDesigns = jsonUtil.getListFromRequest(data, ReportDesign.class);
-
-			List<Object[]> insertIds = new ArrayList<Object[]>(reportDesigns.size());
-			ReportDesignPk pk;
-			for(ReportDesign reportDesign : reportDesigns) {
-				if(reportDesign.isNewRecord()) {
-					pk = reportDesignDao.insert(reportDesign);
-				} else {
-					pk = reportDesign.createPk();
-					reportDesignDao.update(pk,reportDesign);
-				}
-				insertIds.add(new Object[] {pk.getId()});
-			}
-
-			return JsonUtil.getSuccessfulMapAfterStore(insertIds);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			return JsonUtil.getModelMapError(e.getMessage());
-		}
-	}
+	
 
 	@RequestMapping(value="/builder/report/reportRemove.spy")
 	public @ResponseBody Map<String,? extends Object> delete(@RequestParam Object data) throws Exception {
