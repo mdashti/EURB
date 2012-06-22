@@ -46,8 +46,8 @@ public class DbConfigDaoExample
 			if(dto.isActive() && dto.isValidTestCon()) {
 				try {
 					conn = dto.getConnection();
-					System.out.println("Catalogs = " + Arrays.toString(dto.getCatalogs(conn)));
-					ITableInfo[] tables = dto.getTables(conn);
+					System.out.println("Catalogs = " + Arrays.toString(DbConfig.getCatalogs(conn)));
+					ITableInfo[] tables = DbConfig.getTables(conn);
 					System.out.println("Tables = " + Arrays.toString(tables));
 					for(ITableInfo tbl : tables) {
 						System.out.println("---------------------------------");
@@ -58,7 +58,7 @@ public class DbConfigDaoExample
 						System.out.println("Type: " + tbl.getType());
 						System.out.println("Child Tables: " + tbl.getChildTables());
 						System.out.println("Database Object Type: " + tbl.getDatabaseObjectType());
-						colsInfo = dto.getColumns(conn,tbl);
+						colsInfo = DbConfig.getColumns(conn,tbl);
 						System.out.println("Cols = " + Arrays.toString(colsInfo));
 						for(TableColumnInfo col : colsInfo) {
 							System.out.println("++++++++++++++++++++++++++++++");

@@ -9,6 +9,7 @@ import org.antlr.stringtemplate.StringTemplate;
 import org.hibernate.HibernateException;
 
 import com.sharifpro.db.meta.IDatabaseObjectInfo;
+import com.sharifpro.db.meta.ISQLConnection;
 import com.sharifpro.db.meta.ISQLDatabaseMetaData;
 import com.sharifpro.db.meta.ITableInfo;
 import com.sharifpro.db.meta.TableColumnInfo;
@@ -932,7 +933,7 @@ public class CommonHibernateDialect implements HibernateDialect,
 	}
 
 	@Override
-	public String buildQuery(List<ReportDataset> fromDSList, String querySelectOnlyAlias, String querySelect,
+	public String buildQuery(ISQLConnection conn, List<ReportDataset> fromDSList, String querySelectOnlyAlias, String querySelect,
 			String queryFrom, String queryWhere, String querySort, String querySortOnlyAlias, int start,
 			int limit) throws DaoException, SQLException {
 		

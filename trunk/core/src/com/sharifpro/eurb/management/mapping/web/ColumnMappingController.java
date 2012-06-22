@@ -122,7 +122,7 @@ public class ColumnMappingController {
 							throw new TableMappingDaoException(PropertyProvider.get("eurb.app.management.table.dbConfigIsInvalid"));
 						}
 						conn.setReadOnly(true);
-						TableColumnInfo[] columns = dbConf.getColumns(conn, tbl);
+						TableColumnInfo[] columns = DbConfig.getColumns(conn, tbl);
 						for(TableColumnInfo col : columns) {
 							if(!columnMappings.contains(col)) {
 								columnMappings.add(new ColumnMapping(dbConf.getId(),tbl.getId(),col.getColumnName(),col.getTypeName(),col.getDataType(),col.getOrdinalPosition(),null));

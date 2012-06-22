@@ -79,14 +79,14 @@ public class TableMappingController {
 							throw new TableMappingDaoException(PropertyProvider.get("eurb.app.management.table.dbConfigIsInvalid"));
 						}
 						conn.setReadOnly(true);
-						ITableInfo[] tables = dbConf.getTables(conn);
+						ITableInfo[] tables = DbConfig.getTables(conn);
 						for(ITableInfo tbl : tables) {
 							if(!tableMappings.contains(tbl)) {
 								tableMappings.add(new TableMapping(dbConf.getId(), tbl.getCatalogName(), tbl.getSchemaName(), tbl.getSimpleName(), TableMapping.MAPPED_TYPE_TABLE));
 							}
 						}
 
-						ITableInfo[] views = dbConf.getViews(conn);
+						ITableInfo[] views = DbConfig.getViews(conn);
 						for(ITableInfo v : views) {
 							if(!tableMappings.contains(v)) {
 								tableMappings.add(new TableMapping(dbConf.getId(), v.getCatalogName(), v.getSchemaName(), v.getSimpleName(), TableMapping.MAPPED_TYPE_VIEW));

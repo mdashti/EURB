@@ -1,6 +1,10 @@
 package com.sharifpro.eurb.management.mapping.web;
 
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.sharifpro.db.meta.SQLDriver;
 import com.sharifpro.eurb.info.AuthorityType;
 import com.sharifpro.eurb.management.mapping.dao.DbConfigDao;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
@@ -21,6 +26,7 @@ import com.sharifpro.eurb.management.mapping.model.PersistableObject;
 import com.sharifpro.util.PropertyProvider;
 import com.sharifpro.util.SecurityUtil;
 import com.sharifpro.util.json.JsonUtil;
+import com.sharifpro.util.xml.XMLObjectCache;
 
 /**
  * Controller - Spring
@@ -60,6 +66,33 @@ public class DBConfigController {
 
 		} catch (Exception e) {
 
+			return JsonUtil.getModelMapError(e.getMessage());
+		}
+	}
+
+	@RequestMapping(value="/management/mapping/dbconfig/driverSearch.spy")
+	public @ResponseBody Map<String,? extends Object> driverSearch() throws Exception {
+		
+		try{
+			final XMLObjectCache<SQLDriver> _cache = new XMLObjectCache<SQLDriver>();
+			
+			URL url = DBConfigController.class.getClassLoader().getResource("default_drivers.xml");
+			
+			InputStreamReader isr = new InputStreamReader(url.openStream());
+			try {
+				_cache.load(isr, null, true);
+			} finally {
+				isr.close();
+			}
+			
+			Iterator<SQLDriver> itr = _cache.getAllForClass(SQLDriver.class);
+			List<SQLDriver> sqlDrivers = new LinkedList<SQLDriver>();
+			while (itr.hasNext()) {
+				SQLDriver driver = itr.next();
+				sqlDrivers.add(driver);
+			}
+			return JsonUtil.getSuccessfulMap(sqlDrivers);
+		} catch (Exception e) {
 			return JsonUtil.getModelMapError(e.getMessage());
 		}
 	}

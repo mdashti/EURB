@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import com.sharifpro.db.exception.ValidationException;
 import com.sharifpro.db.id.IIdentifier;
 import com.sharifpro.db.util.beanwrapper.StringWrapper;
@@ -15,6 +18,7 @@ import com.sharifpro.util.PropertyProvider;
  *
  * @author <A HREF="mailto:m_dashti@ce.sharif.edu">Mohammad Dashti</A>
  */
+@JsonAutoDetect
 public class SQLDriver implements ISQLDriver, Cloneable, Serializable
 {
     static final long serialVersionUID = 8506401259069527981L;
@@ -152,6 +156,7 @@ public class SQLDriver implements ISQLDriver, Cloneable, Serializable
 		return _name.compareTo(rhs.getName());
 	}
 
+	@JsonIgnore
 	public IIdentifier getIdentifier()
 	{
 		return _id;
@@ -185,6 +190,7 @@ public class SQLDriver implements ISQLDriver, Cloneable, Serializable
 	/**
 	 * @deprecated	Replaced by getJarFileNames().
 	 */
+	@JsonIgnore
 	public String getJarFileName()
 	{
 		return _jarFileName;
@@ -203,6 +209,7 @@ public class SQLDriver implements ISQLDriver, Cloneable, Serializable
 		}
 	}
 
+	@JsonIgnore
 	public synchronized String[] getJarFileNames()
 	{
 		return _jarFileNamesList.toArray(new String[_jarFileNamesList.size()]);
@@ -249,6 +256,11 @@ public class SQLDriver implements ISQLDriver, Cloneable, Serializable
 		return _name;
 	}
 
+	public String getFullName()
+	{
+		return _name + " - " + getDriverClassName();
+	}
+
 	public void setName(String name) throws ValidationException
 	{
 		String data = getString(name);
@@ -263,6 +275,7 @@ public class SQLDriver implements ISQLDriver, Cloneable, Serializable
 		}
 	}
 
+	@JsonIgnore
 	public boolean isJDBCDriverClassLoaded()
 	{
 		return _jdbcDriverClassLoaded;
@@ -275,6 +288,7 @@ public class SQLDriver implements ISQLDriver, Cloneable, Serializable
 		//		getPropertyChangeReporter().firePropertyChange(ISQLDriver.IPropertyNames.NAME, _name, _name);
 	}
 
+	@JsonIgnore
 	public synchronized StringWrapper[] getJarFileNameWrappers()
 	{
 		StringWrapper[] wrappers = new StringWrapper[_jarFileNamesList.size()];

@@ -7,12 +7,12 @@ import java.util.List;
 import org.hibernate.HibernateException;
 
 import com.sharifpro.db.meta.IDatabaseObjectInfo;
+import com.sharifpro.db.meta.ISQLConnection;
 import com.sharifpro.db.meta.ISQLDatabaseMetaData;
 import com.sharifpro.db.meta.ITableInfo;
 import com.sharifpro.db.meta.TableColumnInfo;
 import com.sharifpro.eurb.builder.model.ReportDataset;
 import com.sharifpro.eurb.management.mapping.exception.DaoException;
-import com.sharifpro.eurb.management.mapping.model.TableMapping;
 
 /**
  * An interface for methods implemented by database dialects for the purpose of
@@ -1260,7 +1260,7 @@ public interface HibernateDialect extends StringTemplateConstants {
 	 * @throws DaoException 
 	 * @throws SQLException 
 	 */
-	String buildQuery(List<ReportDataset> fromDSList, String querySelectOnlyAlias, String querySelect, String queryFrom,
+	String buildQuery(ISQLConnection conn, List<ReportDataset> fromDSList, String querySelectOnlyAlias, String querySelect, String queryFrom,
 			String queryWhere, String querySort, String querySortOnlyAlias, int start, int limit) throws DaoException, SQLException;
 
 	/**

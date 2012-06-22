@@ -430,46 +430,46 @@ public class DbConfig extends PersistableObject implements Serializable
 	}
 	
 	@JsonIgnore
-	public ISQLDatabaseMetaData getMetaData(ISQLConnection conn) throws SQLException {
+	public static ISQLDatabaseMetaData getMetaData(ISQLConnection conn) throws SQLException {
 		return conn.getSQLMetaData();
 	}
 	
 	@JsonIgnore
-	public String[] getCatalogs(ISQLConnection conn) throws SQLException{
+	public static String[] getCatalogs(ISQLConnection conn) throws SQLException{
 		ISQLDatabaseMetaData metaData = getMetaData(conn);
 		String[] catalogs = metaData.getCatalogs();
 		return catalogs;
 	}
 	
 	@JsonIgnore
-	public ITableInfo[] getTables(ISQLConnection conn) throws SQLException{
+	public static ITableInfo[] getTables(ISQLConnection conn) throws SQLException{
 		ISQLDatabaseMetaData metaData = getMetaData(conn);
 		ITableInfo[] tables = metaData.getTables(null, null, null, new String[]{"TABLE"});
 		return tables;
 	}
 	
 	@JsonIgnore
-	public ITableInfo[] getViews(ISQLConnection conn) throws SQLException{
+	public static ITableInfo[] getViews(ISQLConnection conn) throws SQLException{
 		ISQLDatabaseMetaData metaData = getMetaData(conn);
 		ITableInfo[] views = metaData.getTables(null, null, null, new String[]{"VIEW"});
 		return views;
 	}
 	
 	@JsonIgnore
-	public TableColumnInfo[] getColumns(ISQLConnection conn, ITableInfo tableInfo) throws SQLException{
+	public static TableColumnInfo[] getColumns(ISQLConnection conn, ITableInfo tableInfo) throws SQLException{
 		ISQLDatabaseMetaData metaData = getMetaData(conn);
 		TableColumnInfo[] cols = metaData.getColumnInfo(tableInfo);
 		return cols;
 	}
 	
 	@JsonIgnore
-	public TableColumnInfo[] getColumns(ISQLConnection conn, TableMapping tbl) throws SQLException{
+	public static TableColumnInfo[] getColumns(ISQLConnection conn, TableMapping tbl) throws SQLException{
 		ISQLDatabaseMetaData metaData = getMetaData(conn);
 		return metaData.getColumnInfo(tbl.getCatalog(), tbl.getSchema(), tbl.getTableName());
 	}
 
 	@JsonIgnore
-	public PrimaryKeyInfo[] getPrimaryKeys(ISQLConnection conn, TableMapping tbl) throws SQLException{
+	public static PrimaryKeyInfo[] getPrimaryKeys(ISQLConnection conn, TableMapping tbl) throws SQLException{
 		ISQLDatabaseMetaData metaData = getMetaData(conn);
 		return metaData.getPrimaryKey(tbl.getCatalog(), tbl.getSchema(), tbl.getTableName());
 	}

@@ -29,6 +29,7 @@
 			EURB.DBConfig.removeAction = '<spring:url value="/management/mapping/dbconfig/dbconfigRemove.spy" />';
 			EURB.DBConfig.activateAction = '<spring:url value="/management/mapping/dbconfig/dbconfigActivate.spy" />';
 			EURB.DBConfig.deactivateAction = '<spring:url value="/management/mapping/dbconfig/dbconfigDeactivate.spy" />';
+			EURB.DBConfig.driverSearchAction = '<spring:url value="/management/mapping/dbconfig/driverSearch.spy" />';
 			
 			EURB.DBConfig.name = '<spring:message code="eurb.app.management.dbconfig.name" />';
 			EURB.DBConfig.driverClass = '<spring:message code="eurb.app.management.dbconfig.driverClass" />';

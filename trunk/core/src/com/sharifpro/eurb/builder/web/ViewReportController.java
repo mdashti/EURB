@@ -321,7 +321,7 @@ public class ViewReportController {
 				if(start == null || limit == null) {
 					finalQuery = dialect.buildQuery(querySelect,queryFrom,queryWhere, querySort);
 				} else {
-					finalQuery = dialect.buildQuery(datasetList, querySelectOnlyAlias, querySelect,queryFrom,queryWhere, querySort, querySortOnlyAlias, Integer.parseInt(start), Integer.parseInt(limit));
+					finalQuery = dialect.buildQuery(conn, datasetList, querySelectOnlyAlias, querySelect,queryFrom,queryWhere, querySort, querySortOnlyAlias, Integer.parseInt(start), Integer.parseInt(limit));
 					counter += Integer.parseInt(start);
 				}
 

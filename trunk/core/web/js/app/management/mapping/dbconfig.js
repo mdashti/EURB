@@ -24,6 +24,30 @@ EURB.DBConfig.store = new Ext.data.Store({
 	,remoteSort:true
 });
 
+EURB.DBConfig.driverStore = new Ext.data.Store({
+	reader:new Ext.data.JsonReader({
+		 id:'id'
+		,totalProperty:'totalCount'
+		,root:'data'
+		,fields:[
+			 {name:'name', type:'string'}
+			,{name:'fullName', type:'string'}
+			,{name:'driverClassName', type:'string'}
+			,{name:'url', type:'string'}
+			,{name:'webSiteUrl', type:'string'}
+		]
+	})
+	,autoLoad: true
+	,proxy:new Ext.data.HttpProxy({
+		url:EURB.DBConfig.driverSearchAction
+        ,listeners: {
+        	'exception' : EURB.proxyExceptionHandler
+        }
+    })
+	//,baseParams:{}
+	,remoteSort:false
+});
+
 EURB.DBConfig.cols = [{
 	 header:EURB.DBConfig.name
 	,id:'name'
@@ -39,8 +63,21 @@ EURB.DBConfig.cols = [{
 	,dataIndex:'driverClass'
 	,width:100
 	,sortable:true
-	,editor:new Ext.form.TextField({
-		allowBlank:false
+	,editor:new Ext.form.ComboBox({
+	    typeAhead: true,
+	    triggerAction: 'all',
+	    lazyRender:true,
+	    mode: 'local',
+	    store: EURB.DBConfig.driverStore,
+	    forceSelection: false,
+	    valueField: 'driverClassName',
+	    displayField: 'fullName',
+		cls:'left-align-txt',
+	    listeners: {
+	    	'select' : function(thiz, newValue, oldValue) {
+	    		Ext.ComponentMgr.get('driverUrlEditor').setRawValue(newValue.data.url);
+	    	}
+	    }
 	})
 },{
 	 header:EURB.DBConfig.driverUrl
@@ -49,7 +86,9 @@ EURB.DBConfig.cols = [{
 	,width:200
 	,sortable:true
 	,editor:new Ext.form.TextField({
-		allowBlank:false
+		allowBlank:false,
+		cls:'left-align-txt',
+		id:'driverUrlEditor'
 	})
 },{
 	 header:EURB.DBConfig.username
@@ -58,7 +97,8 @@ EURB.DBConfig.cols = [{
 	,width:40
 	,sortable:true
 	,editor:new Ext.form.TextField({
-		allowBlank:false
+		allowBlank:false,
+		cls:'left-align-txt'
 	})
 },{
 	 header:EURB.DBConfig.password
@@ -70,6 +110,7 @@ EURB.DBConfig.cols = [{
 		xtype: 'textfield'
 		,allowBlank:false
 		,inputType:'password'
+		,cls:'left-align-txt'
 	}
 	,hidden:true
 	,renderer: function() {return '';}

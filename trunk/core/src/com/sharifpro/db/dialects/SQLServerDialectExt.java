@@ -8,13 +8,13 @@ import java.util.List;
 
 import com.sharifpro.db.meta.DatabaseObjectType;
 import com.sharifpro.db.meta.IDatabaseObjectInfo;
+import com.sharifpro.db.meta.ISQLConnection;
 import com.sharifpro.db.meta.ITableInfo;
 import com.sharifpro.db.meta.JDBCTypeMapper;
 import com.sharifpro.db.meta.PrimaryKeyInfo;
 import com.sharifpro.db.meta.TableColumnInfo;
 import com.sharifpro.eurb.DaoFactory;
 import com.sharifpro.eurb.builder.model.ReportDataset;
-import com.sharifpro.eurb.management.mapping.dao.DbConfigDao;
 import com.sharifpro.eurb.management.mapping.dao.TableMappingDao;
 import com.sharifpro.eurb.management.mapping.exception.DaoException;
 import com.sharifpro.eurb.management.mapping.model.DbConfig;
@@ -553,22 +553,17 @@ public class SQLServerDialectExt extends SybaseDialectExt implements HibernateDi
 	}
 	
 	@Override
-	public String buildQuery(List<ReportDataset> fromDSList, String querySelectOnlyAlias, String querySelect,
+	public String buildQuery(ISQLConnection conn, List<ReportDataset> fromDSList, String querySelectOnlyAlias, String querySelect,
 			String queryFrom, String queryWhere, String querySort, String querySortOnlyAlias, int start,
 			int limit) throws DaoException, SQLException {
 		if(StringUtils.isEmpty(querySort)) {
 			querySort = null;
 			querySortOnlyAlias = "";
-			DbConfigDao dbConfigDao = DaoFactory.createDbConfigDao();
 			TableMappingDao tableMappingDao = DaoFactory.createTableMappingDao();
-			DbConfig dbConf = null;
 			for(ReportDataset ds : fromDSList) {
 				if(ds.getTableMappingId() != null) {
 					TableMapping fromTable = tableMappingDao.findByPrimaryKey(ds.getTableMappingId());
-					if(dbConf == null) {
-						dbConf = dbConfigDao.findByPrimaryKey(fromTable.getDbConfigId());
-					}
-					PrimaryKeyInfo[] pkArr = dbConf.getPrimaryKeys(dbConf.getConnection(), fromTable);
+					PrimaryKeyInfo[] pkArr = DbConfig.getPrimaryKeys(conn, fromTable);
 					if(pkArr != null && pkArr.length > 0) {
 						for(PrimaryKeyInfo pki : pkArr) {
 							if(querySort == null) {
