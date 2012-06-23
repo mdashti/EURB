@@ -47,7 +47,7 @@ public abstract class AbstractWordView extends AbstractView {
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 
-		XWPFDocument document = new XWPFDocument();
+		XWPFDocument document = new XWPFDocument(AbstractWordView.class.getClassLoader().getResourceAsStream("empty.docx"));
 		logger.debug("Created Word Document from scratch");
 
 		buildWordDocument(model, document, request, response);

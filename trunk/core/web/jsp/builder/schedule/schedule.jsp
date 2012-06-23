@@ -28,7 +28,7 @@
 			EURB.Schedule.findScheduleAction = '<spring:url value="/builder/schedule/findSchedule.spy" />';
 			EURB.Schedule.storeAction = '<spring:url value="/builder/schedule/scheduleStore.spy" />';
 			EURB.Schedule.removeAction = '<spring:url value="/builder/schedule/scheduleRemove.spy" />';
-			EURB.Schedule.reportSearchAction = '<spring:url value="/builder/report/reportSearch.spy" />';
+			EURB.Schedule.reportSearchAction = '<spring:url value="/builder/report/reportFlatSearch.spy" />';
 
 			EURB.Schedule.reportName = '<spring:message code="eurb.app.builder.schedule.reportName" />';
 			EURB.Schedule.schedule = '<spring:message code="eurb.app.builder.schedule.schedule" />';

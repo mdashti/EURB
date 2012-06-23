@@ -6,7 +6,11 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
+import org.apache.poi.xwpf.usermodel.TextAlignment;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
@@ -25,23 +29,47 @@ public class ViewWordReport extends AbstractWordView {
 		List<ReportColumn> columnList = (List<ReportColumn>) model.get("columnList");
 		List<Map<String, Object>> resultList = (List<Map<String, Object>>) model.get("data");
 
-		XWPFTable s = document.createTable(resultList.size(), columnList.size());
+		XWPFParagraph title = document.getParagraphs().get(0);
+		title.setAlignment(ParagraphAlignment.CENTER);
+		title.setVerticalAlignment(TextAlignment.CENTER);
+		//title.setWordWrap(true);
+		XWPFRun titleRun = title.createRun();
+		titleRun.setText(reportDesign.getName());
+		titleRun.setFontSize(14);
 
+		XWPFTable s = document.getTables().get(0);
 		// declare a row object reference
-		XWPFTableRow r = null;
+		XWPFTableRow r = s.getRow(0);
 		// declare a cell object reference
 		XWPFTableCell c = null;
-
-		// create a sheet with resultList.size() rows (0-(resultList.size()-1))
+		// create columnList.size() cells (0-(columnList.size()-1))
+		for (int cellnum = 0; cellnum < columnList.size(); cellnum++) {
+			if(r.getCell(cellnum) != null) {
+				c = r.getCell(cellnum);
+			} else {
+				c = r.createCell();
+			}
+			//c.setColor("c9c9c9");
+			//c.setVerticalAlignment(XWPFVertAlign.CENTER);
+			c.setText(columnList.get(cellnum).getColumnHeader());
+		}
+		// create a sheet with resultList.size() rows (1-resultList.size())
 		for (int rownum = 0; rownum < resultList.size(); rownum++) {
 			// create a row
-			r = s.getRow(rownum);
+			if(s.getRow(rownum+1) != null) {
+				r = s.getRow(rownum+1);
+			} else {
+				r = s.createRow();
+			}
 
 			// create columnList.size() cells (0-(columnList.size()-1))
 			for (int cellnum = 0; cellnum < columnList.size(); cellnum++) {
-				c = r.getCell(cellnum);
-				Object value = resultList.get(rownum).get(
-						columnList.get(cellnum).getColumnKey());
+				if(r.getCell(cellnum) != null) {
+					c = r.getCell(cellnum);
+				} else {
+					c = r.createCell();
+				}
+				Object value = resultList.get(rownum).get(columnList.get(cellnum).getColumnKey());
 				if (value != null) {
 					c.setText(value.toString());
 				} else {

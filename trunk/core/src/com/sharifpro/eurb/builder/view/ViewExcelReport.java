@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.springframework.web.servlet.view.document.AbstractExcelView;
@@ -30,15 +31,27 @@ public class ViewExcelReport extends AbstractExcelView {
 
 		// create a new sheet
 		Sheet s = wb.createSheet(reportDesign.getName());
+		s.setRightToLeft(true);
 		// declare a row object reference
-		Row r = null;
+		
+		CellStyle headerStyle = wb.createCellStyle();
+		headerStyle.setWrapText(true);
+		headerStyle.setAlignment(CellStyle.ALIGN_CENTER);
+		headerStyle.setFillForegroundColor((short)0xc9c9c9);
+		headerStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		Row r = s.createRow(0);
 		// declare a cell object reference
 		Cell c = null;
-
-		// create a sheet with resultList.size() rows (0-(resultList.size()-1))
+		// create columnList.size() cells (0-(columnList.size()-1))
+		for (int cellnum = 0; cellnum < columnList.size(); cellnum ++) {
+			c = r.createCell(cellnum);
+			c.setCellValue(columnList.get(cellnum).getColumnHeader());
+			c.setCellStyle(headerStyle);
+		}
+		// create a sheet with resultList.size() rows (1-resultList.size())
 		for (int rownum = 0; rownum < resultList.size(); rownum++) {
 			// create a row
-			r = s.createRow(rownum);
+			r = s.createRow(rownum+1);
 
 			// create columnList.size() cells (0-(columnList.size()-1))
 			for (int cellnum = 0; cellnum < columnList.size(); cellnum ++) {

@@ -80,7 +80,7 @@ public class UserDetailsServiceImpl extends AbstractDAO implements UserDetailsSe
     //~ Static fields/initializers =====================================================================================
 
     public static final String DEF_USERS_BY_USERNAME_QUERY =
-            "select " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + "o.username,o.password,o.enabled" +
+            "select " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + "o.username,o.password,o.enabled,o.email" +
             " from users o " + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL_AND_JOIN +
             " where o.username = ?";
     public static final String DEF_AUTHORITIES_BY_USERNAME_QUERY =
@@ -184,7 +184,10 @@ public class UserDetailsServiceImpl extends AbstractDAO implements UserDetailsSe
                 String username = rs.getString(++i);
                 String password = rs.getString(++i);
                 boolean enabled = rs.getBoolean(++i);
-                return new User(dto, username, password, enabled, true, true, true, AuthorityUtils.NO_AUTHORITIES);
+                String email = rs.getString(++i);
+                User u = new User(dto, username, password, enabled, true, true, true, AuthorityUtils.NO_AUTHORITIES);
+                u.setEmail(email);
+                return u;
             }
 
         });
@@ -237,8 +240,10 @@ public class UserDetailsServiceImpl extends AbstractDAO implements UserDetailsSe
             returnUsername = username;
         }
 
-        return new User(userFromUserQuery, returnUsername, userFromUserQuery.getPassword(), userFromUserQuery.isEnabled(),
+        User u = new User(userFromUserQuery, returnUsername, userFromUserQuery.getPassword(), userFromUserQuery.isEnabled(),
                 true, true, true, combinedAuthorities);
+        u.setEmail(userFromUserQuery.getEmail());
+        return u;
     }
 
     /**

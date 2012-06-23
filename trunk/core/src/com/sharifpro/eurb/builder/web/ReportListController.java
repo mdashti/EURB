@@ -56,7 +56,7 @@ public class ReportListController {
 		return mv;
 	}
 
-/*	@RequestMapping(value="/builder/report/reportSearch.spy")
+	@RequestMapping(value="/builder/report/reportFlatSearch.spy")
 	public @ResponseBody Map<String,? extends Object> search(@RequestParam(defaultValue="", required=false) String query
 			,@RequestParam(defaultValue="[]", required=false) String fields
 			,@RequestParam(defaultValue="0", required=false) String start
@@ -84,7 +84,7 @@ public class ReportListController {
 
 			return JsonUtil.getModelMapError(e.getMessage());
 		}
-	}*/
+	}
 	
 	
 	@RequestMapping(value="/builder/report/reportAndCategorySearch.spy")
