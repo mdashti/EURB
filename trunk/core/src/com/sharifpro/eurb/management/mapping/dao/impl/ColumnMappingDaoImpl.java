@@ -2,6 +2,7 @@ package com.sharifpro.eurb.management.mapping.dao.impl;
 
 import com.sharifpro.eurb.DaoFactory;
 import com.sharifpro.eurb.builder.model.ReportDataset;
+import com.sharifpro.eurb.info.RecordStatus;
 import com.sharifpro.eurb.management.mapping.dao.ColumnMappingDao;
 import com.sharifpro.eurb.management.mapping.exception.ColumnMappingDaoException;
 import com.sharifpro.eurb.management.mapping.model.ColumnMapping;
@@ -22,7 +23,7 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 {
 	public final static String QUERY_FROM_COLUMNS = "o.db_config_id, o.table_mapping_id, o.column_name, o.mapped_name, o.col_type_name, o.col_data_type, o.col_order, o.format_pattern, o.static_mapping, o.referenced_table, o.referenced_id_col, o.referenced_value_col, o.active_for_manager, o.active_for_user";
 
-	public final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + " o " + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL_AND_JOIN;
+	public final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + " o  INNER JOIN " + DbConfigDaoImpl.getTableName() + " d ON (o.db_config_id=d.id AND d.record_status='" + RecordStatus.ACTIVE.getId() + "') INNER JOIN " + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL + " ON (o.id=p.id)";;
 
 	/**
 	 * Method 'insert'
@@ -174,7 +175,7 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 	public List<ColumnMapping> findAllMapped(ReportDataset dataset) throws ColumnMappingDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.mapped_name IS NOT NULL AND table_mapping_id = ?  ORDER BY o.id", this, dataset.getTableMappingId());
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.mapped_name IS NOT NULL AND o.table_mapping_id = ?  ORDER BY o.id", this, dataset.getTableMappingId());
 		}
 		catch (Exception e) {
 			throw new ColumnMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -538,7 +539,7 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 	public void moveUp(ColumnMappingPk pk) throws ColumnMappingDaoException {
 		ColumnMapping thiz = findByPrimaryKey(pk);
 		ColumnMapping that;
-		List<ColumnMapping> columnMappings =  getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.col_order < ? and db_config_id = ? and table_mapping_id = ? ORDER BY o.col_order DESC LIMIT 1", this,thiz.getColOrder(), thiz.getDbConfigId(), thiz.getTableMappingId());
+		List<ColumnMapping> columnMappings =  getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.col_order < ? and o.db_config_id = ? and o.table_mapping_id = ? ORDER BY o.col_order DESC LIMIT 1", this,thiz.getColOrder(), thiz.getDbConfigId(), thiz.getTableMappingId());
 
 		if(columnMappings != null && !columnMappings.isEmpty()) {
 			that = columnMappings.get(0);
@@ -556,7 +557,7 @@ public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements Pa
 	public void moveDown(ColumnMappingPk pk) throws ColumnMappingDaoException {
 		ColumnMapping thiz = findByPrimaryKey(pk);
 		ColumnMapping that;
-		List<ColumnMapping> columnMappings =  getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.col_order > ? and db_config_id = ? and table_mapping_id = ? ORDER BY o.col_order ASC LIMIT 1", this,thiz.getColOrder(), thiz.getDbConfigId(), thiz.getTableMappingId());
+		List<ColumnMapping> columnMappings =  getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.col_order > ? and o.db_config_id = ? and o.table_mapping_id = ? ORDER BY o.col_order ASC LIMIT 1", this,thiz.getColOrder(), thiz.getDbConfigId(), thiz.getTableMappingId());
 
 		if(columnMappings != null && !columnMappings.isEmpty()) {
 			that = columnMappings.get(0);
