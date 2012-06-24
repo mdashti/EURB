@@ -79,7 +79,10 @@ EURB.RunReport.Grid = Ext.extend(Ext.grid.GridPanel, {
 	,onRender:function() {
 		// call parent
 		EURB.RunReport.Grid.superclass.onRender.apply(this, arguments);
-
+		if(this.loadMask){
+            this.loadMask = new Ext.LoadMask(this.bwrap,
+                    Ext.apply({store:this.store}, this.loadMask));
+        }
 		// load store
 		this.store.load();
 
