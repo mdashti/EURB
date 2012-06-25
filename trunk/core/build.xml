@@ -109,8 +109,8 @@
 				<include name="messages/messages_management.properties"/>
 				<include name="messages/messages_builder.properties"/>
 			</fileset>
-	    </concat>
-		
+		</concat>
+
 		<copy file="${app.webinf}/messages/messages.properties" tofile="${app.webinf}/messages/messages_en.properties" />
 		<copy file="${app.webinf}/messages/messages.properties" tofile="${app.webinf}/messages/messages_en_US.properties" />
 		<copy file="${app.webinf}/messages/messages.properties" tofile="${conf.dir}/WEB-INF/messages/messages.properties" />
@@ -127,6 +127,58 @@
 
 	<target name="clean" description="Clean output directories">
 		<delete dir="${app.root}" includeemptydirs="true"/>
+	</target>
+
+	<target name="build-dist" depends="build" description="Compressing Resources">
+		<!-- Include jars -->
+		<property name="yui-compressor.jar" location="${lib.dir}/yuicompressor-2.4.7.jar" />
+		<property name="yui-compressor-ant-task.jar" location="${lib.dir}/yui-compressor-ant-task-0.5.jar" />
+
+		<!--  YUI Compressor jars -->
+		<path id="task.classpath">
+			<pathelement location="${yui-compressor.jar}" />
+			<pathelement location="${yui-compressor-ant-task.jar}" />
+		</path>
+
+		<!-- Task YUI compression definition -->
+		<taskdef name="yui-compressor" classname="net.noha.tools.ant.yuicompressor.tasks.YuiCompressorTask">
+			<classpath refid="task.classpath" />
+		</taskdef>
+		
+		<delete dir="${app.root}/resources/js" includeemptydirs="true"/>
+		<delete dir="${app.root}/resources/css" includeemptydirs="true"/>
+
+		<mkdir dir="${app.root}/resources/js"/>
+		<mkdir dir="${app.root}/resources/css"/>
+
+		<yui-compressor charset="utf-8" warn="false" jsSuffix=".js" munge="true" preserveallsemicolons="false" fromdir="${src.js.dir}" todir="${app.root}/resources/js">
+			<include name="**/*.js" />
+			<exclude name="extjs/src/**"/>
+		</yui-compressor>
+		<yui-compressor charset="utf-8" warn="false" cssSuffix=".css" munge="true" preserveallsemicolons="false" fromdir="${src.js.dir}" todir="${app.root}/resources/js">
+			<include name="**/*.css" />
+		</yui-compressor>
+		<yui-compressor charset="utf-8" warn="false" cssSuffix=".css" munge="true" preserveallsemicolons="false" fromdir="${src.css.dir}" todir="${app.root}/resources/css">
+			<include name="**/*.css" />
+		</yui-compressor>
+
+		<copy todir="${app.root}/resources/js" overwrite="false">
+			<fileset dir="${src.js.dir}">
+				<exclude name="**/.#*"/>
+				<include name="**/*.js"/>
+				<include name="**/*.css"/>
+				<include name="**/*.gif"/>
+				<include name="**/*.png"/>
+				<include name="**/*.html"/>
+			</fileset>
+		</copy>
+
+		<copy todir="${app.root}/resources/css" overwrite="false">
+			<fileset dir="${src.css.dir}">
+				<exclude name="**/.#*"/>
+				<include name="**/*.css"/>
+			</fileset>
+		</copy>
 	</target>
 
 </project>
