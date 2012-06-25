@@ -151,12 +151,10 @@
 		<mkdir dir="${app.root}/resources/js"/>
 		<mkdir dir="${app.root}/resources/css"/>
 
-		<yui-compressor charset="utf-8" warn="false" jsSuffix=".js" munge="true" preserveallsemicolons="false" fromdir="${src.js.dir}" todir="${app.root}/resources/js">
+		<yui-compressor charset="utf-8" warn="false" cssSuffix=".css" jsSuffix=".js" munge="true" preserveallsemicolons="false" fromdir="${src.js.dir}" todir="${app.root}/resources/js">
 			<include name="**/*.js" />
-			<exclude name="extjs/src/**"/>
-		</yui-compressor>
-		<yui-compressor charset="utf-8" warn="false" cssSuffix=".css" munge="true" preserveallsemicolons="false" fromdir="${src.js.dir}" todir="${app.root}/resources/js">
 			<include name="**/*.css" />
+			<exclude name="extjs/src/**"/>
 		</yui-compressor>
 		<yui-compressor charset="utf-8" warn="false" cssSuffix=".css" munge="true" preserveallsemicolons="false" fromdir="${src.css.dir}" todir="${app.root}/resources/css">
 			<include name="**/*.css" />
