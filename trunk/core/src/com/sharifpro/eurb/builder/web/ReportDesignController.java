@@ -53,6 +53,7 @@ public class ReportDesignController {
 
 		ReportDesign reportDesign = new ReportDesign();
 		reportDesign.setName(PropertyProvider.get("eurb.app.builder.report.NewReport"));
+		reportDesign.setIsCurrent(true);
 		ReportDesignPk pk;
 		pk = reportDesignDao.insert(reportDesign);
 		return executeReportDesignSpy(pk.getId() + "");

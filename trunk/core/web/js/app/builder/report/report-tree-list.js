@@ -46,7 +46,7 @@ EURB.Report.cols = [{
 EURB.Report.Grid = Ext.extend(Ext.ux.maximgb.tg.GridPanel, {
 	layout:'fit',
 	border:true,
-	stateful:false,
+	stateful:true,
 	idName:'id',
 	title: EURB.appMenu.report,
 	initComponentPreOverride:function() {

@@ -90,9 +90,9 @@ EURB.ReportColumn.store = new Ext.data.Store({
 			        return (value == null) ? null : parseInt(value);
 			    }
 			 }
-			,{name:'columnWidth', type:'int'}
-			,{name:'columnAlign', type:'string'}
-			,{name:'columnDir', type:'string'}
+			,{name:'columnWidth', type:'int',defaultValue:'5'}
+			,{name:'columnAlign', type:'string',defaultValue:'right'}
+			,{name:'columnDir', type:'string',defaultValue:'rtl'}
 		]
 	})
 	,proxy:new Ext.data.HttpProxy({
@@ -192,6 +192,7 @@ EURB.ReportColumn.cols = [{
 	,id:'columnAlign'
 	,dataIndex:'columnAlign'
 	,width:25
+	,defaultValue : 'right'
 	,sortable:true
 	,editor:EURB.ReportColumn.alignCombo
 	,renderer:EURB.ReportDesign.comboRenderer(EURB.ReportColumn.alignCombo)
@@ -333,6 +334,13 @@ EURB.ReportColumn.ColumnGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 					 scope:this
 					,click:{fn:this.deleteSelectedRecords,buffer:200}
 				}
+			},{
+				 text:EURB.saveRecords
+					,iconCls:'icon-save'
+					,listeners:{
+						 scope:this
+						,click:{fn:this.commitChanges,buffer:200}
+					}
 			},"->"]
 		};
 
