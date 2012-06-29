@@ -37,21 +37,12 @@
 	</bean>
 	
 	<!--bean class="org.springframework.security.authentication.dao.ReflectionSaltSource" id="saltSource">
-			<property name="userPropertyToUse" value="username"/>
-		</bean-->
+		<property name="userPropertyToUse" value="username"/>
+	</bean-->
 
 	<bean class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" id="passwordEncoder" />
-    
-	<!--security:debug /-->
-	<!-- Start Authentication/Auhorization Config -->
-	<security:authentication-manager id="authManager">
-		<security:authentication-provider user-service-ref="userDetailsService">
-			<security:password-encoder ref="passwordEncoder"> 
-				<!--security:salt-source ref="saltSource"/-->
-			</security:password-encoder>
-		</security:authentication-provider>
-	</security:authentication-manager>
 
+	<!-- Start Authentication/Auhorization Config -->
 	<security:http pattern="/resources-#{applicationProps['application.version']}/**" security="none" />
 	<security:http pattern="/ws/**" security="none" />
 	<security:http use-expressions="true" auto-config="false" entry-point-ref="authenticationEntryPoint" authentication-manager-ref="authManager">
@@ -143,6 +134,14 @@
 		<property name="sessionRegistry" ref="sessionRegistry" />
 		<property name="expiredUrl" value="/login.spy" />
 	</bean>
+
+	<security:authentication-manager id="authManager">
+		<security:authentication-provider user-service-ref="userDetailsService">
+			<security:password-encoder ref="passwordEncoder"> 
+				<!--security:salt-source ref="saltSource"/-->
+			</security:password-encoder>
+		</security:authentication-provider>
+	</security:authentication-manager>
 
 	<bean id="authenticationProcessingFilter" class="com.sharifpro.filter.AuthenticationProcessingFilter">
 		<property name="sessionAuthenticationStrategy" ref="sas" />

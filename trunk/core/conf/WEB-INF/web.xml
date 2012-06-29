@@ -40,7 +40,8 @@
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>
-            /WEB-INF/applicationContext.xml
+			/WEB-INF/applicationContext.xml
+			/WEB-INF/wsContext.xml
 		</param-value>
 	</context-param>
 	
@@ -82,6 +83,7 @@
 			<param-name>contextConfigLocation</param-name>
 			<param-value>
 				/WEB-INF/applicationContext.xml
+				/WEB-INF/wsContext.xml
 			</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>

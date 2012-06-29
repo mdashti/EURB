@@ -42,15 +42,14 @@
 
 	<bean class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" id="passwordEncoder" />
     
-	<!--security:debug /-->
 	<!-- Start Authentication/Auhorization Config -->
 	<!--
-		Enable security, let the casAuthenticationEntryPoint handle all intercepted urls.
+		Enable security, let the authenticationEntryPoint handle all intercepted urls.
 		The CAS_FILTER needs to be in the right position within the filter chain.
 	-->
 	<security:http pattern="/resources-#{applicationProps['application.version']}/**" security="none" />
 	<security:http pattern="/ws/**" security="none" />
-	<security:http use-expressions="true" entry-point-ref="casAuthenticationEntryPoint" auto-config="false" authentication-manager-ref="authenticationManager">
+	<security:http use-expressions="true" entry-point-ref="authenticationEntryPoint" auto-config="false" authentication-manager-ref="authManager">
 		<security:intercept-url pattern="/403.spy*" access="isAuthenticated()"/>
 		<security:intercept-url pattern="/404.spy*" access="isAuthenticated()"/>
 		
@@ -157,10 +156,10 @@
 	</bean>
 	<!--
 		Required for the casProcessingFilter, so define it explicitly set and
-		specify an Id Even though the authenticationManager is created by
+		specify an Id Even though the authManager is created by
 		default when namespace based config is used.
 	-->
-	<security:authentication-manager alias="authenticationManager">
+	<security:authentication-manager alias="authManager">
 		<security:authentication-provider ref="casAuthenticationProvider"></security:authentication-provider>
 	</security:authentication-manager>
 
@@ -177,7 +176,7 @@
 		The CAS filter handles the redirect from the CAS server and starts the ticket validation.
 	-->
 	<bean id="casAuthenticationFilter" class="org.springframework.security.cas.web.CasAuthenticationFilter">
-		<property name="authenticationManager" ref="authenticationManager"></property>
+		<property name="authenticationManager" ref="authManager" />
 		<property name="sessionAuthenticationStrategy" ref="sas" />
 		<property name="authenticationSuccessHandler">
 			<bean class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler" />
@@ -188,7 +187,7 @@
 		The entryPoint intercepts all the CAS authentication requests.
 		It redirects to the CAS loginUrl for the CAS login page.
 	-->
-	<bean id="casAuthenticationEntryPoint" class="org.springframework.security.cas.web.CasAuthenticationEntryPoint">
+	<bean id="authenticationEntryPoint" class="org.springframework.security.cas.web.CasAuthenticationEntryPoint">
 		<property name="loginUrl" value="#{applicationProps['cas.server.login']}"></property>
 		<property name="serviceProperties" ref="serviceProperties"></property>
 	</bean>
