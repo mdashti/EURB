@@ -419,6 +419,7 @@ public class ViewReportController {
 			ReportDesign reportDesign = reportDesignDao.findByPrimaryKey(report, version);
 			List<ReportDataset> datasetList = reportDatasetDao.findAll(reportDesign);
 			List<ReportFilter> reportFilters = reportFilterDao.findAll(reportDesign.getId());
+			
 
 			HashMap<Long, HashMap<Long, ColumnMapping>> datasetColumnMappingMap = new HashMap<Long, HashMap<Long, ColumnMapping>>();
 			HashMap<Long, ColumnMapping> colMap;
@@ -526,6 +527,7 @@ public class ViewReportController {
 		StringBuilder queryWhereSB = new StringBuilder();
 		ReportFilter.ReportFilterOperator oper;
 		String databaseKey;
+		List<Integer> reportFilterTypes = new ArrayList<Integer>(reportFilters.size());
 		boolean firstFilter = true;
 		for(ReportFilter filter : reportFilters) {
 			oper = filter.getOperatorObj();
@@ -533,8 +535,14 @@ public class ViewReportController {
 				queryWhereSB.append(" WHERE ");
 				firstFilter = false;
 			}
+			else {
+				queryWhereSB.append(" AND ");
+			}
 			databaseKey = "t" + filter.getReportDatasetId() + "." + datasetColumnMappingMap.get(filter.getReportDatasetId()).get(filter.getColumnMappingId()).getColumnName();
 			queryWhereSB.append(" ").append(databaseKey).append(" ").append(filter.getOperator()).append(" ");
+			
+			reportFilterTypes.add(datasetColumnMappingMap.get(filter.getReportDatasetId()).get(filter.getColumnMappingId()).getColDataType());
+			
 			if(oper.numberOfOperands == 0) {
 				queryWhereSB.append(oper.operator);
 			} else if(oper.numberOfOperands == 1) {
@@ -587,14 +595,25 @@ public class ViewReportController {
 			} else {
 				int index = 1;
 				db.prepareStatement(finalQuery);
-				for(ReportFilter filter : reportFilters) {
-					if(!filter.isJoinFilter()){
+				for(int i = 0; i < reportFilters.size(); i++) {
+					ReportFilter filter = reportFilters.get(i);
+					int type = reportFilterTypes.get(i);
+					if(!filter.isJoinFilter()) {
 						oper = filter.getOperatorObj();
+						Object operand1 , operand2;
+						if(type == 2){
+							operand1 = (filter.getOperand1() == null || filter.getOperand1().equals("")) ? null : Integer.parseInt(filter.getOperand1());
+							operand2 = (filter.getOperand2() == null || filter.getOperand2().equals("")) ? null : Integer.parseInt(filter.getOperand2());
+						}
+						else{
+							operand1 = filter.getOperand1();
+							operand2 = filter.getOperand2();
+						}
 						if(oper.numberOfOperands == 1) {
-							db.pstmt.setObject(index++, filter.getOperand1());
+							db.pstmt.setObject(index++, operand1);
 						} else if(oper.numberOfOperands == 2) {
-							db.pstmt.setObject(index++, filter.getOperand1());
-							db.pstmt.setObject(index++, filter.getOperand2());
+							db.pstmt.setObject(index++, operand1);
+							db.pstmt.setObject(index++, operand2);
 						}
 					}
 				}

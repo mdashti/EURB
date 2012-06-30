@@ -19,7 +19,16 @@ EURB.Report.store = new Ext.ux.maximgb.tg.AdjacencyListStore({
         	'exception' : EURB.proxyExceptionHandler
         }
     })
-	//,baseParams:{}
+	,listeners:{
+		load : function() {
+			for(i = 0; i < this.data.length; i++){
+				var record = this.data.get(i);
+		        if(!this.isLeafNode(record) && this.isLoadedNode(record) && !this.isExpandedNode(record)){
+		            this.expandNode(record);
+		         }
+		    }
+		}
+	}
 	,remoteSort:true
 });
 
@@ -154,6 +163,31 @@ EURB.Report.Grid = Ext.extend(Ext.ux.maximgb.tg.GridPanel, {
 		}
 		else{
 			Ext.Msg.alert(Ext.MessageBox.title.warning, EURB.cannotApplyFunctionOnCategory).setIcon(Ext.Msg.INFO);
+		}
+	}
+	,requestCallback:function(options, success, response) {
+		if(true !== success) {
+			this.showError(response.responseText);
+			return;
+		}
+		try {
+			var o = Ext.decode(response.responseText);
+		}
+		catch(e) {
+			this.showError(response.responseText, EURB.unableToDecodeJSON);
+			return;
+		}
+		if(true !== o.success) {
+			this.showError(o.error || o.message || EURB.unknownError);
+			return;
+		}
+
+		switch(options.params.cmd) {
+			default:
+				this.store.commitChanges();
+				this.store.reload();
+				this.getSelectionModel().clearSelections();
+			break;
 		}
 	}
 	,addRecord: function(){

@@ -31,7 +31,7 @@ EURB.ReportColumn.dirCombo = new Ext.form.ComboBox({
             'dirValue',
             'dirLabel'
         ],
-        data: [['ltr', EURB.ReportColumn.ltrDir], ['rtl', EURB.ReportColumn.rtlDir]]
+        data: [ ['rtl', EURB.ReportColumn.rtlDir] , ['ltr', EURB.ReportColumn.ltrDir]]
     }),
     valueField: 'dirValue',
     displayField: 'dirLabel',
@@ -133,7 +133,7 @@ EURB.ReportColumn.cols = [{
 	,dataIndex:'colOrder'
 	,width:10
 	,sortable:true
-	,editor:new Ext.form.TextField({
+	,editor:new Ext.form.NumberField({
 		allowBlank:false
 	})
 },
@@ -153,7 +153,7 @@ EURB.ReportColumn.cols = [{
 	,dataIndex:'sortOrder'
 	,width:25
 	,sortable:true
-	,editor:new Ext.form.TextField({
+	,editor:new Ext.form.NumberField({
 		allowBlank:true
 	})
 	,renderer: function(value) { return value == null ? '' : value;}
@@ -173,7 +173,7 @@ EURB.ReportColumn.cols = [{
 	,dataIndex:'groupLevel'
 	,width:25
 	,sortable:true
-	,editor:new Ext.form.TextField({
+	,editor:new Ext.form.NumberField({
 		allowBlank:true
 	})
 },
@@ -183,7 +183,7 @@ EURB.ReportColumn.cols = [{
 	,dataIndex:'columnWidth'
 	,width:25
 	,sortable:true
-	,editor:new Ext.form.TextField({
+	,editor:new Ext.form.NumberField({
 		allowBlank:false
 	})
 },
