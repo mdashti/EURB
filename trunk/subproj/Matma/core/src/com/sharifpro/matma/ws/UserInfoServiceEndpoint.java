@@ -15,7 +15,6 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.sharifpro.eurb.management.security.dao.UserDao;
 import com.sharifpro.eurb.management.security.model.User;
-import com.sharifpro.matma.wscall.user.UserService;
 
 /**
  * This WebService is our firt webservice in EURB that can be used
@@ -66,9 +65,7 @@ public class UserInfoServiceEndpoint extends SpringBeanAutowiringSupport {
     	try {
 			User u = userDao.findWhereUsernameEquals(username);
 			if(u != null) {
-				UserService userService = new UserService();
-				com.sharifpro.matma.wscall.user.User user = userService.getUser();
-				String p = user.getProfile(u.getUsername());
+				logger.error("updateProfile for " + username + " !!!");
 			} else {
 				logger.error("updateProfile for " + username + " was unsuccessful, user not found!");
 			}
