@@ -14,8 +14,8 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import com.sharifpro.eurb.management.security.dao.UserDao;
-import com.sharifpro.eurb.management.security.exception.UserDaoException;
 import com.sharifpro.eurb.management.security.model.User;
+import com.sharifpro.matma.wscall.user.UserService;
 
 /**
  * This WebService is our firt webservice in EURB that can be used
@@ -35,7 +35,7 @@ public class UserInfoServiceEndpoint extends SpringBeanAutowiringSupport {
     protected static final Log logger = LogFactory.getLog(UserInfoServiceEndpoint.class);
 
     @WebMethod
-    public void killSession(@WebParam(name="username")String username) {
+    public boolean killUser(@WebParam(name="username")String username) {
     	try {
 			User u = userDao.findWhereUsernameEquals(username);
 			if(u != null) {
@@ -54,18 +54,28 @@ public class UserInfoServiceEndpoint extends SpringBeanAutowiringSupport {
 			} else {
 				logger.error("killSession for " + username + " was unsuccessful, user not found!");
 			}
-		} catch (UserDaoException e) {
-			logger.error("killSession for " + username + " was unsuccessful, user not found!", e);
+			return true;
+		} catch (Exception e) {
+			logger.error("killSession for " + username + " was unsuccessful, exception occurred!", e);
+			return false;
 		}
     }
 
     @WebMethod
-    public void updateProfile(@WebParam(name="username") String username) {
+    public boolean profileChanged(@WebParam(name="username") String username) {
     	try {
 			User u = userDao.findWhereUsernameEquals(username);
-			System.out.println("updateProfile for user:" + u);
-		} catch (UserDaoException e) {
-			e.printStackTrace();
+			if(u != null) {
+				UserService userService = new UserService();
+				com.sharifpro.matma.wscall.user.User user = userService.getUser();
+				String p = user.getProfile(u.getUsername());
+			} else {
+				logger.error("updateProfile for " + username + " was unsuccessful, user not found!");
+			}
+			return true;
+		} catch (Exception e) {
+			logger.error("updateProfile for " + username + " was unsuccessful, exception occurred!", e);
+			return false;
 		}
      }
 }
