@@ -258,15 +258,4 @@
 	</bean>
 	
 	<bean id="servletContext" class="org.springframework.web.context.support.ServletContextFactoryBean"/>
-
-	<!-- MATMA WEB SERVICES -->
-	<wss:binding url="/ws/UserInfoService">
-		<wss:service>
-			<ws:service bean="#UserInfoService"/>
-		</wss:service>
-	</wss:binding>
-
-	<!-- Web service methods -->
-	<bean id="UserInfoService" class="com.sharifpro.matma.ws.UserInfoServiceEndpoint">
-	</bean>
 </beans>
