@@ -8,10 +8,12 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.sharifpro.eurb.builder.dao.ReportAlertDao;
 import com.sharifpro.eurb.builder.dao.ReportDesignDao;
@@ -43,6 +45,15 @@ public class ReportScheduleController {
 	private ReportAlertDao reportAlertDao;
 	private JsonUtil jsonUtil;
 
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_RPG_REPORT_SCHEDULER_VIEW_LIST)")
+	@RequestMapping(value="/builder/schedule/schedule.spy")
+	public ModelAndView executeDbConfigSpy() throws Exception {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("/builder/schedule/schedule");
+		return mv;
+	}
+
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_RPG_REPORT_SCHEDULER_VIEW_LIST)")
 	@RequestMapping(value = "/builder/schedule/findUserScheduled.spy")
 	public @ResponseBody
 	Map<String, ? extends Object> findUserScheduled() {
@@ -137,6 +148,7 @@ public class ReportScheduleController {
 		}
 	}*/
 
+	@PreAuthorize("hasAnyRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_RPG_REPORT_SCHEDULER_EDIT, T(com.sharifpro.eurb.info.AuthorityType).ROLE_RPG_REPORT_SCHEDULER_CREATE)")
 	@RequestMapping(value = "/builder/schedule/scheduleStore.spy")
 	public @ResponseBody Map<String, ? extends Object> store(
 			@RequestParam(required = false) Long userId,
@@ -259,6 +271,7 @@ public class ReportScheduleController {
 		return JsonUtil.getSuccessfulMapAfterStore(Arrays.asList(reportSchedule.getScheduleName()));
 	}
 
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_RPG_REPORT_SCHEDULER_DELETE)")
 	@RequestMapping(value = "/builder/schedule/scheduleRemove.spy")
 	public @ResponseBody Map<String, ? extends Object>  scheduleRemove(@RequestParam Object data) {
 		try {

@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.comparator.BooleanComparator;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,6 +51,7 @@ public class ColumnMappingController {
 
 	private JsonUtil jsonUtil;
 
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_COL_MAPPING_VIEW_LIST)")
 	@RequestMapping(value="/management/mapping/column/columnSearch.spy")
 	public @ResponseBody Map<String,? extends Object> search(@RequestParam(required=false) Long dbconfig
 			,@RequestParam(required=false) Long table
@@ -187,6 +189,7 @@ public class ColumnMappingController {
 		}
 	}
 
+	@PreAuthorize("hasAnyRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_COL_MAPPING_EDIT, T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_COL_MAPPING_CREATE)")
 	@RequestMapping(value="/management/mapping/column/columnStore.spy")
 	public @ResponseBody Map<String,? extends Object> store(@RequestParam Object data) throws Exception {
 		try{
@@ -221,6 +224,7 @@ public class ColumnMappingController {
 		}
 	}
 
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_COL_MAPPING_EDIT)")
 	@RequestMapping(value="/management/mapping/column/columnActivate.spy")
 	public @ResponseBody Map<String,? extends Object> activate(@RequestParam Object data, @RequestParam(required=true) String target) throws Exception {
 		try{
@@ -240,6 +244,7 @@ public class ColumnMappingController {
 		}
 	}
 
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_COL_MAPPING_EDIT)")
 	@RequestMapping(value="/management/mapping/column/columnDeactivate.spy")
 	public @ResponseBody Map<String,? extends Object> deactivate(@RequestParam Object data, @RequestParam(required=true) String target) throws Exception {
 		try{
@@ -257,6 +262,7 @@ public class ColumnMappingController {
 		}
 	}
 
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_COL_MAPPING_EDIT)")
 	@RequestMapping(value="/management/mapping/column/columnMove.spy")
 	public @ResponseBody Map<String,? extends Object> move(@RequestParam(required=true) Long id, @RequestParam(required=true) Boolean isUpDir) throws Exception {
 		try{
@@ -274,16 +280,19 @@ public class ColumnMappingController {
 		}
 	}
 
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_COL_MAPPING_VIEW_LIST)")
 	@RequestMapping(value="/management/mapping/db-table-column.spy")
 	public ModelAndView executeColumnSpy() throws Exception {
 		return executeColumnSpy(null,null);
 	}
 
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_COL_MAPPING_VIEW_LIST)")
 	@RequestMapping(value="/management/mapping/db{dbconfig}-table-column.spy")
 	public ModelAndView executeColumnSpy(@PathVariable Long dbconfig) throws Exception {
 		return executeColumnSpy(dbconfig, null);
 	}
 
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_COL_MAPPING_VIEW_LIST)")
 	@RequestMapping(value="/management/mapping/db{dbconfig}-table{table}-column.spy")
 	public ModelAndView executeColumnSpy(@PathVariable Long dbconfig, @PathVariable Long table) throws Exception {
 		ModelAndView mv = new ModelAndView();

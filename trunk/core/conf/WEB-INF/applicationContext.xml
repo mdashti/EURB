@@ -48,64 +48,7 @@
 	<security:http use-expressions="true" auto-config="false" entry-point-ref="authenticationEntryPoint" authentication-manager-ref="authManager">
 		<security:intercept-url pattern="/login.spy*" access="isAnonymous()"/>
 		<security:intercept-url pattern="/403.spy*" access="isAuthenticated()"/>
-		<security:intercept-url pattern="/404.spy*" access="isAuthenticated()"/>
-		
-		<security:intercept-url pattern="/index/findUserAlerts.spy*" access="isAuthenticated()" />
-		<security:intercept-url pattern="/index/alertRemove.spy*" access="isAuthenticated()" />
-		
-		<security:intercept-url pattern="/management/mapping/dbconfig.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_DB_CONFIG_VIEW_LIST)" />
-		<security:intercept-url pattern="/management/mapping/dbconfig/dbconfigSearch.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_DB_CONFIG_VIEW_LIST)" />
-		<security:intercept-url pattern="/management/mapping/dbconfig/dbconfigStore.spy*" access="hasAnyRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_DB_CONFIG_EDIT, T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_DB_CONFIG_CREATE)" />
-		<security:intercept-url pattern="/management/mapping/dbconfig/dbconfigRemove.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_DB_CONFIG_DELETE)" />
-		<security:intercept-url pattern="/management/mapping/dbconfig/dbconfigActivate.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_DB_CONFIG_EDIT)" />
-		<security:intercept-url pattern="/management/mapping/dbconfig/dbconfigDeactivate.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_DB_CONFIG_EDIT)" />
-
-		<security:intercept-url pattern="/management/mapping/db*-table.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_TABLE_MAPPING_VIEW_LIST)" />
-		<security:intercept-url pattern="/management/mapping/table/tableSearch.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_TABLE_MAPPING_VIEW_LIST)" />
-		<security:intercept-url pattern="/management/mapping/table/tableStore.spy*" access="hasAnyRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_TABLE_MAPPING_EDIT, T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_TABLE_MAPPING_CREATE)" />
-		<security:intercept-url pattern="/management/mapping/table/tableActivate.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_TABLE_MAPPING_EDIT)" />
-		<security:intercept-url pattern="/management/mapping/table/tableDeactivate.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_TABLE_MAPPING_EDIT)" />
-
-		<security:intercept-url pattern="/management/mapping/db*-table*-column.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_COL_MAPPING_VIEW_LIST)" />
-		<security:intercept-url pattern="/management/mapping/column/columnSearch.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_COL_MAPPING_VIEW_LIST)" />
-		<security:intercept-url pattern="/management/mapping/column/columnStore.spy*" access="hasAnyRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_COL_MAPPING_EDIT, T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_COL_MAPPING_CREATE)" />
-		<security:intercept-url pattern="/management/mapping/column/columnActivate.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_COL_MAPPING_EDIT)" />
-		<security:intercept-url pattern="/management/mapping/column/columnDeactivate.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_COL_MAPPING_EDIT)" />
-		<security:intercept-url pattern="/management/mapping/column/columnMove.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_COL_MAPPING_EDIT)" />
-
-		<security:intercept-url pattern="/builder/category/report*-category.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_CATEGORY_MANAGEMENT_VIEW_LIST)" />
-		<security:intercept-url pattern="/builder/category/reportCategorySearch.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_CATEGORY_MANAGEMENT_VIEW_LIST)" />
-		<security:intercept-url pattern="/builder/category/reportCategoryStore.spy*" access="hasAnyRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_CATEGORY_MANAGEMENT_EDIT, T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_CATEGORY_MANAGEMENT_CREATE)" />
-		<security:intercept-url pattern="/builder/category/reportCategoryRemove.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_CATEGORY_MANAGEMENT_DELETE)" />
-
-		<security:intercept-url pattern="/management/security/user.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_USER_MANAGEMENT_VIEW_LIST)" />
-		<security:intercept-url pattern="/management/security/user/userSearch.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_USER_MANAGEMENT_VIEW_LIST)" />
-		<security:intercept-url pattern="/management/security/user/userStore.spy*" access="hasAnyRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_USER_MANAGEMENT_EDIT, T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_USER_MANAGEMENT_CREATE)" />
-		<security:intercept-url pattern="/management/security/user/userRemove.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_USER_MANAGEMENT_DELETE)" />
-		<security:intercept-url pattern="/management/security/user/userActivate.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_USER_MANAGEMENT_EDIT)" />
-		<security:intercept-url pattern="/management/security/user/userDeactivate.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_USER_MANAGEMENT_EDIT)" />
-		<security:intercept-url pattern="/management/security/user/currentUserGroups.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_USER_MANAGEMENT_VIEW)" />
-		<security:intercept-url pattern="/management/security/user/selectableUserGroups.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_USER_MANAGEMENT_VIEW)" />
-		<security:intercept-url pattern="/management/security/user/addUserToGroupsAction.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_USER_MANAGEMENT_EDIT)" />
-		<security:intercept-url pattern="/management/security/user/removeUserFromGroupsAction.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_USER_MANAGEMENT_EDIT)" />
-
-		<security:intercept-url pattern="/management/security/group.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_GROUP_MANAGEMENT_VIEW_LIST)" />
-		<security:intercept-url pattern="/management/security/group/groupSearch.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_GROUP_MANAGEMENT_VIEW_LIST)" />
-		<security:intercept-url pattern="/management/security/group/groupStore.spy*" access="hasAnyRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_GROUP_MANAGEMENT_EDIT, T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_GROUP_MANAGEMENT_CREATE)" />
-		<security:intercept-url pattern="/management/security/group/groupRemove.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_GROUP_MANAGEMENT_DELETE)" />
-		<security:intercept-url pattern="/management/security/group/currentGroupUsers.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_GROUP_MANAGEMENT_VIEW)" />
-		<security:intercept-url pattern="/management/security/group/selectableGroupUsers.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_GROUP_MANAGEMENT_VIEW)" />
-		<security:intercept-url pattern="/management/security/group/addGroupToUsersAction.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_GROUP_MANAGEMENT_EDIT)" />
-		<security:intercept-url pattern="/management/security/group/removeGroupFromUsersAction.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_GROUP_MANAGEMENT_EDIT)" />
-
-		<security:intercept-url pattern="/management/security/authorities*.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_ROLE_MANAGEMENT_VIEW_LIST)" />
-		<security:intercept-url pattern="/management/security/authorities/authoritiesSearch.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_ROLE_MANAGEMENT_VIEW)" />
-		<security:intercept-url pattern="/management/security/authorities/authoritiesStore.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_ROLE_MANAGEMENT_EDIT)" />
-
-		<security:intercept-url pattern="/builder/schedule/schedule.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_RPG_REPORT_SCHEDULER_VIEW_LIST)" />
-		<security:intercept-url pattern="/builder/schedule/findUserScheduled.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_RPG_REPORT_SCHEDULER_VIEW_LIST)" />
-		<security:intercept-url pattern="/builder/schedule/scheduleStore.spy*" access="hasAnyRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_RPG_REPORT_SCHEDULER_EDIT, T(com.sharifpro.eurb.info.AuthorityType).ROLE_RPG_REPORT_SCHEDULER_CREATE)" />
-		<security:intercept-url pattern="/builder/schedule/scheduleRemove.spy*" access="hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_RPG_REPORT_SCHEDULER_DELETE)" />
+		<security:intercept-url pattern="/404.spy*" access="isAuthenticated()"/>		
 		<security:intercept-url pattern="/**" access="isAuthenticated()" />
 		<security:custom-filter position="FORM_LOGIN_FILTER" ref="authenticationProcessingFilter"/>
 		<security:custom-filter position="CONCURRENT_SESSION_FILTER" ref="concurrencyFilter" />
@@ -117,7 +60,7 @@
 		<security:remember-me data-source-ref="EURBDataSource"/>
 		<security:access-denied-handler error-page="/403.jsp"/>
 	</security:http>
-	<security:global-method-security secured-annotations="enabled" />
+	<security:global-method-security pre-post-annotations="enabled" />
 
 	<bean id="sessionRegistry" class="org.springframework.security.core.session.SessionRegistryImpl" scope="singleton" />
 

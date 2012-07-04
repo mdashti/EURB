@@ -6,10 +6,12 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.sharifpro.eurb.info.AuthorityType;
 import com.sharifpro.eurb.management.security.dao.GroupMembersDao;
@@ -41,6 +43,15 @@ public class GroupsController {
 	
 	private JsonUtil jsonUtil;
 
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_GROUP_MANAGEMENT_VIEW_LIST)")
+	@RequestMapping(value="/management/security/group.spy")
+	public ModelAndView executeDbConfigSpy() throws Exception {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("/management/security/group");
+		return mv;
+	}
+
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_GROUP_MANAGEMENT_VIEW_LIST)")
 	@RequestMapping(value="/management/security/group/groupSearch.spy")
 	public @ResponseBody Map<String,? extends Object> search(@RequestParam(defaultValue="", required=false) String query
 			,@RequestParam(defaultValue="[]", required=false) String fields
@@ -71,6 +82,7 @@ public class GroupsController {
 		}
 	}
 
+	@PreAuthorize("hasAnyRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_GROUP_MANAGEMENT_EDIT, T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_GROUP_MANAGEMENT_CREATE)")
 	@RequestMapping(value="/management/security/group/groupStore.spy")
 	public @ResponseBody Map<String,? extends Object> store(@RequestParam Object data) throws Exception {
 		try{
@@ -105,6 +117,7 @@ public class GroupsController {
 		}
 	}
 
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_GROUP_MANAGEMENT_DELETE)")
 	@RequestMapping(value="/management/security/group/groupRemove.spy")
 	public @ResponseBody Map<String,? extends Object> delete(@RequestParam Object data) throws Exception {
 
@@ -123,7 +136,8 @@ public class GroupsController {
 			return JsonUtil.getModelMapError(e.getMessage());
 		}
 	}
-	
+
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_GROUP_MANAGEMENT_VIEW)")
 	@RequestMapping(value="/management/security/group/currentGroupUsers.spy")
 	public @ResponseBody Map<String,? extends Object> findCurrentUsersForGroup(@RequestParam Long groupId) throws Exception {
 		try{
@@ -133,7 +147,8 @@ public class GroupsController {
 			return JsonUtil.getModelMapError(e.getMessage());
 		}
 	}
-	
+
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_GROUP_MANAGEMENT_VIEW)")
 	@RequestMapping(value="/management/security/group/selectableGroupUsers.spy")
 	public @ResponseBody Map<String,? extends Object> findSelectableUsersForGroup(@RequestParam Long groupId) throws Exception {
 		try{
@@ -143,7 +158,8 @@ public class GroupsController {
 			return JsonUtil.getModelMapError(e.getMessage());
 		}
 	}
-	
+
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_GROUP_MANAGEMENT_EDIT)")
 	@RequestMapping(value="/management/security/group/addGroupToUsersAction.spy")
 	public @ResponseBody Map<String,? extends Object> addGroupToUsers(@RequestParam Long groupId, @RequestParam Object userNames) throws Exception {
 		try{
@@ -160,7 +176,8 @@ public class GroupsController {
 			return JsonUtil.getModelMapError(e.getMessage());
 		}
 	}
-	
+
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_GROUP_MANAGEMENT_EDIT)")
 	@RequestMapping(value="/management/security/group/removeGroupFromUsersAction.spy")
 	public @ResponseBody Map<String,? extends Object> removeGroupFrom(@RequestParam Long groupId, @RequestParam Object userNames) throws Exception {
 		try{

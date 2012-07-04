@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,13 +35,14 @@ public class ReportCategoryController {
 	private ReportCategoryDao reportCategoryDao;
 	
 	private JsonUtil jsonUtil;
-	
-	
+
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_CATEGORY_MANAGEMENT_VIEW_LIST)")
 	@RequestMapping(value="/builder/category/report-category.spy")
 	public ModelAndView executeReportCategorySpy() throws Exception {
 		return executeReportCategorySpy(null);
 	}
 
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_CATEGORY_MANAGEMENT_VIEW_LIST)")
 	@RequestMapping(value="/builder/category/report{category}-category.spy")
 	public ModelAndView executeReportCategorySpy(@PathVariable String category) throws Exception {
 		
@@ -69,8 +71,8 @@ public class ReportCategoryController {
 		mv.setViewName("/builder/category/report-category");
 		return mv;
 	}
-	
 
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_CATEGORY_MANAGEMENT_VIEW_LIST)")
 	@RequestMapping(value="/builder/category/reportCategorySearch.spy")
 	public @ResponseBody Map<String,? extends Object> search(@RequestParam(defaultValue="", required=false) String query
 			,@RequestParam(defaultValue="[]", required=false) String fields
@@ -99,6 +101,7 @@ public class ReportCategoryController {
 		}
 	}
 
+	@PreAuthorize("hasAnyRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_CATEGORY_MANAGEMENT_EDIT, T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_CATEGORY_MANAGEMENT_CREATE)")
 	@RequestMapping(value="/builder/category/reportCategoryStore.spy")
 	public @ResponseBody Map<String,? extends Object> store(@RequestParam Object data) throws Exception {
 		try{
@@ -133,6 +136,7 @@ public class ReportCategoryController {
 		}
 	}
 
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_CATEGORY_MANAGEMENT_DELETE)")
 	@RequestMapping(value="/builder/category/reportCategoryRemove.spy")
 	public @ResponseBody Map<String,? extends Object> delete(@RequestParam Object data) throws Exception {
 
@@ -151,8 +155,6 @@ public class ReportCategoryController {
 			return JsonUtil.getModelMapError(PropertyProvider.get("eurb.category.hasreportexception"));
 		}
 	}
-	
-	
 
 	@Autowired
 	public void setReportCategoryDao(ReportCategoryDao reportCategoryDao) {

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,6 +35,7 @@ public class IndexController {
 	private UserMessageDao userMessageDao;
 	private JsonUtil jsonUtil;
 	
+	@PreAuthorize("isAuthenticated()")
 	@RequestMapping(value = "/index/findUserAlerts.spy")
 	public @ResponseBody Map<String, ? extends Object> findUserAlerts() {
 		try {
@@ -45,6 +47,7 @@ public class IndexController {
 		}
 	}
 
+	@PreAuthorize("isAuthenticated()")
 	@RequestMapping(value="/index/alertRemove.spy")
 	public @ResponseBody Map<String,? extends Object> delete(@RequestParam Object data) throws Exception {
 

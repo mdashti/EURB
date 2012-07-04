@@ -7,11 +7,13 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.sharifpro.eurb.info.AuthorityType;
 import com.sharifpro.eurb.management.security.dao.GroupMembersDao;
@@ -44,6 +46,15 @@ public class UserController {
 	
 	private JsonUtil jsonUtil;
 
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_USER_MANAGEMENT_VIEW_LIST)")
+	@RequestMapping(value="/management/security/user.spy")
+	public ModelAndView executeDbConfigSpy() throws Exception {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("/management/security/user");
+		return mv;
+	}
+
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_USER_MANAGEMENT_VIEW_LIST)")
 	@RequestMapping(value="/management/security/user/userSearch.spy")
 	public @ResponseBody Map<String,? extends Object> search(@RequestParam(defaultValue="", required=false) String query
 			,@RequestParam(defaultValue="[]", required=false) String fields
@@ -74,6 +85,7 @@ public class UserController {
 		}
 	}
 
+	@PreAuthorize("hasAnyRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_USER_MANAGEMENT_EDIT, T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_USER_MANAGEMENT_CREATE)")
 	@RequestMapping(value="/management/security/user/userStore.spy")
 	public @ResponseBody Map<String,? extends Object> store(@RequestParam(required=false) Long id
 			,@RequestParam(required=true) String username
@@ -140,6 +152,7 @@ public class UserController {
 		}
 	}
 
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_USER_MANAGEMENT_DELETE)")
 	@RequestMapping(value="/management/security/user/userRemove.spy")
 	public @ResponseBody Map<String,? extends Object> delete(@RequestParam Object data) throws Exception {
 
@@ -158,7 +171,8 @@ public class UserController {
 			return JsonUtil.getModelMapError(e.getMessage());
 		}
 	}
-	
+
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_USER_MANAGEMENT_EDIT)")
 	@RequestMapping(value="/management/security/user/userActivate.spy")
 	public @ResponseBody Map<String,? extends Object> activate(@RequestParam Object data) throws Exception {
 		try{
@@ -177,7 +191,8 @@ public class UserController {
 			return JsonUtil.getModelMapError(e.getMessage());
 		}
 	}
-	
+
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_USER_MANAGEMENT_EDIT)")
 	@RequestMapping(value="/management/security/user/userDeactivate.spy")
 	public @ResponseBody Map<String,? extends Object> deactivate(@RequestParam Object data) throws Exception {
 		try{
@@ -196,7 +211,8 @@ public class UserController {
 			return JsonUtil.getModelMapError(e.getMessage());
 		}
 	}
-	
+
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_USER_MANAGEMENT_VIEW)")
 	@RequestMapping(value="/management/security/user/currentUserGroups.spy")
 	public @ResponseBody Map<String,? extends Object> findCurrentGroupsForUser(@RequestParam String userName) throws Exception {
 		try{
@@ -206,7 +222,8 @@ public class UserController {
 			return JsonUtil.getModelMapError(e.getMessage());
 		}
 	}
-	
+
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_USER_MANAGEMENT_VIEW)")
 	@RequestMapping(value="/management/security/user/selectableUserGroups.spy")
 	public @ResponseBody Map<String,? extends Object> findSelectableGroupsForUser(@RequestParam String userName) throws Exception {
 		try{
@@ -216,7 +233,8 @@ public class UserController {
 			return JsonUtil.getModelMapError(e.getMessage());
 		}
 	}
-	
+
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_USER_MANAGEMENT_EDIT)")
 	@RequestMapping(value="/management/security/user/addUserToGroupsAction.spy")
 	public @ResponseBody Map<String,? extends Object> addUserToGroups(@RequestParam String userName, @RequestParam Object groupIds) throws Exception {
 		try{
@@ -233,7 +251,8 @@ public class UserController {
 			return JsonUtil.getModelMapError(e.getMessage());
 		}
 	}
-	
+
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_USER_MANAGEMENT_EDIT)")
 	@RequestMapping(value="/management/security/user/removeUserFromGroupsAction.spy")
 	public @ResponseBody Map<String,? extends Object> removeUserFrom(@RequestParam String userName, @RequestParam Object groupIds) throws Exception {
 		try{

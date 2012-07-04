@@ -7,6 +7,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.session.SessionInformation;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Controller;
@@ -50,11 +51,13 @@ public class AuthoritiesController {
 
 	//private UserDetailsServiceImpl userDetailsServiceImpl;
 
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_ROLE_MANAGEMENT_VIEW_LIST)")
 	@RequestMapping(value="/management/security/authorities.spy")
 	public ModelAndView executeAuthoritiesSpy() throws Exception {
 		return executeAuthoritiesSpy(null);
 	}
 
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_ROLE_MANAGEMENT_VIEW_LIST)")
 	@RequestMapping(value="/management/security/authorities{sid}.spy")
 	public ModelAndView executeAuthoritiesSpy(@PathVariable Long sid) throws Exception {
 		ModelAndView mv = new ModelAndView();
@@ -107,7 +110,8 @@ public class AuthoritiesController {
 		mv.setViewName("/management/security/authorities");
 		return mv;
 	}
-	
+
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_ROLE_MANAGEMENT_VIEW)")
 	@RequestMapping(value="/management/security/authorities/authoritiesSearch.spy")
 	public @ResponseBody Map<String,? extends Object> search(@RequestParam(required=true) Long sid) throws Exception {
 		
@@ -153,6 +157,7 @@ public class AuthoritiesController {
 		}
 	}
 
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_ROLE_MANAGEMENT_EDIT)")
 	@RequestMapping(value="/management/security/authorities/authoritiesStore.spy")
 	public @ResponseBody Map<String,? extends Object> store(@RequestParam(required=true) Long sid, @RequestParam Object data) throws Exception {
 		try{
@@ -230,7 +235,6 @@ public class AuthoritiesController {
 		}
 	}
 
-	
 	@Autowired
 	public void setGroupsDao(GroupsDao groupsDao) {
 		this.groupsDao = groupsDao;

@@ -10,10 +10,12 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.sharifpro.db.meta.SQLDriver;
 import com.sharifpro.eurb.info.AuthorityType;
@@ -40,6 +42,15 @@ public class DBConfigController {
 	
 	private JsonUtil jsonUtil;
 
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_DB_CONFIG_VIEW_LIST)")
+	@RequestMapping(value="/management/mapping/dbconfig.spy")
+	public ModelAndView executeDbConfigSpy() throws Exception {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("/management/mapping/dbconfig");
+		return mv;
+	}
+
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_DB_CONFIG_VIEW_LIST)")
 	@RequestMapping(value="/management/mapping/dbconfig/dbconfigSearch.spy")
 	public @ResponseBody Map<String,? extends Object> search(@RequestParam(defaultValue="", required=false) String query
 			,@RequestParam(defaultValue="[]", required=false) String fields
@@ -70,6 +81,7 @@ public class DBConfigController {
 		}
 	}
 
+	@PreAuthorize("isAuthenticated()")
 	@RequestMapping(value="/management/mapping/dbconfig/driverSearch.spy")
 	public @ResponseBody Map<String,? extends Object> driverSearch() throws Exception {
 		
@@ -97,6 +109,7 @@ public class DBConfigController {
 		}
 	}
 
+	@PreAuthorize("hasAnyRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_DB_CONFIG_EDIT, T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_DB_CONFIG_CREATE)")
 	@RequestMapping(value="/management/mapping/dbconfig/dbconfigStore.spy")
 	public @ResponseBody Map<String,? extends Object> store(@RequestParam Object data) throws Exception {
 		try{
@@ -131,6 +144,7 @@ public class DBConfigController {
 		}
 	}
 
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_DB_CONFIG_DELETE)")
 	@RequestMapping(value="/management/mapping/dbconfig/dbconfigRemove.spy")
 	public @ResponseBody Map<String,? extends Object> delete(@RequestParam Object data) throws Exception {
 
@@ -149,7 +163,8 @@ public class DBConfigController {
 			return JsonUtil.getModelMapError(e.getMessage());
 		}
 	}
-	
+
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_DB_CONFIG_EDIT)")
 	@RequestMapping(value="/management/mapping/dbconfig/dbconfigActivate.spy")
 	public @ResponseBody Map<String,? extends Object> activate(@RequestParam Object data) throws Exception {
 		try{
@@ -168,7 +183,8 @@ public class DBConfigController {
 			return JsonUtil.getModelMapError(e.getMessage());
 		}
 	}
-	
+
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_DB_CONFIG_EDIT)")
 	@RequestMapping(value="/management/mapping/dbconfig/dbconfigDeactivate.spy")
 	public @ResponseBody Map<String,? extends Object> deactivate(@RequestParam Object data) throws Exception {
 		try{

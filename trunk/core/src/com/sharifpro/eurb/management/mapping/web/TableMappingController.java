@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.comparator.BooleanComparator;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,6 +47,7 @@ public class TableMappingController {
 
 	private JsonUtil jsonUtil;
 
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_TABLE_MAPPING_VIEW_LIST)")
 	@RequestMapping(value="/management/mapping/table/tableSearch.spy")
 	public @ResponseBody Map<String,? extends Object> search(@RequestParam(required=false) Long dbconfig
 			,@RequestParam(defaultValue="", required=false) String query
@@ -141,8 +143,7 @@ public class TableMappingController {
 		}
 	}
 
-
-
+	@PreAuthorize("hasAnyRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_TABLE_MAPPING_EDIT, T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_TABLE_MAPPING_CREATE)")
 	@RequestMapping(value="/management/mapping/table/tableStore.spy")
 	public @ResponseBody Map<String,? extends Object> store(@RequestParam Object data) throws Exception {
 		try{
@@ -177,6 +178,7 @@ public class TableMappingController {
 		}
 	}
 
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_TABLE_MAPPING_EDIT)")
 	@RequestMapping(value="/management/mapping/table/tableActivate.spy")
 	public @ResponseBody Map<String,? extends Object> activate(@RequestParam Object data, @RequestParam(required=true) String target) throws Exception {
 		try{
@@ -196,6 +198,7 @@ public class TableMappingController {
 		}
 	}
 
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_TABLE_MAPPING_EDIT)")
 	@RequestMapping(value="/management/mapping/table/tableDeactivate.spy")
 	public @ResponseBody Map<String,? extends Object> deactivate(@RequestParam Object data, @RequestParam(required=true) String target) throws Exception {
 		try{
@@ -215,11 +218,13 @@ public class TableMappingController {
 		}
 	}
 
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_TABLE_MAPPING_VIEW_LIST)")
 	@RequestMapping(value="/management/mapping/db-table.spy")
 	public ModelAndView executeTableSpy() throws Exception {
 		return executeTableSpy(null);
 	}
 
+	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_TABLE_MAPPING_VIEW_LIST)")
 	@RequestMapping(value="/management/mapping/db{dbconfig}-table.spy")
 	public ModelAndView executeTableSpy(@PathVariable String dbconfig) throws Exception {
 		ModelAndView mv = new ModelAndView();
