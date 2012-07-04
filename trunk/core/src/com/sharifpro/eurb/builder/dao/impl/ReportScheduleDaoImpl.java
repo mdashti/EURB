@@ -8,6 +8,8 @@ import org.apache.log4j.Logger;
 import org.quartz.*;
 import org.quartz.Trigger.TriggerState;
 import org.quartz.impl.matchers.GroupMatcher;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import com.sharifpro.eurb.builder.dao.ReportScheduleDao;
 import com.sharifpro.eurb.builder.exception.ReportScheduleDaoException;
@@ -16,6 +18,7 @@ import com.sharifpro.eurb.builder.util.ScheduledReportJob;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
 import com.sharifpro.eurb.management.security.model.User;
 
+@Repository
 public class ReportScheduleDaoImpl extends AbstractDAO implements ReportScheduleDao
 {
 	protected static Logger log = Logger.getLogger(ReportScheduleDaoImpl.class.getName());
@@ -223,6 +226,7 @@ public class ReportScheduleDaoImpl extends AbstractDAO implements ReportSchedule
         }
 	}	
     
+	@Autowired
     public void setScheduler(Scheduler scheduler)
     {
         this.scheduler = scheduler;

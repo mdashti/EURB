@@ -3,12 +3,15 @@ package com.sharifpro.eurb.builder.provider;
 import javax.servlet.ServletContext;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.context.ServletContextAware;
 
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
 import com.sharifpro.eurb.management.mapping.exception.PersistableObjectDaoException;
 import com.sharifpro.util.PropertyProvider;
 
+@Repository
 public class DirectoryProvider  extends AbstractDAO implements ServletContextAware
 {
 
@@ -128,7 +131,8 @@ public class DirectoryProvider  extends AbstractDAO implements ServletContextAwa
 		
 		log.info("ReportGenerationDirectory Changed To: " + reportGenerationDirectory); 
 	}
-	
+
+	@Autowired
 	public void setServletContext(ServletContext context) {
 		this.context = context;
 	}

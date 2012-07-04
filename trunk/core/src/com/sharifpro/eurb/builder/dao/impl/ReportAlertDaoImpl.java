@@ -19,29 +19,21 @@
 
 package com.sharifpro.eurb.builder.dao.impl;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import com.sharifpro.eurb.builder.dao.ReportAlertDao;
 import com.sharifpro.eurb.builder.dao.ReportDesignDao;
 import com.sharifpro.eurb.builder.dao.ReportLogDao;
 import com.sharifpro.eurb.builder.exception.ReportAlertDaoException;
 import com.sharifpro.eurb.builder.model.ReportAlert;
-import com.sharifpro.eurb.builder.model.ReportDesign;
-import com.sharifpro.eurb.builder.model.ReportLog;
 import com.sharifpro.eurb.builder.model.ReportUserAlert;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
-import com.sharifpro.util.PropertyProvider;
 
+@Repository
 public class ReportAlertDaoImpl extends AbstractDAO implements ReportAlertDao
 {
 	protected static Logger log = Logger.getLogger(ReportAlertDaoImpl.class.getName());
@@ -191,13 +183,15 @@ public class ReportAlertDaoImpl extends AbstractDAO implements ReportAlertDao
 		}*/
 		
 		return null;//userAlert;
-	}	
-	
+	}
+
+	@Autowired
 	public void setDataSourceProvider(ReportDesignDao dataSourceProvider)
 	{
 		this.dataSourceProvider = dataSourceProvider;
 	}
 
+	@Autowired
 	public void setReportLogDao(ReportLogDao reportLogDao)
 	{
 		this.reportLogDao = reportLogDao;

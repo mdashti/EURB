@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sharifpro.eurb.DaoFactory;
@@ -17,6 +18,7 @@ import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
 import com.sharifpro.eurb.management.mapping.dao.impl.PersistableObjectDaoImpl;
 import com.sharifpro.util.PropertyProvider;
 
+@Repository
 public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedRowMapper<ReportCategory>, ReportCategoryDao
 {
 

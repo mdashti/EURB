@@ -5,7 +5,6 @@ import com.sharifpro.eurb.builder.dao.UserMessageDao;
 import com.sharifpro.eurb.builder.exception.UserMessageDaoException;
 import com.sharifpro.eurb.builder.model.UserMessage;
 import com.sharifpro.eurb.builder.model.UserMessagePk;
-import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
 import com.sharifpro.eurb.management.mapping.dao.impl.PersistableObjectDaoImpl;
 import com.sharifpro.util.PropertyProvider;
 
@@ -16,9 +15,11 @@ import java.sql.SQLException;
 import java.sql.Types;
 
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-public class UserMessageDaoImpl extends AbstractDAO implements ParameterizedRowMapper<UserMessage>, UserMessageDao
+@Repository
+public class UserMessageDaoImpl extends PersistableObjectDaoImpl implements ParameterizedRowMapper<UserMessage>, UserMessageDao
 {
 	
 	private final static String QUERY_FROM_COLUMNS = "o.username, o.message, o.type, o.show, o.available_from";

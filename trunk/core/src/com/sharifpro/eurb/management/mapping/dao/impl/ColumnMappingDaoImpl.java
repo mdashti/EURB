@@ -17,8 +17,10 @@ import java.sql.SQLException;
 
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+@Repository
 public class ColumnMappingDaoImpl extends PersistableObjectDaoImpl implements ParameterizedRowMapper<ColumnMapping>, ColumnMappingDao
 {
 	public final static String QUERY_FROM_COLUMNS = "o.db_config_id, o.table_mapping_id, o.column_name, o.mapped_name, o.col_type_name, o.col_data_type, o.col_order, o.format_pattern, o.static_mapping, o.referenced_table, o.referenced_id_col, o.referenced_value_col, o.active_for_manager, o.active_for_user";

@@ -12,8 +12,10 @@ import java.util.List;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+@Repository
 public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapper<DbConfig>, DbConfigDao
 {
 	private final static String QUERY_FROM_COLUMNS = "o.name, o.driver_class, o.driver_url, o.username, o.password, o.test_query, o.record_status";

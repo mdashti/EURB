@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sharifpro.eurb.DaoFactory;
@@ -19,6 +20,7 @@ import com.sharifpro.eurb.management.mapping.model.TableMapping;
 import com.sharifpro.eurb.management.mapping.model.TableMappingPk;
 import com.sharifpro.util.PropertyProvider;
 
+@Repository
 public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRowMapper<TableMapping>, TableMappingDao
 {
 	private final static String QUERY_FROM_COLUMNS = "o.db_config_id, o.catalog, o.schema, o.table_name, o.mapped_name, o.mapped_type, o.active_for_manager, o.active_for_user";

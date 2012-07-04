@@ -16,8 +16,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+@Repository
 public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRowMapper<ReportDesign>, ReportDesignDao
 {
 	private final static String QUERY_FROM_COLUMNS = "o.version_id, o.name, o.description, o.category_id, o.query_text, o.select_part, o.result_data, o.format_file, o.is_current, o.record_status, o.db_config_id ";

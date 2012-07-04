@@ -3,6 +3,10 @@ package com.sharifpro.eurb.management.mapping.dao.impl;
 import java.io.*;
 import java.sql.*;
 
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 /**
@@ -10,7 +14,7 @@ import org.springframework.jdbc.core.support.JdbcDaoSupport;
  *
  * This is a customizable template within FireStorm/DAO.
  */
-public class AbstractDAO extends JdbcDaoSupport
+public abstract class AbstractDAO extends JdbcDaoSupport
 {
 	public final static int DEFAULT_PAGE_SIZE=25;
 	public final static String DEFAULT_PAGE_SIZE_STR=DEFAULT_PAGE_SIZE+"";
@@ -97,5 +101,11 @@ public class AbstractDAO extends JdbcDaoSupport
         else {
             stmt.setAsciiStream( parameterIndex, new ByteArrayInputStream(value.getBytes()), value.length() );
         }
+    }
+    
+    @Autowired
+    @Qualifier("EURBDataSource")
+    public void init(DataSource dataSource) {
+    	this.setDataSource(dataSource);
     }
 }

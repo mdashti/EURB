@@ -1,19 +1,16 @@
 package com.sharifpro.eurb.builder.dao.impl;
 
-import java.util.Calendar;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Criteria;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Repository;
 
 import com.sharifpro.eurb.builder.dao.ReportLogDao;
 import com.sharifpro.eurb.builder.exception.ReportLogDaoException;
 import com.sharifpro.eurb.builder.model.ReportLog;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
 
+@Repository
 public class ReportLogDaoImpl extends AbstractDAO implements ReportLogDao
 {
 	protected static Logger log =

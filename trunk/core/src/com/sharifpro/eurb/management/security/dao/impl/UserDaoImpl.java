@@ -22,10 +22,13 @@ import java.sql.SQLException;
 
 import javax.naming.OperationNotSupportedException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+@Repository
 public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<User>, UserDao
 {
 	private final static String QUERY_FROM_COLUMNS = "o.username, o.password, o.enabled, o.email";
@@ -468,6 +471,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 		return findWhereUsernameEquals(username) != null;
 	}
 
+	@Autowired
 	public void setAuthoritiesDao(AuthoritiesDao authoritiesDao) {
 		this.authoritiesDao = authoritiesDao;
 	}

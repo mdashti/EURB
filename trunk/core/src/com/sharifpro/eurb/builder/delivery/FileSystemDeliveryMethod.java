@@ -24,7 +24,10 @@ import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class FileSystemDeliveryMethod implements DeliveryMethod
 {  
     protected static Logger log = Logger.getLogger(FileSystemDeliveryMethod.class.getName());
@@ -161,11 +164,13 @@ public class FileSystemDeliveryMethod implements DeliveryMethod
         }        
     }
 
+    @Autowired
     public void setDirectoryProvider(DirectoryProvider directoryProvider)
     {
         this.directoryProvider = directoryProvider;
     }
-    
+
+    @Autowired
     public void setMailProvider(MailProvider mailProvider) 
     {
         this.mailProvider = mailProvider;

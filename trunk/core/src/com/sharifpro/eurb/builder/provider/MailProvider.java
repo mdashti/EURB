@@ -13,6 +13,7 @@ import javax.mail.Message.RecipientType;
 import javax.mail.internet.*;
 
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Repository;
 
 import com.sharifpro.eurb.builder.engine.output.ReportEngineOutput;
 import com.sharifpro.eurb.builder.model.MailMessage;
@@ -22,6 +23,7 @@ import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
 import com.sharifpro.eurb.management.mapping.exception.PersistableObjectDaoException;
 import com.sharifpro.util.PropertyProvider;
 
+@Repository
 public class MailProvider extends AbstractDAO {
 	public static final String MAIL_SMTP_HOST = "mail.smtp.host";
 	public static final String MAIL_SMTP_AUTH = "mail.smtp.auth";

@@ -10,8 +10,10 @@ import java.util.List;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+@Repository
 public class GroupAuthoritiesDaoImpl extends AbstractDAO implements ParameterizedRowMapper<GroupAuthorities>, GroupAuthoritiesDao
 {
 	/**

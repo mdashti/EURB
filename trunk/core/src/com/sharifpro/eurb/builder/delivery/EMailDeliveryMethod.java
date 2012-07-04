@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import com.sharifpro.eurb.builder.engine.output.ReportEngineOutput;
 import com.sharifpro.eurb.builder.model.DeliveredReport;
@@ -16,6 +18,7 @@ import com.sharifpro.eurb.builder.util.ByteArrayDataSource;
 import com.sharifpro.eurb.builder.util.ReportConstants.ExportType;
 import com.sharifpro.eurb.management.security.model.User;
 
+@Repository
 public class EMailDeliveryMethod implements DeliveryMethod 
 {
     protected static Logger log = Logger.getLogger(EMailDeliveryMethod.class.getName());
@@ -132,6 +135,7 @@ public class EMailDeliveryMethod implements DeliveryMethod
         return "image/tiff";
     }*/
     
+    @Autowired
     public void setMailProvider(MailProvider mailProvider) 
     {
         this.mailProvider = mailProvider;

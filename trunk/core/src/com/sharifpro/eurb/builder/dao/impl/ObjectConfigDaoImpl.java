@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sharifpro.eurb.builder.dao.ObjectConfigDao;
@@ -15,6 +16,7 @@ import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
 import com.sharifpro.eurb.management.mapping.model.PersistableObject;
 import com.sharifpro.util.PropertyProvider;
 
+@Repository
 public class ObjectConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapper<ObjectConfig>, ObjectConfigDao
 {
 

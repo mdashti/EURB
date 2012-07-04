@@ -21,8 +21,10 @@ import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+@Repository
 public class PersistableObjectDaoImpl extends AbstractDAO implements /*ParameterizedRowMapper<PersistableObject>,*/ PersistableObjectDao
 {	
 	
