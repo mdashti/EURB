@@ -304,7 +304,7 @@ public class DBBean implements Serializable {
             releaseStatements();
 
             // Create the new statement
-            this.stmt = connection.createStatement();
+            this.stmt = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
         } catch (SQLException sqle) {
             setErrorOccurred(true);
@@ -382,7 +382,7 @@ public class DBBean implements Serializable {
             releaseStatements();
 
             // Create the new CallableStatement
-            this.cstmt = connection.prepareCall(call);
+            this.cstmt = connection.prepareCall(call, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
             // Log the query string
             if (logger.isDebugEnabled()) {
@@ -415,7 +415,7 @@ public class DBBean implements Serializable {
             releaseStatements();
 
             // Create the new PreparedStatement
-            this.pstmt = connection.prepareStatement(call);
+            this.pstmt = connection.prepareStatement(call, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
             // Increase the number of rows fetched to improve performance.
             // TODO -- Roger.  This should be controlled at the application server connection pool level. Why are we overridding it here?
@@ -577,6 +577,7 @@ public class DBBean implements Serializable {
 
         try {
             long start = System.currentTimeMillis();
+            this.stmt.setFetchSize(100);
             this.result = this.stmt.executeQuery(qstr);
             logExecutionTime(start);
         } catch (SQLException sqle) {
@@ -868,7 +869,7 @@ public class DBBean implements Serializable {
             openConnection();
 
             // Create the new CallableStatement
-            this.cstmt = connection.prepareCall(call);
+            this.cstmt = connection.prepareCall(call, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
             // Log the query string
             if (logger.isDebugEnabled()) {
