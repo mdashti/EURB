@@ -177,22 +177,22 @@
 		</bean-->
 
 	<bean id="mailAuthenticator" class="com.sharifpro.eurb.builder.util.SMTPAuthenticator">
-		<constructor-arg index="0" value="isatisweb.com@gmail.com" />
-		<constructor-arg index="1" value="isatiswebeurb" />
+		<constructor-arg index="0" value="#{applicationProps['application.mail.username']}" />
+		<constructor-arg index="1" value="#{applicationProps['application.mail.password']}" />
 	</bean>
 
 	<bean id="mailSession" class="javax.mail.Session" factory-method="getInstance">
 		<constructor-arg index="0">
 			<props>
-				<prop key="mail.smtp.host">smtp.gmail.com</prop>
-				<prop key="mail.smtp.auth">true</prop>
-				<prop key="mail.smtp.port">465</prop>
-				<prop key="mail.smtp.user">isatisweb.com@gmail.com</prop>
-				<prop key="password">isatiswebeurb</prop>
-				<prop key="mail.smtp.from">isatisweb.com@gmail.com</prop>
-				<prop key="mail.smtp.starttls.enable">true</prop>
-				<prop key="mail.smtp.socketFactory.class">javax.net.ssl.SSLSocketFactory</prop>
-				<prop key="mail.debug">true</prop>
+				<prop key="mail.smtp.host">#{applicationProps['application.mail.smtp.host']}</prop>
+				<prop key="mail.smtp.auth">#{applicationProps['application.mail.smtp.auth']}</prop>
+				<prop key="mail.smtp.port">#{applicationProps['application.mail.smtp.port']}</prop>
+				<prop key="mail.smtp.user">#{applicationProps['application.mail.username']}</prop>
+				<prop key="password">#{applicationProps['application.mail.password']}</prop>
+				<prop key="mail.smtp.from">#{applicationProps['application.mail.username']}</prop>
+				<prop key="mail.smtp.starttls.enable">#{applicationProps['application.mail.smtp.starttls.enable']}</prop>
+				<prop key="mail.smtp.socketFactory.class">#{applicationProps['application.mail.smtp.socketFactory.class']}</prop>
+				<prop key="mail.debug">#{applicationProps['application.mail.debug']}</prop>
 			</props>
 		</constructor-arg>
 		<constructor-arg index="1" ref="mailAuthenticator" />
