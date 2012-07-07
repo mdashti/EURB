@@ -10,7 +10,7 @@ EURB.ReportChart.chartTypeCombo = new Ext.form.ComboBox({
             'typeValue',
             'typeLabel'
         ],
-        data: [['line', EURB.ReportChart.line], ['column', EURB.ReportChart.column], ['bar', EURB.ReportChart.bar], ['pie', EURB.ReportChart.pie]]
+        data: [['line', EURB.ReportChart.line], ['column', EURB.ReportChart.column], ['bar', EURB.ReportChart.bar], ['pie', EURB.ReportChart.pie], ['gauge', EURB.ReportChart.gauge]]
     }),
     valueField: 'typeValue',
     displayField: 'typeLabel',

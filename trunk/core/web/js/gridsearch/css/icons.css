@@ -384,5 +384,17 @@
 .icon-word {
 	background-image:url(../../../img/icon/export/word.png) ! important;
 }
+.icon-report-save-big{
+	background-image:url(../../../img/icon/big-green/save.png) ! important;
+}
+.icon-report-run-big{
+	background-image:url(../../../img/icon/big-green/wizard.png) ! important;
+}
+.icon-report-add-big{
+	background-image:url(../../../img/icon/big-green/plus.png) ! important;
+}
+.icon-report-return-big{
+	background-image:url(../../../img/icon/big-green/back.png) ! important;
+}
 /*  Icon Classes end */
 

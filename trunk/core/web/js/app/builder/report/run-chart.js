@@ -34,72 +34,65 @@ createChart = function(data, index, heightValue){
 		};
 	}
 	else if(data[0][0] == 'gauge'){
+		count = 0;
 		options = {
 				chart : {
-					type: data[0][0],
+					type: data[0][count++],
 			        renderTo: 'chart' + index,
 			        height:heightValue
 				},
 				title: {
-			           text: data[0][1]
-			    },
-			    yAxis: {
-			        min: 0,
-			        max: 200,
-			        center: ['50%', '80%'],
-			        size: '130%',
-			        lineWidth: 0,
-			        lineColor: 'gray',
-			        gridLineWidth: 0,
-			        minPadding: 0,
-			        maxPadding: 0,
-			        endOnTick: false,
-			        startOnTick: false, // todo: fix tickInterval
-			        
-			        minorTickInterval: 'auto',
-			        minorTickWidth: 1,
-			        minorTickLength: 10,
-			        minorTickPosition: 'inside',
-			        minorGridLineWidth: 0,
-			        minorTickColor: '#666',
-
-			        tickPixelInterval: 30,
-			        tickWidth: 2,
-			        tickPosition: 'inside',
-			        tickLength: 10,
-			        tickColor: '#666',
-			        startAngle: -90,
-			        endAngle: 90,
-			        labels: {
-			            step: 2,
-			            rotation: 'auto',
-			            distance: 10
-			        },
-			        title: {
-			            text: 'km/h'
-			        },
-			        background: [{
-			            shape: 'cutoff'
-			        }],
-			        plotBands: [{
-			            from: 0,
-			            to: 120,
-			            color: '#55BF3B' // green
-			        }, {
-			            from: 120,
-			            to: 160,
-			            color: '#DDDF0D' // yellow
-			        }, {
-			            from: 160,
-			            to: 200,
-			            color: '#DF5353' // red
-			        }]        
+			           text: data[0][count++],
+			           style:{
+			        	   fontFamily: data[0][count++],
+			        	   fontSize: data[0][count++] + 'px',
+			        	   color: '#' + data[0][count++]
+			           }
 			    },
 			    series:[{
-		        	name: data[0][3],
-		        	data: [80]//data[2]
+		        	name: data[0][count++],
+		        	data: data[2],
+		        	dataLabels: {
+		                formatter: function () {
+		                    return '<span style="font-family:' +  data[0][(11)] + '!important;font-size: ' + data[0][12] + 'px!important;color: #' + data[0][13] +'!important;">' 
+		                    + data[0][10] + ':' + this.y + '</span><br/>';
+		                },
+		                backgroundColor: {
+		                    linearGradient: {
+		                        x1: 0,
+		                        y1: 0,
+		                        x2: 0,
+		                        y2: 1
+		                    },
+		                    stops: [
+		                        [0, '#DDD'],
+		                        [1, '#FFF']
+		                    ]
+		                }
+		            },
+		        }],
+		        pane: {
+		            startAngle: -150,
+		            endAngle: 150
+		        },            
+		    
+			    yAxis: [{
+			    	min: 0,
+		           	max: 1000,
+		           	lineColor: '#' + data[0][count],
+		           	tickColor: '#' + data[0][count],
+		           	minorTickColor: '#' + data[0][count++],
+		           	offset: -25,
+		           	lineWidth: 2,
+		            labels: {
+		                distance: 10,
+		                rotation: 'auto'
+		            },
+		            tickLength: 5,
+		            minorTickLength: 5,
+		            endOnTick: false
 		        }]
-		}
+		};
 	}
 	else{
 		count = 0;

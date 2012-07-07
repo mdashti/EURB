@@ -8,6 +8,34 @@ Ext.onReady(function() {
 	EURB.ReportDesign.tabPanel = new Ext.TabPanel({
 		layoutOnTabChange:true,
 		activeTab: 0,
+		tbar: [{
+            //xtype:'splitbutton',
+            text: EURB.ReportDesign.saveDesign,
+            iconCls:  'icon-report-save-big',
+            scale: 'large',
+            iconAlign: 'top'
+            //menu: [{text: 'Menu Button 1'}]
+        },{
+            text: EURB.ReportDesign.runReport,
+            iconCls: 'icon-report-run-big',
+            scale: 'large',
+            iconAlign: 'top',
+            listeners: {
+            	click:function(){
+            		window.location.href = EURB.baseURL + 'builder/report/run-report' + EURB.ReportDesign.selectedDesign + '-v' + EURB.ReportDesign.selectedVersion + '.spy';
+            	}
+            }
+        },{
+            text: EURB.ReportDesign.returnToList,
+            iconCls: 'icon-report-return-big',
+            scale: 'large',
+            iconAlign: 'top',
+            listeners: {
+            	click:function(){
+            		window.location.href = EURB.baseURL + 'builder/report/report-tree-listd.spy';
+            	}
+            }
+        }],
 		items:[{
 			title: EURB.ReportDesign.reportTab,
 			layout: 'border',

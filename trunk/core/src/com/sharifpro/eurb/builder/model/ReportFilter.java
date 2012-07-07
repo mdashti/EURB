@@ -304,7 +304,7 @@ public class ReportFilter extends PersistableObject implements Serializable
 	 */
 	public Long getOperand1ColumnMappingId()
 	{
-		return operand1ColumnMappingId;
+		return (operand1ColumnMappingId == null || operand1ColumnMappingId == 0) ? null : operand1ColumnMappingId;
 	}
 
 	/**
@@ -324,7 +324,7 @@ public class ReportFilter extends PersistableObject implements Serializable
 	 */
 	public Long getOperand1DatasetId()
 	{
-		return operand1DatasetId;
+		return (operand1DatasetId == null || operand1DatasetId == 0) ? null : operand1DatasetId;
 	}
 
 	/**

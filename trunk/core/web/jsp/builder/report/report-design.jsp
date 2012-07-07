@@ -27,6 +27,8 @@
 			String selectedVersion = (String) request.getAttribute("version"); 
 			String name = (String) request.getAttribute("name");
 		%>
+		
+		
 		<script type="text/javascript">
 
 			EURB.ReportDesign = {};
@@ -44,7 +46,9 @@
 			EURB.ReportDesign.searchAction = '<spring:url value="/builder/report/reportSearch.spy" />';
 			EURB.ReportDesign.storeAction = '<spring:url value="/builder/report/reportStore.spy" />';
 			
-			
+			EURB.ReportDesign.runReport = '<spring:message code="eurb.app.builder.report.design.runReport" />';
+			EURB.ReportDesign.saveDesign = '<spring:message code="eurb.app.builder.report.design.saveDesign" />';
+			EURB.ReportDesign.returnToList = '<spring:message code="eurb.app.builder.report.design.returnToList" />';
 			
 			
 			EURB.ReportDataset = {};
