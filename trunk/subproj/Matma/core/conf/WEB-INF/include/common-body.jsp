@@ -62,6 +62,7 @@
 		<%-- Highcharts --%>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/app/menu/jquery.min.js" ></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/Highcharts/js/highcharts.js" ></script>
+		<script type="text/javascript" src="<%=resourcesUrl%>/js/Highcharts/js/highcharts-more.js" ></script>
 		
 		<%-- MutilGrouping --%>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/multigrouping/MultiGrouping.js" ></script>
@@ -118,6 +119,7 @@
 		EURB.down = '<spring:message code="eurb.down" />';
 		EURB.editFormula = '<spring:message code="eurb.editFormula" />';
 		EURB.editChartAxis = '<spring:message code="eurb.editChartAxis" />';
+		EURB.expandAll = '<spring:message code="eurb.expandAll" />';
 		
 		EURB.appMenu = {};
 		EURB.appMenu.homepage = '<spring:message code="eurb.app.menu.homepage" />';
