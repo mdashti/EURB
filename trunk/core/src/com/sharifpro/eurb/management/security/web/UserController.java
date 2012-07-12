@@ -81,7 +81,7 @@ public class UserController {
 
 		} catch (Exception e) {
 
-			return JsonUtil.getModelMapError(e.getMessage());
+			return JsonUtil.getModelMapError(e);
 		}
 	}
 
@@ -148,7 +148,7 @@ public class UserController {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			return JsonUtil.getModelMapError(e.getMessage());
+			return JsonUtil.getModelMapError(e);
 		}
 	}
 
@@ -156,7 +156,7 @@ public class UserController {
 	@RequestMapping(value="/management/security/user/userRemove.spy")
 	public @ResponseBody Map<String,? extends Object> delete(@RequestParam Object data) throws Exception {
 
-		try{
+		/*try{
 			List<Integer> deleteIds = jsonUtil.getListFromRequest(data, Integer.class);
 			List<UserPk> pkList = new ArrayList<UserPk>(deleteIds.size());
 			for(Integer id : deleteIds) {
@@ -168,8 +168,9 @@ public class UserController {
 
 		} catch (Exception e) {
 
-			return JsonUtil.getModelMapError(e.getMessage());
-		}
+			return JsonUtil.getModelMapError(e);
+		}*/
+		return JsonUtil.getModelMapError(PropertyProvider.get("eurb.app.management.user.deleteNotSupported"));
 	}
 
 	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_USER_MANAGEMENT_EDIT)")
@@ -188,7 +189,7 @@ public class UserController {
 
 		} catch (Exception e) {
 
-			return JsonUtil.getModelMapError(e.getMessage());
+			return JsonUtil.getModelMapError(e);
 		}
 	}
 
@@ -208,7 +209,7 @@ public class UserController {
 
 		} catch (Exception e) {
 
-			return JsonUtil.getModelMapError(e.getMessage());
+			return JsonUtil.getModelMapError(e);
 		}
 	}
 
@@ -219,7 +220,7 @@ public class UserController {
 			List<Groups> groupList = groupsDao.findCurrentGroupsForUser(userName);
 			return JsonUtil.getSuccessfulMap(groupList);
 		} catch (Exception e) {
-			return JsonUtil.getModelMapError(e.getMessage());
+			return JsonUtil.getModelMapError(e);
 		}
 	}
 
@@ -230,7 +231,7 @@ public class UserController {
 			List<Groups> groupList = groupsDao.findSelectableGroupsForUser(userName);
 			return JsonUtil.getSuccessfulMap(groupList);
 		} catch (Exception e) {
-			return JsonUtil.getModelMapError(e.getMessage());
+			return JsonUtil.getModelMapError(e);
 		}
 	}
 
@@ -248,7 +249,7 @@ public class UserController {
 
 		} catch (Exception e) {
 
-			return JsonUtil.getModelMapError(e.getMessage());
+			return JsonUtil.getModelMapError(e);
 		}
 	}
 
@@ -266,7 +267,7 @@ public class UserController {
 
 		} catch (Exception e) {
 
-			return JsonUtil.getModelMapError(e.getMessage());
+			return JsonUtil.getModelMapError(e);
 		}
 	}
 	

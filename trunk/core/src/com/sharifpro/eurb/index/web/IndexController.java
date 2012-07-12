@@ -43,7 +43,7 @@ public class IndexController {
 
 			return JsonUtil.getSuccessfulMap(userMessages);
 		} catch (Exception e) {
-			return JsonUtil.getModelMapError(e.getMessage());
+			return JsonUtil.getModelMapError(e);
 		}
 	}
 

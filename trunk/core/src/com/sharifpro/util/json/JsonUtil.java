@@ -138,13 +138,19 @@ public class JsonUtil {
 	 * @param msg message
 	 * @return
 	 */
-	public static Map<String,Object> getModelMapError(String msg){
+	public static Map<String,Object> getModelMapError(String errorMessage){
 
 		Map<String,Object> modelMap = new HashMap<String,Object>(2);
-		modelMap.put("message", msg);
+		modelMap.put("message", errorMessage);
 		modelMap.put("success", false);
 
 		return modelMap;
+	}
+	
+
+	public static Map<String,Object> getModelMapError(Throwable t){
+		t.printStackTrace();
+		return getModelMapError(t.getMessage());
 	}
 	
 	public static void main(String[] args) {

@@ -1,10 +1,17 @@
 package com.sharifpro.eurb.builder.dao.impl;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.security.acls.model.AclService;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,12 +23,13 @@ import com.sharifpro.eurb.builder.model.ReportCategoryPk;
 import com.sharifpro.eurb.info.RecordStatus;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
 import com.sharifpro.eurb.management.mapping.dao.impl.PersistableObjectDaoImpl;
+import com.sharifpro.eurb.management.security.dao.impl.AclServiceImpl;
 import com.sharifpro.util.PropertyProvider;
+import com.sharifpro.util.SessionManager;
 
 @Repository
 public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedRowMapper<ReportCategory>, ReportCategoryDao
 {
-
 	private final static String QUERY_FROM_COLUMNS = "o.name, o.description, o.parent_category_id";
 
 	private final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + " o " + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL_AND_JOIN;
@@ -36,13 +44,15 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	 * @throws ReportCategoryDaoException 
 	 */
 	@Transactional(readOnly = false)
-	public ReportCategoryPk insert(ReportCategory dto) throws ReportCategoryDaoException
+	public ReportCategoryPk insert(final ReportCategory dto) throws ReportCategoryDaoException
 	{
 		try{
-			ReportCategoryPk pk = new ReportCategoryPk();
+			final ReportCategoryPk pk = new ReportCategoryPk();
 			DaoFactory.createPersistableObjectDao().insert(dto, pk);
 
 			getJdbcTemplate().update("INSERT INTO " + getTableName() + " ( id, name, description, parent_category_id ) VALUES ( ?, ?, ?, ? )",pk.getId(),dto.getName(),dto.getDescription(), dto.getParentCategory());
+			
+			AclServiceImpl.insertObjectIdentity(getJdbcTemplate(), pk.getId(), ReportCategory.ACL_CLASS_IDENTIFIER, dto.getParentCategory(), ReportCategory.ACL_CLASS_IDENTIFIER);
 			return pk;
 		}
 		catch (Exception e) {
@@ -59,6 +69,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 		try{
 			DaoFactory.createPersistableObjectDao().update(pk);
 			getJdbcTemplate().update("UPDATE " + getTableName() + " SET name = ?, description = ?, parent_category_id = ? WHERE id = ?",dto.getName(), dto.getDescription(), dto.getParentCategory(), pk.getId());
+			AclServiceImpl.updateObjectIdentity(getJdbcTemplate(), pk.getId(), ReportCategory.ACL_CLASS_IDENTIFIER, dto.getParentCategory(), ReportCategory.ACL_CLASS_IDENTIFIER);
 		}
 		catch (Exception e) {
 			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -73,15 +84,23 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	public void delete(ReportCategoryPk pk) throws ReportCategoryDaoException
 	{
 		try{
+			ReportCategory toBeDeletedCategory = findByPrimaryKey(pk);
 			//first we have to check for any active report for this category
 			int countActive = getJdbcTemplate().queryForInt("SELECT count(id) FROM " + ReportDesignDaoImpl.getTableName() + " WHERE category_id = ? AND record_status <> ? ",pk.getId(), RecordStatus.DELETED.getId());
+			int childCount = getJdbcTemplate().queryForInt("SELECT count(id) FROM " + getTableName() + " WHERE parent_category_id = ? ",pk.getId());
 			//if there is any active report for the category, user cannot delete it
 			if(countActive > 0){
-				throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE);
+				throw new ReportCategoryDaoException(PropertyProvider.get("eurb.category.hasreportexception"));
+			}
+			//update parent of child categories to this parent
+			if(childCount > 0){
+				getJdbcTemplate().update("UPDATE report_category parent, report_category child SET child.parent_category_id = parent.parent_category_id WHERE child.parent_category_id = parent.id AND parent.id = ?", pk.getId());
 			}
 			//else we have to change category_id for not active reports of this category
 			getJdbcTemplate().update("UPDATE " + ReportDesignDaoImpl.getTableName() + " SET category_id = NULL WHERE category_id = ?", pk.getId());
-			//and then delete the category
+			//and then delete the permissions
+			AclServiceImpl.deleteObjectIdentity(getJdbcTemplate(),pk.getId(),ReportCategory.ACL_CLASS_IDENTIFIER, toBeDeletedCategory.getParentCategory(), ReportCategory.ACL_CLASS_IDENTIFIER);
+			//and finally delete the category
 			getJdbcTemplate().update("DELETE FROM " + getTableName() + " WHERE id = ?",pk.getId());
 			DaoFactory.createPersistableObjectDao().delete(pk);
 		}
@@ -320,5 +339,4 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 			return "";
 		}
 	}
-
 }

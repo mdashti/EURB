@@ -97,7 +97,7 @@ public class ReportCategoryController {
 
 		} catch (Exception e) {
 
-			return JsonUtil.getModelMapError(e.getMessage());
+			return JsonUtil.getModelMapError(e);
 		}
 	}
 
@@ -132,7 +132,7 @@ public class ReportCategoryController {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			return JsonUtil.getModelMapError(e.getMessage());
+			return JsonUtil.getModelMapError(e);
 		}
 	}
 
@@ -152,7 +152,7 @@ public class ReportCategoryController {
 
 		} catch (Exception e) {
 
-			return JsonUtil.getModelMapError(PropertyProvider.get("eurb.category.hasreportexception"));
+			return JsonUtil.getModelMapError(e);
 		}
 	}
 

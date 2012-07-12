@@ -77,7 +77,7 @@ public class DBConfigController {
 
 		} catch (Exception e) {
 
-			return JsonUtil.getModelMapError(e.getMessage());
+			return JsonUtil.getModelMapError(e);
 		}
 	}
 
@@ -105,7 +105,7 @@ public class DBConfigController {
 			}
 			return JsonUtil.getSuccessfulMap(sqlDrivers);
 		} catch (Exception e) {
-			return JsonUtil.getModelMapError(e.getMessage());
+			return JsonUtil.getModelMapError(e);
 		}
 	}
 
@@ -140,7 +140,7 @@ public class DBConfigController {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			return JsonUtil.getModelMapError(e.getMessage());
+			return JsonUtil.getModelMapError(e);
 		}
 	}
 
@@ -160,7 +160,7 @@ public class DBConfigController {
 
 		} catch (Exception e) {
 
-			return JsonUtil.getModelMapError(e.getMessage());
+			return JsonUtil.getModelMapError(e);
 		}
 	}
 
@@ -180,7 +180,7 @@ public class DBConfigController {
 
 		} catch (Exception e) {
 
-			return JsonUtil.getModelMapError(e.getMessage());
+			return JsonUtil.getModelMapError(e);
 		}
 	}
 
@@ -200,7 +200,7 @@ public class DBConfigController {
 
 		} catch (Exception e) {
 
-			return JsonUtil.getModelMapError(e.getMessage());
+			return JsonUtil.getModelMapError(e);
 		}
 	}
 

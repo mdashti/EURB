@@ -50,6 +50,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 		UserPk pk = new UserPk();
 		DaoFactory.createPersistableObjectDao().insert(dto, pk);
 		getJdbcTemplate().update("INSERT INTO " + getTableName() + " ( id, username, password, enabled, email ) VALUES ( ?, ?, ?, ?, ? )", pk.getId(), dto.getUsername(),SecurityUtil.generatePassword(dto.getPassword(), dto.getUsername()),dto.isEnabled(), dto.getEmail());
+		getJdbcTemplate().update("INSERT INTO ACL_SID (sid , principal) VALUES ( ?, ? )", dto.getUsername(), 1);
 		Authorities auth = new Authorities();
 		auth.setUsername(dto.getUsername());
 		auth.setAuthority(AuthorityType.USER);

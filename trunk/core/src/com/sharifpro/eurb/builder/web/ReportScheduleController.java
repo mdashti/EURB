@@ -62,7 +62,7 @@ public class ReportScheduleController {
 
 			return JsonUtil.getSuccessfulMap(reportScheduleDao.getScheduledReports(reportUser));
 		} catch (Exception e) {
-			return JsonUtil.getModelMapError(e.getMessage());
+			return JsonUtil.getModelMapError(e);
 		}
 	}
 
@@ -76,7 +76,7 @@ public class ReportScheduleController {
 		} catch (NullPointerException npe) {
 			return JsonUtil.getModelMapError(PropertyProvider.get("error.settings.directories"));
 		} catch (Exception e) {
-			return JsonUtil.getModelMapError(e.getMessage());
+			return JsonUtil.getModelMapError(e);
 		}
 	}
 
@@ -97,7 +97,7 @@ public class ReportScheduleController {
 			}
 			return JsonUtil.getSuccessfulMap(scheduledReports);
 		} catch (Exception e) {
-			return JsonUtil.getModelMapError(e.getMessage());
+			return JsonUtil.getModelMapError(e);
 		}
 	}
 
@@ -144,7 +144,7 @@ public class ReportScheduleController {
 			}
 			return response;
 		} catch (Exception e) {
-			return JsonUtil.getModelMapError(e.getMessage());
+			return JsonUtil.getModelMapError(e);
 		}
 	}*/
 
@@ -265,7 +265,7 @@ public class ReportScheduleController {
 
 			reportScheduleDao.scheduleReport(reportSchedule);
 		} catch (Exception e) {
-			return JsonUtil.getModelMapError(e.getMessage());
+			return JsonUtil.getModelMapError(e);
 		}
 
 		return JsonUtil.getSuccessfulMapAfterStore(Arrays.asList(reportSchedule.getScheduleName()));
@@ -289,7 +289,7 @@ public class ReportScheduleController {
 			}
 			return  JsonUtil.getSuccessfulMapAfterStore(deleteScheduleNames);
 		} catch (Exception e) {
-			return JsonUtil.getModelMapError(e.getMessage());
+			return JsonUtil.getModelMapError(e);
 		}
 	}
 	

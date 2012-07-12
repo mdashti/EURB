@@ -1,13 +1,14 @@
 package com.sharifpro.eurb.builder.model;
 
 import java.io.Serializable;
-import java.util.Comparator;
 
 import com.sharifpro.eurb.management.mapping.model.PersistableObject;
 
 public class ReportCategory extends PersistableObject implements Serializable
 {
 	private static final long serialVersionUID = -6872414545571485755L;
+
+	public static final long ACL_CLASS_IDENTIFIER = 1;
 
 	/** 
 	 * This attribute maps to the column name in the report_category table.

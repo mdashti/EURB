@@ -78,7 +78,7 @@ public class GroupsController {
 
 		} catch (Exception e) {
 
-			return JsonUtil.getModelMapError(e.getMessage());
+			return JsonUtil.getModelMapError(e);
 		}
 	}
 
@@ -113,7 +113,7 @@ public class GroupsController {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			return JsonUtil.getModelMapError(e.getMessage());
+			return JsonUtil.getModelMapError(e);
 		}
 	}
 
@@ -133,7 +133,7 @@ public class GroupsController {
 
 		} catch (Exception e) {
 
-			return JsonUtil.getModelMapError(e.getMessage());
+			return JsonUtil.getModelMapError(e);
 		}
 	}
 
@@ -144,7 +144,7 @@ public class GroupsController {
 			List<User> userList = userDao.findCurrentUsersForGroup(groupId);
 			return JsonUtil.getSuccessfulMap(userList);
 		} catch (Exception e) {
-			return JsonUtil.getModelMapError(e.getMessage());
+			return JsonUtil.getModelMapError(e);
 		}
 	}
 
@@ -155,7 +155,7 @@ public class GroupsController {
 			List<User> userList = userDao.findSelectableUsersForGroup(groupId);
 			return JsonUtil.getSuccessfulMap(userList);
 		} catch (Exception e) {
-			return JsonUtil.getModelMapError(e.getMessage());
+			return JsonUtil.getModelMapError(e);
 		}
 	}
 
@@ -173,7 +173,7 @@ public class GroupsController {
 
 		} catch (Exception e) {
 
-			return JsonUtil.getModelMapError(e.getMessage());
+			return JsonUtil.getModelMapError(e);
 		}
 	}
 
@@ -191,7 +191,7 @@ public class GroupsController {
 
 		} catch (Exception e) {
 
-			return JsonUtil.getModelMapError(e.getMessage());
+			return JsonUtil.getModelMapError(e);
 		}
 	}
 	

@@ -37,6 +37,7 @@ public class GroupsDaoImpl extends AbstractDAO implements ParameterizedRowMapper
 		GroupsPk pk = new GroupsPk();
 		DaoFactory.createPersistableObjectDao().insert(dto, pk);
 		getJdbcTemplate().update("INSERT INTO " + getTableName() + " ( id, group_name ) VALUES ( ?, ? )", pk.getId(),dto.getGroupName());
+		getJdbcTemplate().update("INSERT INTO ACL_SID (sid , principal) VALUES ( ?, ? )", pk.getId(), 0);
 		return pk;
 	}
 

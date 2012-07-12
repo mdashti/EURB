@@ -103,7 +103,7 @@ public class ReportLogDaoImpl extends AbstractDAO implements ReportLogDao
 		}
 		catch (ConstraintException e)
 		{
-			throw new ReportLogDaoException(e.getMessage());
+			throw new ReportLogDaoException(e);
 		}*/
 	}
 	

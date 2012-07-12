@@ -185,7 +185,7 @@ public class ColumnMappingController {
 
 		} catch (Exception e) {
 
-			return JsonUtil.getModelMapError(e.getMessage());
+			return JsonUtil.getModelMapError(e);
 		}
 	}
 
@@ -220,7 +220,7 @@ public class ColumnMappingController {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			return JsonUtil.getModelMapError(e.getMessage());
+			return JsonUtil.getModelMapError(e);
 		}
 	}
 
@@ -240,7 +240,7 @@ public class ColumnMappingController {
 
 		} catch (Exception e) {
 
-			return JsonUtil.getModelMapError(e.getMessage());
+			return JsonUtil.getModelMapError(e);
 		}
 	}
 
@@ -258,7 +258,7 @@ public class ColumnMappingController {
 
 			return JsonUtil.getSuccessfulMapAfterStore(deactivateIds);
 		} catch (Exception e) {
-			return JsonUtil.getModelMapError(e.getMessage());
+			return JsonUtil.getModelMapError(e);
 		}
 	}
 
@@ -276,7 +276,7 @@ public class ColumnMappingController {
 
 			return JsonUtil.getSuccessfulMapAfterStore(Arrays.asList(id));
 		} catch (Exception e) {
-			return JsonUtil.getModelMapError(e.getMessage());
+			return JsonUtil.getModelMapError(e);
 		}
 	}
 

@@ -3,12 +3,14 @@ package com.sharifpro.eurb.builder.dao.impl;
 import com.sharifpro.eurb.DaoFactory;
 import com.sharifpro.eurb.builder.dao.ReportDesignDao;
 import com.sharifpro.eurb.builder.exception.ReportDesignDaoException;
+import com.sharifpro.eurb.builder.model.ReportCategory;
 import com.sharifpro.eurb.builder.model.ReportDesign;
 import com.sharifpro.eurb.builder.model.ReportDesignPk;
 import com.sharifpro.eurb.info.RecordStatus;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
 import com.sharifpro.eurb.management.mapping.dao.impl.DbConfigDaoImpl;
 import com.sharifpro.eurb.management.mapping.dao.impl.PersistableObjectDaoImpl;
+import com.sharifpro.eurb.management.security.dao.impl.AclServiceImpl;
 import com.sharifpro.util.PropertyProvider;
 
 import java.util.List;
@@ -51,6 +53,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 			getJdbcTemplate().update("INSERT INTO " + getTableName() + " ( id, version_id, name, description, category_id, query_text, select_part, result_data, format_file, is_current, record_status, db_config_id ) " +
 					"VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",pk.getId(),pk.getVersionId(),dto.getName(),dto.getDescription(),dto.getCategoryId(),dto.getQueryText(),dto.getSelectPart(),dto.getResultData(),
 					dto.getFormatFile(),dto.isIsCurrent(),dto.getRecordStatusString(), dto.getDbConfigId());
+			AclServiceImpl.insertObjectIdentity(getJdbcTemplate(), pk.getId(), ReportDesign.ACL_CLASS_IDENTIFIER, dto.getCategoryId(), ReportCategory.ACL_CLASS_IDENTIFIER);
 			return pk;
 		}
 		catch (Exception e) {
@@ -72,6 +75,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 			getJdbcTemplate().update("INSERT INTO " + getTableName() + " ( id, version_id, name, description, category_id, query_text, select_part, result_data, format_file, is_current, record_status, db_config_id ) " +
 					"VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",pk.getId(),pk.getVersionId(),dto.getName(),dto.getDescription(),dto.getCategoryId(),dto.getQueryText(),dto.getSelectPart(),dto.getResultData(),
 					dto.getFormatFile(),dto.isIsCurrent(),dto.getRecordStatusString(), dto.getDbConfigId());
+			AclServiceImpl.updateObjectIdentity(getJdbcTemplate(), pk.getId(), ReportDesign.ACL_CLASS_IDENTIFIER, dto.getCategoryId(), ReportCategory.ACL_CLASS_IDENTIFIER);
 		}
 		catch (Exception e) {
 			throw new ReportDesignDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -173,8 +177,9 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 		try{
 			DaoFactory.createPersistableObjectDao().update(pk);
 			getJdbcTemplate().update("UPDATE " + getTableName() + " SET record_status = ? WHERE id = ?", RecordStatus.DELETED.getId() ,pk.getId());
-		}
-		catch (Exception e) {
+
+			AclServiceImpl.deleteObjectIdentity(getJdbcTemplate(),pk.getId(),ReportDesign.ACL_CLASS_IDENTIFIER, null, ReportCategory.ACL_CLASS_IDENTIFIER);
+		} catch (Exception e) {
 			throw new ReportDesignDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 	}

@@ -1163,14 +1163,14 @@ Ext.ux.maximgb.tg.GridView = Ext.extend(Ext.grid.GridView,
             ts.treeui = new Ext.Template(
                 '<div class="ux-maximgb-tg-uiwrap" style="width: {wrap_width}px">',
                     '{elbow_line}',
-                    '<div style="left: {left}px" class="{cls}">&#160;</div>',
+                    '<div style="right: {left}px" class="{cls}">&#160;</div>',
                 '</div>'
             );
         }
         
         if (!ts.elbow_line) {
             ts.elbow_line = new Ext.Template(
-                '<div style="left: {left}px" class="{cls}">&#160;</div>'
+                '<div style="right: {left}px" class="{cls}">&#160;</div>'
             );
         }
         
