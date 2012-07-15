@@ -80,7 +80,7 @@ public class GroupAggregation extends PersistableObject implements Serializable
 	 */
 	public Long getAggregatedReportColumnId()
 	{
-		return aggregatedReportColumnId;
+		return (aggregatedReportColumnId == null || aggregatedReportColumnId == 0) ? null : aggregatedReportColumnId;
 	}
 
 	/**
@@ -120,7 +120,7 @@ public class GroupAggregation extends PersistableObject implements Serializable
 	 * @return Long
 	 */
 	public Long getAggregatedColumnMappingId() {
-		return aggregatedColumnMappingId;
+		return (aggregatedColumnMappingId == null || aggregatedColumnMappingId == 0) ? null : aggregatedColumnMappingId;
 	}
 
 	/**
@@ -138,7 +138,7 @@ public class GroupAggregation extends PersistableObject implements Serializable
 	  * @return Long
 	 */
 	public Long getAggregatedColumnDatasetId() {
-		return aggregatedColumnDatasetId;
+		return (aggregatedColumnDatasetId == null || aggregatedColumnDatasetId == 0) ? null : aggregatedColumnDatasetId;
 	}
 
 	/**

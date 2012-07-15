@@ -159,6 +159,19 @@
 			EURB.ReportChart.saveAll = '<spring:message code="eurb.app.builder.report.chart.saveAll" />';
 			EURB.ReportChart.cancelAll = '<spring:message code="eurb.app.builder.report.chart.cancelAll" />';
 			
+			EURB.GroupAggregation = {};
+			EURB.GroupAggregation.AggregatedColumn = '<spring:message code="eurb.app.builder.report.aggregation.column" />';
+			EURB.GroupAggregation.AggregateFunction = '<spring:message code="eurb.app.builder.report.aggregation.function" />';
+			EURB.GroupAggregation.sum = '<spring:message code="eurb.app.builder.report.aggregation.sum" />';
+			EURB.GroupAggregation.count = '<spring:message code="eurb.app.builder.report.aggregation.count" />';
+			EURB.GroupAggregation.average = '<spring:message code="eurb.app.builder.report.aggregation.average" />';
+			EURB.GroupAggregation.Place = '<spring:message code="eurb.app.builder.report.aggregation.place" />';
+			EURB.GroupAggregation.down = '<spring:message code="eurb.app.builder.report.aggregation.down" />';
+			EURB.GroupAggregation.up = '<spring:message code="eurb.app.builder.report.aggregation.up" />';
+			
+			EURB.GroupAggregation.searchAction = '<spring:url value="/builder/report/groupAggregationSearch.spy" />';
+			EURB.GroupAggregation.storeAggregationAction = '<spring:url value="/builder/report/groupAggregationStore.spy" />';
+			
 			
 			
 			EURB.ReportDesign.categoryCombo = new Ext.form.ComboBox({
@@ -334,6 +347,27 @@
 			    	}
 			    }
 			});
+			
+			EURB.GroupAggregation.columnCombo = new Ext.form.ComboBox({
+				fieldLabel:EURB.GroupAggregation.AggregatedColumn,
+				hiddenName:'aggregatedColumnMappingId',
+			    typeAhead: true,
+			    triggerAction: 'all',
+			    lazyRender:true,
+			    mode: 'local',
+			    store:EURB.ReportDesign.columnMappingStore,
+			    valueField: 'id',
+			    displayField: 'title',
+			    forceSelection: true,
+			    allowBlank: false,
+			    width:300,
+			    listeners:{
+			    	select: function(combo,record,index){
+			    		dsField = EURB.GroupAggregation.form.getForm().findField('aggregatedColumnDatasetId');
+			    		dsField.setValue(record.get('datasetId'));
+			    	}
+			    }
+			});
 
 			/* updateReportColumnComboContent = function(){
 				var o = {
@@ -395,6 +429,7 @@
 		</script>
 		<script src="${resourcesUrl}/js/app/builder/report/formula-editor.js"></script>
 		<script src="${resourcesUrl}/js/app/builder/report/report-dataset.js"></script>
+		<script src="${resourcesUrl}/js/app/builder/report/group-aggregation.js"></script>
 		<script src="${resourcesUrl}/js/app/builder/report/report-column.js"></script>
 		<script src="${resourcesUrl}/js/app/builder/report/report-filter.js"></script>
 		<script src="${resourcesUrl}/js/app/builder/report/report-info.js"></script>

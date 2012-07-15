@@ -8,6 +8,7 @@ public class ExtGridColumn {
 	Integer width;
 	String align;
 	String css;
+	String summaryType;
 	public ExtGridColumn(String header, String groupName, String id, Integer width, String align, String css) {
 		super();
 		this.header = header;
@@ -59,5 +60,11 @@ public class ExtGridColumn {
 	}
 	public void setGroupName(String groupName) {
 		this.groupName = groupName;
+	}
+	public String getSummaryType() {
+		return summaryType;
+	}
+	public void setSummaryType(String summaryType) {
+		this.summaryType = summaryType;
 	}
 }

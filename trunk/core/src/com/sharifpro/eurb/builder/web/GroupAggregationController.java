@@ -27,9 +27,9 @@ public class GroupAggregationController {
 
 	private ReportColumnDao reportColumnDao;
 	private GroupAggregationDao groupAggregationDao;
-	
+
 	private JsonUtil jsonUtil;
-	
+
 	@RequestMapping(value="/builder/report/groupAggregationSearch.spy")
 	public @ResponseBody Map<String,? extends Object> search(@RequestParam(required=true) Long reportColumn) throws Exception {
 		try{
@@ -38,6 +38,14 @@ public class GroupAggregationController {
 				throw new NullPointerException("Wrong reportColumn");
 			}
 			List<GroupAggregation> aggregations = groupAggregationDao.findAll(column);
+			if(aggregations.size() == 0){
+				//add default aggregation
+				GroupAggregation newAggregation = new GroupAggregation();
+				newAggregation.setParentColumnId(reportColumn);
+				newAggregation.setAggregationFunction("sum");
+				newAggregation.setPlace(0);
+				aggregations.add(newAggregation);
+			}
 			return JsonUtil.getSuccessfulMap(aggregations);
 		}
 		catch (Exception e) {
@@ -45,64 +53,74 @@ public class GroupAggregationController {
 			return JsonUtil.getModelMapError(e);
 		}
 	}
-	
-	@RequestMapping(value="/builder/report/roupAggregationStore.spy")
-	public @ResponseBody Map<String,? extends Object> store(@RequestParam Object data, @RequestParam(required=true) Long reportColumn) throws Exception {
+
+	@RequestMapping(value="/builder/report/groupAggregationStore.spy")
+	public @ResponseBody Map<String,? extends Object> store( @RequestParam(required=false) Long id, @RequestParam(required=true) Long parentColumnId,
+			@RequestParam(required=true) Long aggregatedColumnMappingId, @RequestParam(required=true) Long aggregatedColumnDatasetId,
+			@RequestParam(required=true) String aggregationFunction, @RequestParam(required=true) int place) throws Exception {
+
 		try{
 
-			List<GroupAggregation> groupAggregations = jsonUtil.getListFromRequest(data, GroupAggregation.class);
-			
-			List<Long> insertIds = new ArrayList<Long>(groupAggregations.size());
+			List<Long> insertIds = new ArrayList<Long>(1);
+			GroupAggregation groupAggregation;
 			GroupAggregationPk pk;
-			
-			for(GroupAggregation groupAggregation : groupAggregations) {
-				groupAggregation.setParentColumnId(reportColumn);
-				if(groupAggregation.isNewRecord()) {
-					pk = groupAggregationDao.insert(groupAggregation);
-				} else {
-					pk = groupAggregation.createPk();
-					groupAggregationDao.update(pk,groupAggregation);
-				}
-				insertIds.add(pk.getId());
+
+			if(id == null || id == 0){
+				groupAggregation = new GroupAggregation();
 			}
-			
-			return JsonUtil.getSuccessfulMapAfterStore(insertIds);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			return JsonUtil.getModelMapError(e);
-		}
-	}
-
-	@RequestMapping(value="/builder/report/GroupAggregationRemove.spy")
-	public @ResponseBody Map<String,? extends Object> delete(@RequestParam Object data) throws Exception {
-
-		try{
-			List<Integer> deleteIds = jsonUtil.getListFromRequest(data, Integer.class);
-			List<GroupAggregationPk> pkList = new ArrayList<GroupAggregationPk>(deleteIds.size());
-			for(Integer id : deleteIds) {
-				pkList.add(new GroupAggregationPk(new Long(id)));
+			else{
+				groupAggregation = groupAggregationDao.findByPrimaryKey(id);
 			}
-			groupAggregationDao.deleteAll(pkList);
-			
-			return JsonUtil.getSuccessfulMapAfterStore(deleteIds);
+			groupAggregation.setParentColumnId(parentColumnId);
+			groupAggregation.setAggregatedColumnDatasetId(aggregatedColumnDatasetId);
+			groupAggregation.setAggregatedColumnMappingId(aggregatedColumnMappingId);
+			groupAggregation.setAggregationFunction(aggregationFunction);
+			groupAggregation.setPlace(place);
+			if(id == null || id == 0) {
+				pk = groupAggregationDao.insert(groupAggregation);
+			} else {
+				pk = groupAggregation.createPk();
+				groupAggregationDao.update(pk,groupAggregation);
+			}
+			insertIds.add(pk.getId());
 
-		} catch (Exception e) {
+		return JsonUtil.getSuccessfulMapAfterStore(insertIds);
 
-			return JsonUtil.getModelMapError(e);
+	} catch (Exception e) {
+		e.printStackTrace();
+		return JsonUtil.getModelMapError(e.getMessage());
+	}
+}
+
+@RequestMapping(value="/builder/report/GroupAggregationRemove.spy")
+public @ResponseBody Map<String,? extends Object> delete(@RequestParam Object data) throws Exception {
+
+	try{
+		List<Integer> deleteIds = jsonUtil.getListFromRequest(data, Integer.class);
+		List<GroupAggregationPk> pkList = new ArrayList<GroupAggregationPk>(deleteIds.size());
+		for(Integer id : deleteIds) {
+			pkList.add(new GroupAggregationPk(new Long(id)));
 		}
+		groupAggregationDao.deleteAll(pkList);
+
+		return JsonUtil.getSuccessfulMapAfterStore(deleteIds);
+
+	} catch (Exception e) {
+
+		return JsonUtil.getModelMapError(e.getMessage());
 	}
-	
-	@Autowired
-	public void setGroupAggregationDao(GroupAggregationDao groupAggregationDao){
-		this.groupAggregationDao = groupAggregationDao;
-	}
-	@Autowired
-	public void setReportColumnDao(ReportColumnDao reportColumnDao){
-		this.reportColumnDao = reportColumnDao;
-	}
-	@Autowired
-	public void setJsonUtil(JsonUtil jsonUtil){
-		this.jsonUtil = jsonUtil;
-	}
+}
+
+@Autowired
+public void setGroupAggregationDao(GroupAggregationDao groupAggregationDao){
+	this.groupAggregationDao = groupAggregationDao;
+}
+@Autowired
+public void setReportColumnDao(ReportColumnDao reportColumnDao){
+	this.reportColumnDao = reportColumnDao;
+}
+@Autowired
+public void setJsonUtil(JsonUtil jsonUtil){
+	this.jsonUtil = jsonUtil;
+}
 }

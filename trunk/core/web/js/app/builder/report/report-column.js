@@ -287,6 +287,9 @@ EURB.ReportColumn.ColumnGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 		    }]
 		});
 		this.editFormulaWindow = editFormulaWindow;
+		
+		this.editAggregationForm = EURB.GroupAggregation.form;
+		this.editAggregationWindow = EURB.GroupAggregation.window;
 
 		// create row actions
 		this.rowActions = new Ext.ux.grid.RowActions({
@@ -300,6 +303,9 @@ EURB.ReportColumn.ColumnGrid = Ext.extend(Ext.grid.EditorGridPanel, {
             },{
             	iconCls:'icon-calculator'
             	,qtip:EURB.editFormula
+            },{
+            	iconCls:'icon-sum'
+                ,qtip:EURB.editAggregation
             }]
             ,widthIntercept:Ext.isSafari ? 4 : 2
             ,id:'actions'
@@ -385,12 +391,15 @@ EURB.ReportColumn.ColumnGrid = Ext.extend(Ext.grid.EditorGridPanel, {
             break;
 
             case 'icon-edit-record':
-            	{
-            		this.recordForm.show(record, grid.getView().getCell(row, col));
-            	}
+           		this.recordForm.show(record, grid.getView().getCell(row, col));
             break;
+            
             case 'icon-calculator':
             	this.editFormulaWindow.show(grid.getView().getCell(row, col),this.editFormulaFor(record),this);
+            break;
+            
+            case 'icon-sum':
+            	this.editAggregationWindow.show(grid.getView().getCell(row, col),this.editAggregationFor(record),this);
             break;
 
         }
@@ -400,6 +409,9 @@ EURB.ReportColumn.ColumnGrid = Ext.extend(Ext.grid.EditorGridPanel, {
     	frm.reset();
     	frm.loadRecord(record);
     }
+	,editAggregationFor:function(record) {
+		EURB.GroupAggregation.form.getForm().load({url:EURB.GroupAggregation.searchAction, params:{reportColumn : record.id}} );
+	}
 	,commitChanges:function() {
 		var records = this.store.getModifiedRecords();
 		if(!records.length) {

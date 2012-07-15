@@ -19,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.sharifpro.db.DBBean;
 import com.sharifpro.db.dialects.HibernateDialect;
 import com.sharifpro.db.meta.ISQLConnection;
+import com.sharifpro.eurb.builder.dao.GroupAggregationDao;
 import com.sharifpro.eurb.builder.dao.ReportCategoryDao;
 import com.sharifpro.eurb.builder.dao.ReportChartAxisDao;
 import com.sharifpro.eurb.builder.dao.ReportChartDao;
@@ -29,6 +30,7 @@ import com.sharifpro.eurb.builder.dao.ReportFilterDao;
 import com.sharifpro.eurb.builder.exception.ReportExecutionHistoryDaoException;
 import com.sharifpro.eurb.builder.intermediate.ExtGridColumn;
 import com.sharifpro.eurb.builder.intermediate.ExtStoreField;
+import com.sharifpro.eurb.builder.model.GroupAggregation;
 import com.sharifpro.eurb.builder.model.ReportCategory;
 import com.sharifpro.eurb.builder.model.ReportChart;
 import com.sharifpro.eurb.builder.model.ReportChartAxis;
@@ -64,6 +66,7 @@ public class ViewReportController {
 	private ReportFilterDao reportFilterDao;
 	private ReportChartDao reportChartDao;
 	private ReportChartAxisDao reportChartAxisDao;
+	private GroupAggregationDao groupAggregationDao;
 	private JsonUtil jsonUtil;
 
 
@@ -103,9 +106,14 @@ public class ViewReportController {
 
 		int totalWidth = 0;
 		for(ReportColumn col : columnList) {
+			List<GroupAggregation> groups = groupAggregationDao.findAll(col);
 			String key = col.getColumnKey();
 			storeFields.add(new ExtStoreField(key));
-			gridColumns.add(new ExtGridColumn(col.getColumnHeader(), col.getColumnHeader(), key, col.getColumnWidth(), col.getColumnAlign(), "direction:"+col.getColumnDir()+";"));
+			ExtGridColumn extGridColumn = new ExtGridColumn(col.getColumnHeader(), col.getColumnHeader(), key, col.getColumnWidth(), col.getColumnAlign(), "direction:"+col.getColumnDir()+";");
+			if(groups.size() > 0){
+				extGridColumn.setSummaryType(groups.get(0).getAggregationFunction());
+			}
+			gridColumns.add(extGridColumn);
 			totalWidth += col.getColumnWidth();
 			if(col.getGroupLevel() != null && col.getGroupLevel() > 0){
 				hasGroup = true;
@@ -414,12 +422,12 @@ public class ViewReportController {
 	public @ResponseBody Map<String,? extends Object> executeRunReportChart(@PathVariable Long report, @PathVariable Long version) throws Exception {
 		try{
 
-			
+
 			//find report design with given id
 			ReportDesign reportDesign = reportDesignDao.findByPrimaryKey(report, version);
 			List<ReportDataset> datasetList = reportDatasetDao.findAll(reportDesign);
 			List<ReportFilter> reportFilters = reportFilterDao.findAll(reportDesign.getId());
-			
+
 
 			HashMap<Long, HashMap<Long, ColumnMapping>> datasetColumnMappingMap = new HashMap<Long, HashMap<Long, ColumnMapping>>();
 			HashMap<Long, ColumnMapping> colMap;
@@ -436,13 +444,13 @@ public class ViewReportController {
 			Long dbConfigId = reportDesign.getDbConfigId();
 
 			List<Object> res = new ArrayList<Object>();
-			
+
 			List<ReportChart> reportCharts = reportChartDao.findAll(reportDesign);
 			for(ReportChart chart : reportCharts){
 				List<ArrayList<Object>> resultList = getResultForChart(chart, datasetColumnMappingMap, datasetList, reportFilters, dbConfigId);
 				res.add(resultList);
 			}
-			
+
 			return JsonUtil.getSuccessfulMap(res);
 
 		} catch (Exception e) {
@@ -450,7 +458,7 @@ public class ViewReportController {
 			return JsonUtil.getModelMapError(e);
 		}
 	}
-	
+
 	private List<ArrayList<Object>> getResultForChart(ReportChart chart, HashMap<Long, HashMap<Long, ColumnMapping>> datasetColumnMappingMap,
 			List<ReportDataset> datasetList, List<ReportFilter> reportFilters, Long dbConfigId) throws Exception{
 		List<ArrayList<Object>> resultList = new ArrayList<ArrayList<Object>>();
@@ -487,7 +495,7 @@ public class ViewReportController {
 		resultConfig.add(chart.getConfigMap().get("yAxisFont"));
 		resultConfig.add(chart.getConfigMap().get("yAxisSize"));
 		resultConfig.add(chart.getConfigMap().get("yAxisColor"));
-		
+
 
 		//Build QUERY
 		///Build SELECT Part
@@ -540,9 +548,9 @@ public class ViewReportController {
 			}
 			databaseKey = "t" + filter.getReportDatasetId() + "." + datasetColumnMappingMap.get(filter.getReportDatasetId()).get(filter.getColumnMappingId()).getColumnName();
 			queryWhereSB.append(" ").append(databaseKey).append(" ").append(filter.getOperator()).append(" ");
-			
+
 			reportFilterTypes.add(datasetColumnMappingMap.get(filter.getReportDatasetId()).get(filter.getColumnMappingId()).getColDataType());
-			
+
 			if(oper.numberOfOperands == 0) {
 				queryWhereSB.append(oper.operator);
 			} else if(oper.numberOfOperands == 1) {
@@ -557,7 +565,7 @@ public class ViewReportController {
 			}
 		}
 
-		
+
 		StringBuilder queryGroupBySB = new StringBuilder();
 		if(yAxis.hasAggregation()){
 			queryGroupBySB.append(" GROUP BY ").append(xAxisColumnKey);
@@ -585,7 +593,7 @@ public class ViewReportController {
 			HibernateDialect dialect = dbConf.getDialect();
 
 			DBBean db = new DBBean(dbConf.getDataSource());
-			
+
 
 			String finalQuery;
 			finalQuery = dialect.buildQuery(querySelect,queryFrom,queryWhere, queryGroupBy);
@@ -687,6 +695,11 @@ public class ViewReportController {
 	@Autowired
 	public void setColumnMappingDao(ColumnMappingDao columnMappingDao){
 		this.columnMappingDao = columnMappingDao;
+	}
+
+	@Autowired
+	public void setGroupAggregationDao(GroupAggregationDao groupAggregationDao){
+		this.groupAggregationDao = groupAggregationDao;
 	}
 
 	@Autowired

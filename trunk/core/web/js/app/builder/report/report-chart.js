@@ -34,7 +34,7 @@ EURB.ReportChart.aggregationTypeCombo = new Ext.form.ComboBox({
             'aggregationValue',
             'aggregationLabel'
         ],
-        data: [['sum', EURB.ReportChart.sum], ['count', EURB.ReportChart.count], ['ave', EURB.ReportChart.average]]
+        data: [['sum', EURB.ReportChart.sum], ['count', EURB.ReportChart.count], ['avg', EURB.ReportChart.average]]
     }),
     valueField: 'aggregationValue',
     displayField: 'aggregationLabel',
