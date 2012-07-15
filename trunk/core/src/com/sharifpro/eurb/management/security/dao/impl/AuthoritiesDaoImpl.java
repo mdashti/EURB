@@ -5,6 +5,8 @@ import com.sharifpro.eurb.management.security.dao.AuthoritiesDao;
 import com.sharifpro.eurb.management.security.exception.AuthoritiesDaoException;
 import com.sharifpro.eurb.management.security.model.Authorities;
 import com.sharifpro.eurb.management.security.model.AuthoritiesPk;
+import com.sharifpro.transaction.annotation.TransactionalReadOnly;
+import com.sharifpro.transaction.annotation.TransactionalReadWrite;
 import com.sharifpro.util.PropertyProvider;
 
 import java.util.List;
@@ -12,7 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+
 
 @Repository
 public class AuthoritiesDaoImpl extends AbstractDAO implements ParameterizedRowMapper<Authorities>, AuthoritiesDao
@@ -23,7 +25,7 @@ public class AuthoritiesDaoImpl extends AbstractDAO implements ParameterizedRowM
 	 * @param dto
 	 * @return AuthoritiesPk
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public AuthoritiesPk insert(Authorities dto)
 	{
 		getJdbcTemplate().update("INSERT INTO " + getTableName() + " ( username, authority ) VALUES ( ?, ? )",dto.getUsername(),dto.getAuthority());
@@ -33,7 +35,7 @@ public class AuthoritiesDaoImpl extends AbstractDAO implements ParameterizedRowM
 	/** 
 	 * Updates a single row in the authorities table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void update(AuthoritiesPk pk, Authorities dto) throws AuthoritiesDaoException
 	{
 		getJdbcTemplate().update("UPDATE " + getTableName() + " SET username = ?, authority = ? WHERE username = ? AND authority = ?",dto.getUsername(),dto.getAuthority(),pk.getUsername(),pk.getAuthority());
@@ -42,13 +44,13 @@ public class AuthoritiesDaoImpl extends AbstractDAO implements ParameterizedRowM
 	/** 
 	 * Deletes a single row in the authorities table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void delete(AuthoritiesPk pk) throws AuthoritiesDaoException
 	{
 		getJdbcTemplate().update("DELETE FROM " + getTableName() + " WHERE username = ? AND authority = ?",pk.getUsername(),pk.getAuthority());
 	}
 
-	@Transactional
+	@TransactionalReadWrite
 	public void clearUserAuthorities(String username) throws AuthoritiesDaoException {
 		getJdbcTemplate().update("DELETE FROM " + getTableName() + " WHERE username = ?",username);
 	}
@@ -82,7 +84,7 @@ public class AuthoritiesDaoImpl extends AbstractDAO implements ParameterizedRowM
 	/** 
 	 * Returns all rows from the authorities table that match the criteria 'username = :username AND authority = :authority'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public Authorities findByPrimaryKey(String username, String authority) throws AuthoritiesDaoException
 	{
 		try {
@@ -98,7 +100,7 @@ public class AuthoritiesDaoImpl extends AbstractDAO implements ParameterizedRowM
 	/** 
 	 * Returns all rows from the authorities table that match the criteria ''.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<Authorities> findAll() throws AuthoritiesDaoException
 	{
 		try {
@@ -113,7 +115,7 @@ public class AuthoritiesDaoImpl extends AbstractDAO implements ParameterizedRowM
 	/** 
 	 * Returns all rows from the authorities table that match the criteria 'username = :username'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<Authorities> findByUsers(String username) throws AuthoritiesDaoException
 	{
 		try {
@@ -128,7 +130,7 @@ public class AuthoritiesDaoImpl extends AbstractDAO implements ParameterizedRowM
 	/** 
 	 * Returns all rows from the authorities table that match the criteria 'username = :username'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<Authorities> findWhereUsernameEquals(String username) throws AuthoritiesDaoException
 	{
 		try {
@@ -143,7 +145,7 @@ public class AuthoritiesDaoImpl extends AbstractDAO implements ParameterizedRowM
 	/** 
 	 * Returns all rows from the authorities table that match the criteria 'authority = :authority'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<Authorities> findWhereAuthorityEquals(String authority) throws AuthoritiesDaoException
 	{
 		try {
@@ -158,7 +160,6 @@ public class AuthoritiesDaoImpl extends AbstractDAO implements ParameterizedRowM
 	/** 
 	 * Returns the rows from the authorities table that matches the specified primary-key value.
 	 */
-	@Transactional(readOnly=true)
 	public Authorities findByPrimaryKey(AuthoritiesPk pk) throws AuthoritiesDaoException
 	{
 		return findByPrimaryKey( pk.getUsername(), pk.getAuthority() );

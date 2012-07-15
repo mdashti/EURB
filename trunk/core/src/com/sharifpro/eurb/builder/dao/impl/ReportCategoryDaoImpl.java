@@ -1,19 +1,12 @@
 package com.sharifpro.eurb.builder.dao.impl;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.security.acls.model.AclService;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+
 
 import com.sharifpro.eurb.DaoFactory;
 import com.sharifpro.eurb.builder.dao.ReportCategoryDao;
@@ -24,8 +17,9 @@ import com.sharifpro.eurb.info.RecordStatus;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
 import com.sharifpro.eurb.management.mapping.dao.impl.PersistableObjectDaoImpl;
 import com.sharifpro.eurb.management.security.dao.impl.AclServiceImpl;
+import com.sharifpro.transaction.annotation.TransactionalReadOnly;
+import com.sharifpro.transaction.annotation.TransactionalReadWrite;
 import com.sharifpro.util.PropertyProvider;
-import com.sharifpro.util.SessionManager;
 
 @Repository
 public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedRowMapper<ReportCategory>, ReportCategoryDao
@@ -43,7 +37,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	 * @return ReportCategoryPk
 	 * @throws ReportCategoryDaoException 
 	 */
-	@Transactional(readOnly = false)
+	@TransactionalReadWrite
 	public ReportCategoryPk insert(final ReportCategory dto) throws ReportCategoryDaoException
 	{
 		try{
@@ -63,7 +57,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	/** 
 	 * Updates a single row in the report_category table.
 	 */
-	@Transactional(readOnly = false)
+	@TransactionalReadWrite
 	public void update(ReportCategoryPk pk, ReportCategory dto) throws ReportCategoryDaoException
 	{
 		try{
@@ -80,7 +74,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	/** 
 	 * Deletes a single row in the report_category table.
 	 */
-	@Transactional(readOnly = false)
+	@TransactionalReadWrite
 	public void delete(ReportCategoryPk pk) throws ReportCategoryDaoException
 	{
 		try{
@@ -112,7 +106,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	/** 
 	 * Deletes multiple rows in the report_category table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void deleteAll(List<ReportCategoryPk> pkList) throws ReportCategoryDaoException
 	{
 		for(ReportCategoryPk pk : pkList) {
@@ -153,7 +147,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	/** 
 	 * Returns all rows from the report_category table that match the criteria 'id = :id'.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public ReportCategory findByPrimaryKey(Long id) throws ReportCategoryDaoException
 	{
 		try {
@@ -169,7 +163,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	/** 
 	 * Returns all rows from the report_category table that match the criteria ''.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public List<ReportCategory> findAll() throws ReportCategoryDaoException
 	{
 		try {
@@ -184,7 +178,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	/** 
 	 * Returns all rows from the report_category table that match the criteria 'parent_category_id = :parentCategory'.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public List<ReportCategory> findAll(Long parentCategory) throws ReportCategoryDaoException
 	{
 		try {
@@ -200,7 +194,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	/** 
 	 * Returns all rows from the report_category table that match the criteria 'parent_category_id is null'.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public List<ReportCategory> findAllWithoutParent() throws ReportCategoryDaoException
 	{
 		try {
@@ -212,7 +206,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 
 	}
 
-	@Transactional
+	@TransactionalReadOnly
 	public int countAll() throws ReportCategoryDaoException
 	{
 		try {
@@ -228,7 +222,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	/** 
 	 * Returns all rows from the report_category table that match the criteria '' limited by start and limit.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportCategory> findAll(Integer start, Integer limit) throws ReportCategoryDaoException{
 		try {
 			return getJdbcTemplate().query(QUERY_SELECT_PART + " ORDER BY o.id limit ?, ?", this, start, limit);
@@ -241,7 +235,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	/** 
 	 * Returns all rows from the db_config table that match the criteria like query in onFields fields limited by start and limit.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportCategory> findAll(String query, List<String> onFields, Integer start, Integer limit) throws ReportCategoryDaoException
 	{
 		try {
@@ -253,7 +247,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 
 	}
 
-	@Transactional
+	@TransactionalReadOnly
 	public int countAll(String query, List<String> onFields) throws ReportCategoryDaoException
 	{
 		try {
@@ -270,7 +264,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	/** 
 	 * Returns all rows from the report_category table that match the criteria 'id = :id'.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public List<ReportCategory> findByPersistableObject(Long id) throws ReportCategoryDaoException
 	{
 		try {
@@ -285,7 +279,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	/** 
 	 * Returns all rows from the report_category table that match the criteria 'id = :id'.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public List<ReportCategory> findWhereIdEquals(Long id) throws ReportCategoryDaoException
 	{
 		try {
@@ -300,7 +294,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	/** 
 	 * Returns all rows from the report_category table that match the criteria 'name = :name'.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public List<ReportCategory> findWhereNameEquals(String name) throws ReportCategoryDaoException
 	{
 		try {

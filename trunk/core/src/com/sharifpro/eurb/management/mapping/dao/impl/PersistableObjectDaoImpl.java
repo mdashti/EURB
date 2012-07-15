@@ -5,6 +5,8 @@ import com.sharifpro.eurb.management.mapping.dao.PersistableObjectDao;
 import com.sharifpro.eurb.management.mapping.exception.PersistableObjectDaoException;
 import com.sharifpro.eurb.management.mapping.model.PersistableObject;
 import com.sharifpro.eurb.management.mapping.model.PersistableObjectPk;
+import com.sharifpro.transaction.annotation.TransactionalReadOnly;
+import com.sharifpro.transaction.annotation.TransactionalReadWrite;
 import com.sharifpro.util.PropertyProvider;
 import com.sharifpro.util.SessionManager;
 
@@ -22,7 +24,7 @@ import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+
 
 @Repository
 public class PersistableObjectDaoImpl extends AbstractDAO implements /*ParameterizedRowMapper<PersistableObject>,*/ PersistableObjectDao
@@ -44,7 +46,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 	 * @param dto
 	 * @return PersistableObjectPk
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public PersistableObjectPk insert(final PersistableObject dto, PersistableObjectPk emptyPK)
 	{
 		KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -73,7 +75,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 	 * Adds a new row as a version object in persistable_object and
 	 * @return id to use as a version id
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public Long makeVersionId()
 	{
 		KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -100,7 +102,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 	/** 
 	 * Updates a single row in the persistable_object table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void update(PersistableObjectPk pk)
 	{
 		getJdbcTemplate().update("UPDATE persistable_object SET modifier = ?, modify_date = ? WHERE id = ?", SessionManager.getCurrentUserNameNotNull(),new Timestamp(new Date().getTime()),pk.getId());
@@ -109,7 +111,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 	/** 
 	 * Deletes a single row in the persistable_object table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void delete(PersistableObjectPk pk)
 	{
 		getJdbcTemplate().update("DELETE FROM persistable_object WHERE id = ?",pk.getId());
@@ -128,7 +130,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 	/** 
 	 * Returns all rows from the persistable_object table that match the criteria 'id = :id'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public PersistableObject findByPrimaryKey(Long id) throws PersistableObjectDaoException
 	{
 		try {
@@ -146,7 +148,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 	/** 
 	 * Returns all rows from the persistable_object table that match the criteria ''.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<PersistableObject> findAllObjects() throws PersistableObjectDaoException
 	{
 		try {
@@ -161,7 +163,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 	/** 
 	 * Returns all rows from the persistable_object table that match the criteria 'creator = :creator'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<PersistableObject> findByCreator(String creator) throws PersistableObjectDaoException
 	{
 		try {
@@ -176,7 +178,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 	/** 
 	 * Returns all rows from the persistable_object table that match the criteria 'modifier = :modifier'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<PersistableObject> findByModifier(String modifier) throws PersistableObjectDaoException
 	{
 		try {
@@ -191,7 +193,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 	/** 
 	 * Returns all rows from the persistable_object table that match the criteria 'id = :id'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<PersistableObject> findWhereObjectIdEquals(Long id) throws PersistableObjectDaoException
 	{
 		try {
@@ -206,7 +208,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 	/** 
 	 * Returns all rows from the persistable_object table that match the criteria 'objType = :objectType'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<PersistableObject> findWhereObjectTypeEquals(Integer objectType) throws PersistableObjectDaoException
 	{
 		try {
@@ -221,7 +223,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 	/** 
 	 * Returns all rows from the persistable_object table that match the criteria 'creator = :creator'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<PersistableObject> findWhereCreatorEquals(String creator) throws PersistableObjectDaoException
 	{
 		try {
@@ -236,7 +238,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 	/** 
 	 * Returns all rows from the persistable_object table that match the criteria 'create_date = :createDate'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<PersistableObject> findWhereCreateDateEquals(Date createDate) throws PersistableObjectDaoException
 	{
 		try {
@@ -251,7 +253,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 	/** 
 	 * Returns all rows from the persistable_object table that match the criteria 'modifier = :modifier'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<PersistableObject> findWhereModifierEquals(String modifier) throws PersistableObjectDaoException
 	{
 		try {
@@ -266,7 +268,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 	/** 
 	 * Returns all rows from the persistable_object table that match the criteria 'modify_date = :modifyDate'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<PersistableObject> findWhereModifyDateEquals(Date modifyDate) throws PersistableObjectDaoException
 	{
 		try {

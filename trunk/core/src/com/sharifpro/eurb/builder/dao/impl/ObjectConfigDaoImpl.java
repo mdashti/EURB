@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+
 
 import com.sharifpro.eurb.builder.dao.ObjectConfigDao;
 import com.sharifpro.eurb.builder.exception.ObjectConfigDaoException;
@@ -14,6 +14,8 @@ import com.sharifpro.eurb.builder.model.ObjectConfig;
 import com.sharifpro.eurb.builder.model.ObjectConfigPk;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
 import com.sharifpro.eurb.management.mapping.model.PersistableObject;
+import com.sharifpro.transaction.annotation.TransactionalReadOnly;
+import com.sharifpro.transaction.annotation.TransactionalReadWrite;
 import com.sharifpro.util.PropertyProvider;
 
 @Repository
@@ -29,7 +31,7 @@ public class ObjectConfigDaoImpl extends AbstractDAO implements ParameterizedRow
 	 * @param dto
 	 * @return ObjectConfigPk
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public ObjectConfigPk insert(ObjectConfig dto) throws ObjectConfigDaoException
 	{
 		try{
@@ -46,7 +48,7 @@ public class ObjectConfigDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Updates a single row in the object_config table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void update(ObjectConfigPk pk, ObjectConfig dto) throws ObjectConfigDaoException
 	{
 		try{
@@ -60,7 +62,7 @@ public class ObjectConfigDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Deletes a single row in the object_config table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void delete(ObjectConfigPk pk) throws ObjectConfigDaoException
 	{
 		try{
@@ -74,7 +76,7 @@ public class ObjectConfigDaoImpl extends AbstractDAO implements ParameterizedRow
 	/**
 	 * Deletes all given rows from the object_config table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void deleteAll(List<ObjectConfigPk> pkList) throws ObjectConfigDaoException
 	{
 		for(ObjectConfigPk pk : pkList){
@@ -112,7 +114,7 @@ public class ObjectConfigDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the object_config table that match the criteria 'object_id = :objectId and config_key = :key'.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public ObjectConfig findByPrimaryKey(Long objectId, String key) throws ObjectConfigDaoException
 	{
 		try {
@@ -128,7 +130,7 @@ public class ObjectConfigDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the object_config table that match the criteria ''.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public List<ObjectConfig> findAll() throws ObjectConfigDaoException
 	{
 		try {
@@ -143,7 +145,7 @@ public class ObjectConfigDaoImpl extends AbstractDAO implements ParameterizedRow
 	 * Returns all rows from the object_config table for given object.
 	 */
 
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public List<ObjectConfig> findAll(PersistableObject object) throws ObjectConfigDaoException
 	{
 		return findByPersistableObject(object.getId());
@@ -153,7 +155,7 @@ public class ObjectConfigDaoImpl extends AbstractDAO implements ParameterizedRow
 	 * Counts all rows from the object_config table that match the criteria ''.
 	 */
 
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public int countAll() throws ObjectConfigDaoException
 	{
 		try{
@@ -167,7 +169,7 @@ public class ObjectConfigDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Counts all rows from the object_config table for given object.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public int countAll(PersistableObject object) throws ObjectConfigDaoException
 	{
 		try{
@@ -182,7 +184,7 @@ public class ObjectConfigDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the object_config table that match the criteria 'object_id = :id'.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public List<ObjectConfig> findByPersistableObject(Long id) throws ObjectConfigDaoException
 	{
 		try {
@@ -198,7 +200,7 @@ public class ObjectConfigDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns the rows from the object_config table that matches the specified primary-key value.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public ObjectConfig findByPrimaryKey(ObjectConfigPk pk) throws ObjectConfigDaoException
 	{
 		return findByPrimaryKey( pk.getObjectId(), pk.getKey());

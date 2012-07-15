@@ -8,7 +8,7 @@ import java.util.List;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+
 
 import com.sharifpro.eurb.DaoFactory;
 import com.sharifpro.eurb.builder.model.ReportDesign;
@@ -18,6 +18,8 @@ import com.sharifpro.eurb.management.mapping.exception.TableMappingDaoException;
 import com.sharifpro.eurb.management.mapping.model.DbConfig;
 import com.sharifpro.eurb.management.mapping.model.TableMapping;
 import com.sharifpro.eurb.management.mapping.model.TableMappingPk;
+import com.sharifpro.transaction.annotation.TransactionalReadOnly;
+import com.sharifpro.transaction.annotation.TransactionalReadWrite;
 import com.sharifpro.util.PropertyProvider;
 
 @Repository
@@ -35,7 +37,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	 * @param dto
 	 * @return TableMappingPk
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public TableMappingPk insert(TableMapping dto)
 	{
 		TableMappingPk pk = new TableMappingPk();
@@ -47,7 +49,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Updates a single row in the table_mapping table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void update(TableMappingPk pk, TableMapping dto) throws TableMappingDaoException
 	{
 		DaoFactory.createPersistableObjectDao().update(pk);
@@ -57,7 +59,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Deletes a single row in the table_mapping table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void delete(TableMappingPk pk) throws TableMappingDaoException
 	{
 		getJdbcTemplate().update("DELETE FROM " + getTableName() + " WHERE id = ?",pk.getId());
@@ -101,7 +103,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the table_mapping table that match the criteria 'id = :id'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public TableMapping findByPrimaryKey(Long id) throws TableMappingDaoException
 	{
 		try {
@@ -117,7 +119,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the table_mapping table that match the criteria ''.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<TableMapping> findAll() throws TableMappingDaoException
 	{
 		try {
@@ -133,7 +135,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the table_mapping table that match the criteria 'mapped name is not null'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<TableMapping> findAllMapped(ReportDesign reportDesign) throws TableMappingDaoException
 	{
 		try {
@@ -150,7 +152,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 		
 	}
 	
-	@Transactional
+	@TransactionalReadOnly
 	public int countAll() throws TableMappingDaoException
 	{
 		try {
@@ -165,7 +167,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the table_mapping table that match the criteria like query in onFields fields.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<TableMapping> findAll(String query, List<String> onFields) throws TableMappingDaoException
 	{
 		try {
@@ -177,7 +179,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 
 	}
 	
-	@Transactional
+	@TransactionalReadOnly
 	public List<TableMapping> findAllMapped(String query, List<String> onFields) throws TableMappingDaoException
 	{
 		try {
@@ -189,7 +191,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 
 	}
 
-	@Transactional
+	@TransactionalReadOnly
 	public int countAll(String query, List<String> onFields) throws TableMappingDaoException
 	{
 		try {
@@ -204,7 +206,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the table_mapping table that match the criteria 'id = :id'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<TableMapping> findByPersistableObject(Long id) throws TableMappingDaoException
 	{
 		try {
@@ -219,7 +221,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the table_mapping table that match the criteria 'db_config_id = :dbConfigId'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<TableMapping> findByDbConfig(Long dbConfigId) throws TableMappingDaoException
 	{
 		try {
@@ -234,7 +236,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the table_mapping table that match the criteria 'id = :id'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<TableMapping> findWhereIdEquals(Long id) throws TableMappingDaoException
 	{
 		try {
@@ -249,7 +251,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the table_mapping table that match the criteria 'db_config_id = :dbConfigId'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<TableMapping> findWhereDbConfigIdEquals(Long dbConfigId) throws TableMappingDaoException
 	{
 		try {
@@ -264,7 +266,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the table_mapping table that match the criteria 'table_name = :tableName'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<TableMapping> findWhereTableNameEquals(String tableName) throws TableMappingDaoException
 	{
 		try {
@@ -279,7 +281,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the table_mapping table that match the criteria 'mapped_name = :mappedName'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<TableMapping> findWhereMappedNameEquals(String mappedName) throws TableMappingDaoException
 	{
 		try {
@@ -294,7 +296,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the table_mapping table that match the criteria 'mapped_type = :mappedType'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<TableMapping> findWhereMappedTypeEquals(Integer mappedType) throws TableMappingDaoException
 	{
 		try {
@@ -309,7 +311,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the table_mapping table that match the criteria 'active_for_manager = :activeForManager'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<TableMapping> findWhereActiveForManagerEquals(Short activeForManager) throws TableMappingDaoException
 	{
 		try {
@@ -324,7 +326,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the table_mapping table that match the criteria 'active_for_user = :activeForUser'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<TableMapping> findWhereActiveForUserEquals(Short activeForUser) throws TableMappingDaoException
 	{
 		try {
@@ -344,14 +346,14 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 		return findByPrimaryKey( pk.getId() );
 	}
 
-	@Transactional
+	@TransactionalReadWrite
 	public void deleteAll(List<TableMappingPk> pkList) throws TableMappingDaoException {
 		for(TableMappingPk pk : pkList) {
 			delete(pk);
 		}
 	}
 
-	@Transactional
+	@TransactionalReadWrite
 	public void activateAll(final List<TableMappingPk> pkList, String target)
 			throws TableMappingDaoException {
 		final String field = "user".equals(target) ? "active_for_user" : "active_for_manager";
@@ -370,7 +372,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 						});
 	}
 
-	@Transactional
+	@TransactionalReadWrite
 	public void deactivateAll(final List<TableMappingPk> pkList, String target)
 			throws TableMappingDaoException {
 		final String field = "user".equals(target) ? "active_for_user" : "active_for_manager";
@@ -389,7 +391,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 						});
 	}
 
-	@Transactional
+	@TransactionalReadOnly
 	public List<TableMapping> findAll(DbConfig dbConf, String query, List<String> onFields) throws TableMappingDaoException {
 		try {
 			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.db_config_id=? AND (" + getMultipleFieldWhereClause(query, onFields) + ") ORDER BY o.id", this, dbConf.getId());
@@ -399,7 +401,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 		}
 	}
 	
-	@Transactional
+	@TransactionalReadOnly
 	public List<TableMapping> findAllMapped(Long dbConf, String query, List<String> onFields) throws TableMappingDaoException {
 		try {
 			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.db_config_id=? AND (" + getMultipleFieldWhereClause(query, onFields) + ") AND o.mapped_name IS NOT NULL ORDER BY o.id", this, dbConf);
@@ -409,7 +411,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 		}
 	}
 	
-	@Transactional
+	@TransactionalReadOnly
 	public List<TableMapping> findAllMapped(Long dbConf)
 			throws TableMappingDaoException {
 		try {
@@ -450,7 +452,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 		}
 	}
 
-	@Transactional
+	@TransactionalReadOnly
 	public List<TableMapping> findAll(DbConfig dbConf)
 			throws TableMappingDaoException {
 		return findByDbConfig(dbConf.getId());

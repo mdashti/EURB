@@ -8,6 +8,8 @@ import com.sharifpro.eurb.management.mapping.exception.ColumnMappingDaoException
 import com.sharifpro.eurb.management.mapping.model.ColumnMapping;
 import com.sharifpro.eurb.management.mapping.model.ColumnMappingPk;
 import com.sharifpro.eurb.management.mapping.model.TableMapping;
+import com.sharifpro.transaction.annotation.TransactionalReadOnly;
+import com.sharifpro.transaction.annotation.TransactionalReadWrite;
 import com.sharifpro.util.PropertyProvider;
 
 import java.util.List;
@@ -18,7 +20,7 @@ import java.sql.SQLException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+
 
 @Repository
 public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRowMapper<ColumnMapping>, ColumnMappingDao
@@ -34,7 +36,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 	 * @return ColumnMappingPk
 	 * @throws ColumnMappingDaoException 
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public ColumnMappingPk insert(ColumnMapping dto) throws ColumnMappingDaoException
 	{
 		try{
@@ -54,7 +56,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 	/** 
 	 * Updates a single row in the column_mapping table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void update(ColumnMappingPk pk, ColumnMapping dto) throws ColumnMappingDaoException
 	{
 		DaoFactory.createPersistableObjectDao().update(pk);
@@ -64,7 +66,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 	/** 
 	 * Deletes a single row in the column_mapping table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void delete(ColumnMappingPk pk) throws ColumnMappingDaoException
 	{
 		getJdbcTemplate().update("DELETE FROM " + getTableName() + " WHERE id = ?",pk.getId());
@@ -129,7 +131,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 	/** 
 	 * Returns all rows from the column_mapping table that match the criteria 'id = :id'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public ColumnMapping findByPrimaryKey(Long id) throws ColumnMappingDaoException
 	{
 		try {
@@ -145,7 +147,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 	/** 
 	 * Returns all rows from the column_mapping table that match the criteria ''.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ColumnMapping> findAll() throws ColumnMappingDaoException
 	{
 		try {
@@ -160,7 +162,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 	/** 
 	 * Returns all rows from the column_mapping table that match the criteria 'mapped name is not null'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ColumnMapping> findAllMapped() throws ColumnMappingDaoException
 	{
 		try {
@@ -173,7 +175,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 	}
 	
 	
-	@Transactional
+	@TransactionalReadOnly
 	public List<ColumnMapping> findAllMapped(ReportDataset dataset) throws ColumnMappingDaoException
 	{
 		try {
@@ -188,7 +190,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 	/** 
 	 * Returns all rows from the column_mapping table that match the criteria 'id = :id'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ColumnMapping> findByPersistableObject(Long id) throws ColumnMappingDaoException
 	{
 		try {
@@ -203,7 +205,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 	/** 
 	 * Returns all rows from the column_mapping table that match the criteria 'table_mapping_id = :tableMappingId'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ColumnMapping> findByTableMapping(Long tableMappingId) throws ColumnMappingDaoException
 	{
 		try {
@@ -218,7 +220,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 	/** 
 	 * Returns all rows from the column_mapping table that match the criteria 'table_mapping_id = :tableMappingId and mapped_name is not null'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ColumnMapping> findMappedByTableMapping(Long tableMappingId) throws ColumnMappingDaoException
 	{
 		try {
@@ -233,7 +235,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 	/** 
 	 * Returns all rows from the column_mapping table that match the criteria 'id = :id'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ColumnMapping> findWhereIdEquals(Long id) throws ColumnMappingDaoException
 	{
 		try {
@@ -248,7 +250,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 	/** 
 	 * Returns all rows from the column_mapping table that match the criteria 'table_mapping_id = :tableMappingId'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ColumnMapping> findWhereTableMappingIdEquals(Long tableMappingId) throws ColumnMappingDaoException
 	{
 		try {
@@ -263,7 +265,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 	/** 
 	 * Returns all rows from the column_mapping table that match the criteria 'column_name = :columnName'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ColumnMapping> findWhereColumnNameEquals(String columnName) throws ColumnMappingDaoException
 	{
 		try {
@@ -278,7 +280,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 	/** 
 	 * Returns all rows from the column_mapping table that match the criteria 'mapped_name = :mappedName'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ColumnMapping> findWhereMappedNameEquals(String mappedName) throws ColumnMappingDaoException
 	{
 		try {
@@ -293,7 +295,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 	/** 
 	 * Returns all rows from the column_mapping table that match the criteria 'col_type_name = :colTypeName'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ColumnMapping> findWhereColTypeEquals(String colTypeName) throws ColumnMappingDaoException
 	{
 		try {
@@ -308,7 +310,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 	/** 
 	 * Returns all rows from the column_mapping table that match the criteria 'col_data_type = :colDataType'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ColumnMapping> findWhereColDataTypeEquals(int colDataType) throws ColumnMappingDaoException
 	{
 		try {
@@ -323,7 +325,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 	/** 
 	 * Returns all rows from the column_mapping table that match the criteria 'col_order = :colOrder'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ColumnMapping> findWhereColOrderEquals(String colOrder) throws ColumnMappingDaoException
 	{
 		try {
@@ -338,7 +340,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 	/** 
 	 * Returns all rows from the column_mapping table that match the criteria 'format_pattern = :formatPattern'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ColumnMapping> findWhereFormatPatternEquals(String formatPattern) throws ColumnMappingDaoException
 	{
 		try {
@@ -353,7 +355,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 	/** 
 	 * Returns all rows from the column_mapping table that match the criteria 'static_mapping = :staticMapping'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ColumnMapping> findWhereStaticMappingEquals(String staticMapping) throws ColumnMappingDaoException
 	{
 		try {
@@ -368,7 +370,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 	/** 
 	 * Returns all rows from the column_mapping table that match the criteria 'referenced_table = :referencedTable'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ColumnMapping> findWhereReferencedTableEquals(String referencedTable) throws ColumnMappingDaoException
 	{
 		try {
@@ -383,7 +385,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 	/** 
 	 * Returns all rows from the column_mapping table that match the criteria 'referenced_id_col = :referencedIdCol'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ColumnMapping> findWhereReferencedIdColEquals(String referencedIdCol) throws ColumnMappingDaoException
 	{
 		try {
@@ -398,7 +400,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 	/** 
 	 * Returns all rows from the column_mapping table that match the criteria 'referenced_value_col = :referencedValueCol'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ColumnMapping> findWhereReferencedValueColEquals(String referencedValueCol) throws ColumnMappingDaoException
 	{
 		try {
@@ -418,7 +420,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 		return findByPrimaryKey( pk.getId() );
 	}
 
-	@Transactional
+	@TransactionalReadOnly
 	public List<ColumnMapping> findAll(TableMapping tbl, String query, List<String> onFields) throws ColumnMappingDaoException {
 		try {
 			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.table_mapping_id=? AND (" + getMultipleFieldWhereClause(query, onFields) + ") ORDER BY o.col_order", this, tbl.getId());
@@ -429,7 +431,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 	}
 	
 	
-	@Transactional
+	@TransactionalReadOnly
 	public List<ColumnMapping> findAllMapped(TableMapping tbl, String query, List<String> onFields) throws ColumnMappingDaoException {
 		try {
 			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.table_mapping_id=? AND o.mapped_name IS NOT NULL AND (" + getMultipleFieldWhereClause(query, onFields) + ") ORDER BY o.col_order", this, tbl.getId());
@@ -440,7 +442,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 	}
 
 	
-	@Transactional
+	@TransactionalReadOnly
 	public List<ColumnMapping> findAllMapped(String query, List<String> onFields) throws ColumnMappingDaoException {
 		try {
 			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.mapped_name IS NOT NULL AND (" + getMultipleFieldWhereClause(query, onFields) + ") ORDER BY o.col_order", this);
@@ -492,14 +494,14 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 		}
 	}
 
-	@Transactional
+	@TransactionalReadWrite
 	public void deleteAll(List<ColumnMappingPk> pkList) throws ColumnMappingDaoException {
 		for(ColumnMappingPk pk : pkList) {
 			delete(pk);
 		}
 	}
 
-	@Transactional
+	@TransactionalReadWrite
 	public void activateAll(final List<ColumnMappingPk> pkList, String target)
 			throws ColumnMappingDaoException {
 		final String field = "user".equals(target) ? "active_for_user" : "active_for_manager";
@@ -518,7 +520,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 						});
 	}
 
-	@Transactional
+	@TransactionalReadWrite
 	public void deactivateAll(final List<ColumnMappingPk> pkList, String target)
 			throws ColumnMappingDaoException {
 		final String field = "user".equals(target) ? "active_for_user" : "active_for_manager";
@@ -537,7 +539,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 						});
 	}
 
-	@Transactional
+	@TransactionalReadWrite
 	public void moveUp(ColumnMappingPk pk) throws ColumnMappingDaoException {
 		ColumnMapping thiz = findByPrimaryKey(pk);
 		ColumnMapping that;
@@ -555,7 +557,7 @@ public class ColumnMappingDaoImpl extends AbstractDAO implements ParameterizedRo
 		
 	}
 
-	@Transactional
+	@TransactionalReadWrite
 	public void moveDown(ColumnMappingPk pk) throws ColumnMappingDaoException {
 		ColumnMapping thiz = findByPrimaryKey(pk);
 		ColumnMapping that;

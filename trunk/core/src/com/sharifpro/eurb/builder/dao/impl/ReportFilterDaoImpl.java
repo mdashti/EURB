@@ -7,6 +7,8 @@ import com.sharifpro.eurb.builder.model.ReportFilter;
 import com.sharifpro.eurb.builder.model.ReportFilterPk;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
 import com.sharifpro.eurb.management.mapping.dao.impl.PersistableObjectDaoImpl;
+import com.sharifpro.transaction.annotation.TransactionalReadOnly;
+import com.sharifpro.transaction.annotation.TransactionalReadWrite;
 import com.sharifpro.util.PropertyProvider;
 
 import java.util.List;
@@ -14,7 +16,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+
 
 @Repository
 public class ReportFilterDaoImpl extends AbstractDAO implements ParameterizedRowMapper<ReportFilter>, ReportFilterDao
@@ -31,7 +33,7 @@ public class ReportFilterDaoImpl extends AbstractDAO implements ParameterizedRow
 	 * @param dto
 	 * @return ReportFilterPk
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public ReportFilterPk insert(ReportFilter dto) throws ReportFilterDaoException
 	{
 		try{
@@ -51,7 +53,7 @@ public class ReportFilterDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Updates a single row in the report_filter table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void update(ReportFilterPk pk, ReportFilter dto) throws ReportFilterDaoException
 	{
 		try{
@@ -69,7 +71,7 @@ public class ReportFilterDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Deletes a single row in the report_filter table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void delete(ReportFilterPk pk) throws ReportFilterDaoException
 	{
 		try{
@@ -81,7 +83,7 @@ public class ReportFilterDaoImpl extends AbstractDAO implements ParameterizedRow
 		}
 	}
 	
-	@Transactional
+	@TransactionalReadWrite
 	public void deleteAll(List<ReportFilterPk> pkList) throws ReportFilterDaoException
 	{
 		for(ReportFilterPk pk : pkList){
@@ -147,7 +149,7 @@ public class ReportFilterDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_filter table that match the criteria 'id = :id'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public ReportFilter findByPrimaryKey(Long id) throws ReportFilterDaoException
 	{
 		try {
@@ -163,7 +165,7 @@ public class ReportFilterDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_filter table that match the criteria ''.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportFilter> findAll() throws ReportFilterDaoException
 	{
 		try {
@@ -178,7 +180,7 @@ public class ReportFilterDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_filter table that match the criteria 'report_design_id = :reportDesignId'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportFilter> findAll(Long reportDesignId) throws ReportFilterDaoException
 	{
 		try {
@@ -194,7 +196,7 @@ public class ReportFilterDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Counts all rows from the report_filter table that match the criteria 'report_design_id = :reportDesignId'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public int countAll(Long reportDesignId) throws ReportFilterDaoException
 	{
 		try {
@@ -209,7 +211,7 @@ public class ReportFilterDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_filter table that match the criteria 'id = :id'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportFilter> findByPersistableObject(Long id) throws ReportFilterDaoException
 	{
 		try {
@@ -224,7 +226,7 @@ public class ReportFilterDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_filter table that match the criteria 'operand1_column_mapping_id = :operand1ColumnId AND operand1_dataset_id = :operand1ColumnDatasetId AND operand1_report_column_id = :operand1ColumnDesignId'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportFilter> findByReportColumn(Long operand1ColumnId, Long operand1ColumnDatasetId, Long operand1ColumnDesignId) throws ReportFilterDaoException
 	{
 		try {
@@ -239,7 +241,7 @@ public class ReportFilterDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_filter table that match the criteria 'column_mapping_id = :reportColumnId AND report_dataset_id = :reportColumnDatasetId AND report_design_id = :reportColumnDesignId AND report_design_version_id = :reportColumnDesignVersionId'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportFilter> findByReportColumn2(Long reportColumnId, Long reportColumnDatasetId, Long reportColumnDesignId, Long reportColumnDesignVersionId) throws ReportFilterDaoException
 	{
 		try {
@@ -254,7 +256,7 @@ public class ReportFilterDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_filter table that match the criteria 'id = :id'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportFilter> findWhereIdEquals(Long id) throws ReportFilterDaoException
 	{
 		try {
@@ -269,7 +271,7 @@ public class ReportFilterDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_filter table that match the criteria 'column_mapping_id = :reportColumnId'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportFilter> findWhereReportColumnIdEquals(Long reportColumnId) throws ReportFilterDaoException
 	{
 		try {
@@ -284,7 +286,7 @@ public class ReportFilterDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_filter table that match the criteria 'report_dataset_id = :reportColumnDatasetId'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportFilter> findWhereReportColumnDatasetIdEquals(Long reportColumnDatasetId) throws ReportFilterDaoException
 	{
 		try {
@@ -299,7 +301,7 @@ public class ReportFilterDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_filter table that match the criteria 'report_design_id = :reportColumnDesignId'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportFilter> findWhereReportColumnDesignIdEquals(Long reportColumnDesignId) throws ReportFilterDaoException
 	{
 		try {
@@ -314,7 +316,7 @@ public class ReportFilterDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_filter table that match the criteria 'report_design_version_id = :reportColumnDesignVersionId'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportFilter> findWhereReportColumnDesignVersionIdEquals(Long reportColumnDesignVersionId) throws ReportFilterDaoException
 	{
 		try {
@@ -329,7 +331,7 @@ public class ReportFilterDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_filter table that match the criteria 'prefix = :prefix'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportFilter> findWherePrefixEquals(String prefix) throws ReportFilterDaoException
 	{
 		try {
@@ -344,7 +346,7 @@ public class ReportFilterDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_filter table that match the criteria 'operator = :operator'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportFilter> findWhereOperatorEquals(String operator) throws ReportFilterDaoException
 	{
 		try {
@@ -359,7 +361,7 @@ public class ReportFilterDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_filter table that match the criteria 'suffix = :suffix'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportFilter> findWhereSuffixEquals(String suffix) throws ReportFilterDaoException
 	{
 		try {
@@ -374,7 +376,7 @@ public class ReportFilterDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_filter table that match the criteria 'operand1 = :operand1'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportFilter> findWhereOperand1Equals(String operand1) throws ReportFilterDaoException
 	{
 		try {
@@ -389,7 +391,7 @@ public class ReportFilterDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_filter table that match the criteria 'operand2 = :operand2'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportFilter> findWhereOperand2Equals(String operand2) throws ReportFilterDaoException
 	{
 		try {
@@ -404,7 +406,7 @@ public class ReportFilterDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_filter table that match the criteria 'filter_type = :filterType'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportFilter> findWhereFilterTypeEquals(Integer filterType) throws ReportFilterDaoException
 	{
 		try {
@@ -419,7 +421,7 @@ public class ReportFilterDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_filter table that match the criteria 'operand1_column_mapping_id = :operand1ColumnId'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportFilter> findWhereOperand1ColumnIdEquals(Long operand1ColumnId) throws ReportFilterDaoException
 	{
 		try {
@@ -434,7 +436,7 @@ public class ReportFilterDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_filter table that match the criteria 'operand1_dataset_id = :operand1ColumnDatasetId'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportFilter> findWhereOperand1ColumnDatasetIdEquals(Long operand1ColumnDatasetId) throws ReportFilterDaoException
 	{
 		try {
@@ -449,7 +451,7 @@ public class ReportFilterDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_filter table that match the criteria 'operand1_report_column_id = :operand1ColumnDesignId'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportFilter> findWhereOperand1ColumnDesignIdEquals(Long operand1ColumnDesignId) throws ReportFilterDaoException
 	{
 		try {

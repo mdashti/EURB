@@ -8,6 +8,8 @@ import com.sharifpro.eurb.builder.model.GroupAggregationPk;
 import com.sharifpro.eurb.builder.model.ReportColumn;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
 import com.sharifpro.eurb.management.mapping.dao.impl.PersistableObjectDaoImpl;
+import com.sharifpro.transaction.annotation.TransactionalReadOnly;
+import com.sharifpro.transaction.annotation.TransactionalReadWrite;
 import com.sharifpro.util.PropertyProvider;
 
 import java.util.List;
@@ -15,7 +17,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public class GroupAggregationDaoImpl extends AbstractDAO implements ParameterizedRowMapper<GroupAggregation>, GroupAggregationDao
@@ -31,7 +32,7 @@ public class GroupAggregationDaoImpl extends AbstractDAO implements Parameterize
 	 * @param dto
 	 * @return GroupAggregationPk
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public GroupAggregationPk insert(GroupAggregation dto) throws GroupAggregationDaoException
 	{
 		try{
@@ -51,7 +52,7 @@ public class GroupAggregationDaoImpl extends AbstractDAO implements Parameterize
 	/** 
 	 * Updates a single row in the group_aggregation table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void update(GroupAggregationPk pk, GroupAggregation dto) throws GroupAggregationDaoException
 	{
 		try{
@@ -68,7 +69,7 @@ public class GroupAggregationDaoImpl extends AbstractDAO implements Parameterize
 	/** 
 	 * Deletes a single row in the group_aggregation table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void delete(GroupAggregationPk pk) throws GroupAggregationDaoException
 	{
 		try{
@@ -82,7 +83,7 @@ public class GroupAggregationDaoImpl extends AbstractDAO implements Parameterize
 	/** 
 	 * Deletes multiple rows in the group_aggregation table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void deleteAll(List<GroupAggregationPk> pkList) throws GroupAggregationDaoException
 	{
 		for(GroupAggregationPk pk : pkList){
@@ -127,7 +128,7 @@ public class GroupAggregationDaoImpl extends AbstractDAO implements Parameterize
 	/** 
 	 * Returns all rows from the group_aggregation table that match the criteria 'id = :id'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public GroupAggregation findByPrimaryKey(Long id) throws GroupAggregationDaoException
 	{
 		try {
@@ -143,7 +144,7 @@ public class GroupAggregationDaoImpl extends AbstractDAO implements Parameterize
 	/** 
 	 * Returns all rows from the group_aggregation table that match the criteria 'parent_column_id = :parentColumn.getId()'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<GroupAggregation> findAll(ReportColumn parentColumn) throws GroupAggregationDaoException
 	{
 		try {
@@ -158,7 +159,7 @@ public class GroupAggregationDaoImpl extends AbstractDAO implements Parameterize
 	/** 
 	 * Returns all rows from the group_aggregation table that match the criteria 'id = :id'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<GroupAggregation> findByPersistableObject(Long id) throws GroupAggregationDaoException
 	{
 		try {
@@ -173,7 +174,7 @@ public class GroupAggregationDaoImpl extends AbstractDAO implements Parameterize
 	/** 
 	 * Returns all rows from the group_aggregation table that match the criteria 'parent_column_id = :parentColumnId '.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<GroupAggregation> findByReportColumn(Long parentColumnId) throws GroupAggregationDaoException
 	{
 		try {
@@ -189,7 +190,7 @@ public class GroupAggregationDaoImpl extends AbstractDAO implements Parameterize
 	/** 
 	 * Returns all rows from the group_aggregation table that match the criteria 'id = :id'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<GroupAggregation> findWhereIdEquals(Long id) throws GroupAggregationDaoException
 	{
 		try {
@@ -204,7 +205,7 @@ public class GroupAggregationDaoImpl extends AbstractDAO implements Parameterize
 	/** 
 	 * Returns all rows from the group_aggregation table that match the criteria 'parent_column_id = :parentColumnId'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<GroupAggregation> findWhereParentColumnIdEquals(Long parentColumnId) throws GroupAggregationDaoException
 	{
 		try {

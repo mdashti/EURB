@@ -13,6 +13,8 @@ import com.sharifpro.eurb.management.security.model.User;
 import com.sharifpro.eurb.management.security.dao.AuthoritiesDao;
 import com.sharifpro.eurb.management.security.dao.UserDao;
 import com.sharifpro.eurb.management.security.model.UserPk;
+import com.sharifpro.transaction.annotation.TransactionalReadOnly;
+import com.sharifpro.transaction.annotation.TransactionalReadWrite;
 import com.sharifpro.util.PropertyProvider;
 import com.sharifpro.util.SecurityUtil;
 
@@ -26,7 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+
 
 @Repository
 public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<User>, UserDao
@@ -44,7 +46,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 	 * @param dto
 	 * @return UsersPk
 	 */
-	@Transactional(readOnly=false)
+	@TransactionalReadWrite
 	public UserPk insert(User dto)
 	{
 		UserPk pk = new UserPk();
@@ -61,14 +63,14 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 	/** 
 	 * Updates a single row in the users table.
 	 */
-	@Transactional(readOnly=false)
+	@TransactionalReadWrite
 	public void update(UserPk pk, User dto) throws UserDaoException {
 		throw new RuntimeException(new OperationNotSupportedException("User can not be updated! use setEnabled and setPassword instead"));
 	}
 	/** 
 	 * Sets enabled flag for a single user in the users table.
 	 */
-	@Transactional(readOnly=false)
+	@TransactionalReadWrite
 	public void setEnabled(UserPk pk, boolean enabled)
 	{
 		DaoFactory.createPersistableObjectDao().update(pk);
@@ -78,7 +80,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 	/** 
 	 * Sets password for a single user in the users table.
 	 */
-	@Transactional(readOnly=false)
+	@TransactionalReadWrite
 	public void setPassword(UserPk pk, User dto)
 	{
 		DaoFactory.createPersistableObjectDao().update(pk);
@@ -99,7 +101,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 	/** 
 	 * Sets password for a single user in the users table.
 	 */
-	@Transactional(readOnly=false)
+	@TransactionalReadWrite
 	public void setEmail(UserPk pk, User dto)
 	{
 		DaoFactory.createPersistableObjectDao().update(pk);
@@ -120,7 +122,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 	/** 
 	 * Deletes a single row in the users table.
 	 */
-	@Transactional(readOnly=false)
+	@TransactionalReadWrite
 	public void delete(UserPk pk)
 	{
 		getJdbcTemplate().update("DELETE FROM " + getTableName() + " WHERE id = ?",pk.getId());
@@ -162,7 +164,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 	/** 
 	 * Returns all rows from the users table that match the criteria 'username = :username'.
 	 */
-	@Transactional(readOnly=true)
+	@TransactionalReadOnly
 	public User findByPrimaryKey(Long id) throws UserDaoException
 	{
 		try {
@@ -178,7 +180,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 	/** 
 	 * Returns all rows from the users table that match the criteria ''.
 	 */
-	@Transactional(readOnly=true)
+	@TransactionalReadOnly
 	public List<User> findAll() throws UserDaoException
 	{
 		try {
@@ -190,7 +192,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 		
 	}
 
-	@Transactional(readOnly=true)
+	@TransactionalReadOnly
 	public List<User> findAllActive() throws UserDaoException {
 		try {
 			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.enabled=1 ORDER BY o.username", this);
@@ -203,7 +205,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 	/** 
 	 * Returns all rows from the users table that match the criteria 'id = :id'.
 	 */
-	@Transactional(readOnly=true)
+	@TransactionalReadOnly
 	public List<User> findByPersistableObject(Long id) throws UserDaoException
 	{
 		try {
@@ -218,7 +220,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 	/** 
 	 * Returns all rows from the users table that match the criteria 'id = :id'.
 	 */
-	@Transactional(readOnly=true)
+	@TransactionalReadOnly
 	public List<User> findWhereIdEquals(Long id) throws UserDaoException
 	{
 		try {
@@ -233,7 +235,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 	/** 
 	 * Returns the row from the users table that match the criteria 'username = :username'.
 	 */
-	@Transactional(readOnly=true)
+	@TransactionalReadOnly
 	public User findWhereUsernameEquals(String username) throws UserDaoException
 	{
 		try {
@@ -249,7 +251,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 	/** 
 	 * Returns the row from the users table that match the criteria 'email = :email'.
 	 */
-	@Transactional(readOnly=true)
+	@TransactionalReadOnly
 	public User findByEmail(String email) throws UserDaoException
 	{
 		try {
@@ -265,7 +267,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 	/** 
 	 * Returns all rows from the users table that match the criteria 'password = :password'.
 	 */
-	@Transactional(readOnly=true)
+	@TransactionalReadOnly
 	public List<User> findWherePasswordEquals(String password) throws UserDaoException
 	{
 		try {
@@ -280,7 +282,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 	/** 
 	 * Returns all rows from the users table that match the criteria 'enabled = :enabled'.
 	 */
-	@Transactional(readOnly=true)
+	@TransactionalReadOnly
 	public List<User> findWhereEnabledEquals(Short enabled) throws UserDaoException
 	{
 		try {
@@ -300,7 +302,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 		return findByPrimaryKey( pk.getId() );
 	}
 	
-	@Transactional
+	@TransactionalReadOnly
 	public int countAll() throws UserDaoException
 	{
 		try {
@@ -315,7 +317,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 	/** 
 	 * Returns all rows from the user table that match the criteria '' limited by start and limit.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<User> findAll(Integer start, Integer limit, String sortBy, String sortDir) throws UserDaoException
 	{
 		try {
@@ -330,7 +332,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 	/** 
 	 * Returns all rows from the user table that match the criteria like query in onFields fields limited by start and limit.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<User> findAll(String query, List<String> onFields, Integer start, Integer limit, String sortBy, String sortDir) throws UserDaoException
 	{
 		try {
@@ -342,7 +344,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 		
 	}
 	
-	@Transactional
+	@TransactionalReadOnly
 	public int countAll(String query, List<String> onFields) throws UserDaoException
 	{
 		try {
@@ -388,7 +390,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 	/** 
 	 * Deletes multiple rows in the user table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void deleteAll(List<UserPk> pkList) throws UserDaoException
 	{
 		for(UserPk pk : pkList) {
@@ -399,7 +401,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 	/** 
 	 * Activates a single row in the user table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void activate(UserPk pk) throws UserDaoException
 	{
 		setEnabled(pk, true);
@@ -408,7 +410,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 	/** 
 	 * Activates multiple rows in the user table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void activateAll(List<UserPk> pkList) throws UserDaoException
 	{
 		for(UserPk pk : pkList) {
@@ -419,7 +421,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 	/** 
 	 * Deactivates a single row in the user table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void deactivate(UserPk pk) throws UserDaoException
 	{
 		setEnabled(pk, false);
@@ -428,7 +430,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 	/** 
 	 * Deactivates multiple rows in the user table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void deactivateAll(List<UserPk> pkList) throws UserDaoException
 	{
 		for(UserPk pk : pkList) {
@@ -436,7 +438,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 		}
 	}
 
-	@Transactional(readOnly=true)
+	@TransactionalReadOnly
 	public List<User> findCurrentUsersForGroup(Long groupId) throws UserDaoException {
 		try {
 			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.username IN (SELECT username FROM group_members WHERE group_id = ?) ORDER BY o.username", this,groupId);
@@ -446,7 +448,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 		}
 	}
 
-	@Transactional(readOnly=true)
+	@TransactionalReadOnly
 	public List<User> findSelectableUsersForGroup(Long groupId) throws UserDaoException {
 		try {
 			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.username NOT IN (SELECT username FROM group_members WHERE group_id = ?) ORDER BY o.username", this,groupId);
@@ -456,18 +458,18 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 		}
 	}
 
-	@Transactional(readOnly=true)
+	@TransactionalReadOnly
 	public boolean userWithEmailExists(String exceptUsername, String email) throws UserDaoException {
 		User u = findByEmail(email);
 		return u != null && !u.getUsername().equals(exceptUsername);
 	}
 
-	@Transactional(readOnly=true)
+	@TransactionalReadOnly
 	public boolean userWithEmailExists(String email) throws UserDaoException {
 		return findByEmail(email) != null;
 	}
 
-	@Transactional(readOnly=true)
+	@TransactionalReadOnly
 	public boolean userWithUsernameExists(String username) throws UserDaoException {
 		return findWhereUsernameEquals(username) != null;
 	}

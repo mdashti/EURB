@@ -6,6 +6,8 @@ import com.sharifpro.eurb.management.mapping.dao.DbConfigDao;
 import com.sharifpro.eurb.management.mapping.exception.DbConfigDaoException;
 import com.sharifpro.eurb.management.mapping.model.DbConfig;
 import com.sharifpro.eurb.management.mapping.model.DbConfigPk;
+import com.sharifpro.transaction.annotation.TransactionalReadOnly;
+import com.sharifpro.transaction.annotation.TransactionalReadWrite;
 import com.sharifpro.util.PropertyProvider;
 
 import java.util.List;
@@ -13,7 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+
 
 @Repository
 public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapper<DbConfig>, DbConfigDao
@@ -30,7 +32,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	 * @param dto
 	 * @return DbConfigPk
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public DbConfigPk insert(DbConfig dto)
 	{
 		DbConfigPk pk = new DbConfigPk();
@@ -43,7 +45,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	/** 
 	 * Updates a single row in the db_config table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void update(DbConfigPk pk, DbConfig dto) throws DbConfigDaoException
 	{
 		DaoFactory.createPersistableObjectDao().update(pk);
@@ -54,7 +56,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	/** 
 	 * Activates a single row in the db_config table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void activate(DbConfigPk pk) throws DbConfigDaoException
 	{
 		DaoFactory.createPersistableObjectDao().update(pk);
@@ -64,7 +66,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	/** 
 	 * Activates multiple rows in the db_config table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void activateAll(List<DbConfigPk> pkList) throws DbConfigDaoException
 	{
 		for(DbConfigPk pk : pkList) {
@@ -75,7 +77,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	/** 
 	 * Deactivates a single row in the db_config table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void deactivate(DbConfigPk pk) throws DbConfigDaoException
 	{
 		DaoFactory.createPersistableObjectDao().update(pk);
@@ -85,7 +87,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	/** 
 	 * Deactivates multiple rows in the db_config table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void deactivateAll(List<DbConfigPk> pkList) throws DbConfigDaoException
 	{
 		for(DbConfigPk pk : pkList) {
@@ -96,7 +98,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	/** 
 	 * Deletes a single row in the db_config table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void delete(DbConfigPk pk) throws DbConfigDaoException
 	{
 		DaoFactory.createPersistableObjectDao().update(pk);
@@ -106,7 +108,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	/** 
 	 * Deletes multiple rows in the db_config table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void deleteAll(List<DbConfigPk> pkList) throws DbConfigDaoException
 	{
 		for(DbConfigPk pk : pkList) {
@@ -150,7 +152,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	/** 
 	 * Returns all rows from the db_config table that match the criteria 'id = :id'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public DbConfig findByPrimaryKey(Long id) throws DbConfigDaoException
 	{
 		try {
@@ -166,7 +168,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	/** 
 	 * Returns all rows from the db_config table that match the criteria ''.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<DbConfig> findAll() throws DbConfigDaoException
 	{
 		try {
@@ -178,7 +180,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 		
 	}
 	
-	@Transactional
+	@TransactionalReadOnly
 	public int countAll() throws DbConfigDaoException
 	{
 		try {
@@ -193,7 +195,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	/** 
 	 * Returns all rows from the db_config table that match the criteria '' limited by start and limit.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<DbConfig> findAll(Integer start, Integer limit, String sortBy, String sortDir) throws DbConfigDaoException
 	{
 		try {
@@ -208,7 +210,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	/** 
 	 * Returns all rows from the db_config table that match the criteria like query in onFields fields limited by start and limit.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<DbConfig> findAll(String query, List<String> onFields, Integer start, Integer limit, String sortBy, String sortDir) throws DbConfigDaoException
 	{
 		try {
@@ -220,7 +222,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 		
 	}
 	
-	@Transactional
+	@TransactionalReadOnly
 	public int countAll(String query, List<String> onFields) throws DbConfigDaoException
 	{
 		try {
@@ -281,7 +283,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	/** 
 	 * Returns all active rows from the db_config table that match the criteria ''.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<DbConfig> findAllActive() throws DbConfigDaoException
 	{
 		try {
@@ -296,7 +298,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	/** 
 	 * Returns all rows from the db_config table that match the criteria 'id = :id'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<DbConfig> findByPersistableObject(Long id) throws DbConfigDaoException
 	{
 		try {
@@ -311,7 +313,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	/** 
 	 * Returns all rows from the db_config table that match the criteria 'id = :id'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<DbConfig> findWhereIdEquals(Long id) throws DbConfigDaoException
 	{
 		try {
@@ -326,7 +328,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	/** 
 	 * Returns all rows from the db_config table that match the criteria 'name = :name'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<DbConfig> findWhereNameEquals(String name) throws DbConfigDaoException
 	{
 		try {
@@ -341,7 +343,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	/** 
 	 * Returns all rows from the db_config table that match the criteria 'driver_class = :driverClass'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<DbConfig> findWhereDriverClassEquals(String driverClass) throws DbConfigDaoException
 	{
 		try {
@@ -356,7 +358,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	/** 
 	 * Returns all rows from the db_config table that match the criteria 'driver_url = :driverUrl'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<DbConfig> findWhereDriverUrlEquals(String driverUrl) throws DbConfigDaoException
 	{
 		try {
@@ -371,7 +373,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	/** 
 	 * Returns all rows from the db_config table that match the criteria 'username = :username'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<DbConfig> findWhereUsernameEquals(String username) throws DbConfigDaoException
 	{
 		try {
@@ -386,7 +388,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	/** 
 	 * Returns all rows from the db_config table that match the criteria 'password = :password'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<DbConfig> findWherePasswordEquals(String password) throws DbConfigDaoException
 	{
 		try {
@@ -401,7 +403,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	/** 
 	 * Returns all rows from the db_config table that match the criteria 'test_query = :testQuery'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<DbConfig> findWhereTestQueryEquals(String testQuery) throws DbConfigDaoException
 	{
 		try {

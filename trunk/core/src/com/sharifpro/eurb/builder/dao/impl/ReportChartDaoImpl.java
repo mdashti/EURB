@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.sharifpro.eurb.DaoFactory;
 import com.sharifpro.eurb.builder.dao.ReportChartDao;
@@ -17,6 +16,8 @@ import com.sharifpro.eurb.builder.model.ReportChartPk;
 import com.sharifpro.eurb.builder.model.ReportDesign;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
 import com.sharifpro.eurb.management.mapping.dao.impl.PersistableObjectDaoImpl;
+import com.sharifpro.transaction.annotation.TransactionalReadOnly;
+import com.sharifpro.transaction.annotation.TransactionalReadWrite;
 import com.sharifpro.util.PropertyProvider;
 
 @Repository
@@ -32,7 +33,7 @@ public class ReportChartDaoImpl extends AbstractDAO implements ParameterizedRowM
 	 * @param dto
 	 * @return ReportChartPk
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public ReportChartPk insert(ReportChart dto) throws ReportChartDaoException
 	{
 		try{
@@ -50,7 +51,7 @@ public class ReportChartDaoImpl extends AbstractDAO implements ParameterizedRowM
 	/** 
 	 * Updates a single row in the report_chart table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void update(ReportChartPk pk, ReportChart dto) throws ReportChartDaoException
 	{
 		try{
@@ -66,7 +67,7 @@ public class ReportChartDaoImpl extends AbstractDAO implements ParameterizedRowM
 	/** 
 	 * Deletes a single row in the report_chart table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void delete(ReportChartPk pk) throws ReportChartDaoException
 	{
 		try{
@@ -86,7 +87,7 @@ public class ReportChartDaoImpl extends AbstractDAO implements ParameterizedRowM
 	/**
 	 * Deletes all given rows from the report_chart table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void deleteAll(List<ReportChartPk> pkList) throws ReportChartDaoException
 	{
 		for(ReportChartPk pk : pkList){
@@ -127,7 +128,7 @@ public class ReportChartDaoImpl extends AbstractDAO implements ParameterizedRowM
 	/** 
 	 * Returns all rows from the report_chart table that match the criteria 'id = :id AND design_id = :designId AND design_version_id = :designVersionId'.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public ReportChart findByPrimaryKey(Long id) throws ReportChartDaoException
 	{
 		try {
@@ -143,7 +144,7 @@ public class ReportChartDaoImpl extends AbstractDAO implements ParameterizedRowM
 	/** 
 	 * Returns all rows from the report_chart table that match the criteria ''.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public List<ReportChart> findAll() throws ReportChartDaoException
 	{
 		try {
@@ -158,7 +159,7 @@ public class ReportChartDaoImpl extends AbstractDAO implements ParameterizedRowM
 	 * Returns all rows from the report_chart table for given report design.
 	 */
 
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public List<ReportChart> findAll(ReportDesign reportDesign) throws ReportChartDaoException
 	{
 		return findByReportDesign(reportDesign.getId(), reportDesign.getVersionId());
@@ -168,7 +169,7 @@ public class ReportChartDaoImpl extends AbstractDAO implements ParameterizedRowM
 	 * Counts all rows from the report_chart table that match the criteria ''.
 	 */
 
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public int countAll() throws ReportChartDaoException
 	{
 		try{
@@ -182,7 +183,7 @@ public class ReportChartDaoImpl extends AbstractDAO implements ParameterizedRowM
 	/** 
 	 * Counts all rows from the report_chart table for given report design.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public int countAll(ReportDesign reportDesign) throws ReportChartDaoException
 	{
 		try{
@@ -197,7 +198,7 @@ public class ReportChartDaoImpl extends AbstractDAO implements ParameterizedRowM
 	/** 
 	 * Returns all rows from the report_chart table that match the criteria 'id = :id'.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public List<ReportChart> findByPersistableObject(Long id) throws ReportChartDaoException
 	{
 		try {
@@ -214,7 +215,7 @@ public class ReportChartDaoImpl extends AbstractDAO implements ParameterizedRowM
 	/** 
 	 * Returns all rows from the report_chart table that match the criteria 'design_id = :designId AND design_version_id = :designVersionId'.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public List<ReportChart> findByReportDesign(Long designId, Long designVersionId) throws ReportChartDaoException
 	{
 		try {
@@ -236,7 +237,7 @@ public class ReportChartDaoImpl extends AbstractDAO implements ParameterizedRowM
 	/** 
 	 * Returns all rows from the report_chart table that match the criteria 'id = :id'.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public List<ReportChart> findWhereIdEquals(Long id) throws ReportChartDaoException
 	{
 		try {
@@ -251,7 +252,7 @@ public class ReportChartDaoImpl extends AbstractDAO implements ParameterizedRowM
 	/** 
 	 * Returns all rows from the report_chart table that match the criteria 'design_id = :designId'.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public List<ReportChart> findWhereDesignIdEquals(Long designId) throws ReportChartDaoException
 	{
 		try {
@@ -266,7 +267,7 @@ public class ReportChartDaoImpl extends AbstractDAO implements ParameterizedRowM
 	/** 
 	 * Returns all rows from the report_chart table that match the criteria 'design_version_id = :designVersionId'.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public List<ReportChart> findWhereDesignVersionIdEquals(Long designVersionId) throws ReportChartDaoException
 	{
 		try {
@@ -280,7 +281,7 @@ public class ReportChartDaoImpl extends AbstractDAO implements ParameterizedRowM
 	/** 
 	 * Returns all rows from the report_chart table that match the criteria 'name = :name'.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public List<ReportChart> findWhereNameEquals(String name) throws ReportChartDaoException
 	{
 		try {
@@ -295,7 +296,7 @@ public class ReportChartDaoImpl extends AbstractDAO implements ParameterizedRowM
 	/** 
 	 * Returns all rows from the report_chart table that match the criteria 'chart_type = :type'.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public List<ReportChart> findWhereTypeEquals(String type) throws ReportChartDaoException
 	{
 		try {
@@ -310,7 +311,7 @@ public class ReportChartDaoImpl extends AbstractDAO implements ParameterizedRowM
 	/** 
 	 * Returns the rows from the report_chart table that matches the specified primary-key value.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public ReportChart findByPrimaryKey(ReportChartPk pk) throws ReportChartDaoException
 	{
 		return findByPrimaryKey( pk.getId());

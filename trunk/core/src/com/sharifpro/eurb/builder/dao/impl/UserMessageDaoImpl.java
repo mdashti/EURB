@@ -7,6 +7,8 @@ import com.sharifpro.eurb.builder.model.UserMessage;
 import com.sharifpro.eurb.builder.model.UserMessagePk;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
 import com.sharifpro.eurb.management.mapping.dao.impl.PersistableObjectDaoImpl;
+import com.sharifpro.transaction.annotation.TransactionalReadOnly;
+import com.sharifpro.transaction.annotation.TransactionalReadWrite;
 import com.sharifpro.util.PropertyProvider;
 
 import java.util.List;
@@ -17,7 +19,7 @@ import java.sql.Types;
 
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+
 
 @Repository
 public class UserMessageDaoImpl extends AbstractDAO implements ParameterizedRowMapper<UserMessage>, UserMessageDao
@@ -33,7 +35,7 @@ public class UserMessageDaoImpl extends AbstractDAO implements ParameterizedRowM
 	 * @param dto
 	 * @return UserMessagePk
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public UserMessagePk insert(UserMessage dto) throws UserMessageDaoException
 	{
 		try{
@@ -52,7 +54,7 @@ public class UserMessageDaoImpl extends AbstractDAO implements ParameterizedRowM
 	/** 
 	 * Updates a single row in the user_message table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void update(UserMessagePk pk, UserMessage dto) throws UserMessageDaoException
 	{
 		try{
@@ -68,7 +70,7 @@ public class UserMessageDaoImpl extends AbstractDAO implements ParameterizedRowM
 	/** 
 	 * Deletes a single row in the user_message table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void delete(String username, UserMessagePk pk) throws UserMessageDaoException
 	{
 		try{
@@ -81,7 +83,7 @@ public class UserMessageDaoImpl extends AbstractDAO implements ParameterizedRowM
 	/** 
 	 * Deletes multiple rows in the user_message table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void deleteAll(String username, List<UserMessagePk> pkList) throws UserMessageDaoException
 	{
 		for(UserMessagePk pk : pkList){
@@ -125,7 +127,7 @@ public class UserMessageDaoImpl extends AbstractDAO implements ParameterizedRowM
 	/** 
 	 * Returns all rows from the user_message table that match the criteria 'id = :id'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public UserMessage findByPrimaryKey(Long id) throws UserMessageDaoException
 	{
 		try {
@@ -141,7 +143,7 @@ public class UserMessageDaoImpl extends AbstractDAO implements ParameterizedRowM
 	/** 
 	 * Returns all rows from the user_message table that match the criteria 'parent_column_id = :parentColumn.getId()'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<UserMessage> findAllForUser(String username) throws UserMessageDaoException
 	{
 		try {
@@ -156,7 +158,7 @@ public class UserMessageDaoImpl extends AbstractDAO implements ParameterizedRowM
 	/** 
 	 * Returns all rows from the user_message table that match the criteria 'id = :id'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<UserMessage> findByPersistableObject(Long id) throws UserMessageDaoException
 	{
 		try {
@@ -171,7 +173,7 @@ public class UserMessageDaoImpl extends AbstractDAO implements ParameterizedRowM
 	/** 
 	 * Returns all rows from the user_message table that match the criteria 'id = :id'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<UserMessage> findWhereIdEquals(Long id) throws UserMessageDaoException
 	{
 		try {
@@ -186,6 +188,7 @@ public class UserMessageDaoImpl extends AbstractDAO implements ParameterizedRowM
 	/** 
 	 * Returns the rows from the user_message table that matches the specified primary-key value.
 	 */
+	@TransactionalReadOnly
 	public UserMessage findByPrimaryKey(UserMessagePk pk) throws UserMessageDaoException
 	{
 		return findByPrimaryKey( pk.getId() );

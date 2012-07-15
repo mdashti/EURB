@@ -4,6 +4,8 @@ import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
 import com.sharifpro.eurb.management.security.dao.GroupAuthoritiesDao;
 import com.sharifpro.eurb.management.security.exception.GroupAuthoritiesDaoException;
 import com.sharifpro.eurb.management.security.model.GroupAuthorities;
+import com.sharifpro.transaction.annotation.TransactionalReadOnly;
+import com.sharifpro.transaction.annotation.TransactionalReadWrite;
 import com.sharifpro.util.PropertyProvider;
 
 import java.util.List;
@@ -11,7 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+
 
 @Repository
 public class GroupAuthoritiesDaoImpl extends AbstractDAO implements ParameterizedRowMapper<GroupAuthorities>, GroupAuthoritiesDao
@@ -21,13 +23,13 @@ public class GroupAuthoritiesDaoImpl extends AbstractDAO implements Parameterize
 	 * 
 	 * @param dto
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void insert(GroupAuthorities dto)
 	{
 		getJdbcTemplate().update("INSERT INTO " + getTableName() + " ( group_id, authority ) VALUES ( ?, ? )",dto.getGroupId(),dto.getAuthority());
 	}
 
-	@Transactional
+	@TransactionalReadWrite
 	public void clearGroupAuthorities(Long groupId) throws GroupAuthoritiesDaoException {
 		getJdbcTemplate().update("DELETE FROM " + getTableName() + " WHERE group_id = ?",groupId);
 	}
@@ -61,7 +63,7 @@ public class GroupAuthoritiesDaoImpl extends AbstractDAO implements Parameterize
 	/** 
 	 * Returns all rows from the group_authorities table that match the criteria ''.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<GroupAuthorities> findAll() throws GroupAuthoritiesDaoException
 	{
 		try {
@@ -76,7 +78,7 @@ public class GroupAuthoritiesDaoImpl extends AbstractDAO implements Parameterize
 	/** 
 	 * Returns all rows from the group_authorities table that match the criteria 'group_id = :groupId'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<GroupAuthorities> findByGroups(Long groupId) throws GroupAuthoritiesDaoException
 	{
 		try {
@@ -91,7 +93,7 @@ public class GroupAuthoritiesDaoImpl extends AbstractDAO implements Parameterize
 	/** 
 	 * Returns all rows from the group_authorities table that match the criteria 'group_id = :groupId'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<GroupAuthorities> findWhereGroupIdEquals(Long groupId) throws GroupAuthoritiesDaoException
 	{
 		try {
@@ -106,7 +108,7 @@ public class GroupAuthoritiesDaoImpl extends AbstractDAO implements Parameterize
 	/** 
 	 * Returns all rows from the group_authorities table that match the criteria 'authority = :authority'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<GroupAuthorities> findWhereAuthorityEquals(String authority) throws GroupAuthoritiesDaoException
 	{
 		try {

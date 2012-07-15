@@ -5,13 +5,15 @@ import com.sharifpro.eurb.builder.exception.ReportExecutionHistoryDaoException;
 import com.sharifpro.eurb.builder.model.ReportExecutionHistory;
 import com.sharifpro.eurb.builder.model.ReportExecutionHistoryPk;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
+import com.sharifpro.transaction.annotation.TransactionalReadOnly;
+import com.sharifpro.transaction.annotation.TransactionalReadWrite;
 
 import java.util.List;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+
 
 @Repository
 public class ReportExecutionHistoryDaoImpl extends AbstractDAO implements ParameterizedRowMapper<ReportExecutionHistory>, ReportExecutionHistoryDao
@@ -22,7 +24,7 @@ public class ReportExecutionHistoryDaoImpl extends AbstractDAO implements Parame
 	 * @param dto
 	 * @return ReportExecutionHistoryPk
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public ReportExecutionHistoryPk insert(ReportExecutionHistory dto)
 	{
 		getJdbcTemplate().update("INSERT INTO " + getTableName() + " ( id, version_id, execution_result, is_current, record_status, report_design_id, report_design_version_id ) VALUES ( ?, ?, ?, ?, ?, ?, ? )",dto.getId(),dto.getVersionId(),dto.getExecutionResult(),dto.isCurrent(),dto.getRecordStatus(),dto.getReportDesignId(),dto.getReportDesignVersionId());
@@ -32,7 +34,7 @@ public class ReportExecutionHistoryDaoImpl extends AbstractDAO implements Parame
 	/** 
 	 * Updates a single row in the report_execution_history table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void update(ReportExecutionHistoryPk pk, ReportExecutionHistory dto) throws ReportExecutionHistoryDaoException
 	{
 		getJdbcTemplate().update("UPDATE " + getTableName() + " SET id = ?, version_id = ?, execution_result = ?, is_current = ?, record_status = ?, report_design_id = ?, report_design_version_id = ? WHERE id = ? AND version_id = ?",dto.getId(),dto.getVersionId(),dto.getExecutionResult(),dto.isCurrent(),dto.getRecordStatus(),dto.getReportDesignId(),dto.getReportDesignVersionId(),pk.getId(),pk.getVersionId());
@@ -41,7 +43,7 @@ public class ReportExecutionHistoryDaoImpl extends AbstractDAO implements Parame
 	/** 
 	 * Deletes a single row in the report_execution_history table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void delete(ReportExecutionHistoryPk pk) throws ReportExecutionHistoryDaoException
 	{
 		getJdbcTemplate().update("DELETE FROM " + getTableName() + " WHERE id = ? AND version_id = ?",pk.getId(),pk.getVersionId());
@@ -81,7 +83,7 @@ public class ReportExecutionHistoryDaoImpl extends AbstractDAO implements Parame
 	/** 
 	 * Returns all rows from the report_execution_history table that match the criteria 'id = :id AND version_id = :versionId'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public ReportExecutionHistory findByPrimaryKey(Long id, Long versionId) throws ReportExecutionHistoryDaoException
 	{
 		try {
@@ -97,7 +99,7 @@ public class ReportExecutionHistoryDaoImpl extends AbstractDAO implements Parame
 	/** 
 	 * Returns all rows from the report_execution_history table that match the criteria ''.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportExecutionHistory> findAll() throws ReportExecutionHistoryDaoException
 	{
 		try {
@@ -112,7 +114,7 @@ public class ReportExecutionHistoryDaoImpl extends AbstractDAO implements Parame
 	/** 
 	 * Returns all rows from the report_execution_history table that match the criteria 'report_design_id = :reportDesignId AND report_design_version_id = :reportDesignVersionId'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportExecutionHistory> findByReportDesign(Long reportDesignId, Long reportDesignVersionId) throws ReportExecutionHistoryDaoException
 	{
 		try {
@@ -127,7 +129,7 @@ public class ReportExecutionHistoryDaoImpl extends AbstractDAO implements Parame
 	/** 
 	 * Returns all rows from the report_execution_history table that match the criteria 'id = :id'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportExecutionHistory> findByPersistableObject(Long id) throws ReportExecutionHistoryDaoException
 	{
 		try {
@@ -142,7 +144,7 @@ public class ReportExecutionHistoryDaoImpl extends AbstractDAO implements Parame
 	/** 
 	 * Returns all rows from the report_execution_history table that match the criteria 'id = :id'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportExecutionHistory> findWhereIdEquals(Long id) throws ReportExecutionHistoryDaoException
 	{
 		try {
@@ -157,7 +159,7 @@ public class ReportExecutionHistoryDaoImpl extends AbstractDAO implements Parame
 	/** 
 	 * Returns all rows from the report_execution_history table that match the criteria 'version_id = :versionId'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportExecutionHistory> findWhereVersionIdEquals(Long versionId) throws ReportExecutionHistoryDaoException
 	{
 		try {
@@ -172,7 +174,7 @@ public class ReportExecutionHistoryDaoImpl extends AbstractDAO implements Parame
 	/** 
 	 * Returns all rows from the report_execution_history table that match the criteria 'execution_result = :executionResult'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportExecutionHistory> findWhereExecutionResultEquals(String executionResult) throws ReportExecutionHistoryDaoException
 	{
 		try {
@@ -187,7 +189,7 @@ public class ReportExecutionHistoryDaoImpl extends AbstractDAO implements Parame
 	/** 
 	 * Returns all rows from the report_execution_history table that match the criteria 'is_current = :isCurrent'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportExecutionHistory> findWhereIsCurrentEquals(Short isCurrent) throws ReportExecutionHistoryDaoException
 	{
 		try {
@@ -202,7 +204,7 @@ public class ReportExecutionHistoryDaoImpl extends AbstractDAO implements Parame
 	/** 
 	 * Returns all rows from the report_execution_history table that match the criteria 'record_status = :recordStatus'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportExecutionHistory> findWhereRecordStatusEquals(String recordStatus) throws ReportExecutionHistoryDaoException
 	{
 		try {
@@ -217,7 +219,7 @@ public class ReportExecutionHistoryDaoImpl extends AbstractDAO implements Parame
 	/** 
 	 * Returns all rows from the report_execution_history table that match the criteria 'report_design_id = :reportDesignId'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportExecutionHistory> findWhereReportDesignIdEquals(Long reportDesignId) throws ReportExecutionHistoryDaoException
 	{
 		try {
@@ -232,7 +234,7 @@ public class ReportExecutionHistoryDaoImpl extends AbstractDAO implements Parame
 	/** 
 	 * Returns all rows from the report_execution_history table that match the criteria 'report_design_version_id = :reportDesignVersionId'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportExecutionHistory> findWhereReportDesignVersionIdEquals(Long reportDesignVersionId) throws ReportExecutionHistoryDaoException
 	{
 		try {

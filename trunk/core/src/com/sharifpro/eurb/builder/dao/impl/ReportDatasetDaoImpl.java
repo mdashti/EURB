@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.sharifpro.eurb.DaoFactory;
 import com.sharifpro.eurb.builder.dao.ReportDatasetDao;
@@ -16,6 +15,8 @@ import com.sharifpro.eurb.builder.model.ReportDatasetPk;
 import com.sharifpro.eurb.builder.model.ReportDesign;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
 import com.sharifpro.eurb.management.mapping.dao.impl.PersistableObjectDaoImpl;
+import com.sharifpro.transaction.annotation.TransactionalReadOnly;
+import com.sharifpro.transaction.annotation.TransactionalReadWrite;
 import com.sharifpro.util.PropertyProvider;
 
 @Repository
@@ -31,7 +32,7 @@ public class ReportDatasetDaoImpl extends AbstractDAO implements ParameterizedRo
 	 * @param dto
 	 * @return ReportDatasetPk
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public ReportDatasetPk insert(ReportDataset dto) throws ReportDatasetDaoException
 	{
 		try{
@@ -51,7 +52,7 @@ public class ReportDatasetDaoImpl extends AbstractDAO implements ParameterizedRo
 	/** 
 	 * Updates a single row in the report_dataset table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void update(ReportDatasetPk pk, ReportDataset dto) throws ReportDatasetDaoException
 	{
 		try{
@@ -68,7 +69,7 @@ public class ReportDatasetDaoImpl extends AbstractDAO implements ParameterizedRo
 	/** 
 	 * Deletes a single row in the report_dataset table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void delete(ReportDatasetPk pk) throws ReportDatasetDaoException
 	{
 		try{
@@ -83,7 +84,7 @@ public class ReportDatasetDaoImpl extends AbstractDAO implements ParameterizedRo
 	/**
 	 * Deletes all given rows from the report_dataset table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void deleteAll(List<ReportDatasetPk> pkList) throws ReportDatasetDaoException
 	{
 		for(ReportDatasetPk pk : pkList){
@@ -139,7 +140,7 @@ public class ReportDatasetDaoImpl extends AbstractDAO implements ParameterizedRo
 	/** 
 	 * Returns all rows from the report_dataset table that match the criteria 'id = :id AND design_id = :designId AND design_version_id = :designVersionId'.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public ReportDataset findByPrimaryKey(Long id, Long designId, Long designVersionId) throws ReportDatasetDaoException
 	{
 		try {
@@ -155,7 +156,7 @@ public class ReportDatasetDaoImpl extends AbstractDAO implements ParameterizedRo
 	/** 
 	 * Returns all rows from the report_dataset table that match the criteria ''.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public List<ReportDataset> findAll() throws ReportDatasetDaoException
 	{
 		try {
@@ -170,7 +171,7 @@ public class ReportDatasetDaoImpl extends AbstractDAO implements ParameterizedRo
 	 * Returns all rows from the report_dataset table for given report design.
 	 */
 
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public List<ReportDataset> findAll(ReportDesign reportDesign) throws ReportDatasetDaoException
 	{
 		return findByReportDesign(reportDesign.getId(), reportDesign.getVersionId());
@@ -180,7 +181,7 @@ public class ReportDatasetDaoImpl extends AbstractDAO implements ParameterizedRo
 	 * Counts all rows from the report_dataset table that match the criteria ''.
 	 */
 
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public int countAll() throws ReportDatasetDaoException
 	{
 		try{
@@ -194,7 +195,7 @@ public class ReportDatasetDaoImpl extends AbstractDAO implements ParameterizedRo
 	/** 
 	 * Counts all rows from the report_dataset table for given report design.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public int countAll(ReportDesign reportDesign) throws ReportDatasetDaoException
 	{
 		try{
@@ -209,7 +210,7 @@ public class ReportDatasetDaoImpl extends AbstractDAO implements ParameterizedRo
 	/** 
 	 * Returns all rows from the report_dataset table that match the criteria 'id = :id'.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public List<ReportDataset> findByPersistableObject(Long id) throws ReportDatasetDaoException
 	{
 		try {
@@ -224,7 +225,7 @@ public class ReportDatasetDaoImpl extends AbstractDAO implements ParameterizedRo
 	/** 
 	 * Returns all rows from the report_dataset table that match the criteria 'base_report_id = :baseReportId AND base_report_version_id = :baseReportVersionId'.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public List<ReportDataset> findByBaseReportDesign(Long baseReportId, Long baseReportVersionId) throws ReportDatasetDaoException
 	{
 		try {
@@ -239,7 +240,7 @@ public class ReportDatasetDaoImpl extends AbstractDAO implements ParameterizedRo
 	/** 
 	 * Returns all rows from the report_dataset table that match the criteria 'design_id = :designId AND design_version_id = :designVersionId'.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public List<ReportDataset> findByReportDesign(Long designId, Long designVersionId) throws ReportDatasetDaoException
 	{
 		try {
@@ -254,7 +255,7 @@ public class ReportDatasetDaoImpl extends AbstractDAO implements ParameterizedRo
 	/** 
 	 * Returns all rows from the report_dataset table that match the criteria 'design_id = :designId AND design_version_id = :designVersionId AND table_mapping_id = :tableMappingId'.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public List<ReportDataset> findByReportDesignAndTableMapping(Long designId, Long designVersionId, Long tableMappingId) throws ReportDatasetDaoException
 	{
 		try {
@@ -269,7 +270,7 @@ public class ReportDatasetDaoImpl extends AbstractDAO implements ParameterizedRo
 	/** 
 	 * Returns all rows from the report_dataset table that match the criteria 'table_mapping_id = :tableMappingId'.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public List<ReportDataset> findByTableMapping(Long tableMappingId) throws ReportDatasetDaoException
 	{
 		try {
@@ -284,7 +285,7 @@ public class ReportDatasetDaoImpl extends AbstractDAO implements ParameterizedRo
 	/** 
 	 * Returns all rows from the report_dataset table that match the criteria 'id = :id'.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public List<ReportDataset> findWhereIdEquals(Long id) throws ReportDatasetDaoException
 	{
 		try {
@@ -299,7 +300,7 @@ public class ReportDatasetDaoImpl extends AbstractDAO implements ParameterizedRo
 	/** 
 	 * Returns all rows from the report_dataset table that match the criteria 'design_id = :designId'.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public List<ReportDataset> findWhereDesignIdEquals(Long designId) throws ReportDatasetDaoException
 	{
 		try {
@@ -314,7 +315,7 @@ public class ReportDatasetDaoImpl extends AbstractDAO implements ParameterizedRo
 	/** 
 	 * Returns all rows from the report_dataset table that match the criteria 'design_version_id = :designVersionId'.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public List<ReportDataset> findWhereDesignVersionIdEquals(Long designVersionId) throws ReportDatasetDaoException
 	{
 		try {
@@ -328,7 +329,7 @@ public class ReportDatasetDaoImpl extends AbstractDAO implements ParameterizedRo
 	/** 
 	 * Returns all rows from the report_dataset table that match the criteria 'table_mapping_id = :tableMappingId'.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public List<ReportDataset> findWhereTableMappingIdEquals(Long tableMappingId) throws ReportDatasetDaoException
 	{
 		try {
@@ -343,7 +344,7 @@ public class ReportDatasetDaoImpl extends AbstractDAO implements ParameterizedRo
 	/** 
 	 * Returns all rows from the report_dataset table that match the criteria 'base_report_id = :baseReportId'.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public List<ReportDataset> findWhereBaseReportIdEquals(Long baseReportId) throws ReportDatasetDaoException
 	{
 		try {
@@ -358,7 +359,7 @@ public class ReportDatasetDaoImpl extends AbstractDAO implements ParameterizedRo
 	/** 
 	 * Returns all rows from the report_dataset table that match the criteria 'base_report_version_id = :baseReportVersionId'.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public List<ReportDataset> findWhereBaseReportVersionIdEquals(Long baseReportVersionId) throws ReportDatasetDaoException
 	{
 		try {
@@ -373,7 +374,7 @@ public class ReportDatasetDaoImpl extends AbstractDAO implements ParameterizedRo
 	/** 
 	 * Returns all rows from the report_dataset table that match the criteria 'ds_order = :dsOrder'.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public List<ReportDataset> findWhereDsOrderEquals(Integer dsOrder) throws ReportDatasetDaoException
 	{
 		try {
@@ -388,7 +389,7 @@ public class ReportDatasetDaoImpl extends AbstractDAO implements ParameterizedRo
 	/** 
 	 * Returns all rows from the report_dataset table that match the criteria 'operator = :operator'.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public List<ReportDataset> findWhereOperatorEquals(Integer operator) throws ReportDatasetDaoException
 	{
 		try {
@@ -403,7 +404,7 @@ public class ReportDatasetDaoImpl extends AbstractDAO implements ParameterizedRo
 	/** 
 	 * Returns the rows from the report_dataset table that matches the specified primary-key value.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public ReportDataset findByPrimaryKey(ReportDatasetPk pk) throws ReportDatasetDaoException
 	{
 		return findByPrimaryKey( pk.getId(), pk.getDesignId(), pk.getDesignVersionId() );

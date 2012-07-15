@@ -5,13 +5,15 @@ import com.sharifpro.eurb.builder.exception.ReportFormatDaoException;
 import com.sharifpro.eurb.builder.model.ReportFormat;
 import com.sharifpro.eurb.builder.model.ReportFormatPk;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
+import com.sharifpro.transaction.annotation.TransactionalReadOnly;
+import com.sharifpro.transaction.annotation.TransactionalReadWrite;
 
 import java.util.List;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+
 
 @Repository
 public class ReportFormatDaoImpl extends AbstractDAO implements ParameterizedRowMapper<ReportFormat>, ReportFormatDao
@@ -22,7 +24,7 @@ public class ReportFormatDaoImpl extends AbstractDAO implements ParameterizedRow
 	 * @param dto
 	 * @return ReportFormatPk
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public ReportFormatPk insert(ReportFormat dto)
 	{
 		getJdbcTemplate().update("INSERT INTO " + getTableName() + " ( id, format_file, is_current, record_status, report_design_id, report_design_version_id ) VALUES ( ?, ?, ?, ?, ?, ? )",dto.getId(),dto.getFormatFile(),dto.isIsCurrent(),dto.getRecordStatus(),dto.getReportDesignId(),dto.getReportDesignVersionId());
@@ -34,7 +36,7 @@ public class ReportFormatDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Updates a single row in the report_format table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void update(ReportFormatPk pk, ReportFormat dto) throws ReportFormatDaoException
 	{
 		getJdbcTemplate().update("UPDATE " + getTableName() + " SET id = ?, version_id = ?, format_file = ?, is_current = ?, record_status = ?, report_design_id = ?, report_design_version_id = ? WHERE version_id = ? AND id = ?",dto.getId(),dto.getVersionId(),dto.getFormatFile(),dto.isIsCurrent(),dto.getRecordStatus(),dto.getReportDesignId(),dto.getReportDesignVersionId(),pk.getVersionId(),pk.getId());
@@ -43,7 +45,7 @@ public class ReportFormatDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Deletes a single row in the report_format table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void delete(ReportFormatPk pk) throws ReportFormatDaoException
 	{
 		getJdbcTemplate().update("DELETE FROM " + getTableName() + " WHERE version_id = ? AND id = ?",pk.getVersionId(),pk.getId());
@@ -91,7 +93,7 @@ public class ReportFormatDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_format table that match the criteria 'version_id = :versionId AND id = :id'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public ReportFormat findByPrimaryKey(Long versionId, Long id) throws ReportFormatDaoException
 	{
 		try {
@@ -107,7 +109,7 @@ public class ReportFormatDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_format table that match the criteria ''.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportFormat> findAll() throws ReportFormatDaoException
 	{
 		try {
@@ -122,7 +124,7 @@ public class ReportFormatDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_format table that match the criteria 'report_design_id = :reportDesignId AND report_design_version_id = :reportDesignVersionId'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportFormat> findByReportDesign(Long reportDesignId, Long reportDesignVersionId) throws ReportFormatDaoException
 	{
 		try {
@@ -137,7 +139,7 @@ public class ReportFormatDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_format table that match the criteria 'id = :id'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportFormat> findByPersistableObject(Long id) throws ReportFormatDaoException
 	{
 		try {
@@ -152,7 +154,7 @@ public class ReportFormatDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_format table that match the criteria 'id = :id'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportFormat> findWhereIdEquals(Long id) throws ReportFormatDaoException
 	{
 		try {
@@ -167,7 +169,7 @@ public class ReportFormatDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_format table that match the criteria 'version_id = :versionId'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportFormat> findWhereVersionIdEquals(Long versionId) throws ReportFormatDaoException
 	{
 		try {
@@ -182,7 +184,7 @@ public class ReportFormatDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_format table that match the criteria 'format_file = :formatFile'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportFormat> findWhereFormatFileEquals(String formatFile) throws ReportFormatDaoException
 	{
 		try {
@@ -197,7 +199,7 @@ public class ReportFormatDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_format table that match the criteria 'is_current = :isCurrent'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportFormat> findWhereIsCurrentEquals(Short isCurrent) throws ReportFormatDaoException
 	{
 		try {
@@ -212,7 +214,7 @@ public class ReportFormatDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_format table that match the criteria 'record_status = :recordStatus'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportFormat> findWhereRecordStatusEquals(String recordStatus) throws ReportFormatDaoException
 	{
 		try {
@@ -227,7 +229,7 @@ public class ReportFormatDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_format table that match the criteria 'report_design_id = :reportDesignId'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportFormat> findWhereReportDesignIdEquals(Long reportDesignId) throws ReportFormatDaoException
 	{
 		try {
@@ -242,7 +244,7 @@ public class ReportFormatDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_format table that match the criteria 'report_design_version_id = :reportDesignVersionId'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportFormat> findWhereReportDesignVersionIdEquals(Long reportDesignVersionId) throws ReportFormatDaoException
 	{
 		try {

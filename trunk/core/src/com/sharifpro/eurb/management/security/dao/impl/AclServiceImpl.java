@@ -52,7 +52,9 @@ public class AclServiceImpl extends JdbcMutableAclService {
 					return ps;
 				}
 			}, oidKeyHolder);
-		jdbcTemplate.update("INSERT INTO acl_entry ( acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure ) VALUES ( ?, ?, ?, ?, ?, ?, ? )", oidKeyHolder.getKey().longValue(), 1, currentUserSID, AclServiceImpl.FULL_PERMISSION_MASK, 1, 1, 1 );
+		if(true)
+		throw new RuntimeException("hi");
+		jdbcTemplate.update("INSERT INTO acl_entry ( acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure ) VALUES ( ?, ?, ?, ?, ?, ?, ? )", oidKeyHolder.getKey().longValue(), 1, currentUserSID, AclServiceImpl.FULL_PERMISSION_MASK, 1 );
 	}
 
 	public static void updateObjectIdentity(JdbcTemplate jdbcTemplate, final Long objectId, final Long classId, Long parentObjectId, Long parentClassId) {

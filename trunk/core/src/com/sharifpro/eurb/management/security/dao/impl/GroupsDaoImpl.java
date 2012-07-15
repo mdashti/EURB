@@ -7,6 +7,8 @@ import com.sharifpro.eurb.management.security.dao.GroupsDao;
 import com.sharifpro.eurb.management.security.exception.GroupsDaoException;
 import com.sharifpro.eurb.management.security.model.Groups;
 import com.sharifpro.eurb.management.security.model.GroupsPk;
+import com.sharifpro.transaction.annotation.TransactionalReadOnly;
+import com.sharifpro.transaction.annotation.TransactionalReadWrite;
 import com.sharifpro.util.PropertyProvider;
 
 import java.util.List;
@@ -14,7 +16,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+
 
 @Repository
 public class GroupsDaoImpl extends AbstractDAO implements ParameterizedRowMapper<Groups>, GroupsDao
@@ -31,7 +33,7 @@ public class GroupsDaoImpl extends AbstractDAO implements ParameterizedRowMapper
 	 * @param dto
 	 * @return GroupsPk
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public GroupsPk insert(Groups dto)
 	{
 		GroupsPk pk = new GroupsPk();
@@ -44,7 +46,7 @@ public class GroupsDaoImpl extends AbstractDAO implements ParameterizedRowMapper
 	/** 
 	 * Updates a single row in the groups table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void update(GroupsPk pk, Groups dto) throws GroupsDaoException
 	{
 		DaoFactory.createPersistableObjectDao().update(pk);
@@ -54,7 +56,7 @@ public class GroupsDaoImpl extends AbstractDAO implements ParameterizedRowMapper
 	/** 
 	 * Deletes a single row in the groups table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void delete(GroupsPk pk) throws GroupsDaoException
 	{
 		getJdbcTemplate().update("DELETE FROM " + GroupAuthoritiesDaoImpl.getTableName() + " WHERE group_id = ?",pk.getId());
@@ -93,7 +95,7 @@ public class GroupsDaoImpl extends AbstractDAO implements ParameterizedRowMapper
 	/** 
 	 * Returns all rows from the groups table that match the criteria 'id = :id'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public Groups findByPrimaryKey(Long id) throws GroupsDaoException
 	{
 		try {
@@ -109,7 +111,7 @@ public class GroupsDaoImpl extends AbstractDAO implements ParameterizedRowMapper
 	/** 
 	 * Returns all rows from the groups table that match the criteria ''.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<Groups> findAll() throws GroupsDaoException
 	{
 		try {
@@ -124,7 +126,7 @@ public class GroupsDaoImpl extends AbstractDAO implements ParameterizedRowMapper
 	/** 
 	 * Returns all rows from the groups table that match the criteria 'id = :id'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<Groups> findByPersistableObject(Long id) throws GroupsDaoException
 	{
 		try {
@@ -139,7 +141,7 @@ public class GroupsDaoImpl extends AbstractDAO implements ParameterizedRowMapper
 	/** 
 	 * Returns all rows from the groups table that match the criteria 'id = :id'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<Groups> findWhereIdEquals(Long id) throws GroupsDaoException
 	{
 		try {
@@ -154,7 +156,7 @@ public class GroupsDaoImpl extends AbstractDAO implements ParameterizedRowMapper
 	/** 
 	 * Returns all rows from the groups table that match the criteria 'group_name = :groupName'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<Groups> findWhereGroupNameEquals(String groupName) throws GroupsDaoException
 	{
 		try {
@@ -169,13 +171,13 @@ public class GroupsDaoImpl extends AbstractDAO implements ParameterizedRowMapper
 	/** 
 	 * Returns the rows from the groups table that matches the specified primary-key value.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public Groups findByPrimaryKey(GroupsPk pk) throws GroupsDaoException
 	{
 		return findByPrimaryKey( pk.getId() );
 	}
 
-	@Transactional
+	@TransactionalReadOnly
 	public List<Groups> findCurrentGroupsForUser(String userName) throws GroupsDaoException {
 		try {
 			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.id IN (SELECT group_id FROM group_members WHERE username = ?) ORDER BY group_name", this,userName);
@@ -185,7 +187,7 @@ public class GroupsDaoImpl extends AbstractDAO implements ParameterizedRowMapper
 		}
 	}
 
-	@Transactional
+	@TransactionalReadOnly
 	public List<Groups> findSelectableGroupsForUser(String userName) throws GroupsDaoException {
 		try {
 			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.id NOT IN (SELECT group_id FROM group_members WHERE username = ?) ORDER BY group_name", this,userName);
@@ -221,7 +223,7 @@ public class GroupsDaoImpl extends AbstractDAO implements ParameterizedRowMapper
 		}
 	}
 
-	@Transactional
+	@TransactionalReadOnly
 	public List<Groups> findAll(Integer start, Integer limit, String sortBy, String sortDir) throws GroupsDaoException {
 		try {
 			return getJdbcTemplate().query(QUERY_SELECT_PART + " ORDER BY "+getSortClause(sortBy, sortDir)+" limit ?, ?", this, start, limit);
@@ -230,7 +232,7 @@ public class GroupsDaoImpl extends AbstractDAO implements ParameterizedRowMapper
 		}
 	}
 
-	@Transactional
+	@TransactionalReadOnly
 	public int countAll() throws GroupsDaoException {
 		try {
 			return getJdbcTemplate().queryForInt(COUNT_QUERY);
@@ -239,7 +241,7 @@ public class GroupsDaoImpl extends AbstractDAO implements ParameterizedRowMapper
 		}
 	}
 
-	@Transactional
+	@TransactionalReadOnly
 	public List<Groups> findAll(String query, List<String> onFields,
 			Integer start, Integer limit, String sortBy, String sortDir)
 			throws GroupsDaoException {
@@ -250,7 +252,7 @@ public class GroupsDaoImpl extends AbstractDAO implements ParameterizedRowMapper
 		}
 	}
 
-	@Transactional
+	@TransactionalReadOnly
 	public int countAll(String query, List<String> onFields)
 			throws GroupsDaoException {
 		try {
@@ -260,7 +262,7 @@ public class GroupsDaoImpl extends AbstractDAO implements ParameterizedRowMapper
 		}
 	}
 
-	@Transactional
+	@TransactionalReadWrite
 	public void deleteAll(List<GroupsPk> pkList) throws GroupsDaoException {
 		for(GroupsPk pk : pkList) {
 			delete(pk);

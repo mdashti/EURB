@@ -5,6 +5,8 @@ import com.sharifpro.eurb.management.security.dao.GroupMembersDao;
 import com.sharifpro.eurb.management.security.exception.GroupMembersDaoException;
 import com.sharifpro.eurb.management.security.model.GroupMembers;
 import com.sharifpro.eurb.management.security.model.GroupMembersPk;
+import com.sharifpro.transaction.annotation.TransactionalReadOnly;
+import com.sharifpro.transaction.annotation.TransactionalReadWrite;
 import com.sharifpro.util.PropertyProvider;
 
 import java.util.List;
@@ -12,7 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+
 
 @Repository
 public class GroupMembersDaoImpl extends AbstractDAO implements ParameterizedRowMapper<GroupMembers>, GroupMembersDao
@@ -23,7 +25,7 @@ public class GroupMembersDaoImpl extends AbstractDAO implements ParameterizedRow
 	 * @param dto
 	 * @return GroupMembersPk
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public GroupMembersPk insert(GroupMembers dto)
 	{
 		getJdbcTemplate().update("INSERT INTO " + getTableName() + " ( username, group_id ) VALUES ( ?, ? )",dto.getUsername(),dto.getGroupId());
@@ -35,7 +37,7 @@ public class GroupMembersDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Deletes a single row in the group_members table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void delete(GroupMembers dto) throws GroupMembersDaoException
 	{
 		getJdbcTemplate().update("DELETE FROM " + getTableName() + " WHERE username = ? AND group_id = ?",dto.getUsername(), dto.getGroupId());
@@ -44,7 +46,7 @@ public class GroupMembersDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Deletes a single row in the group_members table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void delete(GroupMembersPk pk) throws GroupMembersDaoException
 	{
 		getJdbcTemplate().update("DELETE FROM " + getTableName() + " WHERE id = ?",pk.getId());
@@ -80,7 +82,7 @@ public class GroupMembersDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the group_members table that match the criteria 'id = :id'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public GroupMembers findByPrimaryKey(Long id) throws GroupMembersDaoException
 	{
 		try {
@@ -96,7 +98,7 @@ public class GroupMembersDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the group_members table that match the criteria ''.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<GroupMembers> findAll() throws GroupMembersDaoException
 	{
 		try {
@@ -111,7 +113,7 @@ public class GroupMembersDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the group_members table that match the criteria 'group_id = :groupId'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<GroupMembers> findByGroups(Long groupId) throws GroupMembersDaoException
 	{
 		try {
@@ -126,7 +128,7 @@ public class GroupMembersDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the group_members table that match the criteria 'id = :id'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<GroupMembers> findWhereIdEquals(Long id) throws GroupMembersDaoException
 	{
 		try {
@@ -141,7 +143,7 @@ public class GroupMembersDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the group_members table that match the criteria 'username = :username'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<GroupMembers> findWhereUsernameEquals(String username) throws GroupMembersDaoException
 	{
 		try {
@@ -156,7 +158,7 @@ public class GroupMembersDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the group_members table that match the criteria 'group_id = :groupId'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<GroupMembers> findWhereGroupIdEquals(Long groupId) throws GroupMembersDaoException
 	{
 		try {

@@ -11,6 +11,8 @@ import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
 import com.sharifpro.eurb.management.mapping.dao.impl.DbConfigDaoImpl;
 import com.sharifpro.eurb.management.mapping.dao.impl.PersistableObjectDaoImpl;
 import com.sharifpro.eurb.management.security.dao.impl.AclServiceImpl;
+import com.sharifpro.transaction.annotation.TransactionalReadOnly;
+import com.sharifpro.transaction.annotation.TransactionalReadWrite;
 import com.sharifpro.util.PropertyProvider;
 
 import java.util.List;
@@ -19,7 +21,7 @@ import java.sql.SQLException;
 
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+
 
 @Repository
 public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRowMapper<ReportDesign>, ReportDesignDao
@@ -42,7 +44,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	 * @return ReportDesignPk
 	 * @throws ReportDesignDaoException 
 	 */
-	@Transactional(readOnly = false)
+	@TransactionalReadWrite
 	public ReportDesignPk insert(ReportDesign dto) throws ReportDesignDaoException
 	{
 		try{
@@ -64,7 +66,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Updates a single row in the report_design table.
 	 */
-	@Transactional(readOnly = false)
+	@TransactionalReadWrite
 	public void update(ReportDesignPk pk, ReportDesign dto) throws ReportDesignDaoException
 	{
 		try{
@@ -86,7 +88,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Updates a single row in the report_design table but doesn't make a new version.
 	 */
-	@Transactional(readOnly = false)
+	@TransactionalReadWrite
 	public void updateCurrentVersion(ReportDesignPk pk, ReportDesign dto) throws ReportDesignDaoException
 	{
 		try{
@@ -105,7 +107,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	 * Sets result data for a given report design in database
 	 * Is it really necessary???
 	 * */
-	@Transactional(readOnly = false)
+	@TransactionalReadWrite
 	public void setResultData(ReportDesignPk pk, ReportDesign dto)
 	{
 		DaoFactory.createPersistableObjectDao().update(pk);
@@ -116,7 +118,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	 * Activates a single row in report_design table
 	 * @param pk
 	 */
-	@Transactional(readOnly = false)
+	@TransactionalReadWrite
 	public void activate(ReportDesignPk pk) throws ReportDesignDaoException
 	{
 		try{
@@ -131,7 +133,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	/**
 	 * Activates multiple row in report_desing table
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void activateAll(List<ReportDesignPk> pkList) throws ReportDesignDaoException
 	{
 		for(ReportDesignPk pk : pkList){
@@ -143,7 +145,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	 * Deactivates a single row in database
 	 * @param pk
 	 */
-	@Transactional(readOnly = false)
+	@TransactionalReadWrite
 	public void deactivate(ReportDesignPk pk) throws ReportDesignDaoException
 	{
 		try{
@@ -158,7 +160,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	/**
 	 * Deactivates multiple row in report_desing table
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void deactivateAll(List<ReportDesignPk> pkList) throws ReportDesignDaoException
 	{
 		for(ReportDesignPk pk : pkList){
@@ -171,7 +173,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Deletes a single row in the report_design table.
 	 */
-	@Transactional(readOnly = false)
+	@TransactionalReadWrite
 	public void delete(ReportDesignPk pk) throws ReportDesignDaoException
 	{
 		try{
@@ -187,7 +189,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	/**
 	 * Deletes multiple given rows from the report_design table.
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void deleteAll(List<ReportDesignPk> pkList) throws ReportDesignDaoException
 	{
 		for(ReportDesignPk pk : pkList){
@@ -239,7 +241,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns current row from the report_design table that match the criteria 'id = :id '.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public ReportDesign findByPrimaryKey(Long id) throws ReportDesignDaoException
 	{
 		try {
@@ -252,7 +254,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 
 	}
 
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public ReportDesign findByPrimaryKey(Long id, Long versionId) throws ReportDesignDaoException
 	{
 		try {
@@ -269,7 +271,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_design table that match the criteria ''.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public List<ReportDesign> findAll() throws ReportDesignDaoException
 	{
 		try {
@@ -281,7 +283,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 
 	}
 
-	@Transactional
+	@TransactionalReadOnly
 	public int countAll() throws ReportDesignDaoException
 	{
 		try {
@@ -296,7 +298,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_design table that match the criteria '' limited by start and limit.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportDesign> findAll(Integer start, Integer limit, String sortBy, String sortDir) throws ReportDesignDaoException{
 		try {
 			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE " + QUERY_ACTIVE_AND_PASSIVE_WHERE + " ORDER BY " + getSortClause(sortBy, sortDir) + " limit ?, ?", this, start, limit);
@@ -309,7 +311,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_design table that match the criteria like query in onFields fields limited by start and limit.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportDesign> findAll(String query, List<String> onFields, Integer start, Integer limit, String sortBy, String sortDir) throws ReportDesignDaoException
 	{
 		try {
@@ -322,7 +324,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 
 	}
 
-	@Transactional
+	@TransactionalReadOnly
 	public int countAll(String query, List<String> onFields) throws ReportDesignDaoException
 	{
 		try {
@@ -338,7 +340,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all active rows from the report_design table that match the criteria ''.
 	 */
-	@Transactional(readOnly = true)
+	@TransactionalReadOnly
 	public List<ReportDesign> findAllActive() throws ReportDesignDaoException
 	{
 		try {
@@ -353,7 +355,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_design table that match the criteria 'id = :id'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportDesign> findByPersistableObject(Long id) throws ReportDesignDaoException
 	{
 		try {
@@ -368,7 +370,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_design table that match the criteria 'id = :id and version_id = :versionId'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportDesign> findByPersistableObject(Long id, Long versionId) throws ReportDesignDaoException
 	{
 		try {
@@ -384,7 +386,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_design table that match the criteria 'category_id = :categoryId'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportDesign> findByReportCategory(Long categoryId) throws ReportDesignDaoException
 	{
 		try {
@@ -399,7 +401,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_design table that match the criteria 'id = :id'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportDesign> findWhereIdEquals(Long id) throws ReportDesignDaoException
 	{
 		try {
@@ -414,7 +416,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_design table that match the criteria 'id = :id, version_id = :versionId'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportDesign> findWhereIdAndVersionIdEquals(Long id, Long versionId) throws ReportDesignDaoException
 	{
 		try {
@@ -429,7 +431,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_design table that match the criteria 'name = :name'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportDesign> findWhereNameEquals(String name) throws ReportDesignDaoException
 	{
 		try {
@@ -444,7 +446,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_design table that match the criteria 'description = :description'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportDesign> findWhereDescriptionEquals(String description) throws ReportDesignDaoException
 	{
 		try {
@@ -459,7 +461,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_design table that match the criteria 'category_id = :categoryId'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportDesign> findWhereCategoryIdEquals(Long categoryId) throws ReportDesignDaoException
 	{
 		try {
@@ -474,7 +476,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_design table that match the criteria 'query_text = :queryText'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportDesign> findWhereQueryTextEquals(String queryText) throws ReportDesignDaoException
 	{
 		try {
@@ -489,7 +491,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_design table that match the criteria 'select_part = :selectPart'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportDesign> findWhereSelectPartEquals(String selectPart) throws ReportDesignDaoException
 	{
 		try {
@@ -504,7 +506,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_design table that match the criteria 'result_data = :resultData'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportDesign> findWhereResultDataEquals(String resultData) throws ReportDesignDaoException
 	{
 		try {
@@ -519,7 +521,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_design table that match the criteria 'format_file = :formatFile'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportDesign> findWhereFormatFileEquals(String formatFile) throws ReportDesignDaoException
 	{
 		try {
@@ -534,7 +536,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	/** 
 	 * Returns all rows from the report_design table that match the criteria 'record_status = :recordStatus'.
 	 */
-	@Transactional
+	@TransactionalReadOnly
 	public List<ReportDesign> findWhereRecordStatusEquals(String recordStatus) throws ReportDesignDaoException
 	{
 		try {

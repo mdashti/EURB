@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
 
 import com.sharifpro.sample.dao.ContactDAO;
 import com.sharifpro.sample.model.Contact;
 import com.sharifpro.sample.util.Util;
+import com.sharifpro.transaction.annotation.TransactionalReadOnly;
+import com.sharifpro.transaction.annotation.TransactionalReadWrite;
 
 /**
  * Contact Service
@@ -25,7 +27,7 @@ public class ContactService {
 	 * Get all contacts
 	 * @return
 	 */
-	@Transactional(readOnly=true)
+	@TransactionalReadOnly
 	public List<Contact> getContactList(){
 
 		return contactDAO.getContacts();
@@ -36,7 +38,7 @@ public class ContactService {
 	 * @param data - json data from request
 	 * @return created contacts
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public List<Contact> create(Object data){
 
         List<Contact> newContacts = new ArrayList<Contact>();
@@ -61,7 +63,7 @@ public class ContactService {
 	 * @param data - json data from request
 	 * @return updated contacts
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public List<Contact> update(Object data){
 
 		List<Contact> returnContacts = new ArrayList<Contact>();
@@ -84,7 +86,7 @@ public class ContactService {
 	 * Delete contact/contacts
 	 * @param data - json data from request
 	 */
-	@Transactional
+	@TransactionalReadWrite
 	public void delete(Object data){
 
 		//it is an array - have to cast to array object
