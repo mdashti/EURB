@@ -154,7 +154,7 @@ summaryRenderer: function(v, params, data){
 
     doGroupEnd : function(buf, g, cs, ds, colCount) {
 		
-		/*var matrix = this.grid.view.groupsMatrix;
+		var matrix = this.grid.view.groupsMatrix;
 		
 		// console.dir(g);
 		
@@ -165,7 +165,7 @@ summaryRenderer: function(v, params, data){
 				buf[buf.length] = this.renderSummary({data: data}, cs);
 				buf[buf.length] = ['</div></div>','</div></div>'];
 			}
-		}, this);*/
+		}, this);
 		// var firstRec = g.rs[0]._groupId;
 		// console.dir(g.rs);
         // var data = this.calculate(g.rs, cs);
@@ -184,9 +184,9 @@ summaryRenderer: function(v, params, data){
        /* buf[buf.length] = this.renderSummary({data: data}, cs);
         buf[buf.length] = ['</div></div>','</div></div>'];*/
     	
-    	  var data = this.calculate(g.rs, cs);
+    	/*  var data = this.calculate(g.rs, cs);
           buf.push('</div>', this.renderSummary({data: data}, cs), '</div>');
-		
+		*/
 		/*
 		this.tempGid = firstRec;
 		if (!Ext.isDefined(this.groupRows)) {

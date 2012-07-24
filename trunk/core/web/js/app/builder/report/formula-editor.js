@@ -1,3 +1,24 @@
+/////////////////////////formula column combo///////////////////////////
+EURB.ReportColumn.formulaColumnCombo = new Ext.form.ComboBox({
+    typeAhead: true,
+    triggerAction: 'all',
+    lazyRender:true,
+    fieldLabel: EURB.ReportColumn.formulaColumns,
+    mode: 'local',
+    store: EURB.ReportDesign.columnMappingStore,
+    valueField: 'id',
+    displayField: 'title',
+    forceSelection: true,
+    allowBlank: true,
+    width:300,
+    listeners:{
+    	select: function(combo,record,index){
+    		addText('[' + record.get('mappedName') + '__t' + record.get('datasetId') + '.' + record.get('columnName') + ']');
+    	}
+    }
+});
+
+
 EURB.ReportColumn.formulaFieldSet = new Ext.form.FieldSet({
 	title: EURB.ReportColumn.formulaEditor,
 	   collapsible: true,

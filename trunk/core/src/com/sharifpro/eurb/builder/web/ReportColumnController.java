@@ -77,15 +77,6 @@ public class ReportColumnController {
 				reportColumn.setDesignId(reportDesign);
 				reportColumn.setDesignVersionId(reportVersion);
 				if(reportColumn.isNewRecord()) {
-					if(reportColumn.getColumnMappingId() != null){
-						ColumnMapping columnMapping = columnMappingDao.findByPrimaryKey(reportColumn.getColumnMappingId());
-						if(columnMapping != null){
-							List<ReportDataset> reportDataset = reportDatasetDao.findByReportDesignAndTableMapping(reportDesign, reportVersion, columnMapping.getTableMappingId());
-							if(reportDataset != null && reportDataset.size() > 0){
-								reportColumn.setDatasetId(reportDataset.get(0).getId());
-							}
-						}
-					}
 					//@ TODO : set col  type correctly
 					reportColumn.setColType(1);
 					reportColumn.setCustom(false);

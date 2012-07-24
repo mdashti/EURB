@@ -28,4 +28,6 @@
 		
 		<link rel="stylesheet" type="text/css" href="<%=resourcesUrl%>/js/extjs/resources/css/colorpicker.css">
 		
+		<link rel="stylesheet" type="text/css" href="<%=resourcesUrl%>/js/extjs/resources/css/LockingGridView.css">
+		
 		<link rel="stylesheet" type="text/css" href="<%=resourcesUrl%>/css/eurb-reports.css" />

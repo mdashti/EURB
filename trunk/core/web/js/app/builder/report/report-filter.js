@@ -1,3 +1,36 @@
+//////////////////filter column combo/////////////////////
+EURB.ReportFilter.columnCombo = new Ext.form.ComboBox({
+    typeAhead: true,
+    triggerAction: 'all',
+    lazyRender:true,
+    mode: 'local',
+    store:EURB.ReportDesign.columnMappingStore,
+    valueField: 'id',
+    displayField: 'title',
+    forceSelection: true,
+    width:400,
+    allowBlank: false
+});
+
+//////////////////join filter column combo///////////////////////
+EURB.ReportFilter.joinColumnCombo = new Ext.form.ComboBox({
+    typeAhead: true,
+    triggerAction: 'all',
+    lazyRender:true,
+    mode: 'local',
+    store: EURB.ReportDesign.columnMappingStore,
+    valueField: 'id',
+    displayField: 'title',
+    forceSelection: true,
+    allowBlank: false,
+    width:400,
+    listeners:{
+    	select: function(combo,record,index){
+    		form = EURB.ReportFilter.reportFilterGrid.recordForm.form.getForm();
+    		form.findField('operand1DatasetId').setValue(record.get('datasetId'));
+    	}
+    }
+});
 ////////////////////////////operator combo box///////////////////////////////
 EURB.ReportFilter.operatorCombo = new Ext.form.ComboBox({
     typeAhead: true,

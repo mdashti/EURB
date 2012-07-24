@@ -49,6 +49,8 @@ public class ReportColumn extends PersistableObject implements Serializable
 	 * This attribute maps to the column report_column_id in the report_column table.
 	 */
 	protected Long reportColumnId;
+	
+	protected Long selectedColumn;
 
 	/** 
 	 * This attribute maps to the column col_order in the report_column table.
@@ -198,7 +200,7 @@ public class ReportColumn extends PersistableObject implements Serializable
 	 */
 	public Long getColumnMappingId()
 	{
-		return columnMappingId;
+		return (columnMappingId == null || columnMappingId == 0) ? null : columnMappingId;
 	}
 
 	/**
@@ -238,7 +240,18 @@ public class ReportColumn extends PersistableObject implements Serializable
 	 */
 	public Long getReportColumnId()
 	{
-		return reportColumnId;
+		return (reportColumnId == null || reportColumnId == 0) ? null : reportColumnId;
+	}
+	
+	public Long getSelectedColumn()
+	{
+		if(reportColumnId != null && reportColumnId != 0){
+			return reportColumnId;
+		}
+		else
+		{
+			return columnMappingId;
+		}
 	}
 
 	/**

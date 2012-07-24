@@ -1,3 +1,46 @@
+///////////////////xAxis column combo////////////////////////////////			
+EURB.ReportChart.xAxisColumnCombo = new Ext.form.ComboBox({
+	fieldLabel:EURB.ReportChart.AxisColumn,
+	hiddenName:'xColumnMapping',
+    typeAhead: true,
+    triggerAction: 'all',
+    lazyRender:true,
+    mode: 'local',
+    store:EURB.ReportDesign.columnMappingStore,
+    valueField: 'id',
+    displayField: 'title',
+    forceSelection: true,
+    allowBlank: false,
+    width:300,
+    listeners:{
+    	select: function(combo,record,index){
+    		dsField = EURB.ReportChart.reportChartGrid.axisForm.getForm().findField('xDataset');
+    		dsField.setValue(record.get('datasetId'));
+    	}
+    }
+});
+
+/////////////////yAxis column combo////////////////////////////////
+EURB.ReportChart.yAxisColumnCombo = new Ext.form.ComboBox({
+	fieldLabel:EURB.ReportChart.AxisColumn,
+	hiddenName:'yColumnMapping',
+    typeAhead: true,
+    triggerAction: 'all',
+    lazyRender:true,
+    mode: 'local',
+    store:EURB.ReportDesign.columnMappingStore,
+    valueField: 'id',
+    displayField: 'title',
+    forceSelection: true,
+    allowBlank: false,
+    width:300,
+    listeners:{
+    	select: function(combo,record,index){
+    		dsField = EURB.ReportChart.reportChartGrid.axisForm.getForm().findField('yDataset');
+    		dsField.setValue(record.get('datasetId'));
+    	}
+    }
+});
 ////////////////////////////chart type combo box///////////////////////////////
 EURB.ReportChart.chartTypeCombo = new Ext.form.ComboBox({
     typeAhead: true,

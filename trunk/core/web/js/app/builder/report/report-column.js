@@ -1,3 +1,35 @@
+
+///////////////////columns combo////////////////////////////////////
+EURB.ReportColumn.columnCombo = new Ext.form.ComboBox({
+    typeAhead: true,
+    triggerAction: 'all',
+    lazyRender:true,
+    mode: 'local',
+    store: EURB.ReportDesign.columnMappingStore,
+    valueField: 'id',
+    displayField: 'title',
+    forceSelection: true,
+    allowBlank: true,
+    width:400,
+    listeners:{
+    	select: function(combo,record,index){
+    		rform = EURB.ReportColumn.reportColumnGrid.recordForm.form.getForm();
+    		rform.findField('columnHeader').setValue(record.get('mappedName'));
+    		rform.findField('datasetId').setValue(record.get('datasetId'));
+    		if(record.get('type')){
+    			rform.findField('reportColumnId').setValue(record.get('id'));
+    			rform.findField('columnMappingId').setValue(0);
+    		}
+    		else{
+    			rform.findField('columnMappingId').setValue(record.get('id'));
+    			rform.findField('reportColumnId').setValue(0);
+    		}
+    	}
+    }
+});
+
+
+
 ////////////////////////////alignment combo box///////////////////////////////
 EURB.ReportColumn.alignCombo = new Ext.form.ComboBox({
     typeAhead: true,
@@ -63,6 +95,16 @@ EURB.ReportColumn.sortTypeCombo = new Ext.form.ComboBox({
 
 
 
+//////////////////functions/////////////////////
+hideFields = function(){
+	rform = EURB.ReportColumn.reportColumnGrid.recordForm.form.getForm();
+	hideFormField(rform.findField('datasetId'));
+	hideFormField(rform.findField('reportColumnId'));
+	hideFormField(rform.findField('columnMappingId'));
+}
+
+
+
 
 
 ////////////////////////////report column grid/////////////////////////////////////
@@ -77,7 +119,9 @@ EURB.ReportColumn.store = new Ext.data.Store({
 			,{name:'designId', type:'int'}
 			,{name:'designVersionId', type:'int'}
 			,{name:'datasetId', type:'int'}
+			,{name:'selectedColumn', type:'int'}
 			,{name:'columnMappingId', type:'int'}
+			,{name:'reportColumnId', type:'int'}
 			,{name:'columnHeader', type:'string'}
 			,{name:'formula', type:'string'}
 			,{name:'colOrder', type:'int'}
@@ -110,8 +154,8 @@ EURB.ReportColumn.store = new Ext.data.Store({
 
 EURB.ReportColumn.cols = [{
 	 header:EURB.ReportColumn.Column
-	,id:'columnMappingId'
-	,dataIndex:'columnMappingId'
+	,id:'selectedColumn'
+	,dataIndex:'selectedColumn'
 	,width:30
 	,sortable:true
 	,editor:EURB.ReportColumn.columnCombo
@@ -205,6 +249,36 @@ EURB.ReportColumn.cols = [{
 	,sortable:true
 	,editor:EURB.ReportColumn.dirCombo
 	,renderer:EURB.ReportDesign.comboRenderer(EURB.ReportColumn.dirCombo)
+},{
+	 header:EURB.ReportColumn.ColumnMapping
+	,id:'columnMappingId'
+	,dataIndex:'columnMappingId'
+	,width:20
+	,sortable:true
+	,hidden:true
+	,editor:new Ext.form.TextField({
+		allowBlank:true
+	})
+},{
+	header:EURB.ReportColumn.ReportColumn
+	,id:'reportColumnId'
+	,dataIndex:'reportColumnId'
+	,width:20
+	,sortable:true
+	,hidden:true
+	,editor:new Ext.form.TextField({
+		allowBlank:true
+	})
+},{
+	header:EURB.ReportColumn.Dataset
+	,id:'datasetId'
+	,dataIndex:'datasetId'
+	,width:20
+	,sortable:true
+	,hidden:true
+	,editor:new Ext.form.TextField({
+		allowBlank:true
+	})
 }];
 
 EURB.ReportColumn.ColumnGrid = Ext.extend(Ext.grid.EditorGridPanel, {
@@ -220,7 +294,7 @@ EURB.ReportColumn.ColumnGrid = Ext.extend(Ext.grid.EditorGridPanel, {
              title:EURB.addEdit+' '+EURB.ReportColumn.title
             ,iconCls:'icon-edit-record'
             ,columnCount:1
-            ,ignoreFields:{id:true,designId:true,designVersionId:true,datasetId:true,formula:true}
+            ,ignoreFields:{id:true,designId:true,designVersionId:true,formula:true}
             ,formConfig:{
                  labelWidth:80
                 ,buttonAlign:'right'
@@ -392,6 +466,7 @@ EURB.ReportColumn.ColumnGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 
             case 'icon-edit-record':
            		this.recordForm.show(record, grid.getView().getCell(row, col));
+           		hideFields();
             break;
             
             case 'icon-calculator':

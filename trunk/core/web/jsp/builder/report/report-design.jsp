@@ -59,6 +59,9 @@
 			EURB.ReportDataset.Table = '<spring:message code="eurb.app.builder.report.dataset.table" />';
 			EURB.ReportDataset.Order = '<spring:message code="eurb.app.builder.report.dataset.order" />';
 			EURB.ReportDataset.title = '<spring:message code="eurb.app.builder.report.dataset.title" />';
+			EURB.ReportDataset.BaseReportCategory = '<spring:message code="eurb.app.builder.report.dataset.category" />';
+			EURB.ReportDataset.BaseReportDesign = '<spring:message code="eurb.app.builder.report.dataset.report" />';
+			EURB.ReportDataset.Type = '<spring:message code="eurb.app.builder.report.dataset.type" />';
 			
 			
 			EURB.ReportColumn = {};
@@ -172,250 +175,63 @@
 			EURB.GroupAggregation.searchAction = '<spring:url value="/builder/report/groupAggregationSearch.spy" />';
 			EURB.GroupAggregation.storeAggregationAction = '<spring:url value="/builder/report/groupAggregationStore.spy" />';
 			
+			EURB.ReportDesign.categoryStore = new Ext.data.ArrayStore({
+		        id: 0,
+		        fields: [
+		            'id',
+		            'name'
+		        ],
+		        data: ${categoriesComboContent}
+		    });
+			
+			EURB.ReportDataset.reportStore = new Ext.data.ArrayStore({
+		        id: 1,
+		        fields: [
+		            'id',
+		            'versionId',
+		            'name',
+		            'categoryId'
+		        ],
+		        data: ${reportDesignsComboContent}
+		    });
 			
 			
-			EURB.ReportDesign.categoryCombo = new Ext.form.ComboBox({
-			    typeAhead: true,
-			    triggerAction: 'all',
-			    lazyRender:true,
-			    mode: 'local',
-			    fieldLabel: EURB.ReportDesign.CategoryField,
-			    hiddenName: 'categoryId',
-			    anchor:'100%',  // anchor width by percentage
-				store: new Ext.data.ArrayStore({
-			        id: 0,
-			        fields: [
-			            'id',
-			            'name'
-			        ],
-			        data: ${categoriesComboContent}
-			    }),
-			    valueField: 'id',
-			    displayField: 'name'
-			});
+			EURB.ReportDataset.tableMappingStore =  new Ext.data.ArrayStore({
+		        id: 2,
+		        fields: [
+		            'id',
+		            'mappedName'
+		        ],
+		        data: ${tableMappingComboContent}
+		    });
 			
-			
-			
-			EURB.ReportDesign.comboRenderer = function(combo){
-			    return function(value){
-			        var record = combo.findRecord(combo.valueField, value);
-			        return record ? record.get(combo.displayField) : combo.valueNotFoundText;
-			    }
-			};
-
-			EURB.ReportDataset.tableCombo = new Ext.form.ComboBox({
-			    typeAhead: true,
-			    triggerAction: 'all',
-			    lazyRender:true,
-			    mode: 'local',
-			    store: new Ext.data.ArrayStore({
-			        id: 0,
-			        fields: [
-			            'id',
-			            'mappedName'
-			        ],
-			        data: ${tableMappingComboContent}
-			    }),
-			    valueField: 'id',
-			    displayField: 'mappedName',
-			    forceSelection: true,
-			    allowBlank: false
-			});
 			
 			EURB.ReportDesign.columnMappingStore = new Ext.data.ArrayStore({
-		        id: 0,
+		        id: 3,
 		        fields: [
 		            'id',
 		            'title',
 		            'datasetId',
 		            'mappedName',
 		            'tableMappedName',
-		            'columnName'
+		            'columnName',
+		            'type'
 		        ],
 		        data: ${columnMappingComboContent}
 		    });
 			
-			EURB.ReportColumn.columnCombo = new Ext.form.ComboBox({
-			    typeAhead: true,
-			    triggerAction: 'all',
-			    lazyRender:true,
-			    mode: 'local',
-			    store: EURB.ReportDesign.columnMappingStore,
-			    valueField: 'id',
-			    displayField: 'title',
-			    forceSelection: true,
-			    allowBlank: true,
-			    width:400,
-			    listeners:{
-			    	select: function(combo,record,index){
-			    		rform = EURB.ReportColumn.reportColumnGrid.recordForm.form.getForm();
-			    		rform.items.itemAt(1).setValue(record.get('mappedName'));
-			    	}
-			    }
-			});
-			
-			EURB.ReportColumn.formulaColumnCombo = new Ext.form.ComboBox({
-			    typeAhead: true,
-			    triggerAction: 'all',
-			    lazyRender:true,
-			    fieldLabel: EURB.ReportColumn.formulaColumns,
-			    mode: 'local',
-			    store: EURB.ReportDesign.columnMappingStore,
-			    valueField: 'id',
-			    displayField: 'title',
-			    forceSelection: true,
-			    allowBlank: true,
-			    width:300,
-			    listeners:{
-			    	select: function(combo,record,index){
-			    		addText('[' + record.get('mappedName') + '__t' + record.get('datasetId') + '.' + record.get('columnName') + ']');
-			    	}
-			    }
-			});
 
-			
-			EURB.ReportFilter.columnCombo = new Ext.form.ComboBox({
-			    typeAhead: true,
-			    triggerAction: 'all',
-			    lazyRender:true,
-			    mode: 'local',
-			    store:EURB.ReportDesign.columnMappingStore,
-			    valueField: 'id',
-			    displayField: 'title',
-			    forceSelection: true,
-			    width:400,
-			    allowBlank: false
-			});
-			
-			EURB.ReportFilter.joinColumnCombo = new Ext.form.ComboBox({
-			    typeAhead: true,
-			    triggerAction: 'all',
-			    lazyRender:true,
-			    mode: 'local',
-			    store: EURB.ReportDesign.columnMappingStore,
-			    valueField: 'id',
-			    displayField: 'title',
-			    forceSelection: true,
-			    allowBlank: false,
-			    width:400,
-			    listeners:{
-			    	select: function(combo,record,index){
-			    		form = EURB.ReportFilter.reportFilterGrid.recordForm.form.getForm();
-			    		form.findField('operand1DatasetId').setValue(record.get('datasetId'));
-			    	}
+			EURB.ReportDesign.comboRenderer = function(combo){
+			    return function(value){
+			        var record = combo.findRecord(combo.valueField, value);
+			        return record ? record.get(combo.displayField) : combo.valueNotFoundText;
 			    }
-			});
-			
-			EURB.ReportChart.xAxisColumnCombo = new Ext.form.ComboBox({
-				fieldLabel:EURB.ReportChart.AxisColumn,
-				hiddenName:'xColumnMapping',
-			    typeAhead: true,
-			    triggerAction: 'all',
-			    lazyRender:true,
-			    mode: 'local',
-			    store:EURB.ReportDesign.columnMappingStore,
-			    valueField: 'id',
-			    displayField: 'title',
-			    forceSelection: true,
-			    allowBlank: false,
-			    width:300,
-			    listeners:{
-			    	select: function(combo,record,index){
-			    		dsField = EURB.ReportChart.reportChartGrid.axisForm.getForm().findField('xDataset');
-			    		dsField.setValue(record.get('datasetId'));
-			    	}
-			    }
-			});
-			
-			EURB.ReportChart.yAxisColumnCombo = new Ext.form.ComboBox({
-				fieldLabel:EURB.ReportChart.AxisColumn,
-				hiddenName:'yColumnMapping',
-			    typeAhead: true,
-			    triggerAction: 'all',
-			    lazyRender:true,
-			    mode: 'local',
-			    store:EURB.ReportDesign.columnMappingStore,
-			    valueField: 'id',
-			    displayField: 'title',
-			    forceSelection: true,
-			    allowBlank: false,
-			    width:300,
-			    listeners:{
-			    	select: function(combo,record,index){
-			    		dsField = EURB.ReportChart.reportChartGrid.axisForm.getForm().findField('yDataset');
-			    		dsField.setValue(record.get('datasetId'));
-			    	}
-			    }
-			});
-			
-			EURB.GroupAggregation.columnCombo = new Ext.form.ComboBox({
-				fieldLabel:EURB.GroupAggregation.AggregatedColumn,
-				hiddenName:'aggregatedColumnMappingId',
-			    typeAhead: true,
-			    triggerAction: 'all',
-			    lazyRender:true,
-			    mode: 'local',
-			    store:EURB.ReportDesign.columnMappingStore,
-			    valueField: 'id',
-			    displayField: 'title',
-			    forceSelection: true,
-			    allowBlank: false,
-			    width:300,
-			    listeners:{
-			    	select: function(combo,record,index){
-			    		dsField = EURB.GroupAggregation.form.getForm().findField('aggregatedColumnDatasetId');
-			    		dsField.setValue(record.get('datasetId'));
-			    	}
-			    }
-			});
-
-			/* updateReportColumnComboContent = function(){
-				var o = {
-					 url:EURB.ReportColumn.updateComboContent
-					,method:'post'
-					,callback:updateComboContentCallback
-					,scope:this
-					,params:{
-						cmd: 'storeData',
-						reportDesign : EURB.ReportDesign.selectedDesign,
-						reportVersion: EURB.ReportDesign.selectedVersion
-					}
-				};
-				Ext.Ajax.request(o);
-			};
-			
-			updateComboContentCallback = function(options, success, response) {
-				if(true !== success) {
-					this.showError(response.responseText);
-					return;
-				}
-				try {
-					var o = Ext.decode(response.responseText);
-				}
-				catch(e) {
-					this.showError(response.responseText, EURB.unableToDecodeJSON);
-					return;
-				}
-				if(true !== o.success) {
-					this.showError(o.error || EURB.unknownError);
-					return;
-				}
-				/* EURB.ReportDesign.columnCombo.bindStore(new Ext.data.ArrayStore({
-			        id: 0,
-			        fields: [
-			            'id',
-			            'mappedName'
-			        ],
-			        data: o.data
-			    }));
-				EURB.ReportColumn.reportColumnGrid.colModel.getColumnAt(0).setEditor(EURB.ReportDesign.columnCombo); 
-				window.location.href = EURB.baseURL+'builder/report/report'+EURB.ReportDesign.selectedDesign+'-design.spy';
-			};
-			 */
-			
-			 updateReportColumnComboContent = function(){
+			};	
+						
+			updateReportColumnComboContent = function(){
 				 window.location.href = EURB.baseURL+'builder/report/report'+EURB.ReportDesign.selectedDesign+'-design.spy';
-			 }
+			}
+			
 			hideFormField = function(field){
 				field.hide();
 				field.container.up('div.x-form-item').setStyle('display', 'none');

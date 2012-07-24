@@ -1,3 +1,24 @@
+//////////////////////aggregation column combo/////////////////////
+EURB.GroupAggregation.columnCombo = new Ext.form.ComboBox({
+	fieldLabel:EURB.GroupAggregation.AggregatedColumn,
+	hiddenName:'aggregatedColumnMappingId',
+    typeAhead: true,
+    triggerAction: 'all',
+    lazyRender:true,
+    mode: 'local',
+    store:EURB.ReportDesign.columnMappingStore,
+    valueField: 'id',
+    displayField: 'title',
+    forceSelection: true,
+    allowBlank: false,
+    width:300,
+    listeners:{
+    	select: function(combo,record,index){
+    		dsField = EURB.GroupAggregation.form.getForm().findField('aggregatedColumnDatasetId');
+    		dsField.setValue(record.get('datasetId'));
+    	}
+    }
+});
 ////////////////////////////aggregation function combo box///////////////////////////////
 EURB.GroupAggregation.aggregationFunctionCombo = new Ext.form.ComboBox({
 	fieldLabel:EURB.GroupAggregation.AggregateFunction,

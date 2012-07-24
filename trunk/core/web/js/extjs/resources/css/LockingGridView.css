@@ -1,6 +1,6 @@
 /*!
- * Ext JS Library 3.2.1
- * Copyright(c) 2006-2010 Ext JS, Inc.
+ * Ext JS Library 3.2.0
+ * Copyright(c) 2006-2010 Ext JS, LLC
  * licensing@extjs.com
  * http://www.extjs.com/license
  */
@@ -10,7 +10,7 @@
 }
 
 .x-grid3-locked {
-	border-left: 1px solid #99BBE8;
+	border-right: 1px solid #99BBE8;
 }
 
 .x-grid3-locked .x-grid3-scroller {
@@ -18,7 +18,7 @@
 }
 
 .x-grid3-locked .x-grid3-row {
-	border-left: 0;
+	border-right: 0;
 }
 
 .x-grid3-scroll-spacer {
@@ -26,19 +26,9 @@
 }
 
 .x-grid3-unlocked .x-grid3-header-offset {
-	padding-right: 0;
+	padding-left: 0;
 }
 
 .x-grid3-unlocked .x-grid3-row {
-	border-right: 0;
-}
-
-.x-grid-group-unlocked .x-grid-group-title
-{
-    visibility:hidden;
-}
-
-.x-grid-group-unlocked .x-grid-group-nolockedcolumns .x-grid-group-title
-{
-    visibility:visible;
+	border-left: 0;
 }

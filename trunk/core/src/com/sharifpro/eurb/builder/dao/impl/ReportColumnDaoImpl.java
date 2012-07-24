@@ -211,14 +211,16 @@ public class ReportColumnDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportColumn> findAll(ReportDesign design) throws ReportColumnDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE r.design_id = ? ORDER BY r.id, r.dataset_id, r.design_id, r.design_version_id", this, design.getId());
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE r.design_id = ? AND r.design_version_id = ? " +
+					"ORDER BY r.id, r.dataset_id, r.design_id, r.design_version_id", this, design.getId(), design.getVersionId());
 		}
 		catch (Exception e) {
 			throw new ReportColumnDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 
 	}
-	
+
+
 	/** 
 	 * Returns all rows from the report_column table that match the criteria 'design_id = :design.getId()'.
 	 */

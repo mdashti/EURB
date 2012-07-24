@@ -1,3 +1,17 @@
+EURB.ReportDesign.categoryCombo = new Ext.form.ComboBox({
+	typeAhead: true,
+	triggerAction: 'all',
+	lazyRender:true,
+	mode: 'local',
+	fieldLabel: EURB.ReportDesign.CategoryField,
+	hiddenName: 'categoryId',
+	anchor:'100%',  // anchor width by percentage
+	store: EURB.ReportDesign.categoryStore,
+	valueField: 'id',
+	displayField: 'name'
+});
+			
+
 EURB.ReportDesign.InfoForm = new Ext.form.FormPanel({
 			width: '100%'
 			,height: 300

@@ -16,14 +16,20 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.sharifpro.eurb.builder.dao.ReportCategoryDao;
+import com.sharifpro.eurb.builder.dao.ReportColumnDao;
 import com.sharifpro.eurb.builder.dao.ReportDatasetDao;
 import com.sharifpro.eurb.builder.dao.ReportDesignDao;
+import com.sharifpro.eurb.builder.exception.ReportColumnDaoException;
+import com.sharifpro.eurb.builder.exception.ReportDatasetDaoException;
+import com.sharifpro.eurb.builder.exception.ReportDesignDaoException;
 import com.sharifpro.eurb.builder.model.ReportCategory;
+import com.sharifpro.eurb.builder.model.ReportColumn;
 import com.sharifpro.eurb.builder.model.ReportDataset;
 import com.sharifpro.eurb.builder.model.ReportDesign;
 import com.sharifpro.eurb.builder.model.ReportDesignPk;
 import com.sharifpro.eurb.management.mapping.dao.ColumnMappingDao;
 import com.sharifpro.eurb.management.mapping.dao.TableMappingDao;
+import com.sharifpro.eurb.management.mapping.exception.ColumnMappingDaoException;
 import com.sharifpro.eurb.management.mapping.model.ColumnMapping;
 import com.sharifpro.eurb.management.mapping.model.TableMapping;
 import com.sharifpro.util.PropertyProvider;
@@ -45,6 +51,7 @@ public class ReportDesignController {
 	private ColumnMappingDao columnMappingDao;
 	private ReportDatasetDao reportDatasetDao;
 	private ReportCategoryDao reportCategoryDao;
+	private ReportColumnDao reportColumnDao;
 
 
 
@@ -70,34 +77,90 @@ public class ReportDesignController {
 		// TODO :  actually we should make a new version
 		mv.addObject("version", reportDesign.getVersionId().toString());
 		mv.addObject("name", reportDesign.getName());
+
+		Long id;
+		String name;
+		//categories combo content
+		List<ReportCategory> reportCategories = reportCategoryDao.findAll();
+		Object[][] categoriesArr = new Object[reportCategories.size()][2];
+		for(int i = 0; i < reportCategories.size(); i++) {
+			categoriesArr[i][0] = reportCategories.get(i).getId();
+			categoriesArr[i][1] = reportCategories.get(i).getName();
+		}
+
+		mv.addObject("categoriesComboContent", jsonUtil.getJSONFromObject(categoriesArr));
+
+		//report design combo content
+		List<ReportDesign> reportDesigns = reportDesignDao.findAll();
+		Object[][] reportsArray = new Object[reportDesigns.size()][4];
+		for(int i = 0; i < reportDesigns.size(); i++){
+			reportsArray[i][0] = reportDesigns.get(i).getId();
+			reportsArray[i][1] = reportDesigns.get(i).getVersionId();
+			reportsArray[i][2] = reportDesigns.get(i).getName();
+			reportsArray[i][3] = reportDesigns.get(i).getCategoryId();
+		}
+
+		mv.addObject("reportDesignsComboContent", jsonUtil.getJSONFromObject(reportsArray));
+
+		//table mapping combo content
 		HashMap<Long, String> tableMappingIdName = new HashMap<Long, String>();
 		List<TableMapping> tableMappings = tableMappingDao.findAllMapped(reportDesign);
 		Object[][] tableMappingArr = new Object[tableMappings.size()][2];
 		for(int i = 0; i < tableMappings.size(); i++) {
-			tableMappingArr[i][0] = tableMappings.get(i).getId();
-			tableMappingArr[i][1] = tableMappings.get(i).getMappedName();
-			tableMappingIdName.put(tableMappings.get(i).getId(), tableMappings.get(i).getMappedName());
+			id = tableMappings.get(i).getId();
+			name = tableMappings.get(i).getMappedName();
+			tableMappingArr[i][0] = id;
+			tableMappingArr[i][1] = name;
+			tableMappingIdName.put(id, name);
 		}
 
 		mv.addObject("tableMappingComboContent", jsonUtil.getJSONFromObject(tableMappingArr));
 
+		//column mapping combo content
+		mv.addObject("columnMappingComboContent", jsonUtil.getJSONFromObject(getColumnMappingArray(reportDesign, tableMappingIdName)));
+
+		mv.setViewName("/builder/report/report-design");
+		return mv;
+	}
+
+
+
+	private Object[][] getColumnMappingArray(ReportDesign reportDesign, HashMap<Long, String> tableMappingIdName) throws ReportDatasetDaoException, ColumnMappingDaoException, ReportColumnDaoException, ReportDesignDaoException
+	{
 		HashMap<Long, ArrayList<Object>> columns = new HashMap<Long, ArrayList<Object>>();
 		ArrayList<Object> info;
 		List<ReportDataset> reportDatasets = reportDatasetDao.findAll(reportDesign);
 		for(ReportDataset rds : reportDatasets){
-			List<ColumnMapping> columnMappings = columnMappingDao.findAllMapped(rds);
-			for(ColumnMapping cm : columnMappings){
-				info = new ArrayList<Object>();
-				info.add(tableMappingIdName.get(rds.getTableMappingId()) + " - " + cm.getMappedName());
-				info.add(rds.getId());
-				info.add(cm.getMappedName());
-				info.add(tableMappingIdName.get(rds.getTableMappingId()));
-				info.add(cm.getColumnName());
-				columns.put(cm.getId(), info);
+			if(rds.getTableMappingId() != null && rds.getTableMappingId() != 0){
+				List<ColumnMapping> columnMappings = columnMappingDao.findAllMapped(rds);
+				for(ColumnMapping cm : columnMappings){
+					info = new ArrayList<Object>();
+					info.add(tableMappingIdName.get(rds.getTableMappingId()) + " - " + cm.getMappedName());
+					info.add(rds.getId());
+					info.add(cm.getMappedName());
+					info.add(tableMappingIdName.get(rds.getTableMappingId()));
+					info.add(cm.getColumnName());
+					info.add(0);
+					columns.put(cm.getId(), info);
+				}
+			}
+			else if(rds.getBaseReportId() != null && rds.getBaseReportId() != 0){
+				ReportDesign design = reportDesignDao.findByPrimaryKey(rds.getBaseReportId(), rds.getBaseReportVersionId());
+				List<ReportColumn> reportColumns = reportColumnDao.findAll(design);
+				for(ReportColumn rc : reportColumns){
+					info = new ArrayList<Object>();
+					info.add(design.getName() + " - " + rc.getColumnHeader());
+					info.add(rds.getId());
+					info.add(rc.getColumnHeader());
+					info.add(design.getName());
+					info.add(rc.getColumnMapping().getColumnName());
+					info.add(1);
+					columns.put(rc.getId(), info);
+				}
 			}
 		}
 		Set<Long> ck = columns.keySet();
-		Object[][] columnMappingArr = new Object[ck.size()][6];
+		Object[][] columnMappingArr = new Object[ck.size()][7];
 		int i = 0;
 		for(Long key : ck){
 			ArrayList<Object> arr = columns.get(key);
@@ -107,22 +170,10 @@ public class ReportDesignController {
 			columnMappingArr[i][3] = arr.get(2);
 			columnMappingArr[i][4] = arr.get(3);
 			columnMappingArr[i][5] = arr.get(4);
+			columnMappingArr[i][6] = arr.get(5);
 			i++;
 		}
-
-		mv.addObject("columnMappingComboContent", jsonUtil.getJSONFromObject(columnMappingArr));
-
-		List<ReportCategory> reportCategories = reportCategoryDao.findAll();
-		Object[][] categoriesArr = new Object[reportCategories.size()][2];
-		for(i = 0; i < reportCategories.size(); i++) {
-			categoriesArr[i][0] = reportCategories.get(i).getId();
-			categoriesArr[i][1] = reportCategories.get(i).getName();
-		}
-
-		mv.addObject("categoriesComboContent", jsonUtil.getJSONFromObject(categoriesArr));
-
-		mv.setViewName("/builder/report/report-design");
-		return mv;
+		return columnMappingArr;
 	}
 
 	@RequestMapping(value="/builder/report/reportSearch.spy")
@@ -192,6 +243,10 @@ public class ReportDesignController {
 		this.reportDesignDao = reportDesignDao;
 	}
 
+	@Autowired
+	public void setReportColumnDao(ReportColumnDao reportColumnDao){
+		this.reportColumnDao = reportColumnDao;
+	}
 
 
 	@Autowired

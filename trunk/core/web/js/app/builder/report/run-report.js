@@ -1,14 +1,15 @@
-EURB.RunReport.groupView = new Ext.ux.MultiGroupingView({ 
+EURB.RunReport.groupView = new Ext.ux.LockingMultiGroupingGridView({ 
 		hideGroupedColumn :true,
         forceFit: true,
-        emptyGroupText: 'All Group Fields Empty',
+        emptyGroupText: EURB.RunReport.EmptyGroupField,
         displayEmptyFields: true, //you can choose to show the group fields, even when they have no values
-        groupTextTpl: '{text}', 
+        groupTextTpl: '{text} : {gvalue}', 
         displayFieldSeperator: ', ' //you can control how the display fields are seperated
 });
   
  
- 
+//Instantiate LockingGridGroupSummary
+var groupSummary = new Ext.grid.LockingGridGroupSummary();
  
  
  
@@ -20,12 +21,13 @@ EURB.RunReport.Grid = Ext.extend(Ext.grid.GridPanel, {
 	,loadMask:true
 	,stripeRows:true
 	,title: EURB.RunReport.viewReport
+	,plugins:[groupSummary]
 	,initComponent:function() {
 		
 		// hard coded - cannot be changed from outside
 		var config = {
 			store: EURB.RunReport.store
-			,columns:EURB.RunReport.cols
+			,cm:EURB.RunReport.cols
 		};
 		if(EURB.RunReport.HasGroup){
 			config.view = EURB.RunReport.groupView; 
@@ -96,12 +98,33 @@ EURB.RunReport.Grid = Ext.extend(Ext.grid.GridPanel, {
 
 // register xtype
 //Ext.reg('report.Grid', EURB.RunReport.Grid);
-EURB.RunReport.runReportGrid = new EURB.RunReport.Grid();
+if(EURB.RunReport.HasGroup){
+	EURB.RunReport.runReportGrid = new Ext.Panel({
+	    layout: 'border',
+		viewConfig: { forceFit: true },
+	    border: false,
+	    width: '100%',
+	    //html: '<div id="container" style="width: 50%; height: 400px; direction: ltr !important;"></div>'
+	    items: [{
+	    	region: 'center',
+			split: true,
+			width: '100%',
+			height: '100%',
+			autoEl: 
+			{
+				tag: 'div',
+				id: 'group'
+	        }
+	    }]
+	});
+}
+else{
+	EURB.RunReport.runReportGrid = new EURB.RunReport.Grid();
+}
 
 // application main entry point
 Ext.onReady(function() {
 	
-		
 	chartRequestCallback = function(options, success, response) {
 		if(true !== success) {
 			this.showError(response.responseText);
@@ -204,12 +227,34 @@ Ext.onReady(function() {
 			        }
 			    }
 			]},
-		    EURB.RunReport.runReportGrid]
+			EURB.RunReport.runReportGrid]
 		});
 		EURB.mainPanel.items.add(EURB.RunReport.chartPanel);
 	}
 	else{
 		EURB.mainPanel.items.add(EURB.RunReport.runReportGrid);
 	}
-    EURB.mainPanel.doLayout(); 
+
+    EURB.mainPanel.doLayout();
+    
+    if(EURB.RunReport.HasGroup){
+	    EURB.RunReport.multiGroup = new Ext.ux.MultiGroupingPanel({
+		   	 store: EURB.RunReport.store
+		   	,cm:new Ext.ux.grid.LockingColumnModel(EURB.RunReport.cols)
+		   	,view: EURB.RunReport.groupView
+		   	,plugins:[groupSummary]
+		   	,width: '100%'
+		   	,height: 700
+		   	,border:true
+		   	,collapsible: true
+		   	,animCollapse: true
+		   	,title: EURB.RunReport.viewReport
+			,iconCls: 'icon-grid'
+		   	,renderTo: 'group'
+	   }); 
+	
+	   EURB.RunReport.store.load();
+    }
+
+	 
 });
