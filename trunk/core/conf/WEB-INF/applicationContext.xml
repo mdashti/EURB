@@ -50,8 +50,8 @@
 	</bean>
 	
 	<!--bean class="org.springframework.security.authentication.dao.ReflectionSaltSource" id="saltSource">
-		<property name="userPropertyToUse" value="username"/>
-	</bean-->
+			<property name="userPropertyToUse" value="username"/>
+		</bean-->
 
 	<bean class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" id="passwordEncoder" />
 
@@ -110,6 +110,56 @@
 	<bean id="authenticationEntryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
 		<property name="loginFormUrl" value="/login.spy" />
 		<property name="forceHttps" value="false" />
+	</bean>
+
+	<bean id="aclService" class="com.sharifpro.eurb.management.security.dao.impl.AclServiceImpl">
+		<constructor-arg ref="EURBDataSource"/>
+		<constructor-arg ref="lookupStrategy"/>
+		<constructor-arg ref="aclCache"/>
+	</bean>
+
+	<bean id="lookupStrategy" class="org.springframework.security.acls.jdbc.BasicLookupStrategy">
+		<constructor-arg ref="EURBDataSource"/>
+		<constructor-arg ref="aclCache"/>
+		<constructor-arg ref="aclAuthorizationStrategy"/>
+		<constructor-arg ref="grantingStrategy"/>
+	</bean>
+
+	<bean id="aclCache" class="org.springframework.security.acls.domain.EhCacheBasedAclCache">
+		<constructor-arg>
+			<bean class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+				<property name="cacheManager">
+					<bean class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+						<property name="shared" value="true"/>
+					</bean>
+				</property>
+				<property name="cacheName" value="aclCache"/>
+			</bean>
+		</constructor-arg>
+		<constructor-arg ref="grantingStrategy"/>
+		<constructor-arg ref="aclAuthorizationStrategy"/>
+	</bean>
+
+	<bean id="aclAuthorizationStrategy" class="org.springframework.security.acls.domain.AclAuthorizationStrategyImpl">
+		<constructor-arg>
+			<list>
+				<bean class="org.springframework.security.core.authority.GrantedAuthorityImpl">
+					<constructor-arg value="ROLE_ADMIN"/>
+				</bean>
+				<bean class="org.springframework.security.core.authority.GrantedAuthorityImpl">
+					<constructor-arg value="ROLE_ADMIN"/>
+				</bean>
+				<bean class="org.springframework.security.core.authority.GrantedAuthorityImpl">
+					<constructor-arg value="ROLE_ADMIN"/>
+				</bean>
+			</list>
+		</constructor-arg>
+	</bean>
+
+	<bean id="grantingStrategy" class="org.springframework.security.acls.domain.DefaultPermissionGrantingStrategy">
+		<constructor-arg>
+            <bean class="com.sharifpro.eurb.management.security.logger.Log4JAuditLogger"/>
+        </constructor-arg>
 	</bean>
 	<!-- Finish Authentication/Auhorization Config -->
 
