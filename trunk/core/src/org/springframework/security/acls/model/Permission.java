@@ -16,6 +16,8 @@ package org.springframework.security.acls.model;
 
 import java.io.Serializable;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 /**
  * Represents a permission granted to a <tt>Sid</tt> for a given domain object.
  *
@@ -53,5 +55,6 @@ public interface Permission extends Serializable {
      *
      * @return a 32-character bit pattern
      */
+    @JsonIgnore
     String getPattern();
 }

@@ -1,5 +1,7 @@
 package com.sharifpro.eurb;
 
+import org.springframework.security.acls.model.AclService;
+
 import com.sharifpro.eurb.builder.dao.GroupAggregationDao;
 import com.sharifpro.eurb.builder.dao.ReportCategoryDao;
 import com.sharifpro.eurb.builder.dao.ReportColumnDao;
@@ -191,4 +193,13 @@ public class DaoFactory
 		return SharifProApplicationContext.getApplicationContext().getBean( UserDao.class );
 	}
 
+	/**
+	 * Method 'createAclService'
+	 * 
+	 * @return AclService
+	 */
+	public static AclService createAclService()
+	{
+		return SharifProApplicationContext.getApplicationContext().getBean( AclService.class );
+	}
 }

@@ -17,6 +17,8 @@ package org.springframework.security.acls.model;
 
 import java.io.Serializable;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 
 /**
  * Represents an individual permission assignment within an {@link Acl}.
@@ -32,6 +34,7 @@ import java.io.Serializable;
 public interface AccessControlEntry extends Serializable {
     //~ Methods ========================================================================================================
 
+	@JsonIgnore
     Acl getAcl();
 
     /**

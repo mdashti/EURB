@@ -162,9 +162,6 @@ public class ReportListController {
 		children.addAll(childReports);
 		return children;
 	}
-	
-
-	
 
 	@RequestMapping(value="/builder/report/reportRemove.spy")
 	public @ResponseBody Map<String,? extends Object> delete(@RequestParam Object data) throws Exception {

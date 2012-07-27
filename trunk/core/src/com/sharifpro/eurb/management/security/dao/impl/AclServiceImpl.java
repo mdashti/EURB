@@ -3,31 +3,37 @@ package com.sharifpro.eurb.management.security.dao.impl;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.sql.DataSource;
 
-//import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.security.acls.domain.BasePermission;
+import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.jdbc.JdbcMutableAclService;
 import org.springframework.security.acls.jdbc.LookupStrategy;
 import org.springframework.security.acls.model.AclCache;
-//import org.springframework.stereotype.Repository;
+import org.springframework.security.acls.model.ObjectIdentity;
 
+import com.sharifpro.db.DatabaseUtils;
+import com.sharifpro.eurb.management.mapping.model.PersistableObject;
 import com.sharifpro.util.SessionManager;
 
-//@Repository
+/**
+ * Our extended implemetation for AclService
+ * 
+ * @author <A HREF="mailto:m_dashti@ce.sharif.edu">Mohammad Dashti</A>
+ */
 public class AclServiceImpl extends JdbcMutableAclService {
 	public static int FULL_PERMISSION_MASK = BasePermission.READ.getMask() + BasePermission.WRITE.getMask()
 			+ BasePermission.CREATE.getMask() + BasePermission.DELETE.getMask()
-			+ BasePermission.ADMINISTRATION.getMask() + ExtendedPermission.SHARING.getMask();
+			+ BasePermission.ADMINISTRATION.getMask() /*+ ExtendedPermission.SHARING.getMask()*/;
 	
-	//@Autowired
-	public AclServiceImpl(@Qualifier("EURBDataSource") DataSource dataSource, LookupStrategy lookupStrategy, AclCache aclCache) {
+	public AclServiceImpl(DataSource dataSource, LookupStrategy lookupStrategy, AclCache aclCache) {
         super(dataSource, lookupStrategy, aclCache);
     }
 
@@ -46,13 +52,13 @@ public class AclServiceImpl extends JdbcMutableAclService {
 					int i=0;
 					ps.setLong(++i, classId);
 					ps.setLong(++i, objectId);
-					ps.setLong(++i, parentCategoryAclObjectIdentity);
+					DatabaseUtils.setLong(ps, ++i, parentCategoryAclObjectIdentity);
 					ps.setLong(++i, currentUserSID);
 					ps.setInt(++i, 1);
 					return ps;
 				}
 			}, oidKeyHolder);
-		jdbcTemplate.update("INSERT INTO acl_entry ( acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure ) VALUES ( ?, ?, ?, ?, ?, ?, ? )", oidKeyHolder.getKey().longValue(), 1, currentUserSID, AclServiceImpl.FULL_PERMISSION_MASK, 1 );
+		jdbcTemplate.update("INSERT INTO acl_entry ( acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure ) VALUES ( ?, ?, ?, ?, ?, ?, ? )", oidKeyHolder.getKey().longValue(), 1, currentUserSID, AclServiceImpl.FULL_PERMISSION_MASK, 1, 1, 1 );
 	}
 
 	public static void updateObjectIdentity(JdbcTemplate jdbcTemplate, final Long objectId, final Long classId, Long parentObjectId, Long parentClassId) {
@@ -71,5 +77,24 @@ public class AclServiceImpl extends JdbcMutableAclService {
 	public static Long getObjectIdentityFor(JdbcTemplate jdbcTemplate, final Long objectId, final Long classId) {
 		if(objectId == null) return null;
 		return jdbcTemplate.queryForLong("SELECT id FROM acl_object_identity  WHERE object_id_class = ? AND object_id_identity = ? ",classId,objectId);
+	}
+	
+	public Long getObjectIdentityFor(final Long objectId, final Long classId) {
+		if(objectId == null) return null;
+		return jdbcTemplate.queryForLong("SELECT id FROM acl_object_identity  WHERE object_id_class = ? AND object_id_identity = ? ",classId,objectId);
+	}
+	
+	public Long getObjectIdentityFor(final Long objectId) {
+		if(objectId == null) return null;
+		return jdbcTemplate.queryForLong("SELECT id FROM acl_object_identity  WHERE object_id_identity = ? ",objectId);
+	}
+
+	public List<ObjectIdentity> convertPersistableObjectsToObjectIndentities(List<PersistableObject> objList) {
+		if(objList == null || objList.isEmpty()) return new ArrayList<ObjectIdentity>(0);
+		List<ObjectIdentity> result = new ArrayList<ObjectIdentity>(objList.size());
+		for(PersistableObject p : objList) {
+			result.add(new ObjectIdentityImpl(p.getClassBasedOnPersistedObjectType(), p.getId()));
+		}
+		return result;
 	}
 }

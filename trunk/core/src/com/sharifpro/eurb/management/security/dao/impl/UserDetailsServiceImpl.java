@@ -4,12 +4,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
 import org.springframework.context.ApplicationContextException;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.security.acls.domain.GrantedAuthoritySid;
+import org.springframework.security.acls.domain.PrincipalSid;
+import org.springframework.security.acls.model.Sid;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityMessageSource;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -185,7 +189,7 @@ public class UserDetailsServiceImpl extends AbstractDAO implements UserDetailsSe
                 String password = rs.getString(++i);
                 boolean enabled = rs.getBoolean(++i);
                 String email = rs.getString(++i);
-                User u = new User(dto, username, password, enabled, true, true, true, AuthorityUtils.NO_AUTHORITIES);
+                User u = new User(dto, username, password, enabled, true, true, true, AuthorityUtils.NO_AUTHORITIES, new ArrayList<Sid>(0));
                 u.setEmail(email);
                 return u;
             }
@@ -241,12 +245,25 @@ public class UserDetailsServiceImpl extends AbstractDAO implements UserDetailsSe
         }
 
         User u = new User(userFromUserQuery, returnUsername, userFromUserQuery.getPassword(), userFromUserQuery.isEnabled(),
-                true, true, true, combinedAuthorities);
+                true, true, true, combinedAuthorities, loadSidList(returnUsername));
         u.setEmail(userFromUserQuery.getEmail());
         return u;
     }
 
-    /**
+    private List<Sid> loadSidList(String username) {
+    	List<Sid> sidList = getJdbcTemplate().query("SELECT group_id FROM group_members WHERE username = ?", new RowMapper<Sid>(){
+
+			@Override
+			public Sid mapRow(ResultSet rs, int i) throws SQLException {
+				return new GrantedAuthoritySid(rs.getString(1));
+			}
+			
+		},username);
+    	sidList.add(new PrincipalSid(username));
+    	return sidList;
+	}
+
+	/**
      * Allows the default query string used to retrieve authorities based on username to be overridden, if
      * default table or column names need to be changed. The default query is {@link
      * #DEF_AUTHORITIES_BY_USERNAME_QUERY}; when modifying this query, ensure that all returned columns are mapped

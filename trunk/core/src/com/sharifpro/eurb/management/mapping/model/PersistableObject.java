@@ -81,6 +81,18 @@ public class PersistableObject implements Serializable
 		return PersistableObjectType.getObjectTypeFor(getClass());
 	}
 
+	@JsonIgnore
+	public Integer getPersistedObjectType()
+	{
+		return objectType;
+	}
+
+	@JsonIgnore
+	public String getClassBasedOnPersistedObjectType()
+	{
+		return PersistableObjectType.getClassForObjectType(objectType);
+	}
+
 	/**
 	 * Method 'setObjectType'
 	 * 

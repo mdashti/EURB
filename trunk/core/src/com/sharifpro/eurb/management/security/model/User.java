@@ -1,13 +1,16 @@
 package com.sharifpro.eurb.management.security.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.springframework.security.acls.model.Sid;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.Assert;
@@ -61,19 +64,21 @@ public class User extends PersistableObject implements UserDetails, Serializable
     private final boolean credentialsNonExpired;
 
 	private final Set<GrantedAuthority> authorities;
+	
+	private final List<Sid> sidList;
 
 	/**
      * Calls the more complex constructor with all boolean arguments set to {@code true}.
      */
     public User(PersistableObject parent, String username, String password, Collection<? extends GrantedAuthority> authorities) {
-        this(parent, username, password, true, true, true, true, authorities);
+        this(parent, username, password, true, true, true, true, authorities, new ArrayList<Sid>(0));
     }
     
 	/**
      * Calls the more complex constructor with all boolean arguments set to {@code true}.
      */
     public User(PersistableObject parent, String username, String password, boolean enabled, Collection<? extends GrantedAuthority> authorities) {
-        this(parent, username, password, enabled, enabled, enabled, enabled, authorities);
+        this(parent, username, password, enabled, enabled, enabled, enabled, authorities, new ArrayList<Sid>(0));
     }
     
 	/**
@@ -104,7 +109,7 @@ public class User extends PersistableObject implements UserDetails, Serializable
      *         <code>GrantedAuthority</code> collection
      */
     public User(PersistableObject parent, String username, String password, boolean enabled, boolean accountNonExpired,
-            boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities) {
+            boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities, List<Sid> sidList) {
     	if(parent != null) {
 	    	this.setId(parent.getId());
 	    	this.setObjectType(parent.getObjectType());
@@ -125,6 +130,7 @@ public class User extends PersistableObject implements UserDetails, Serializable
         this.credentialsNonExpired = credentialsNonExpired;
         this.accountNonLocked = accountNonLocked;
         this.authorities = Collections.unmodifiableSet(sortAuthorities(authorities));
+        this.sidList = sidList;
     }
 
 	/**
@@ -310,5 +316,9 @@ public class User extends PersistableObject implements UserDetails, Serializable
             return g1.getAuthority().compareTo(g2.getAuthority());
         }
     }
+
+	public List<Sid> getSidList() {
+		return sidList;
+	}
 
 }

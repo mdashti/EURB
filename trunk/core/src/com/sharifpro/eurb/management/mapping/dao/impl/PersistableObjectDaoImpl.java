@@ -10,6 +10,7 @@ import com.sharifpro.transaction.annotation.TransactionalReadWrite;
 import com.sharifpro.util.PropertyProvider;
 import com.sharifpro.util.SessionManager;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -20,6 +21,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 
 import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -136,7 +138,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 		try {
 			List<PersistableObject> list = getJdbcTemplate().query("SELECT "
 					+ PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS
-					+ " FROM persistable_object WHERE id = ?", new PersistableObjectRowMapper(),id);
+					+ " FROM persistable_object p WHERE p.id = ?", new PersistableObjectRowMapper(),id);
 			return list.size() == 0 ? null : list.get(0);
 		}
 		catch (Exception e) {
@@ -319,6 +321,19 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 			emptyObject.setModifier( rs.getString( 5 ) );
 			emptyObject.setModifyDate( rs.getTimestamp(6 ) );
 			return emptyObject;
+		}
+	}
+
+	@Override
+	public List<PersistableObject> findByPrimaryKeys(List<Integer> targetObjects) throws PersistableObjectDaoException {
+		try {
+			List<PersistableObject> list = new NamedParameterJdbcTemplate(getJdbcTemplate()).query("SELECT "
+					+ PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS
+					+ " FROM persistable_object p WHERE p.id IN (:targetObjects)", Collections.singletonMap("targetObjects", targetObjects), new PersistableObjectRowMapper());
+			return list;
+		}
+		catch (Exception e) {
+			throw new PersistableObjectDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 	}
 }

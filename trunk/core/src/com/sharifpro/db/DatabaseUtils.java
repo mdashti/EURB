@@ -125,5 +125,13 @@ public class DatabaseUtils {
         }
     }
 
+    public static void setLong(PreparedStatement stmt, int index, Long value) throws SQLException {
+        if (value == null) {
+            stmt.setNull(index, Types.NUMERIC);
+        } else {
+            stmt.setLong(index, value);
+        }
+    }
+
 
 }

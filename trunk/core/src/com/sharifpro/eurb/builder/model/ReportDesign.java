@@ -9,7 +9,7 @@ public class ReportDesign extends PersistableObject implements Serializable
 {
 	private static final long serialVersionUID = 3682115548053435821L;
 
-	public static final long ACL_CLASS_IDENTIFIER = 1;
+	public static final long ACL_CLASS_IDENTIFIER = 2;
 
 	/** 
 	 * This attribute maps to the column version_id in the report_design table.

@@ -90,4 +90,12 @@ public interface PersistableObjectDao
 	 */
 	public PersistableObject findByPrimaryKey(PersistableObjectPk pk) throws PersistableObjectDaoException;
 
+	/**
+	 * load a list of objects by primary key
+	 * @param targetObjects
+	 * @return list of objects
+	 * @throws PersistableObjectDaoException 
+	 */
+	public List<PersistableObject> findByPrimaryKeys(List<Integer> targetObjects) throws PersistableObjectDaoException;
+
 }

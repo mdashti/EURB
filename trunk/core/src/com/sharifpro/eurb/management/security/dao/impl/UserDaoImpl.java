@@ -18,6 +18,7 @@ import com.sharifpro.transaction.annotation.TransactionalReadWrite;
 import com.sharifpro.util.PropertyProvider;
 import com.sharifpro.util.SecurityUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,6 +27,7 @@ import javax.naming.OperationNotSupportedException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
+import org.springframework.security.acls.model.Sid;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Repository;
 
@@ -146,7 +148,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
         String password = rs.getString(++i);
         boolean enabled = rs.getBoolean(++i);
         String email = rs.getString(++i);
-        User u = new User(dto, username, password, enabled, true, true, true, AuthorityUtils.NO_AUTHORITIES);
+        User u = new User(dto, username, password, enabled, true, true, true, AuthorityUtils.NO_AUTHORITIES, new ArrayList<Sid>(0));
         u.setEmail(email);
         return u;
 	}
