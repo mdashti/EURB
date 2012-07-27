@@ -6,8 +6,7 @@ EURB.RunReport.groupView = new Ext.ux.LockingMultiGroupingGridView({
         groupTextTpl: '{text} : {gvalue}', 
         displayFieldSeperator: ', ' //you can control how the display fields are seperated
 });
-  
- 
+
 //Instantiate LockingGridGroupSummary
 var groupSummary = new Ext.grid.LockingGridGroupSummary();
  
@@ -21,7 +20,6 @@ EURB.RunReport.Grid = Ext.extend(Ext.grid.GridPanel, {
 	,loadMask:true
 	,stripeRows:true
 	,title: EURB.RunReport.viewReport
-	,plugins:[groupSummary]
 	,initComponent:function() {
 		
 		// hard coded - cannot be changed from outside
