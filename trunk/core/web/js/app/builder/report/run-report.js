@@ -27,7 +27,7 @@ EURB.RunReport.Grid = Ext.extend(Ext.grid.GridPanel, {
 		// hard coded - cannot be changed from outside
 		var config = {
 			store: EURB.RunReport.store
-			,cm:EURB.RunReport.cols
+			,columns:EURB.RunReport.cols
 		};
 		if(EURB.RunReport.HasGroup){
 			config.view = EURB.RunReport.groupView; 

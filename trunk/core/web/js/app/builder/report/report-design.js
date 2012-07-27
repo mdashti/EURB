@@ -32,7 +32,7 @@ Ext.onReady(function() {
             iconAlign: 'top',
             listeners: {
             	click:function(){
-            		window.location.href = EURB.baseURL + 'builder/report/report-tree-listd.spy';
+            		window.location.href = EURB.baseURL + 'builder/report/report-tree-list.spy';
             	}
             }
         }],
