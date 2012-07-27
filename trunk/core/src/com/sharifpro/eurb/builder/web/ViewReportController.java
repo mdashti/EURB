@@ -507,7 +507,7 @@ public class ViewReportController {
 		String yAxisDatabaseKey = "t" + yAxis.getDatasetId() + "." + datasetColumnMappingMap.get(yAxis.getDatasetId()).get(yAxis.getColumnMappingId()).getColumnName();
 		String yAxisColumnKey = "t"+yAxis.getDatasetId()+"_"+datasetColumnMappingMap.get(yAxis.getDatasetId()).get(yAxis.getColumnMappingId()).getColumnName() + yAxis.getColumnMappingId();
 		if(yAxis.hasAggregation()){
-			querySelectSB.append(yAxis.getAggregation()).append(" (").append(yAxisDatabaseKey).append(")").append(" AS ").append(yAxisColumnKey);
+			querySelectSB.append(yAxis.getAggregation()).append("(").append(yAxisDatabaseKey).append(")").append(" AS ").append(yAxisColumnKey);
 		}
 		else{
 			querySelectSB.append(yAxisDatabaseKey).append(" AS ").append(yAxisColumnKey);
