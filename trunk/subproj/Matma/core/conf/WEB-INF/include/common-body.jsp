@@ -71,7 +71,6 @@
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/multigrouping/Ext.ux.grid.LockingMultiGroupGridSummary.js" ></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/multigrouping/Ext.ux.LockingMultiGroupingGridView.js" ></script>
 		
-		
 		<%-- Color Picker Field --%>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/colorpicker-field/colorpicker.js" ></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/colorpicker-field/colorpickerfield.js" ></script>
@@ -123,6 +122,7 @@
 		EURB.up = '<spring:message code="eurb.up" />';
 		EURB.down = '<spring:message code="eurb.down" />';
 		EURB.editFormula = '<spring:message code="eurb.editFormula" />';
+		EURB.editAggregation = '<spring:message code="eurb.editAggregation" />';
 		EURB.editChartAxis = '<spring:message code="eurb.editChartAxis" />';
 		EURB.expandAll = '<spring:message code="eurb.expandAll" />';
 		
