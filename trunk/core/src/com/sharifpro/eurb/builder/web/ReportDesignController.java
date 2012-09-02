@@ -206,7 +206,7 @@ public class ReportDesignController {
 			List<Object[]> insertIds = new ArrayList<Object[]>(1);
 			ReportDesignPk pk;
 			pk = reportDesign.createPk();
-			reportDesignDao.update(pk,reportDesign);
+			reportDesignDao.updateCurrentVersion(pk,reportDesign);
 
 			insertIds.add(new Object[] {pk.getId(), pk.getVersionId()});
 

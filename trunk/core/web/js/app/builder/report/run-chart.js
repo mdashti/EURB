@@ -126,11 +126,15 @@ createChart = function(data, index, heightValue){
 	           }
 	        },
 	        legend: {
-	        	itemStyle: {
+	            padding: 3,
+	            itemMarginTop: 5,
+	            itemMarginBottom: 5,	            
+	            layout: 'vertical',
+	            itemStyle: {
 		           fontFamily: data[0][count++],
 			       fontSize: data[0][count++] + 'px',
-			       color: '#' + data[0][count++] 
-		        }
+			       color: '#' + data[0][count++]
+		        }            
 	        },
 	        yAxis: {
 	        	title: {
