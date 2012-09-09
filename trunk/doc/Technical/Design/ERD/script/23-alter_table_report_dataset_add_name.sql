@@ -1,0 +1,1 @@
+ALTER TABLE `eurb`.`report_dataset` ADD COLUMN `name` VARCHAR(255) NULL  AFTER `operator` ;

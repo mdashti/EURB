@@ -2,6 +2,7 @@ package com.sharifpro.eurb.builder.dao;
 
 import com.sharifpro.eurb.builder.dao.ReportDatasetDao;
 import com.sharifpro.eurb.builder.exception.ReportDatasetDaoException;
+import com.sharifpro.eurb.builder.model.ReportChart;
 import com.sharifpro.eurb.builder.model.ReportDataset;
 import com.sharifpro.eurb.builder.model.ReportDatasetPk;
 import com.sharifpro.eurb.builder.model.ReportDesign;
@@ -128,5 +129,14 @@ public interface ReportDatasetDao
 	 * Returns the rows from the report_dataset table that matches the specified primary-key value.
 	 */
 	public ReportDataset findByPrimaryKey(ReportDatasetPk pk) throws ReportDatasetDaoException;
+
+	/**
+	 * Returns all report datasets in the given reportDesign associated with the given report chart
+	 * @param reportDesign
+	 * @param chart
+	 * @return List of ReportDataset
+	 * @throws ReportDatasetDaoException 
+	 */
+	public List<ReportDataset> findAll(ReportDesign reportDesign, ReportChart chart) throws ReportDatasetDaoException;
 
 }

@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.hibernate.mapping.Array;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -177,7 +178,7 @@ public class ViewReportController {
 			ReportDesign reportDesign = reportDesignDao.findByPrimaryKey(report, version);
 			List<ReportDataset> datasetList = reportDatasetDao.findAll(reportDesign);
 			List<ReportColumn> columnList = reportColumnDao.findAll(reportDesign);
-			List<ReportFilter> reportFilters = reportFilterDao.findAll(reportDesign.getId());
+			List<ReportFilter> reportFilters = reportFilterDao.findAll(reportDesign.getId(), reportDesign.getVersionId());
 
 			//Build QUERY
 			///Build SELECT Part
@@ -425,20 +426,6 @@ public class ViewReportController {
 
 			//find report design with given id
 			ReportDesign reportDesign = reportDesignDao.findByPrimaryKey(report, version);
-			List<ReportDataset> datasetList = reportDatasetDao.findAll(reportDesign);
-			List<ReportFilter> reportFilters = reportFilterDao.findAll(reportDesign.getId());
-
-
-			HashMap<Long, HashMap<Long, ColumnMapping>> datasetColumnMappingMap = new HashMap<Long, HashMap<Long, ColumnMapping>>();
-			HashMap<Long, ColumnMapping> colMap;
-			for(ReportDataset ds : datasetList){
-				colMap = new HashMap<Long, ColumnMapping>();
-				List<ColumnMapping> columns = columnMappingDao.findAllMapped(ds);
-				for(ColumnMapping c : columns){
-					colMap.put(c.getId(), c);
-				}
-				datasetColumnMappingMap.put(ds.getId(), colMap);
-			}
 
 			//All Datasets must be in the same dbConfig
 			Long dbConfigId = reportDesign.getDbConfigId();
@@ -447,7 +434,7 @@ public class ViewReportController {
 
 			List<ReportChart> reportCharts = reportChartDao.findAll(reportDesign);
 			for(ReportChart chart : reportCharts){
-				List<ArrayList<Object>> resultList = getResultForChart(chart, datasetColumnMappingMap, datasetList, reportFilters, dbConfigId);
+				List<ArrayList<Object>> resultList = getResultForChart(chart, dbConfigId, reportDesign);
 				res.add(resultList);
 			}
 
@@ -459,8 +446,26 @@ public class ViewReportController {
 		}
 	}
 
-	private List<ArrayList<Object>> getResultForChart(ReportChart chart, HashMap<Long, HashMap<Long, ColumnMapping>> datasetColumnMappingMap,
-			List<ReportDataset> datasetList, List<ReportFilter> reportFilters, Long dbConfigId) throws Exception{
+	private List<ArrayList<Object>> getResultForChart(ReportChart chart, Long dbConfigId, ReportDesign reportDesign) throws Exception{
+
+		List<ReportDataset> datasetList = reportDatasetDao.findAll(reportDesign, chart);
+		//this dataset list may contain repeated values so we're gonna eliminate them
+		datasetList = removeRepeated(datasetList);
+
+		List<ReportFilter> reportFilters = reportFilterDao.findAll(reportDesign.getId(), reportDesign.getVersionId(), datasetList);
+
+
+		HashMap<Long, HashMap<Long, ColumnMapping>> datasetColumnMappingMap = new HashMap<Long, HashMap<Long, ColumnMapping>>();
+		HashMap<Long, ColumnMapping> colMap;
+		for(ReportDataset ds : datasetList){
+			colMap = new HashMap<Long, ColumnMapping>();
+			List<ColumnMapping> columns = columnMappingDao.findAllMapped(ds);
+			for(ColumnMapping c : columns){
+				colMap.put(c.getId(), c);
+			}
+			datasetColumnMappingMap.put(ds.getId(), colMap);
+		}
+
 		List<ArrayList<Object>> resultList = new ArrayList<ArrayList<Object>>();
 		ArrayList<Object> resultConfig = new ArrayList<Object>();
 
@@ -507,7 +512,14 @@ public class ViewReportController {
 		String yAxisDatabaseKey = "t" + yAxis.getDatasetId() + "." + datasetColumnMappingMap.get(yAxis.getDatasetId()).get(yAxis.getColumnMappingId()).getColumnName();
 		String yAxisColumnKey = "t"+yAxis.getDatasetId()+"_"+datasetColumnMappingMap.get(yAxis.getDatasetId()).get(yAxis.getColumnMappingId()).getColumnName() + yAxis.getColumnMappingId();
 		if(yAxis.hasAggregation()){
-			querySelectSB.append(yAxis.getAggregation()).append("(").append(yAxisDatabaseKey).append(")").append(" AS ").append(yAxisColumnKey);
+			if(yAxis.getAggregation().equals("distinct-count"))
+			{
+				querySelectSB.append("count(distinct ").append(yAxisDatabaseKey).append(")").append(" AS ").append(yAxisColumnKey);
+			}
+			else
+			{
+				querySelectSB.append(yAxis.getAggregation()).append("(").append(yAxisDatabaseKey).append(")").append(" AS ").append(yAxisColumnKey);
+			}
 		}
 		else{
 			querySelectSB.append(yAxisDatabaseKey).append(" AS ").append(yAxisColumnKey);
@@ -647,6 +659,19 @@ public class ViewReportController {
 	}
 
 
+	private List<ReportDataset> removeRepeated(List<ReportDataset> datasetList) {
+		Map<Long, ReportDataset> datasetIdMap = new HashMap<Long, ReportDataset>(datasetList.size());
+		for(ReportDataset ds : datasetList)
+		{
+			datasetIdMap.put(ds.getId(), ds);
+		}
+		List<ReportDataset> removed = new ArrayList<ReportDataset>(datasetIdMap.size());
+		for(ReportDataset ds: datasetIdMap.values())
+		{
+			removed.add(ds);
+		}
+		return removed;
+	}
 	@Autowired
 	public void setReportCategoryDao(ReportCategoryDao reportCategoryDao){
 		this.reportCategoryDao = reportCategoryDao;

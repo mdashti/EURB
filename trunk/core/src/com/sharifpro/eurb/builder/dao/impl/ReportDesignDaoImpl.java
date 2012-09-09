@@ -55,7 +55,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 			getJdbcTemplate().update("INSERT INTO " + getTableName() + " ( id, version_id, name, description, category_id, query_text, select_part, result_data, format_file, is_current, record_status, db_config_id ) " +
 					"VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",pk.getId(),pk.getVersionId(),dto.getName(),dto.getDescription(),dto.getCategoryId(),dto.getQueryText(),dto.getSelectPart(),dto.getResultData(),
 					dto.getFormatFile(),dto.isIsCurrent(),dto.getRecordStatusString(), dto.getDbConfigId());
-			AclServiceImpl.insertObjectIdentity(getJdbcTemplate(), pk.getId(), ReportDesign.ACL_CLASS_IDENTIFIER, dto.getCategoryId(), ReportCategory.ACL_CLASS_IDENTIFIER);
+			//AclServiceImpl.insertObjectIdentity(getJdbcTemplate(), pk.getId(), ReportDesign.ACL_CLASS_IDENTIFIER, dto.getCategoryId(), ReportCategory.ACL_CLASS_IDENTIFIER);
 			return pk;
 		}
 		catch (Exception e) {
@@ -77,7 +77,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 			getJdbcTemplate().update("INSERT INTO " + getTableName() + " ( id, version_id, name, description, category_id, query_text, select_part, result_data, format_file, is_current, record_status, db_config_id ) " +
 					"VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",pk.getId(),pk.getVersionId(),dto.getName(),dto.getDescription(),dto.getCategoryId(),dto.getQueryText(),dto.getSelectPart(),dto.getResultData(),
 					dto.getFormatFile(),dto.isIsCurrent(),dto.getRecordStatusString(), dto.getDbConfigId());
-			AclServiceImpl.updateObjectIdentity(getJdbcTemplate(), pk.getId(), ReportDesign.ACL_CLASS_IDENTIFIER, dto.getCategoryId(), ReportCategory.ACL_CLASS_IDENTIFIER);
+			//AclServiceImpl.updateObjectIdentity(getJdbcTemplate(), pk.getId(), ReportDesign.ACL_CLASS_IDENTIFIER, dto.getCategoryId(), ReportCategory.ACL_CLASS_IDENTIFIER);
 		}
 		catch (Exception e) {
 			throw new ReportDesignDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);

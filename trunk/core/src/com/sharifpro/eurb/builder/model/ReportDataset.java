@@ -7,6 +7,12 @@ import com.sharifpro.eurb.management.mapping.model.PersistableObject;
 public class ReportDataset extends PersistableObject implements Serializable
 {
 	private static final long serialVersionUID = 7156092611112201177L;
+	
+	/** 
+	 * This attribute maps to the column name in the report_dataset table.
+	 */
+	protected String name;
+
 
 	/** 
 	 * This attribute maps to the column design_id in the report_dataset table.
@@ -51,6 +57,27 @@ public class ReportDataset extends PersistableObject implements Serializable
 	{
 		super();
 	}
+	
+	/**
+	 * Method 'getName'
+	 * 
+	 * @return String
+	 */
+	public String getName()
+	{
+		return name;
+	}
+
+	/**
+	 * Method 'setName'
+	 * 
+	 * @param name
+	 */
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+
 
 	/**
 	 * Method 'getDesignId'
@@ -99,7 +126,7 @@ public class ReportDataset extends PersistableObject implements Serializable
 	 */
 	public Long getTableMappingId()
 	{
-		return tableMappingId;
+		return (tableMappingId == null || tableMappingId == 0) ? null : tableMappingId;
 	}
 
 	/**
@@ -119,7 +146,7 @@ public class ReportDataset extends PersistableObject implements Serializable
 	 */
 	public Long getBaseReportId()
 	{
-		return baseReportId;
+		return (baseReportId == null || baseReportId == 0) ? null : baseReportId;
 	}
 
 	/**
@@ -139,7 +166,7 @@ public class ReportDataset extends PersistableObject implements Serializable
 	 */
 	public Long getBaseReportVersionId()
 	{
-		return baseReportVersionId;
+		return (baseReportVersionId == null || baseReportVersionId == 0) ? null : baseReportVersionId;
 	}
 
 	/**
@@ -301,6 +328,7 @@ public class ReportDataset extends PersistableObject implements Serializable
 		StringBuffer ret = new StringBuffer();
 		ret.append( "model.ReportDataset: " );
 		ret.append( super.toString() );
+		ret.append(", name=" + name );
 		ret.append( ", designId=" + designId );
 		ret.append( ", designVersionId=" + designVersionId );
 		ret.append( ", tableMappingId=" + tableMappingId );

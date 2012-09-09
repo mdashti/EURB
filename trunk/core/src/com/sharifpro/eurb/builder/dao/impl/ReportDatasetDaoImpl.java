@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import com.sharifpro.eurb.DaoFactory;
 import com.sharifpro.eurb.builder.dao.ReportDatasetDao;
 import com.sharifpro.eurb.builder.exception.ReportDatasetDaoException;
+import com.sharifpro.eurb.builder.model.ReportChart;
 import com.sharifpro.eurb.builder.model.ReportDataset;
 import com.sharifpro.eurb.builder.model.ReportDatasetPk;
 import com.sharifpro.eurb.builder.model.ReportDesign;
@@ -23,7 +24,7 @@ import com.sharifpro.util.PropertyProvider;
 public class ReportDatasetDaoImpl extends AbstractDAO implements ParameterizedRowMapper<ReportDataset>, ReportDatasetDao
 {
 
-	private final static String QUERY_FROM_COLUMNS = " o.design_id, o.design_version_id, o.table_mapping_id, o.base_report_id, o.base_report_version_id, o.ds_order, o.operator ";
+	private final static String QUERY_FROM_COLUMNS = " o.name, o.design_id, o.design_version_id, o.table_mapping_id, o.base_report_id, o.base_report_version_id, o.ds_order, o.operator ";
 	private final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + " o " + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL_AND_JOIN;
 	private final static String COUNT_QUERY = "SELECT count(distinct(o.id)) FROM " + getTableName() + " o ";
 	/**
@@ -40,8 +41,8 @@ public class ReportDatasetDaoImpl extends AbstractDAO implements ParameterizedRo
 			dto.setDsOrder(++lastOrder);
 			ReportDatasetPk pk = new ReportDatasetPk(); 
 			DaoFactory.createPersistableObjectDao().insert(dto, pk);
-			getJdbcTemplate().update("INSERT INTO " + getTableName() + " ( id,design_id, design_version_id, table_mapping_id, base_report_id, base_report_version_id, ds_order, operator) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )",
-					pk.getId(),dto.getDesignId(),dto.getDesignVersionId(),dto.getTableMappingId(),dto.getBaseReportId(),dto.getBaseReportVersionId(),dto.getDsOrder(),dto.getOperator());
+			getJdbcTemplate().update("INSERT INTO " + getTableName() + " ( id, name, design_id, design_version_id, table_mapping_id, base_report_id, base_report_version_id, ds_order, operator) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )",
+					pk.getId(),dto.getName(), dto.getDesignId(),dto.getDesignVersionId(),dto.getTableMappingId(),dto.getBaseReportId(),dto.getBaseReportVersionId(),dto.getDsOrder(),dto.getOperator());
 			return pk;
 		}
 		catch (Exception e) {
@@ -57,8 +58,8 @@ public class ReportDatasetDaoImpl extends AbstractDAO implements ParameterizedRo
 	{
 		try{
 			DaoFactory.createPersistableObjectDao().update(pk);
-			getJdbcTemplate().update("UPDATE " + getTableName() + " SET id = ?, design_id = ?, design_version_id = ?, table_mapping_id = ?, base_report_id = ?, base_report_version_id = ?, ds_order = ?, operator = ?" +
-					" WHERE id = ? AND design_id = ? AND design_version_id = ?",pk.getId(),dto.getDesignId(),dto.getDesignVersionId(),dto.getTableMappingId(),dto.getBaseReportId(),dto.getBaseReportVersionId(),
+			getJdbcTemplate().update("UPDATE " + getTableName() + " SET id = ?, name = ?, design_id = ?, design_version_id = ?, table_mapping_id = ?, base_report_id = ?, base_report_version_id = ?, ds_order = ?, operator = ?" +
+					" WHERE id = ? AND design_id = ? AND design_version_id = ?",pk.getId(),dto.getName(), dto.getDesignId(),dto.getDesignVersionId(),dto.getTableMappingId(),dto.getBaseReportId(),dto.getBaseReportVersionId(),
 					dto.getDsOrder(),dto.getOperator(),pk.getId(),pk.getDesignId(),pk.getDesignVersionId());
 		}
 		catch (Exception e) {
@@ -105,6 +106,7 @@ public class ReportDatasetDaoImpl extends AbstractDAO implements ParameterizedRo
 		ReportDataset dto = new ReportDataset();
 		PersistableObjectDaoImpl.PERSISTABLE_OBJECT_MAPPER.mapRow(rs, row, dto);
 		int i = PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS_COUNT;
+		dto.setName(rs.getString(++i));
 		dto.setDesignId( new Long( rs.getLong(++i) ) );
 		dto.setDesignVersionId( new Long( rs.getLong(++i) ) );
 		dto.setTableMappingId( new Long( rs.getLong(++i) ) );
@@ -175,6 +177,25 @@ public class ReportDatasetDaoImpl extends AbstractDAO implements ParameterizedRo
 	public List<ReportDataset> findAll(ReportDesign reportDesign) throws ReportDatasetDaoException
 	{
 		return findByReportDesign(reportDesign.getId(), reportDesign.getVersionId());
+	}
+
+	/**
+	 * Returns all report datasets in the given reportDesign associated with the given report chart
+	 * @param reportDesign
+	 * @param chart
+	 * @return List of ReportDataset
+	 */
+	@TransactionalReadOnly
+	public List<ReportDataset> findAll(ReportDesign reportDesign, ReportChart chart) throws ReportDatasetDaoException
+	{
+		try{
+			String query = QUERY_SELECT_PART + " JOIN report_chart_axis axis ON axis.report_dataset_id = o.id JOIN report_chart chart ON chart.id = axis.chart_id ";
+			return getJdbcTemplate().query(query + " WHERE o.design_id = ? AND o.design_version_id = ? ORDER BY o.ds_order", this, reportDesign.getId(), reportDesign.getVersionId());
+		}
+		catch (Exception e) {
+			throw new ReportDatasetDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+
 	}
 
 	/** 
@@ -251,7 +272,7 @@ public class ReportDatasetDaoImpl extends AbstractDAO implements ParameterizedRo
 		}
 
 	}
-	
+
 	/** 
 	 * Returns all rows from the report_dataset table that match the criteria 'design_id = :designId AND design_version_id = :designVersionId AND table_mapping_id = :tableMappingId'.
 	 */

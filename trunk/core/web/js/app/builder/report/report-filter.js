@@ -9,7 +9,14 @@ EURB.ReportFilter.columnCombo = new Ext.form.ComboBox({
     displayField: 'title',
     forceSelection: true,
     width:400,
-    allowBlank: false
+    allowBlank: false,
+    listeners:{
+    	select: function(combo,record,index){
+    		form = EURB.ReportFilter.reportFilterGrid.recordForm.form.getForm();
+    		form.findField('columnMappingId').setValue(record.get('columnId'));
+    		form.findField('reportDatasetId').setValue(record.get('datasetId'));
+    	}
+    }    
 });
 
 //////////////////join filter column combo///////////////////////
@@ -28,6 +35,7 @@ EURB.ReportFilter.joinColumnCombo = new Ext.form.ComboBox({
     	select: function(combo,record,index){
     		form = EURB.ReportFilter.reportFilterGrid.recordForm.form.getForm();
     		form.findField('operand1DatasetId').setValue(record.get('datasetId'));
+    		form.findField('operand1ColumnMappingId').setValue(record.get('columnId'));
     	}
     }
 });
@@ -58,16 +66,16 @@ EURB.ReportFilter.operatorCombo = new Ext.form.ComboBox({
     		rform = EURB.ReportFilter.reportFilterGrid.recordForm.form.getForm();
     		numOperands = record.get('operatorNumberOfOperands');
     		if(numOperands == 0){
-    			rform.items.itemAt(3).setDisabled(true);
-    			rform.items.itemAt(4).setDisabled(true);
+    			form.findField('operand1').setDisabled(true);
+    			form.findField('operand2').setDisabled(true);
     		}
     		else if(numOperands == 1){
-    			rform.items.itemAt(3).setDisabled(false);
-    			rform.items.itemAt(4).setDisabled(true);
+    			form.findField('operand1').setDisabled(false);
+    			form.findField('operand2').setDisabled(true);
     		}
     		else if(numOperands == 2){
-    			rform.items.itemAt(3).setDisabled(false);
-    			rform.items.itemAt(4).setDisabled(false);
+    			form.findField('operand1').setDisabled(false);
+    			form.findField('operand2').setDisabled(false);
     		}
     	}
     }
@@ -81,8 +89,7 @@ joinFilter = function(){
 	operator = form.findField('operator');
 	operand1 = form.findField('operand1');
 	operand2 = form.findField('operand2');
-	operand1Column = form.findField('operand1ColumnMappingId');
-	operand1Dataset = form.findField('operand1DatasetId');
+	operand1Column = form.findField('operand1SelectedColumn');
 	
 	operand1.setDisabled(true);
 	operand1.allowBlank = true;
@@ -96,7 +103,10 @@ joinFilter = function(){
 	operand1Column.allowBlank = false;
 	operand1Column.setDisabled(false);
 	
-	hideFormField(operand1Dataset);
+	hideFormField(form.findField('columnMappingId'));
+	hideFormField(form.findField('reportDatasetId'));
+	hideFormField(form.findField('operand1DatasetId'));
+	hideFormField(form.findField('operand1ColumnMappingId'));
 	
 	operator.setValue('=');
 	operator.setReadOnly(true);
@@ -107,13 +117,16 @@ simpleFilter = function(){
 	operator = form.findField('operator');
 	operand1 = form.findField('operand1');
 	operand2 = form.findField('operand2');
-	operand1Column = form.findField('operand1ColumnMappingId');
-	operand1Dataset = form.findField('operand1DatasetId');
+	operand1Column = form.findField('operand1SelectedColumn');
 	
 	operand1Column.allowBlank = true;
 	operand1Column.setDisabled(true);
 	
-	hideFormField(operand1Dataset);
+	hideFormField(form.findField('columnMappingId'));
+	hideFormField(form.findField('reportDatasetId'));
+	hideFormField(form.findField('operand1DatasetId'));
+	hideFormField(form.findField('operand1ColumnMappingId'));
+	alert('hi');
 	
 	showFormField(operand1);
 	showFormField(operand2);
@@ -132,7 +145,7 @@ simpleFilter = function(){
 
 checkFilterType = function() {
 	formItems = EURB.ReportFilter.reportFilterGrid.recordForm.form.getForm().items;
-	type = formItems.itemAt(1);
+	type = formItems.itemAt(2);
 	if(type.checked){
 		joinFilter();
 	}
@@ -154,11 +167,13 @@ EURB.ReportFilter.store = new Ext.data.Store({
 			,{name:'reportDesignId', type:'int'}
 			,{name:'reportDesignVersionId', type:'int'}
 			,{name:'reportDatasetId', type:'int'}
+			,{name:'selectedColumn', type:'string'}
 			,{name:'columnMappingId', type:'int'}
 			,{name:'filterType', type:'int'}
 			,{name:'operator', type:'string'}
 			,{name:'operand1', type:'string'}
 			,{name:'operand2', type:'string'}
+			,{name:'operand1SelectedColumn', type:'string'}
 			,{name:'operand1ColumnMappingId', type:'int'}
 			,{name:'operand1DatasetId', type:'int'}
 		]
@@ -179,12 +194,34 @@ EURB.ReportFilter.store = new Ext.data.Store({
 EURB.ReportFilter.cols = [
 {
 	 header:EURB.ReportFilter.Column
-	,id:'columnMappingId'
-	,dataIndex:'columnMappingId'
+	,id:'selectedColumn'
+	,dataIndex:'selectedColumn'
 	,width:50
 	,sortable:true
 	,editor:EURB.ReportFilter.columnCombo
 	,renderer:EURB.ReportDesign.comboRenderer(EURB.ReportFilter.columnCombo)
+},
+{
+	 header:EURB.ReportFilter.Column
+	,id:'columnMappingId'
+	,dataIndex:'columnMappingId'
+	,width:50
+	,sortable:true
+	,hidden:true
+	,editor:new Ext.form.TextField({
+		allowBlank:true
+	})
+},
+{
+	 header:EURB.ReportFilter.Column
+	,id:'reportDatasetId'
+	,dataIndex:'reportDatasetId'
+	,width:50
+	,sortable:true
+	,hidden:true
+	,editor:new Ext.form.TextField({
+		allowBlank:true
+	})
 },
 {
 	 header:EURB.ReportFilter.IsJoin
@@ -237,12 +274,23 @@ EURB.ReportFilter.cols = [
 },
 {
 	 header:EURB.ReportFilter.Operand1Column
-	,id:'operand1ColumnMappingId'
-	,dataIndex:'operand1ColumnMappingId'
+	,id:'operand1SelectedColumn'
+	,dataIndex:'operand1SelectedColumn'
 	,width:50
 	,sortable:true
 	,editor:EURB.ReportFilter.joinColumnCombo
 	,renderer:EURB.ReportDesign.comboRenderer(EURB.ReportFilter.columnCombo)
+},
+{
+	 header:EURB.ReportFilter.Operand1Column
+	,id:'operand1ColumnMappingId'
+	,dataIndex:'operand1ColumnMappingId'
+	,width:50
+	,sortable:true
+	,hidden:true
+	,editor:new Ext.form.TextField({
+		allowBlank:true
+	})
 },
 {
 	 header:EURB.ReportFilter.Operand1Column
@@ -270,7 +318,7 @@ EURB.ReportFilter.FitlerGrid = Ext.extend(Ext.grid.EditorGridPanel, {
              title:EURB.addEdit+' '+EURB.ReportFilter.title
             ,iconCls:'icon-edit-record'
             ,columnCount:1
-            ,ignoreFields:{id:true,reportDesignId:true,reportDesignVersionId:true,reportDatasetId:true}
+            ,ignoreFields:{id:true,reportDesignId:true,reportDesignVersionId:true}
             ,formConfig:{
                  labelWidth:80
                 ,buttonAlign:'right'
@@ -374,7 +422,7 @@ EURB.ReportFilter.FitlerGrid = Ext.extend(Ext.grid.EditorGridPanel, {
         return false;
     }
 	,onRowAction:function(grid, record, action, row, col) {
-        switch(action) {
+		switch(action) {
             case 'icon-minus':
                 this.deleteRecord(record);
             break;

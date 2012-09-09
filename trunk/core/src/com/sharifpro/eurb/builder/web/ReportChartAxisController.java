@@ -106,6 +106,7 @@ public class ReportChartAxisController {
 			if(xAxis != null){
 				result.add(xAxis.getId());
 				result.add(xAxis.getColumnMappingId());
+				result.add(xAxis.getSelectedColumn());
 				result.add(xAxis.getDatasetId());
 				result.add(xAxis.getTitle());
 			}
@@ -113,6 +114,7 @@ public class ReportChartAxisController {
 			if(yAxis != null){
 				result.add(yAxis.getId());
 				result.add(yAxis.getColumnMappingId());
+				result.add(yAxis.getSelectedColumn());
 				result.add(yAxis.getDatasetId());
 				result.add(yAxis.getTitle());
 				result.add(yAxis.getAggregation());

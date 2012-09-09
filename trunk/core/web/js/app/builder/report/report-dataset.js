@@ -105,6 +105,7 @@ EURB.ReportDataset.store = new Ext.data.Store({
 		,root:'data'
 		,fields:[
 			 {name:'id', type:'int'}
+			,{name:'name', type: 'string'}
 			,{name:'designId', type:'int'}
 			,{name:'datasetType', type:'int'}
 			,{name:'designVersionId', type:'int'}
@@ -145,6 +146,15 @@ EURB.ReportDataset.cols = [{
             	}
         }
     }})
+},{
+	 header:EURB.ReportDataset.Name
+	,id:'name'
+	,dataIndex:'name'
+	,width:20
+	,sortable:true
+	,editor:new Ext.form.TextField({
+		allowBlank:true
+	})
 },{
 	 header:EURB.ReportDataset.Table
 	,id:'tableMappingId'

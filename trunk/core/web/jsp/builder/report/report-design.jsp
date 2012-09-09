@@ -56,6 +56,7 @@
 			EURB.ReportDataset.removeAction = '<spring:url value="/builder/report/reportDatasetRemove.spy" />';
 			EURB.ReportDataset.storeAction = '<spring:url value="/builder/report/reportDatasetStore.spy" />';
 			
+			EURB.ReportDataset.Name = '<spring:message code="eurb.app.builder.report.dataset.name" />';
 			EURB.ReportDataset.Table = '<spring:message code="eurb.app.builder.report.dataset.table" />';
 			EURB.ReportDataset.Order = '<spring:message code="eurb.app.builder.report.dataset.order" />';
 			EURB.ReportDataset.title = '<spring:message code="eurb.app.builder.report.dataset.title" />';
@@ -147,6 +148,7 @@
 			EURB.ReportChart.sum = '<spring:message code="eurb.app.builder.report.chart.sum" />';
 			EURB.ReportChart.count = '<spring:message code="eurb.app.builder.report.chart.count" />';
 			EURB.ReportChart.average = '<spring:message code="eurb.app.builder.report.chart.average" />';
+			EURB.ReportChart.distinctCount = '<spring:message code="eurb.app.builder.report.chart.distinctCount" />';
 			EURB.ReportChart.Aggregation = '<spring:message code="eurb.app.builder.report.chart.aggregation" />';
 			EURB.ReportChart.titleFont = '<spring:message code="eurb.app.builder.report.chart.titleFont" />';
 			EURB.ReportChart.titleSize = '<spring:message code="eurb.app.builder.report.chart.titleSize" />';
@@ -185,7 +187,7 @@
 		    });
 			
 			EURB.ReportDataset.reportStore = new Ext.data.ArrayStore({
-		        id: 1,
+		        id: 0,
 		        fields: [
 		            'id',
 		            'versionId',
@@ -197,7 +199,7 @@
 			
 			
 			EURB.ReportDataset.tableMappingStore =  new Ext.data.ArrayStore({
-		        id: 2,
+		        id: 0,
 		        fields: [
 		            'id',
 		            'mappedName'
@@ -207,7 +209,7 @@
 			
 			
 			EURB.ReportDesign.columnMappingStore = new Ext.data.ArrayStore({
-		        id: 3,
+		        id: 0,
 		        fields: [
 		            'id',
 		            'title',
@@ -215,7 +217,8 @@
 		            'mappedName',
 		            'tableMappedName',
 		            'columnName',
-		            'type'
+		            'type',
+		            'columnId'
 		        ],
 		        data: ${columnMappingComboContent}
 		    });

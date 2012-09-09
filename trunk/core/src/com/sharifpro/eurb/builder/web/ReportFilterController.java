@@ -51,8 +51,8 @@ public class ReportFilterController {
 			int totalCount = 0;
 			
 			if(design != null){
-				ReportFilters = reportFilterDao.findAll(design.getId());
-				totalCount = reportFilterDao.countAll(design.getId());
+				ReportFilters = reportFilterDao.findAll(design.getId(), design.getVersionId());
+				totalCount = reportFilterDao.countAll(design.getId(), design.getVersionId());
 			}
 
 			return JsonUtil.getSuccessfulMap(ReportFilters, totalCount);
@@ -83,9 +83,6 @@ public class ReportFilterController {
 				reportFilter.setReportDesignId(reportDesign);
 				reportFilter.setReportDesignVersionId(reportVersion);
 				if(reportFilter.isNewRecord()) {
-					ColumnMapping columnMapping = columnMappingDao.findByPrimaryKey(reportFilter.getColumnMappingId());
-					List<ReportDataset> reportDataset = reportDatasetDao.findByReportDesignAndTableMapping(reportDesign, reportVersion, columnMapping.getTableMappingId());
-					reportFilter.setReportDatasetId(reportDataset.get(0).getId());
 					//@ TODO : set col  type correctly
 					pk = reportFilterDao.insert(reportFilter);
 				} else {

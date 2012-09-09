@@ -1,7 +1,7 @@
 ///////////////////xAxis column combo////////////////////////////////			
 EURB.ReportChart.xAxisColumnCombo = new Ext.form.ComboBox({
 	fieldLabel:EURB.ReportChart.AxisColumn,
-	hiddenName:'xColumnMapping',
+	hiddenName:'xSelectedColumn',
     typeAhead: true,
     triggerAction: 'all',
     lazyRender:true,
@@ -14,8 +14,9 @@ EURB.ReportChart.xAxisColumnCombo = new Ext.form.ComboBox({
     width:300,
     listeners:{
     	select: function(combo,record,index){
-    		dsField = EURB.ReportChart.reportChartGrid.axisForm.getForm().findField('xDataset');
-    		dsField.setValue(record.get('datasetId'));
+    		form = EURB.ReportChart.reportChartGrid.axisForm.getForm();
+    		form.findField('xDataset').setValue(record.get('datasetId'));
+    		form.findField('xColumnMapping').setValue(record.get('columnId'));
     	}
     }
 });
@@ -23,7 +24,7 @@ EURB.ReportChart.xAxisColumnCombo = new Ext.form.ComboBox({
 /////////////////yAxis column combo////////////////////////////////
 EURB.ReportChart.yAxisColumnCombo = new Ext.form.ComboBox({
 	fieldLabel:EURB.ReportChart.AxisColumn,
-	hiddenName:'yColumnMapping',
+	hiddenName:'ySelectedColumn',
     typeAhead: true,
     triggerAction: 'all',
     lazyRender:true,
@@ -36,8 +37,9 @@ EURB.ReportChart.yAxisColumnCombo = new Ext.form.ComboBox({
     width:300,
     listeners:{
     	select: function(combo,record,index){
-    		dsField = EURB.ReportChart.reportChartGrid.axisForm.getForm().findField('yDataset');
-    		dsField.setValue(record.get('datasetId'));
+    		form = EURB.ReportChart.reportChartGrid.axisForm.getForm();
+    		form.findField('yDataset').setValue(record.get('datasetId'));
+    		form.findField('yColumnMapping').setValue(record.get('columnId'));
     	}
     }
 });
@@ -77,7 +79,7 @@ EURB.ReportChart.aggregationTypeCombo = new Ext.form.ComboBox({
             'aggregationValue',
             'aggregationLabel'
         ],
-        data: [['sum', EURB.ReportChart.sum], ['count', EURB.ReportChart.count], ['avg', EURB.ReportChart.average]]
+        data: [['sum', EURB.ReportChart.sum], ['count', EURB.ReportChart.count], ['distinct-count', EURB.ReportChart.distinctCount], ['avg', EURB.ReportChart.average]]
     }),
     valueField: 'aggregationValue',
     displayField: 'aggregationLabel',
@@ -422,6 +424,11 @@ EURB.ReportChart.ChartGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 					    ,allowBlank:true
 					    ,xtype: 'hidden'
 					},
+					{
+					    name: 'xColumnMapping'
+					    ,allowBlank:true
+					    ,xtype: 'hidden'
+					},					
 				    {
 						fieldLabel: EURB.ReportChart.AxisTitle
 						,name: 'xTitle'
@@ -443,6 +450,11 @@ EURB.ReportChart.ChartGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 					},
 					{
 					    name: 'yDataset'
+					    ,allowBlank:true
+					    ,xtype: 'hidden'
+					},
+					{
+					    name: 'yColumnMapping'
 					    ,allowBlank:true
 					    ,xtype: 'hidden'
 					},
@@ -643,13 +655,15 @@ EURB.ReportChart.ChartGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 				id: data[0],
 				xAxisId: data[1],
 				xColumnMapping: data[2],
-				xDataset: data[3],
-				xTitle: data[4],
-				yAxisId: data[5],
-				yColumnMapping: data[6],
-				yDataset: data[7],
-				yTitle: data[8],
-				yAggregation: data[9]
+				xSelectedColumn: data[3],
+				xDataset: data[4],
+				xTitle: data[5],
+				yAxisId: data[6],
+				yColumnMapping: data[7],
+				ySelectedColumn: data[8],
+				yDataset: data[9],
+				yTitle: data[10],
+				yAggregation: data[11]
 			}
 		); 
 		var frm = this.axisForm.getForm();

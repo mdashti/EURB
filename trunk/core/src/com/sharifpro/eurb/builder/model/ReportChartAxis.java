@@ -18,6 +18,8 @@ public class ReportChartAxis extends PersistableObject implements Serializable
 	 */
 	protected Long columnMappingId;
 	
+	protected String selectedColumn;
+	
 	/** 
 	 * This attribute maps to the column report_dataset_id in the report_chart_axis table.
 	 */
@@ -88,6 +90,11 @@ public class ReportChartAxis extends PersistableObject implements Serializable
 	public void setColumnMappingId(Long columnMappingId)
 	{
 		this.columnMappingId = columnMappingId;
+	}
+	
+	public String getSelectedColumn()
+	{
+		return this.datasetId + "-" + this.columnMappingId;
 	}
 	
 	/**

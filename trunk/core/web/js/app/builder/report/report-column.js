@@ -17,11 +17,11 @@ EURB.ReportColumn.columnCombo = new Ext.form.ComboBox({
     		rform.findField('columnHeader').setValue(record.get('mappedName'));
     		rform.findField('datasetId').setValue(record.get('datasetId'));
     		if(record.get('type')){
-    			rform.findField('reportColumnId').setValue(record.get('id'));
+    			rform.findField('reportColumnId').setValue(record.get('columnId'));
     			rform.findField('columnMappingId').setValue(0);
     		}
     		else{
-    			rform.findField('columnMappingId').setValue(record.get('id'));
+    			rform.findField('columnMappingId').setValue(record.get('columnId'));
     			rform.findField('reportColumnId').setValue(0);
     		}
     	}
@@ -115,11 +115,11 @@ EURB.ReportColumn.store = new Ext.data.Store({
 		,totalProperty:'totalCount'
 		,root:'data'
 		,fields:[
-			  {name:'id', type:'int'}
+			 {name:'id', type:'int'}
 			,{name:'designId', type:'int'}
 			,{name:'designVersionId', type:'int'}
 			,{name:'datasetId', type:'int'}
-			,{name:'selectedColumn', type:'int'}
+			,{name:'selectedColumn', type:'string'}
 			,{name:'columnMappingId', type:'int'}
 			,{name:'reportColumnId', type:'int'}
 			,{name:'columnHeader', type:'string'}

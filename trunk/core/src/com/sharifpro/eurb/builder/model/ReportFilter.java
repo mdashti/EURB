@@ -17,6 +17,8 @@ public class ReportFilter extends PersistableObject implements Serializable
 	 * This attribute maps to the column report_column_id in the report_filter table.
 	 */
 	protected Long columnMappingId;
+	
+	protected String selectedColumn;
 
 	/** 
 	 * This attribute maps to the column report_column_dataset_id in the report_filter table.
@@ -67,6 +69,8 @@ public class ReportFilter extends PersistableObject implements Serializable
 	 * This attribute maps to the column operand1_column_mapping_id in the report_filter table.
 	 */
 	protected Long operand1ColumnMappingId;
+	
+	protected String operand1SelectedColumn;
 
 	/** 
 	 * This attribute maps to the column operand1_dataset_id in the report_filter table.
@@ -105,6 +109,11 @@ public class ReportFilter extends PersistableObject implements Serializable
 	public void setColumnMappingId(Long columnMappingId)
 	{
 		this.columnMappingId = columnMappingId;
+	}
+	
+	public String getSelectedColumn()
+	{
+		return this.reportDatasetId + "-" + this.columnMappingId;
 	}
 
 	/**
@@ -315,6 +324,11 @@ public class ReportFilter extends PersistableObject implements Serializable
 	public void setOperand1ColumnMappingId(Long operand1ColumnMappingId)
 	{
 		this.operand1ColumnMappingId = operand1ColumnMappingId;
+	}
+	
+	public String getOperand1SelectedColumn()
+	{
+		return this.operand1DatasetId + "-" + this.operand1ColumnMappingId;
 	}
 
 	/**

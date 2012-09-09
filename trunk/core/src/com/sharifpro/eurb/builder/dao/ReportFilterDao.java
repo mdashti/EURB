@@ -2,6 +2,7 @@ package com.sharifpro.eurb.builder.dao;
 
 import com.sharifpro.eurb.builder.dao.ReportFilterDao;
 import com.sharifpro.eurb.builder.exception.ReportFilterDaoException;
+import com.sharifpro.eurb.builder.model.ReportDataset;
 import com.sharifpro.eurb.builder.model.ReportFilter;
 import com.sharifpro.eurb.builder.model.ReportFilterPk;
 import java.util.List;
@@ -45,12 +46,12 @@ public interface ReportFilterDao
 	/** 
 	 * Returns all rows from the report_filter table that match the criteria 'report_design_id := reportDesignId'.
 	 */
-	public List<ReportFilter> findAll(Long reportDesignId) throws ReportFilterDaoException;
+	public List<ReportFilter> findAll(Long reportDesignId, Long reportVersionId) throws ReportFilterDaoException;
 	
 	/** 
 	 * Counts all rows from the report_filter table that match the criteria 'report_design_id := reportDesignId'.
 	 */
-	public int countAll(Long reportDesignId) throws ReportFilterDaoException;
+	public int countAll(Long reportDesignId, Long reportVersionId) throws ReportFilterDaoException;
 
 	/** 
 	 * Returns all rows from the report_filter table that match the criteria 'id = :id'.
@@ -141,5 +142,14 @@ public interface ReportFilterDao
 	 * Returns the rows from the report_filter table that matches the specified primary-key value.
 	 */
 	public ReportFilter findByPrimaryKey(ReportFilterPk pk) throws ReportFilterDaoException;
+
+	/**
+	 * Returns all the report filter in the given reportDesign for the given datasets
+	 * @param reportDesignId
+	 * @param datasetList
+	 * @return
+	 * @throws ReportFilterDaoException
+	 */
+	public List<ReportFilter> findAll(Long reportDesignId, Long reportVersionId, List<ReportDataset> datasetList) throws ReportFilterDaoException;
 
 }

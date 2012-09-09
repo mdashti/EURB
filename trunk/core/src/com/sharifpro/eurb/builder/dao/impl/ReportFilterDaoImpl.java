@@ -3,6 +3,7 @@ package com.sharifpro.eurb.builder.dao.impl;
 import com.sharifpro.eurb.DaoFactory;
 import com.sharifpro.eurb.builder.dao.ReportFilterDao;
 import com.sharifpro.eurb.builder.exception.ReportFilterDaoException;
+import com.sharifpro.eurb.builder.model.ReportDataset;
 import com.sharifpro.eurb.builder.model.ReportFilter;
 import com.sharifpro.eurb.builder.model.ReportFilterPk;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
@@ -11,6 +12,7 @@ import com.sharifpro.transaction.annotation.TransactionalReadOnly;
 import com.sharifpro.transaction.annotation.TransactionalReadWrite;
 import com.sharifpro.util.PropertyProvider;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -82,7 +84,7 @@ public class ReportFilterDaoImpl extends AbstractDAO implements ParameterizedRow
 			throw new ReportFilterDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 	}
-	
+
 	@TransactionalReadWrite
 	public void deleteAll(List<ReportFilterPk> pkList) throws ReportFilterDaoException
 	{
@@ -176,31 +178,74 @@ public class ReportFilterDaoImpl extends AbstractDAO implements ParameterizedRow
 		}
 
 	}
-	
+
 	/** 
 	 * Returns all rows from the report_filter table that match the criteria 'report_design_id = :reportDesignId'.
 	 */
 	@TransactionalReadOnly
-	public List<ReportFilter> findAll(Long reportDesignId) throws ReportFilterDaoException
+	public List<ReportFilter> findAll(Long reportDesignId, Long reportVersionId) throws ReportFilterDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.report_design_id = ? ORDER BY o.id", this, reportDesignId);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.report_design_id = ? AND o.report_design_version_id = ? ORDER BY o.id", this, reportDesignId, reportVersionId);
 		}
 		catch (Exception e) {
 			throw new ReportFilterDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 
 	}
-	
-	
+
+	/**
+	 * Returns all the report filter in the given reportDesign for the given datasets
+	 * @param reportDesignId
+	 * @param datasetList
+	 * @return
+	 * @throws ReportFilterDaoException
+	 */
+	public List<ReportFilter> findAll(Long reportDesignId, Long reportVersionId, List<ReportDataset> datasetList) throws ReportFilterDaoException
+	{
+		try
+		{
+			StringBuilder inIds = new StringBuilder("(");
+			List<Long> datasetIds = new ArrayList<Long>(datasetList.size()); 
+			for(int i = 0; i < datasetList.size() - 1; i++){
+				inIds.append(datasetList.get(i).getId() + ", ");
+				datasetIds.add(datasetList.get(i).getId());
+			}
+			inIds.append(datasetList.get(datasetList.size() - 1).getId() + ")");
+			datasetIds.add(datasetList.get(datasetList.size() - 1).getId());
+			List<ReportFilter> filters = getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.report_design_id = ? AND o.report_design_version_id = ? " +
+					"AND o.report_dataset_id IN " + inIds.toString() + " ORDER BY o.id", this, reportDesignId, reportVersionId);
+			//for join filters we have to check if the other dataset is also in the list
+			List<ReportFilter> relatedFilters = new ArrayList<ReportFilter>(filters.size());
+			for(ReportFilter rf : filters){
+				if(rf.isJoinFilter())
+				{
+					if(datasetIds.contains(rf.getOperand1DatasetId()))
+					{
+						relatedFilters.add(rf);
+					}
+				}
+				else
+				{
+					relatedFilters.add(rf);
+				}
+			}
+			return relatedFilters;
+		}
+		catch (Exception e) {
+			throw new ReportFilterDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
+		}
+	}
+
+
 	/** 
 	 * Counts all rows from the report_filter table that match the criteria 'report_design_id = :reportDesignId'.
 	 */
 	@TransactionalReadOnly
-	public int countAll(Long reportDesignId) throws ReportFilterDaoException
+	public int countAll(Long reportDesignId, Long reportVersionId) throws ReportFilterDaoException
 	{
 		try {
-			return getJdbcTemplate().queryForInt(COUNT_QUERY + " WHERE o.report_design_id = ? ", reportDesignId);
+			return getJdbcTemplate().queryForInt(COUNT_QUERY + " WHERE o.report_design_id = ?  AND o.report_design_version_id = ? ", reportDesignId, reportVersionId);
 		}
 		catch (Exception e) {
 			throw new ReportFilterDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);

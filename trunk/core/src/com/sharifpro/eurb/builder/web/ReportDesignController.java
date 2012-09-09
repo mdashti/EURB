@@ -127,21 +127,26 @@ public class ReportDesignController {
 
 	private Object[][] getColumnMappingArray(ReportDesign reportDesign, HashMap<Long, String> tableMappingIdName) throws ReportDatasetDaoException, ColumnMappingDaoException, ReportColumnDaoException, ReportDesignDaoException
 	{
-		HashMap<Long, ArrayList<Object>> columns = new HashMap<Long, ArrayList<Object>>();
+		HashMap<String, ArrayList<Object>> columns = new HashMap<String, ArrayList<Object>>();
 		ArrayList<Object> info;
 		List<ReportDataset> reportDatasets = reportDatasetDao.findAll(reportDesign);
+		String datasetName;
 		for(ReportDataset rds : reportDatasets){
 			if(rds.getTableMappingId() != null && rds.getTableMappingId() != 0){
 				List<ColumnMapping> columnMappings = columnMappingDao.findAllMapped(rds);
 				for(ColumnMapping cm : columnMappings){
 					info = new ArrayList<Object>();
-					info.add(tableMappingIdName.get(rds.getTableMappingId()) + " - " + cm.getMappedName());
+					//if dataset has a name use it
+					//else use the table mapping name for this dataset
+					datasetName = (rds.getName() == null || rds.getName().equals("")) ? tableMappingIdName.get(rds.getTableMappingId()) : rds.getName(); 
+					info.add(datasetName + " - " + cm.getMappedName());
 					info.add(rds.getId());
 					info.add(cm.getMappedName());
 					info.add(tableMappingIdName.get(rds.getTableMappingId()));
 					info.add(cm.getColumnName());
 					info.add(0);
-					columns.put(cm.getId(), info);
+					info.add(cm.getId());
+					columns.put(rds.getId() + "-" + cm.getId(), info);
 				}
 			}
 			else if(rds.getBaseReportId() != null && rds.getBaseReportId() != 0){
@@ -155,14 +160,15 @@ public class ReportDesignController {
 					info.add(design.getName());
 					info.add(rc.getColumnMapping().getColumnName());
 					info.add(1);
-					columns.put(rc.getId(), info);
+					info.add(rc.getId());
+					columns.put(rds.getId() + "-" + rc.getId(), info);
 				}
 			}
 		}
-		Set<Long> ck = columns.keySet();
-		Object[][] columnMappingArr = new Object[ck.size()][7];
+		Set<String> ck = columns.keySet();
+		Object[][] columnMappingArr = new Object[ck.size()][8];
 		int i = 0;
-		for(Long key : ck){
+		for(String key : ck){
 			ArrayList<Object> arr = columns.get(key);
 			columnMappingArr[i][0] = key;
 			columnMappingArr[i][1] = arr.get(0);
@@ -171,6 +177,7 @@ public class ReportDesignController {
 			columnMappingArr[i][4] = arr.get(3);
 			columnMappingArr[i][5] = arr.get(4);
 			columnMappingArr[i][6] = arr.get(5);
+			columnMappingArr[i][7] = arr.get(6);
 			i++;
 		}
 		return columnMappingArr;
