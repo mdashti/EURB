@@ -87,7 +87,7 @@ Ext.ux.Portal.DropZone = Ext.extend(Ext.dd.DropTarget, {
         // determine column
         var col = 0, xs = this.grid.columnX, cmatch = false;
         for(var len = xs.length; col < len; col++){
-            if(xy[0] < (xs[col].x + xs[col].w)){
+            if(xy[0] >= xs[col].x && xy[0] < (xs[col].x + xs[col].w)){
                 cmatch = true;
                 break;
             }

@@ -1,5 +1,8 @@
 package com.sharifpro.eurb;
 
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.xml.XmlBeanFactory;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.acls.model.AclService;
 
 import com.sharifpro.eurb.builder.dao.GroupAggregationDao;
@@ -10,6 +13,9 @@ import com.sharifpro.eurb.builder.dao.ReportDesignDao;
 import com.sharifpro.eurb.builder.dao.ReportExecutionHistoryDao;
 import com.sharifpro.eurb.builder.dao.ReportFilterDao;
 import com.sharifpro.eurb.builder.dao.ReportFormatDao;
+import com.sharifpro.eurb.dashboard.dao.DashboardColDao;
+import com.sharifpro.eurb.dashboard.dao.DashboardDao;
+import com.sharifpro.eurb.dashboard.dao.DashboardItemDao;
 import com.sharifpro.eurb.management.mapping.dao.ColumnMappingDao;
 import com.sharifpro.eurb.management.mapping.dao.DbConfigDao;
 import com.sharifpro.eurb.management.mapping.dao.PersistableObjectDao;
@@ -201,5 +207,35 @@ public class DaoFactory
 	public static AclService createAclService()
 	{
 		return SharifProApplicationContext.getApplicationContext().getBean( AclService.class );
+	}
+	
+	/**
+	 * Method 'createDashboardDao'
+	 * 
+	 * @return DashboardDao
+	 */
+	public static DashboardDao createDashboardDao()
+	{
+		return SharifProApplicationContext.getApplicationContext().getBean( DashboardDao.class );
+	}
+
+	/**
+	 * Method 'createDashboardColDao'
+	 * 
+	 * @return DashboardColDao
+	 */
+	public static DashboardColDao createDashboardColDao()
+	{
+		return SharifProApplicationContext.getApplicationContext().getBean( DashboardColDao.class );
+	}
+
+	/**
+	 * Method 'createDashboardItemDao'
+	 * 
+	 * @return DashboardItemDao
+	 */
+	public static DashboardItemDao createDashboardItemDao()
+	{
+		return SharifProApplicationContext.getApplicationContext().getBean( DashboardItemDao.class );
 	}
 }

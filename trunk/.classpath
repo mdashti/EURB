@@ -104,5 +104,7 @@
 	<classpathentry kind="lib" path="core/lib/xmlbeans-2.3.0.jar"/>
 	<classpathentry kind="lib" path="core/lib/yui-compressor-ant-task-0.5.jar"/>
 	<classpathentry kind="lib" path="core/lib/yuicompressor-2.4.7.jar"/>
+	<classpathentry kind="lib" path="core/lib/jasypt-1.9.0.jar"/>
+	<classpathentry kind="lib" path="core/lib/jasypt-spring31-1.9.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

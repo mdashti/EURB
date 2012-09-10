@@ -418,6 +418,11 @@ public class ViewReportController {
 		}
 	}
 
+	
+	@RequestMapping(value="/builder/report/get-reportchart{report}.spy")
+	public @ResponseBody Map<String,? extends Object> executeRunReportChart(@PathVariable Long report) throws Exception {
+		return executeRunReportChart(report , reportDesignDao.findWhereIdEquals(report).get(0).getVersionId());
+	}
 
 	@RequestMapping(value="/builder/report/get-reportchart{report}-v{version}.spy")
 	public @ResponseBody Map<String,? extends Object> executeRunReportChart(@PathVariable Long report, @PathVariable Long version) throws Exception {

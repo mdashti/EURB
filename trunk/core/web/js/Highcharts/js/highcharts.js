@@ -10667,7 +10667,7 @@ Chart.prototype = {
 		}
 
 		// Credits
-		if (credits.enabled && !chart.credits) {
+		if (credits && credits.enabled && !chart.credits) {
 			creditsHref = credits.href;
 			chart.credits = renderer.text(
 				credits.text,

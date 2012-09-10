@@ -69,7 +69,7 @@ createChart = function(data, index, heightValue){
 		                        [1, '#FFF']
 		                    ]
 		                }
-		            },
+		            }
 		        }],
 		        pane: {
 		            startAngle: -150,

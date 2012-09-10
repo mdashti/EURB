@@ -15,6 +15,9 @@ import com.sharifpro.eurb.builder.model.ReportExecutionHistory;
 import com.sharifpro.eurb.builder.model.ReportFilter;
 import com.sharifpro.eurb.builder.model.ReportFormat;
 import com.sharifpro.eurb.builder.model.UserMessage;
+import com.sharifpro.eurb.dashboard.model.Dashboard;
+import com.sharifpro.eurb.dashboard.model.DashboardCol;
+import com.sharifpro.eurb.dashboard.model.DashboardItem;
 import com.sharifpro.eurb.management.mapping.model.ColumnMapping;
 import com.sharifpro.eurb.management.mapping.model.DbConfig;
 import com.sharifpro.eurb.management.mapping.model.PersistableObject;
@@ -52,6 +55,10 @@ public class PersistableObjectType {
 		OBJECT_TYPE_MAP.put(ReportExecutionHistory.class.getCanonicalName(), 850);
 		OBJECT_TYPE_MAP.put(ReportChart.class.getCanonicalName(), 950);
 		OBJECT_TYPE_MAP.put(ReportChartAxis.class.getCanonicalName(), 1000);
+
+		OBJECT_TYPE_MAP.put(Dashboard.class.getCanonicalName(), 510);
+		OBJECT_TYPE_MAP.put(DashboardCol.class.getCanonicalName(), 515);
+		OBJECT_TYPE_MAP.put(DashboardItem.class.getCanonicalName(), 520);
 		
 		
 		OBJECT_TYPE_MAP.put("Version", 900);

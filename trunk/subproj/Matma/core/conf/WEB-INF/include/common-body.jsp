@@ -138,6 +138,7 @@
 		EURB.appMenu.authorities = '<spring:message code="eurb.app.menu.security.authorities" />';
 		EURB.appMenu.showReport = '<spring:message code="eurb.app.menu.builder.showreport" />';
 		EURB.appMenu.schedule = '<spring:message code="eurb.app.menu.builder.schedule" />';
+		EURB.appMenu.dashboard = '<spring:message code="eurb.app.menu.builder.dashboard" />';
 		
 		EURB.showError = function(msg, title) {
 			Ext.Msg.show({
@@ -207,6 +208,7 @@
 		    	html:'<div class="urbangreymenu">'+
 		    	'<ul class="submenu">'+
 		    	'<li><a href="<spring:url value="/" />">'+EURB.appMenu.homepage+'</a></li>'+
+		    	'<li><a href="<spring:url value="/dashboard.spy" />">'+EURB.appMenu.dashboard+'</a></li>'+
 		    	'<li><a href="<spring:url value="/logout.spy" />">'+EURB.logout+'</a></li>'+
 		    	'</ul>'+
 		    	<sec:authorize access="hasRole('${authorityType.ROLE_BASE_MANAGEMENT_MENU_VIEW}')">
