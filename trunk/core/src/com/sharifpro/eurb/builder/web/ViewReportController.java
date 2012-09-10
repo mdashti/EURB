@@ -28,6 +28,7 @@ import com.sharifpro.eurb.builder.dao.ReportColumnDao;
 import com.sharifpro.eurb.builder.dao.ReportDatasetDao;
 import com.sharifpro.eurb.builder.dao.ReportDesignDao;
 import com.sharifpro.eurb.builder.dao.ReportFilterDao;
+import com.sharifpro.eurb.builder.exception.ReportChartDaoException;
 import com.sharifpro.eurb.builder.exception.ReportExecutionHistoryDaoException;
 import com.sharifpro.eurb.builder.intermediate.ExtGridColumn;
 import com.sharifpro.eurb.builder.intermediate.ExtStoreField;
@@ -419,9 +420,33 @@ public class ViewReportController {
 	}
 
 	
-	@RequestMapping(value="/builder/report/get-reportchart{report}.spy")
-	public @ResponseBody Map<String,? extends Object> executeRunReportChart(@PathVariable Long report) throws Exception {
-		return executeRunReportChart(report , reportDesignDao.findWhereIdEquals(report).get(0).getVersionId());
+	@RequestMapping(value="/builder/report/get-reportchart{report}-c{chart}.spy")
+	public @ResponseBody Map<String,? extends Object> executeRunReportChartByChartId(@PathVariable Long report, @PathVariable Long chart) throws Exception {
+		
+		try{
+			long version = reportDesignDao.findWhereIdEquals(report).get(0).getVersionId();
+
+			//find report design with given id
+			ReportDesign reportDesign = reportDesignDao.findByPrimaryKey(report, version);
+
+			//All Datasets must be in the same dbConfig
+			Long dbConfigId = reportDesign.getDbConfigId();
+
+			List<Object> res = new ArrayList<Object>();
+
+			List<ReportChart> reportCharts = reportChartDao.findAll(reportDesign);
+			for(ReportChart c : reportCharts){
+				if(c.getId().equals(chart)) {
+					return JsonUtil.getSuccessfulMap(getResultForChart(c, dbConfigId, reportDesign));
+				}
+			}
+
+			throw new ReportChartDaoException("Chart not found!");
+
+		} catch (Exception e) {
+
+			return JsonUtil.getModelMapError(e);
+		}
 	}
 
 	@RequestMapping(value="/builder/report/get-reportchart{report}-v{version}.spy")

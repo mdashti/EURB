@@ -33,17 +33,88 @@
 		EURB.DashboardDesign.delColMessage = '<spring:message code="eurb.app.dashboard.delcolmessage" />';
 		EURB.DashboardDesign.newMessage = '<spring:message code="eurb.app.dashboard.newmessage" />';
 		EURB.DashboardDesign.newTitle = '<spring:message code="eurb.app.dashboard.newtitle" />';
+		EURB.DashboardDesign.itemTitle = '<spring:message code="eurb.app.dashboard.itemTitle" />';
+		EURB.DashboardDesign.itemContent = '<spring:message code="eurb.app.dashboard.itemContent" />';
+		EURB.DashboardDesign.itemHeight = '<spring:message code="eurb.app.dashboard.itemHeight" />';
+		EURB.DashboardDesign.editDashboardItem = '<spring:message code="eurb.app.dashboard.editDashboardItem" />';
+		EURB.DashboardDesign.reportDesign = '<spring:message code="eurb.app.dashboard.reportDesign" />';
+		EURB.DashboardDesign.reportChart = '<spring:message code="eurb.app.dashboard.reportChart" />';
 		
 		EURB.DashboardDesign.addColAction = '<spring:url value="/dashboard/dashboard-design/dashboardAddCol.spy" />';
 		EURB.DashboardDesign.delColAction = '<spring:url value="/dashboard/dashboard-design/dashboardDelCol.spy" />';
 		EURB.DashboardDesign.addItemAction= '<spring:url value="/dashboard/dashboard-design/dashboardAddItem.spy" />';
 		EURB.DashboardDesign.delItemAction= '<spring:url value="/dashboard/dashboard-design/dashboardDelItem.spy" />';
 		EURB.DashboardDesign.moveItemAction= '<spring:url value="/dashboard/dashboard-design/dashboardMoveItem.spy" />';
+		EURB.DashboardDesign.editItemAction = '<spring:url value="/dashboard/dashboard-design/dashboardEditItem.spy" />';
+		EURB.DashboardDesign.findChartsInReportAction = '<spring:url value="/builder/report/reportChartSearch.spy" />';
+		EURB.DashboardDesign.runChart='${baseUrl}builder/report/get-reportchart';
 		
 		EURB.DashboardDesign.userDashboardId = '${userDashboardId}';
 		
+
+		
+		EURB.DashboardDesign.reportStore = new Ext.data.ArrayStore({
+	        id: 0,
+	        fields: [
+	            'id',
+	            'versionId',
+	            'name',
+	            'categoryId'
+	        ],
+	        data: ${reportDesignsComboContent}
+	    });
+		
+		EURB.DashboardDesign.chartStore = new Ext.data.JsonStore({
+		    // store configs
+		    id: 0,
+		    url: EURB.DashboardDesign.findChartsInReportAction,
+		    storeId: 'chartStore',
+		    // reader configs
+		    root: 'data',
+		    idProperty: 'id',
+		    fields: ['id', 'name']
+		});
+		
 		Ext.onReady(function(){
 
+			////////////////report designs combo////////////////
+			EURB.DashboardDesign.designCombo = new Ext.form.ComboBox({
+				name: 'reportDesign',
+				hiddenName: 'reportDesign',
+				fieldLabel: EURB.DashboardDesign.reportDesign,
+				typeAhead: true,
+				triggerAction: 'all',
+				lazyRender:true,
+				mode: 'local',
+				store: EURB.DashboardDesign.reportStore,
+				valueField: 'id',
+				displayField: 'name',
+				forceSelection: true,
+			    allowBlank: true,
+			    listeners:{
+			    	select: function(combo,record,index){
+			    		EURB.DashboardDesign.chartStore.removeAll();
+			    		EURB.DashboardDesign.chartStore.reload({ params: {reportDesign: record.id} });
+			    		EURB.DashboardDesign.chartCombo.clearValue();
+			    	}
+			    }
+			});
+
+			EURB.DashboardDesign.chartCombo = new Ext.form.ComboBox({
+				name: 'reportChart',
+				hiddenName: 'reportChart',
+				fieldLabel: EURB.DashboardDesign.reportChart,
+				typeAhead: true,
+				triggerAction: 'all',
+				lazyRender:true,
+				mode: 'local',
+				store: EURB.DashboardDesign.chartStore,
+				valueField: 'id',
+				displayField: 'name',
+				forceSelection: true,
+			    allowBlank: true
+			});
+			
 		    // NOTE: This is an example showing simple state management. During development,
 		    // it is generally best to disable state management as dynamically-generated ids
 		    // can change across page loads, leading to unpredictable results.  The developer
@@ -52,10 +123,101 @@
 		    Ext.example = {};
 		    Ext.example.shortBogusMarkup = EURB.DashboardDesign.newMessage;
 		    
+		    
+		    var editDashboardItemForm = new Ext.form.FormPanel({
+				baseCls: 'x-plain',
+				labelWidth: 120,
+				url:EURB.DashboardDesign.editItemAction,
+				defaultType: 'textfield',
+				
+				items: [{
+			    name: 'dashboard'
+				    ,xtype: 'hidden'
+				},{
+				    name: 'item'
+				    ,xtype: 'hidden'
+				},{
+				    fieldLabel: EURB.DashboardDesign.itemTitle
+				    ,name: 'title'
+				    ,hiddenName: 'title'
+				    ,anchor:'100%'  // anchor width by percentage
+				    ,allowBlank:false
+				},{
+				    fieldLabel: EURB.DashboardDesign.itemHeight
+				    ,name: 'height'
+				    ,anchor: '100%'  // anchor width by percentage
+					,xtype: 'numberfield'
+					,allowBlank:true
+				},EURB.DashboardDesign.designCombo, EURB.DashboardDesign.chartCombo,{
+				    fieldLabel: EURB.DashboardDesign.itemContent
+				    ,name: 'content'
+				    ,anchor:'100%'  // anchor width by percentage
+				    ,allowBlank:true
+					,xtype: 'htmleditor'
+				}]
+		    });
+	        var editDashboardItemWindow = new Ext.Window({
+				title: EURB.DashboardDesign.editDashboardItem,
+				width: 650,
+				height:380,
+				minWidth: 300,
+				closeAction: 'hide',
+				minHeight: 180,
+				layout: 'fit',
+				plain:true,
+				bodyStyle:'padding:5px;',
+				buttonAlign:'center',
+				items: editDashboardItemForm,
+			    buttons: [{
+			        text:Ext.MessageBox.buttonText.ok,
+			        handler: function() {
+			        	if(editDashboardItemForm.getForm().isValid()) {
+			        		editDashboardItemForm.getForm().submit({
+		                        url: EURB.DashboardDesign.editItemAction,
+		                        success: function(form, action) {
+		                        	/*var item = form.findField('item').getValue();
+		                        	var panel = Ext.getCmp(item+'');
+		                        	panel.title = form.findField('title').getValue();
+		                        	panel.height = form.findField('height').getValue();
+		                        	panel.itemContent = form.findField('content').getValue();
+		                        	panel.reportDesign = form.findField('reportDesign').getValue();
+		                        	panel.reportChart = form.findField('reportChart').getValue();
+		                        	if(!panel.reportDesign) {
+		                        		panel.html = form.findField('content').getValue();
+		                        	}
+		                        	var portal = EURB.mainPanel.items.get(0);
+									editDashboardItemWindow.hide();
+									Ext.get(options.itemId+'').dom.childNodes[1]
+									portal.doLayout();*/
+									location.reload(true);
+		                        },
+		                        failure: function(form, action) {
+		                            Ext.Msg.alert('Error!');
+		                        }
+		                    });
+			        	}
+			        }
+			    },{
+			        text: Ext.MessageBox.buttonText.cancel,
+			        handler: function(){
+			            editDashboardItemWindow.hide();
+			        }
+			    }]
+			});
+		    
 		    var tools = [{
 		        id:'gear',
-		        handler: function(){
-		            Ext.Msg.alert('Message', 'The Settings tool was clicked.');
+		        handler: function(e, target, panel){
+		        	var frm = editDashboardItemForm.getForm();
+		        	EURB.DashboardDesign.chartStore.removeAll();
+		        	if(panel.reportDesign) {
+		        		EURB.DashboardDesign.chartStore.reload({ params: {reportDesign: panel.reportDesign} });
+		        	}
+		        	frm.reset();
+		        	var record = new Ext.data.Record({dashboard:EURB.DashboardDesign.userDashboardId, item: panel.id, height: panel.height, content: panel.itemContent, title: panel.title, reportDesign: panel.reportDesign, reportChart: panel.reportChart});
+		        	frm.loadRecord(record);
+		        	editDashboardItemWindow.show(panel.id+'', function(){EURB.DashboardDesign.chartCombo.setValue(panel.reportChart);});
+
 		        }
 		    },{
 		        id:'close',
@@ -97,6 +259,39 @@
 			for(var i = 0 ; i < dashboardItems.length; i++) {
 				for( var j = 0; j < dashboardItems[i].items.length; j++) {
 					dashboardItems[i].items[j].tools = tools;
+					if(dashboardItems[i].items[j].reportDesign) {
+						if(dashboardItems[i].items[j].reportChart) {
+							var o = {
+								 url:EURB.DashboardDesign.runChart + dashboardItems[i].items[j].reportDesign + '-c' + dashboardItems[i].items[j].reportChart + '.spy'
+								,method:'get'
+								,callback: function(options, success, response) {
+									if(true !== success) {
+										this.showError(response.responseText);
+										return;
+									}
+									try {
+										var o = Ext.decode(response.responseText);
+									}
+									catch(e) {
+										this.showError(response.responseText, EURB.unableToDecodeJSON);
+										return;
+									}
+									if(true !== o.success) {
+										this.showError(o.error || o.message || EURB.unknownError);
+										return;
+									}
+									createChart(o.data, Ext.get(options.itemId+'').dom.childNodes[1], options.itemHeight);
+								}
+								,scope:this
+								,itemId: dashboardItems[i].items[j].id
+								,itemHeight: dashboardItems[i].items[j].height
+								,itemContent: dashboardItems[i].items[j].html
+								,reportDesign: dashboardItems[i].items[j].reportDesign
+								,reportChart: dashboardItems[i].items[j].reportChart
+							};
+							Ext.Ajax.request(o);
+						}
+					}
 				}
 			}
 		    
@@ -488,18 +683,7 @@
 			
 			chart = new Highcharts.Chart(options);
 		};
-
-		updateChartData = function(charts){
-			if(EURB.RunReport.chartCount > 2){
-				hValue = 150;
-			}
-			else{
-				hValue = 300;
-			}
-			for(i = 0; i < charts.length; i++){
-				createChart(charts[i], i, hValue);
-			}
-		};
+		
 		</script>
 	</body>
 </html>

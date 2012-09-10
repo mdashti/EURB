@@ -49,7 +49,7 @@ public class DashboardItem extends PersistableObject
 	/** 
 	 * This attribute maps to the column is_show_table in the dashboard_item table.
 	 */
-	protected short isShowTable;
+	protected boolean isShowTable;
 
 	/** 
 	 * This attribute maps to the column item_title in the dashboard_item table.
@@ -234,7 +234,7 @@ public class DashboardItem extends PersistableObject
 	 * 
 	 * @return short
 	 */
-	public short getIsShowTable()
+	public boolean getIsShowTable()
 	{
 		return isShowTable;
 	}
@@ -244,7 +244,7 @@ public class DashboardItem extends PersistableObject
 	 * 
 	 * @param isShowTable
 	 */
-	public void setIsShowTable(short isShowTable)
+	public void setIsShowTable(boolean isShowTable)
 	{
 		this.isShowTable = isShowTable;
 	}
@@ -310,55 +310,11 @@ public class DashboardItem extends PersistableObject
 		}
 		
 		final DashboardItem _cast = (DashboardItem) _other;
-		if (id != _cast.id) {
-			return false;
+		if (id.equals(_cast.id)) {
+			return true;
 		}
 		
-		if (dashboardId != _cast.dashboardId) {
-			return false;
-		}
-		
-		if (dashboardColId != _cast.dashboardColId) {
-			return false;
-		}
-		
-		if (itemOrder != _cast.itemOrder) {
-			return false;
-		}
-		
-		if (itemHeight != _cast.itemHeight) {
-			return false;
-		}
-		
-		if (itemCollapsed != _cast.itemCollapsed) {
-			return false;
-		}
-		
-		if (itemClosed != _cast.itemClosed) {
-			return false;
-		}
-		
-		if (reportDesignId != _cast.reportDesignId) {
-			return false;
-		}
-		
-		if (reportChartId != _cast.reportChartId) {
-			return false;
-		}
-		
-		if (isShowTable != _cast.isShowTable) {
-			return false;
-		}
-		
-		if (itemTitle == null ? _cast.itemTitle != itemTitle : !itemTitle.equals( _cast.itemTitle )) {
-			return false;
-		}
-		
-		if (itemContent == null ? _cast.itemContent != itemContent : !itemContent.equals( _cast.itemContent )) {
-			return false;
-		}
-		
-		return true;
+		return false;
 	}
 
 	/**
@@ -378,7 +334,6 @@ public class DashboardItem extends PersistableObject
 		
 		_hashCode = 29 * _hashCode + (int) (reportDesignId ^ (reportDesignId >>> 32));
 		_hashCode = 29 * _hashCode + (int) (reportChartId ^ (reportChartId >>> 32));
-		_hashCode = 29 * _hashCode + (int) isShowTable;
 		if (itemTitle != null) {
 			_hashCode = 29 * _hashCode + itemTitle.hashCode();
 		}

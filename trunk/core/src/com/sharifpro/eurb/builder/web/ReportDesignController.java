@@ -53,8 +53,6 @@ public class ReportDesignController {
 	private ReportCategoryDao reportCategoryDao;
 	private ReportColumnDao reportColumnDao;
 
-
-
 	@RequestMapping(value="/builder/report/report-design.spy")
 	public ModelAndView executeReportDesignSpy() throws Exception {
 
@@ -64,7 +62,6 @@ public class ReportDesignController {
 		ReportDesignPk pk;
 		pk = reportDesignDao.insert(reportDesign);
 		return executeReportDesignSpy(pk.getId() + "");
-
 	}
 
 	@RequestMapping(value="/builder/report/report{report}-design.spy")
@@ -254,7 +251,6 @@ public class ReportDesignController {
 	public void setReportColumnDao(ReportColumnDao reportColumnDao){
 		this.reportColumnDao = reportColumnDao;
 	}
-
 
 	@Autowired
 	public void setJsonUtil(JsonUtil jsonUtil) {

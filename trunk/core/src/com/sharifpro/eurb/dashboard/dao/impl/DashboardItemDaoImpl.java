@@ -69,6 +69,9 @@ public class DashboardItemDaoImpl extends AbstractDAO implements ParameterizedRo
 		dto.setDashboardColId( rs.getLong( 3 ) );
 		dto.setItemOrder( rs.getInt( 4 ) );
 		dto.setItemHeight( rs.getDouble( 5 ) );
+		if(rs.wasNull()) {
+			dto.setItemHeight( null );
+		}
 		dto.setItemCollapsed( rs.getBoolean( 6 ) );
 		dto.setItemClosed( rs.getBoolean( 7 ) );
 		dto.setReportDesignId( rs.getLong( 8 ) );
@@ -79,7 +82,7 @@ public class DashboardItemDaoImpl extends AbstractDAO implements ParameterizedRo
 		if(rs.wasNull()) {
 			dto.setReportChartId( null );
 		}
-		dto.setIsShowTable( rs.getShort( 10 ) );
+		dto.setIsShowTable( rs.getBoolean( 10 ) );
 		dto.setItemTitle( rs.getString( 11 ) );
 		dto.setItemContent( rs.getString( 12 ) );
 		return dto;
@@ -148,7 +151,7 @@ public class DashboardItemDaoImpl extends AbstractDAO implements ParameterizedRo
 	public List<DashboardItem> findByDashboardCol(Long dashboardColId) throws DashboardItemDaoException
 	{
 		try {
-			return getJdbcTemplate().query("SELECT id, dashboard_id, dashboard_col_id, item_order, item_height, item_collapsed, item_closed, report_design_id, report_chart_id, is_show_table, item_title, item_content FROM " + getTableName() + " WHERE dashboard_col_id = ?", this,dashboardColId);
+			return getJdbcTemplate().query("SELECT id, dashboard_id, dashboard_col_id, item_order, item_height, item_collapsed, item_closed, report_design_id, report_chart_id, is_show_table, item_title, item_content FROM " + getTableName() + " WHERE dashboard_col_id = ? ORDER BY item_order ASC", this,dashboardColId);
 		}
 		catch (Exception e) {
 			throw new DashboardItemDaoException("Query failed", e);

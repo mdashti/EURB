@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.sharifpro.eurb.builder.dao.ReportDesignDao;
+import com.sharifpro.eurb.builder.model.ReportDesign;
 import com.sharifpro.eurb.dashboard.dao.DashboardColDao;
 import com.sharifpro.eurb.dashboard.dao.DashboardDao;
 import com.sharifpro.eurb.dashboard.dao.DashboardItemDao;
@@ -36,6 +38,8 @@ public class DashboardController {
 	private DashboardColDao dashboardColDao;
 	
 	private DashboardItemDao dashboardItemDao;
+	
+	private ReportDesignDao reportDesignDao;
 	
 	private JsonUtil jsonUtil;
 
@@ -69,10 +73,19 @@ public class DashboardController {
 				dashboardItem = new HashMap<String, Object>();
 				dashboardItem.put("id", colItems.get(j).getId());
 				dashboardItem.put("title", colItems.get(j).getItemTitle());
+				dashboardItem.put("itemClosed", colItems.get(j).getItemClosed());
+				dashboardItem.put("itemCollapsed", colItems.get(j).getItemCollapsed());
+				dashboardItem.put("itemOrder", colItems.get(j).getItemOrder());
+				if(colItems.get(j).getItemHeight() != null) {
+					dashboardItem.put("height", colItems.get(j).getItemHeight());
+				}
+				dashboardItem.put("itemContent", colItems.get(j).getItemContent());
 				if(colItems.get(j).getReportDesignId() == null ){
 					dashboardItem.put("html", colItems.get(j).getItemContent());
 				} else {
-					
+					dashboardItem.put("reportDesign", colItems.get(j).getReportDesignId());
+					dashboardItem.put("reportChart", colItems.get(j).getReportChartId());
+					dashboardItem.put("showTable", colItems.get(j).getIsShowTable());
 				}
 				dashboardColItems.add(dashboardItem);
 			}
@@ -81,6 +94,19 @@ public class DashboardController {
 			dashboardInitialState.add(dashboardCol);
 		}
 		mv.addObject("dashboardInitialState", jsonUtil.getJSONFromObject(dashboardInitialState));
+		
+		//report design combo content
+		List<ReportDesign> reportDesigns = reportDesignDao.findAll();
+		Object[][] reportsArray = new Object[reportDesigns.size()][4];
+		for(int i = 0; i < reportDesigns.size(); i++){
+			reportsArray[i][0] = reportDesigns.get(i).getId();
+			reportsArray[i][1] = reportDesigns.get(i).getVersionId();
+			reportsArray[i][2] = reportDesigns.get(i).getName();
+			reportsArray[i][3] = reportDesigns.get(i).getCategoryId();
+		}
+
+		mv.addObject("reportDesignsComboContent", jsonUtil.getJSONFromObject(reportsArray));
+		
 		mv.setViewName("dashboard");
 		return mv;
 	}
@@ -211,26 +237,38 @@ public class DashboardController {
 			@RequestParam(required=true) Long toColumn, @RequestParam(required=true) Integer toPosition) throws Exception {
 		try{
 			DashboardItem itemToMove = dashboardItemDao.findByPrimaryKey(item);
-			Integer currentPosition = itemToMove.getItemOrder();
 			List<DashboardItem> items = dashboardItemDao.findWhereDashboardColIdEquals(itemToMove.getDashboardColId());
-			
+			boolean afterCont = false;
 			if(items.size() > 0) {
 				for(int i = 0 ; i < items.size(); i++) {
-					if(items.get(i).getItemOrder() > currentPosition) {
-						items.get(i).setItemOrder(items.get(i).getItemOrder() - 1);
-						dashboardItemDao.update(items.get(i).createPk(), items.get(i));
+					if(items.get(i).getId().equals(itemToMove.getId())) {
+						afterCont = true;
+						continue;
 					}
+					if(afterCont) {
+						items.get(i).setItemOrder(i);
+					} else {
+						items.get(i).setItemOrder(i+1);
+					}
+					dashboardItemDao.update(items.get(i).createPk(), items.get(i));
 				}
 			}
-			itemToMove.setItemOrder(toPosition+1);
-			itemToMove.setDashboardColId(toColumn);
-			dashboardItemDao.update(itemToMove.createPk(), itemToMove);
+			
 			
 			items = dashboardItemDao.findWhereDashboardColIdEquals(toColumn);
+			items.remove(itemToMove);
 			if(items.size() > 0) {
-				for(int i = 0 ; i < items.size(); i++) {
-					if(items.get(i).getItemOrder() > toPosition+1) {
-						items.get(i).setItemOrder(items.get(i).getItemOrder() + 1);
+				for(int i = 0 ; i < items.size() + 1; i++) {
+					if(i == toPosition) {
+						itemToMove.setItemOrder(i + 1);
+						itemToMove.setDashboardColId(toColumn);
+						dashboardItemDao.update(itemToMove.createPk(), itemToMove);
+						continue;
+					} else if(i > toPosition) {
+						items.get(i-1).setItemOrder(i + 1);
+						dashboardItemDao.update(items.get(i-1).createPk(), items.get(i-1));
+					} else { // i < toPosition
+						items.get(i).setItemOrder(i + 1);
 						dashboardItemDao.update(items.get(i).createPk(), items.get(i));
 					}
 				}
@@ -240,6 +278,29 @@ public class DashboardController {
 			return JsonUtil.getModelMapError(e);
 		}
 	}
+	
+	//@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType)....)")
+		@RequestMapping(value="/dashboard/dashboard-design/dashboardEditItem.spy")
+		public @ResponseBody Map<String,? extends Object> dashboardEditItem(@RequestParam(required=true) Long dashboard, @RequestParam(required=true) Long item,
+				@RequestParam(required=false) Double height, @RequestParam(required=false) String title,
+				@RequestParam(required=false) String content,
+				@RequestParam(required=false) Long reportDesign, @RequestParam(required=false) Long reportChart) throws Exception {
+			try{
+				DashboardItem dashboardItem = dashboardItemDao.findByPrimaryKey(item);
+				
+				dashboardItem.setItemHeight(height);
+				dashboardItem.setItemTitle(title);
+				dashboardItem.setItemContent(content);
+				dashboardItem.setReportDesignId(reportDesign);
+				dashboardItem.setReportChartId(reportChart);
+				
+				dashboardItemDao.update(dashboardItem.createPk(), dashboardItem);
+				
+				return JsonUtil.getSuccessfulMapAfterStore(Arrays.asList(item));
+			} catch (Exception e) {
+				return JsonUtil.getModelMapError(e);
+			}
+		}
 	
 	@Autowired
 	public void setDashboardDao(DashboardDao dashboardDao) {
@@ -254,6 +315,11 @@ public class DashboardController {
 	@Autowired
 	public void setDashboardItemDao(DashboardItemDao dashboardItemDao) {
 		this.dashboardItemDao = dashboardItemDao;
+	}
+	
+	@Autowired
+	public void setReportDesignDao(ReportDesignDao reportDesignDao) {
+		this.reportDesignDao = reportDesignDao;
 	}
 
 	@Autowired
