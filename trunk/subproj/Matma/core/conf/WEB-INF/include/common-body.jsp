@@ -139,6 +139,7 @@
 		EURB.appMenu.showReport = '<spring:message code="eurb.app.menu.builder.showreport" />';
 		EURB.appMenu.schedule = '<spring:message code="eurb.app.menu.builder.schedule" />';
 		EURB.appMenu.dashboard = '<spring:message code="eurb.app.menu.builder.dashboard" />';
+		EURB.appMenu.dashboardDesigner = '<spring:message code="eurb.app.menu.builder.dashboardDesigner" />';
 		
 		EURB.showError = function(msg, title) {
 			Ext.Msg.show({
@@ -208,7 +209,9 @@
 		    	html:'<div class="urbangreymenu">'+
 		    	'<ul class="submenu">'+
 		    	'<li><a href="<spring:url value="/" />">'+EURB.appMenu.homepage+'</a></li>'+
+		    	<sec:authorize access="hasRole('${authorityType.ROLE_RPG_DASHBOARD_EXECUTE}')">
 		    	'<li><a href="<spring:url value="/dashboard.spy" />">'+EURB.appMenu.dashboard+'</a></li>'+
+		    	</sec:authorize>
 		    	'<li><a href="<spring:url value="/logout.spy" />">'+EURB.logout+'</a></li>'+
 		    	'</ul>'+
 		    	<sec:authorize access="hasRole('${authorityType.ROLE_BASE_MANAGEMENT_MENU_VIEW}')">
@@ -249,6 +252,9 @@
 					<sec:authorize access="hasRole('${authorityType.ROLE_RPG_REPORT_BUILDER_VIEW_LIST}')">
 					'<li><a href="'+EURB.baseURL+'builder/report/report-tree-list.spy">'+EURB.appMenu.report+'</a></li>'+
 					</sec:authorize>
+					<sec:authorize access="hasRole('${authorityType.ROLE_RPG_DASHBOARD_VIEW_LIST}')">
+			    	'<li><a href="<spring:url value="/dashboard-design.spy" />">'+EURB.appMenu.dashboardDesigner+'</a></li>'+
+			    	</sec:authorize>
 					<sec:authorize access="hasRole('${authorityType.ROLE_RPG_REPORT_SCHEDULER_VIEW_LIST}')">
 					'<li><a href="'+EURB.baseURL+'builder/schedule/schedule.spy">'+EURB.appMenu.schedule+'</a></li>'+
 					</sec:authorize>

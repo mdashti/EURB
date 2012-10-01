@@ -65,10 +65,16 @@ public class DashboardDaoImpl extends AbstractDAO implements ParameterizedRowMap
 	{
 		Dashboard dto = new Dashboard();
 		dto.setId( rs.getLong( 1 ) );
-		dto.setIsDefault( rs.getShort( 2 ) );
+		dto.setIsDefault( rs.getBoolean( 2 ) );
 		dto.setTitle( rs.getString( 3 ) );
-		dto.setParentDashboard( rs.getLong( 4 ) );		
+		dto.setParentDashboard( rs.getLong( 4 ) );
+		if(rs.wasNull()) {
+			dto.setParentDashboard(null);
+		}
 		dto.setUsername( rs.getString( 5 ) );
+		if(rs.wasNull()) {
+			dto.setUsername(null);
+		}
 		return dto;
 	}
 

@@ -9,7 +9,7 @@ public class Dashboard extends PersistableObject
 	/** 
 	 * This attribute maps to the column is_default in the dashboard table.
 	 */
-	protected short isDefault;
+	protected boolean isDefault;
 
 	/** 
 	 * This attribute maps to the column title in the dashboard table.
@@ -39,7 +39,7 @@ public class Dashboard extends PersistableObject
 	 * 
 	 * @return short
 	 */
-	public short getIsDefault()
+	public boolean getIsDefault()
 	{
 		return isDefault;
 	}
@@ -49,7 +49,7 @@ public class Dashboard extends PersistableObject
 	 * 
 	 * @param isDefault
 	 */
-	public void setIsDefault(short isDefault)
+	public void setIsDefault(boolean isDefault)
 	{
 		this.isDefault = isDefault;
 	}
@@ -167,7 +167,7 @@ public class Dashboard extends PersistableObject
 	{
 		int _hashCode = 0;
 		_hashCode = 29 * _hashCode + (int) (id ^ (id >>> 32));
-		_hashCode = 29 * _hashCode + (int) isDefault;
+		_hashCode = 29 * _hashCode + (isDefault ? 1 : 0);
 		if (title != null) {
 			_hashCode = 29 * _hashCode + title.hashCode();
 		}

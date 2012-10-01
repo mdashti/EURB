@@ -124,6 +124,8 @@ public class AuthorityBundle {
 		result.add(new AuthorityBundle(AuthorityType.REPORT_GENERATOR_MENU, authSet));
 		result.add(new AuthorityBundle(AuthorityType.RPG_REPORT_BUILDER, authSet));
 		result.add(new AuthorityBundle(AuthorityType.RPG_REPORT_SCHEDULER, authSet));
+
+		result.add(new AuthorityBundle(AuthorityType.RPG_DASHBOARD, authSet));
 		return result;
 	}
 

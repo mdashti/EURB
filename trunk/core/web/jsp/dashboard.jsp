@@ -1,3 +1,4 @@
+<%@page import="org.apache.commons.lang.StringUtils"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib uri="http://java.sun.com/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jstl/fmt" prefix="fmt" %>
@@ -7,6 +8,9 @@
     <spring:param name="appVersion" value="${appVersion}"/>
 </spring:url>
 <spring:url value="/" var="baseUrl"/>
+<% 
+Long selectedDashboard = (Long) request.getAttribute("userDashboardId");
+%>
 <html>
 	<head>
 		<jsp:include page="/WEB-INF/include/common-header.jsp">
@@ -25,6 +29,7 @@
 	    <script type="text/javascript" src="${resourcesUrl}/js/extjs/examples/ux/PortalColumn.js"></script>
 	    <script type="text/javascript" src="${resourcesUrl}/js/extjs/examples/ux/Portlet.js"></script>
 		<script type="text/javascript">
+		var showError = EURB.showError;
 		EURB.DashboardDesign = {};
 		EURB.DashboardDesign.newItem = '<spring:message code="eurb.app.dashboard.newitem" />';
 		EURB.DashboardDesign.newCol = '<spring:message code="eurb.app.dashboard.newcol" />';
@@ -39,6 +44,15 @@
 		EURB.DashboardDesign.editDashboardItem = '<spring:message code="eurb.app.dashboard.editDashboardItem" />';
 		EURB.DashboardDesign.reportDesign = '<spring:message code="eurb.app.dashboard.reportDesign" />';
 		EURB.DashboardDesign.reportChart = '<spring:message code="eurb.app.dashboard.reportChart" />';
+		EURB.DashboardDesign.selectDashboard = '<spring:message code="eurb.app.dashboard.selectDashboard" />';
+		EURB.DashboardDesign.newdashboardtitle = '<spring:message code="eurb.app.dashboard.newdashboardtitle" />';
+		EURB.DashboardDesign.newdashboardmsg = '<spring:message code="eurb.app.dashboard.newdashboardmsg" />';
+		EURB.DashboardDesign.editdashboardtitle = '<spring:message code="eurb.app.dashboard.editdashboardtitle" />';
+		EURB.DashboardDesign.editdashboardmsg = '<spring:message code="eurb.app.dashboard.editdashboardmsg" />';
+		EURB.DashboardDesign.editdashboard = '<spring:message code="eurb.app.dashboard.editdashboard" />';
+		EURB.DashboardDesign.deldashboardtitle = '<spring:message code="eurb.app.dashboard.deldashboardtitle" />';
+		EURB.DashboardDesign.deldashboardmsg = '<spring:message code="eurb.app.dashboard.deldashboardmsg" />';
+		EURB.DashboardDesign.deletedashboard = '<spring:message code="eurb.app.dashboard.deletedashboard" />';
 		
 		EURB.DashboardDesign.addColAction = '<spring:url value="/dashboard/dashboard-design/dashboardAddCol.spy" />';
 		EURB.DashboardDesign.delColAction = '<spring:url value="/dashboard/dashboard-design/dashboardDelCol.spy" />';
@@ -47,11 +61,14 @@
 		EURB.DashboardDesign.moveItemAction= '<spring:url value="/dashboard/dashboard-design/dashboardMoveItem.spy" />';
 		EURB.DashboardDesign.editItemAction = '<spring:url value="/dashboard/dashboard-design/dashboardEditItem.spy" />';
 		EURB.DashboardDesign.findChartsInReportAction = '<spring:url value="/builder/report/reportChartSearch.spy" />';
+		EURB.DashboardDesign.newDashboardAction = '<spring:url value="/dashboard/dashboard-design/newDashboard.spy" />';
+		EURB.DashboardDesign.editDashboardAction = '<spring:url value="/dashboard/dashboard-design/editDashboard.spy" />';
+		EURB.DashboardDesign.delDashboardAction = '<spring:url value="/dashboard/dashboard-design/deleteDashboard.spy" />';
 		EURB.DashboardDesign.runChart='${baseUrl}builder/report/get-reportchart';
 		
 		EURB.DashboardDesign.userDashboardId = '${userDashboardId}';
 		
-
+		EURB.DashboardDesign.isDesignMode = ${isDesignMode};
 		
 		EURB.DashboardDesign.reportStore = new Ext.data.ArrayStore({
 	        id: 0,
@@ -123,6 +140,55 @@
 		    Ext.example = {};
 		    Ext.example.shortBogusMarkup = EURB.DashboardDesign.newMessage;
 		    
+		    var addNewColHandler = function() {
+				var o = {
+					callback: function(options, success, response) {
+						if(true !== success) {
+							showError(response.responseText);
+							return;
+						}
+						try {
+							var o = Ext.decode(response.responseText);
+						}
+						catch(e) {
+							showError(response.responseText, EURB.unableToDecodeJSON);
+							return;
+						}
+						if(true !== o.success) {
+							showError(o.error || o.message || EURB.unknownError);
+							return;
+						}
+						var portal = EURB.mainPanel.items.get(0);
+						var cols = portal.items;
+						var colWidth = 1.0 / (cols.length + 1)
+						for(var i = 0 ; i < cols.length; i++) {
+							cols.get(i).columnWidth = colWidth;
+						}
+						if(portal.items && portal.items.length > 0) {
+							portal.add({
+								id: o.affectedIds[0],
+				                columnWidth:colWidth,
+				                style:'padding:10px 0 10px 10px'
+				            });
+						} else {
+							portal.add({
+								id: o.affectedIds[0],
+				                columnWidth:colWidth,
+				                style:'padding:10px'
+				            });
+						}
+						portal.doLayout();
+					}
+					,url:EURB.DashboardDesign.addColAction
+					,method:'post'
+					,scope:this
+					,params:{
+						cmd: 'addColumn',
+						dashboard: EURB.DashboardDesign.userDashboardId
+					}
+				};
+				Ext.Ajax.request(o);
+			};
 		    
 		    var editDashboardItemForm = new Ext.form.FormPanel({
 				baseCls: 'x-plain',
@@ -205,7 +271,7 @@
 			    }]
 			});
 		    
-		    var tools = [{
+		    var tools = EURB.DashboardDesign.isDesignMode ? [{
 		        id:'gear',
 		        handler: function(e, target, panel){
 		        	var frm = editDashboardItemForm.getForm();
@@ -253,7 +319,7 @@
 					};
 					Ext.Ajax.request(o);
 		        }
-		    }];
+		    }] : [];
 		    
 		    var dashboardItems = ${dashboardInitialState};
 			for(var i = 0 ; i < dashboardItems.length; i++) {
@@ -295,6 +361,296 @@
 				}
 			}
 		    
+			var topToolbar = new Array();
+			topToolbar.push(new Ext.Toolbar.TextItem(EURB.DashboardDesign.selectDashboard));
+			topToolbar.push(new Ext.form.ComboBox({
+			    typeAhead: true,
+			    triggerAction: 'all',
+			    lazyRender:true,
+			    mode: 'local',
+			    store: new Ext.data.ArrayStore({
+			        id: 0,
+			        fields: [
+			            'dashId',
+			            'dashName'
+			        ],
+			        data: ${dashboardComboContent}
+			    }),
+			    <%=selectedDashboard == null ? "" : "value: "+selectedDashboard+","%>
+			    forceSelection: true,
+			    valueField: 'dashId',
+			    displayField: 'dashName',
+			    listeners: {
+			    	'select' : function(thiz, newValue, oldValue) {
+			    		if(EURB.DashboardDesign.isDesignMode) {
+			    			if(newValue.id == -1) {
+			    				Ext.Msg.prompt(EURB.DashboardDesign.newdashboardtitle, EURB.DashboardDesign.newdashboardmsg, function(btn, text){
+			    				    if (btn == 'ok'){
+			    				    	var o = {
+		    								callback: function(options, success, response) {
+		    									if(true !== success) {
+		    										showError(response.responseText);
+		    										return;
+		    									}
+		    									try {
+		    										var o = Ext.decode(response.responseText);
+		    									}
+		    									catch(e) {
+		    										showError(response.responseText, EURB.unableToDecodeJSON);
+		    										return;
+		    									}
+		    									if(true !== o.success) {
+		    										showError(o.error || o.message || EURB.unknownError);
+		    										return;
+		    									}
+		    									window.location.href = EURB.baseURL+'dashboard'+o.affectedIds[0]+'-design.spy';
+		    								}
+		    								,url:EURB.DashboardDesign.newDashboardAction
+		    								,method:'post'
+		    								,scope:this
+		    								,params:{
+		    									cmd: 'newDashboard',
+		    									dashboardName: text
+		    								}
+		    							};
+		    							Ext.Ajax.request(o);
+			    				    }
+			    				});
+			    			} else {
+			    				window.location.href = EURB.baseURL+'dashboard'+newValue.id+'-design.spy';
+			    			}
+			    		} else {
+			    			window.location.href = EURB.baseURL+'dashboard'+newValue.id+'.spy';
+			    		}
+			    	}
+			    }
+			}));
+			
+			if(EURB.DashboardDesign.isDesignMode) {
+				topToolbar.push({
+				 text:EURB.DashboardDesign.editdashboard
+				,iconCls:'icon-pencil'
+				,listeners:{
+					 scope:this
+					,click:{fn: function() {
+						Ext.Msg.prompt(EURB.DashboardDesign.editdashboardtitle + "\"" + "${selectedDashboardTitle}" + "\"", EURB.DashboardDesign.editdashboardmsg, function(btn, text){
+	    				    if (btn == 'ok'){
+	    				    	var o = {
+    								callback: function(options, success, response) {
+    									if(true !== success) {
+    										showError(response.responseText);
+    										return;
+    									}
+    									try {
+    										var o = Ext.decode(response.responseText);
+    									}
+    									catch(e) {
+    										showError(response.responseText, EURB.unableToDecodeJSON);
+    										return;
+    									}
+    									if(true !== o.success) {
+    										showError(o.error || o.message || EURB.unknownError);
+    										return;
+    									}
+    									window.location.href = EURB.baseURL+'dashboard'+o.affectedIds[0]+'-design.spy';
+    								}
+    								,url:EURB.DashboardDesign.editDashboardAction
+    								,method:'post'
+    								,scope:this
+    								,params:{
+    									cmd: 'editDashboard',
+    									dashboard: EURB.DashboardDesign.userDashboardId,
+    									dashboardName: text
+    								}
+    							};
+    							Ext.Ajax.request(o);
+	    				    }
+	    				});
+						},buffer:200}
+					}
+				});
+				topToolbar.push({
+				 text:EURB.DashboardDesign.deletedashboard
+				,iconCls:'icon-delete'
+				,listeners:{
+					 scope:this
+					,click:{fn: function() {
+						Ext.Msg.show({
+						   title:EURB.DashboardDesign.deldashboardtitle,
+						   msg: EURB.DashboardDesign.deldashboardmsg,
+						   buttons: Ext.Msg.OKCANCEL,
+						   fn: function(btn, text){
+		    				    if (btn == 'ok'){
+		    				    	var o = {
+	    								callback: function(options, success, response) {
+	    									if(true !== success) {
+	    										showError(response.responseText);
+	    										return;
+	    									}
+	    									try {
+	    										var o = Ext.decode(response.responseText);
+	    									}
+	    									catch(e) {
+	    										showError(response.responseText, EURB.unableToDecodeJSON);
+	    										return;
+	    									}
+	    									if(true !== o.success) {
+	    										showError(o.error || o.message || EURB.unknownError);
+	    										return;
+	    									}
+	    									window.location.href = EURB.baseURL+'dashboard-design.spy';
+	    								}
+	    								,url:EURB.DashboardDesign.delDashboardAction
+	    								,method:'post'
+	    								,scope:this
+	    								,params:{
+	    									cmd: 'delDashboard',
+	    									dashboard: EURB.DashboardDesign.userDashboardId
+	    								}
+	    							};
+	    							Ext.Ajax.request(o);
+		    				    }
+		    				},
+						   icon: Ext.MessageBox.QUESTION
+						});
+					}
+				}
+				}
+				});
+				topToolbar.push('->');
+				topToolbar.push({
+				 text:EURB.DashboardDesign.newItem
+				,iconCls:'icon-plus'
+				,listeners:{
+					 scope:this
+					,click:{fn: function() {
+						var portal = EURB.mainPanel.items.get(0);
+						var cols = portal.items;
+						if(!cols || cols.length <= 0) {
+							addNewColHandler();
+							return;
+						}
+						var minCol, minColIndex;
+						for(var i = 0 ; i < cols.length; i++) {
+							if(i == 0 || minCol > cols.get(i).items.length) {
+								minCol = cols.get(i).items.length;
+								minColIndex = i;
+							}
+						}
+						var o = {
+								callback: function(options, success, response) {
+									if(true !== success) {
+										showError(response.responseText);
+										return;
+									}
+									try {
+										var o = Ext.decode(response.responseText);
+									}
+									catch(e) {
+										showError(response.responseText, EURB.unableToDecodeJSON);
+										return;
+									}
+									if(true !== o.success) {
+										showError(o.error || o.message || EURB.unknownError);
+										return;
+									}
+									cols.get(minColIndex).add({
+										id: o.affectedIds[0],
+					                    title: EURB.DashboardDesign.newTitle,
+					                    html: Ext.example.shortBogusMarkup,
+										tools: tools,
+										itemContent: Ext.example.shortBogusMarkup,
+										itemId: o.affectedIds[0]
+					                });
+									portal.doLayout();
+								}
+								,url:EURB.DashboardDesign.addItemAction
+								,method:'post'
+								,scope:this
+								,params:{
+									cmd: 'addItem',
+									dashboard: EURB.DashboardDesign.userDashboardId,
+									column: cols.get(minColIndex).id,
+									title: EURB.DashboardDesign.newTitle,
+									content: Ext.example.shortBogusMarkup
+								}
+							};
+							Ext.Ajax.request(o);
+						},buffer:200}
+					}
+				});
+				
+				topToolbar.push({
+				 text:EURB.DashboardDesign.newCol
+				,iconCls:'icon-add-col'
+				,listeners:{
+					 scope:this
+					,click:{fn: addNewColHandler,buffer:200}
+					}
+				});
+				
+				topToolbar.push({
+				 text:EURB.DashboardDesign.delCol
+				,iconCls:'icon-del-col'
+				,listeners:{
+					 scope:this
+					,click:{fn: function() {
+							Ext.Msg.prompt(EURB.DashboardDesign.delColTitle, EURB.DashboardDesign.delColMessage, function(btn, text){
+							    if (btn == 'ok'){
+									var portal = EURB.mainPanel.items.get(0);
+									var cols = portal.items;
+									var toDelete = parseInt(text);
+									if(toDelete > cols.length || toDelete <= 0) {
+										return;
+									}
+							    	var o = {
+										callback: function(options, success, response) {
+											if(true !== success) {
+												showError(response.responseText);
+												return;
+											}
+											try {
+												var o = Ext.decode(response.responseText);
+											}
+											catch(e) {
+												showError(response.responseText, EURB.unableToDecodeJSON);
+												return;
+											}
+											if(true !== o.success) {
+												showError(o.error || o.message || EURB.unknownError);
+												return;
+											}
+											if(cols.length > 1) {
+												var colWidth = 1.0 / (cols.length - 1)
+												for(var i = 0 ; i < cols.length; i++) {
+													cols.get(i).columnWidth = colWidth;
+												}
+											}
+											portal.remove(toDelete - 1);
+											
+											if(toDelete == 1) {
+												cols.get(toDelete - 1).getEl().dom.style.padding = '10px';
+											}
+											
+											portal.doLayout();
+										}
+										,url:EURB.DashboardDesign.delColAction
+										,method:'post'
+										,scope:this
+										,params:{
+											cmd: 'deleteColumn',
+											dashboard: EURB.DashboardDesign.userDashboardId,
+											column: cols.get(toDelete - 1).id
+										}
+									};
+									Ext.Ajax.request(o);
+							    }
+							});
+						},buffer:200}
+					}
+				});
+			}
+			
 		    EURB.mainPanel.items.add(new Ext.ux.Portal({
 	            xtype:'portal',
 	            region:'center',
@@ -334,177 +690,7 @@
 						Ext.Ajax.request(o);
 					 }
 			    },
-	            tbar: [{
-					 text:EURB.DashboardDesign.newItem
-					,iconCls:'icon-plus'
-					,listeners:{
-						 scope:this
-						,click:{fn: function() {
-							var portal = EURB.mainPanel.items.get(0);
-							var cols = portal.items;
-							if(!cols || cols.length <= 0) {
-								return;
-							}
-							var minCol, minColIndex;
-							for(var i = 0 ; i < cols.length; i++) {
-								if(i == 0 || minCol > cols.get(i).items.length) {
-									minCol = cols.get(i).items.length;
-									minColIndex = i;
-								}
-							}
-							var o = {
-									callback: function(options, success, response) {
-										if(true !== success) {
-											showError(response.responseText);
-											return;
-										}
-										try {
-											var o = Ext.decode(response.responseText);
-										}
-										catch(e) {
-											showError(response.responseText, EURB.unableToDecodeJSON);
-											return;
-										}
-										if(true !== o.success) {
-											showError(o.error || o.message || EURB.unknownError);
-											return;
-										}
-										cols.get(minColIndex).add({
-											id: o.affectedIds[0],
-						                    title: EURB.DashboardDesign.newTitle,
-						                    html: Ext.example.shortBogusMarkup
-						                });
-										portal.doLayout();
-									}
-									,url:EURB.DashboardDesign.addItemAction
-									,method:'post'
-									,scope:this
-									,params:{
-										cmd: 'addItem',
-										dashboard: EURB.DashboardDesign.userDashboardId,
-										column: cols.get(minColIndex).id,
-										title: EURB.DashboardDesign.newTitle,
-										content: Ext.example.shortBogusMarkup
-									}
-								};
-								Ext.Ajax.request(o);
-							},buffer:200}
-						}
-					}, {
-					 text:EURB.DashboardDesign.newCol
-					,iconCls:'icon-add-col'
-					,listeners:{
-						 scope:this
-						,click:{fn: function() {
-							var o = {
-								callback: function(options, success, response) {
-									if(true !== success) {
-										showError(response.responseText);
-										return;
-									}
-									try {
-										var o = Ext.decode(response.responseText);
-									}
-									catch(e) {
-										showError(response.responseText, EURB.unableToDecodeJSON);
-										return;
-									}
-									if(true !== o.success) {
-										showError(o.error || o.message || EURB.unknownError);
-										return;
-									}
-									var portal = EURB.mainPanel.items.get(0);
-									var cols = portal.items;
-									var colWidth = 1.0 / (cols.length + 1)
-									for(var i = 0 ; i < cols.length; i++) {
-										cols.get(i).columnWidth = colWidth;
-									}
-									if(portal.items && portal.items.length > 0) {
-										portal.add({
-											id: o.affectedIds[0],
-							                columnWidth:colWidth,
-							                style:'padding:10px 0 10px 10px'
-							            });
-									} else {
-										portal.add({
-											id: o.affectedIds[0],
-							                columnWidth:colWidth,
-							                style:'padding:10px'
-							            });
-									}
-									portal.doLayout();
-								}
-								,url:EURB.DashboardDesign.addColAction
-								,method:'post'
-								,scope:this
-								,params:{
-									cmd: 'addColumn',
-									dashboard: EURB.DashboardDesign.userDashboardId
-								}
-							};
-							Ext.Ajax.request(o);
-							},buffer:200}
-						}
-					}, {
-					 text:EURB.DashboardDesign.delCol
-					,iconCls:'icon-del-col'
-					,listeners:{
-						 scope:this
-						,click:{fn: function() {
-								Ext.Msg.prompt(EURB.DashboardDesign.delColTitle, EURB.DashboardDesign.delColMessage, function(btn, text){
-								    if (btn == 'ok'){
-										var portal = EURB.mainPanel.items.get(0);
-										var cols = portal.items;
-										var toDelete = parseInt(text);
-										if(toDelete > cols.length || toDelete <= 0) {
-											return;
-										}
-								    	var o = {
-											callback: function(options, success, response) {
-												if(true !== success) {
-													showError(response.responseText);
-													return;
-												}
-												try {
-													var o = Ext.decode(response.responseText);
-												}
-												catch(e) {
-													showError(response.responseText, EURB.unableToDecodeJSON);
-													return;
-												}
-												if(true !== o.success) {
-													showError(o.error || o.message || EURB.unknownError);
-													return;
-												}
-												if(cols.length > 1) {
-													var colWidth = 1.0 / (cols.length - 1)
-													for(var i = 0 ; i < cols.length; i++) {
-														cols.get(i).columnWidth = colWidth;
-													}
-												}
-												portal.remove(toDelete - 1);
-												
-												if(toDelete == 1) {
-													cols.get(toDelete - 1).getEl().dom.style.padding = '10px';
-												}
-												
-												portal.doLayout();
-											}
-											,url:EURB.DashboardDesign.delColAction
-											,method:'post'
-											,scope:this
-											,params:{
-												cmd: 'deleteColumn',
-												dashboard: EURB.DashboardDesign.userDashboardId,
-												column: cols.get(toDelete - 1).id
-											}
-										};
-										Ext.Ajax.request(o);
-								    }
-								});
-							},buffer:200}
-						}
-					}],
+	            tbar: topToolbar,
 	            items: dashboardItems
 	            
 	            /*

@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -18,11 +19,15 @@ import com.sharifpro.eurb.builder.model.ReportDesign;
 import com.sharifpro.eurb.dashboard.dao.DashboardColDao;
 import com.sharifpro.eurb.dashboard.dao.DashboardDao;
 import com.sharifpro.eurb.dashboard.dao.DashboardItemDao;
+import com.sharifpro.eurb.dashboard.exceptions.DashboardDaoException;
+import com.sharifpro.eurb.dashboard.exceptions.PersistableObjectDaoException;
 import com.sharifpro.eurb.dashboard.model.Dashboard;
 import com.sharifpro.eurb.dashboard.model.DashboardCol;
 import com.sharifpro.eurb.dashboard.model.DashboardColPk;
 import com.sharifpro.eurb.dashboard.model.DashboardItem;
 import com.sharifpro.eurb.dashboard.model.DashboardItemPk;
+import com.sharifpro.eurb.dashboard.model.DashboardPk;
+import com.sharifpro.util.PropertyProvider;
 import com.sharifpro.util.json.JsonUtil;
 
 /**
@@ -45,12 +50,67 @@ public class DashboardController {
 
 	//@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType)....)")
 	@RequestMapping(value="/dashboard.spy")
-	public ModelAndView executeDbConfigSpy() throws Exception {
-		ModelAndView mv = new ModelAndView();
-		Dashboard dashboard = getUserDashboard();
-		mv.addObject("userDashboardId", dashboard.getId());
+	public ModelAndView executeDashboardSpy() throws Exception {
+		return executeDashboardSpy(null);
+	}
+
+	//@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType)....)")
+	@RequestMapping(value="/dashboard{dash}.spy")
+	public ModelAndView executeDashboardSpy(@PathVariable Long dash) throws Exception {
+		ModelAndView mv = executeDashboardGeneral(dash);
+		List<Dashboard> dashboardList = dashboardDao.findAll();
+		Object[][] dashboardArr = new Object[dashboardList.size()][2];
 		
-		List<DashboardCol> cols = dashboardColDao.findByDashboard(dashboard.getId());
+		for(int i = 0; i < dashboardList.size(); i++) {
+			dashboardArr[i][0] = dashboardList.get(i).getId();
+			dashboardArr[i][1] = dashboardList.get(i).getTitle();
+		}
+		mv.addObject("dashboardComboContent", jsonUtil.getJSONFromObject(dashboardArr));
+		mv.addObject("isDesignMode", Boolean.FALSE);
+		
+		return mv;
+	}
+	
+	//@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType)....)")
+	@RequestMapping(value="/dashboard-design.spy")
+	public ModelAndView executeDashboardDesignSpy() throws Exception {
+		return executeDashboardDesignSpy(null);
+	}
+	
+	//@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType)....)")
+	@RequestMapping(value="/dashboard{dash}-design.spy")
+	public ModelAndView executeDashboardDesignSpy(@PathVariable Long dash) throws Exception {
+		ModelAndView mv = executeDashboardGeneral(dash);
+		List<Dashboard> dashboardList = dashboardDao.findAll();
+		Object[][] dashboardArr = new Object[dashboardList.size()+1][2];
+		dashboardArr[0][0] = -1L;
+		dashboardArr[0][1] = PropertyProvider.get("eurb.app.dashboard.newdashboard");
+		for(int i = 1; i <= dashboardList.size(); i++) {
+			dashboardArr[i][0] = dashboardList.get(i-1).getId();
+			dashboardArr[i][1] = dashboardList.get(i-1).getTitle();
+		}
+		mv.addObject("dashboardComboContent", jsonUtil.getJSONFromObject(dashboardArr));
+		mv.addObject("isDesignMode", Boolean.TRUE);
+		return mv;
+	}
+
+	private ModelAndView executeDashboardGeneral(Long dash) throws Exception{
+		ModelAndView mv = new ModelAndView();
+		Dashboard dashboard;
+		if(dash != null) {
+			dashboard = dashboardDao.findByPrimaryKey(dash);
+		} else {
+			dashboard = getUserDashboard();
+		}
+		if(dashboard != null) {
+			dash = dashboard.getId();
+		} else {
+			throw new PersistableObjectDaoException("Dashboard not found!");
+		}
+		mv.addObject("userDashboardId", dash);
+		mv.addObject("selectedDashboardTitle", dashboard.getTitle());
+		
+		List<DashboardCol> cols = dashboardColDao.findByDashboard(dash);
 		
 		List<Map<String,Object>> dashboardInitialState = new ArrayList<Map<String,Object>>();
 		Map<String,Object> dashboardCol;
@@ -108,9 +168,10 @@ public class DashboardController {
 		mv.addObject("reportDesignsComboContent", jsonUtil.getJSONFromObject(reportsArray));
 		
 		mv.setViewName("dashboard");
+		
 		return mv;
 	}
-
+	
 	private Dashboard getUserDashboard() throws Exception {
 		return dashboardDao.findAll().get(0);
 	}
@@ -186,6 +247,11 @@ public class DashboardController {
 	@RequestMapping(value="/dashboard/dashboard-design/dashboardAddItem.spy")
 	public @ResponseBody Map<String,? extends Object> dashboardAddItem(@RequestParam(required=true) Long dashboard, @RequestParam(required=true) Long column, String title, String content) throws Exception {
 		try{
+			/*if(column == null) {
+				Map<String,? extends Object> result = dashboardAddCol(dashboard);
+				List<Long> affectedIds = (List<Long>) result.get("affectedIds");
+				column = affectedIds.get(0);
+			}*/
 			int itemsInCol = dashboardItemDao.findByDashboardCol(column).size();
 			
 			DashboardItem newItem = new DashboardItem();
@@ -257,14 +323,12 @@ public class DashboardController {
 			
 			items = dashboardItemDao.findWhereDashboardColIdEquals(toColumn);
 			items.remove(itemToMove);
+			itemToMove.setItemOrder(toPosition + 1);
+			itemToMove.setDashboardColId(toColumn);
+			dashboardItemDao.update(itemToMove.createPk(), itemToMove);
 			if(items.size() > 0) {
 				for(int i = 0 ; i < items.size() + 1; i++) {
-					if(i == toPosition) {
-						itemToMove.setItemOrder(i + 1);
-						itemToMove.setDashboardColId(toColumn);
-						dashboardItemDao.update(itemToMove.createPk(), itemToMove);
-						continue;
-					} else if(i > toPosition) {
+					if(i > toPosition) {
 						items.get(i-1).setItemOrder(i + 1);
 						dashboardItemDao.update(items.get(i-1).createPk(), items.get(i-1));
 					} else { // i < toPosition
@@ -280,27 +344,75 @@ public class DashboardController {
 	}
 	
 	//@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType)....)")
-		@RequestMapping(value="/dashboard/dashboard-design/dashboardEditItem.spy")
-		public @ResponseBody Map<String,? extends Object> dashboardEditItem(@RequestParam(required=true) Long dashboard, @RequestParam(required=true) Long item,
-				@RequestParam(required=false) Double height, @RequestParam(required=false) String title,
-				@RequestParam(required=false) String content,
-				@RequestParam(required=false) Long reportDesign, @RequestParam(required=false) Long reportChart) throws Exception {
-			try{
-				DashboardItem dashboardItem = dashboardItemDao.findByPrimaryKey(item);
-				
-				dashboardItem.setItemHeight(height);
-				dashboardItem.setItemTitle(title);
-				dashboardItem.setItemContent(content);
-				dashboardItem.setReportDesignId(reportDesign);
-				dashboardItem.setReportChartId(reportChart);
-				
-				dashboardItemDao.update(dashboardItem.createPk(), dashboardItem);
-				
-				return JsonUtil.getSuccessfulMapAfterStore(Arrays.asList(item));
-			} catch (Exception e) {
-				return JsonUtil.getModelMapError(e);
-			}
+	@RequestMapping(value="/dashboard/dashboard-design/dashboardEditItem.spy")
+	public @ResponseBody Map<String,? extends Object> dashboardEditItem(@RequestParam(required=true) Long dashboard, @RequestParam(required=true) Long item,
+			@RequestParam(required=false) Double height, @RequestParam(required=false) String title,
+			@RequestParam(required=false) String content,
+			@RequestParam(required=false) Long reportDesign, @RequestParam(required=false) Long reportChart) throws Exception {
+		try{
+			DashboardItem dashboardItem = dashboardItemDao.findByPrimaryKey(item);
+			
+			dashboardItem.setItemHeight(height);
+			dashboardItem.setItemTitle(title);
+			dashboardItem.setItemContent(content);
+			dashboardItem.setReportDesignId(reportDesign);
+			dashboardItem.setReportChartId(reportChart);
+			
+			dashboardItemDao.update(dashboardItem.createPk(), dashboardItem);
+			
+			return JsonUtil.getSuccessfulMapAfterStore(Arrays.asList(item));
+		} catch (Exception e) {
+			return JsonUtil.getModelMapError(e);
 		}
+	}
+	
+	//@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType)....)")
+	@RequestMapping(value="/dashboard/dashboard-design/newDashboard.spy")
+	public @ResponseBody Map<String,? extends Object> newDashboard(@RequestParam(required=false) String dashboardName) throws Exception {
+		try{
+			Dashboard dash = new Dashboard();
+			dash.setTitle(dashboardName);
+			DashboardPk pk = dashboardDao.insert(dash);
+			
+			return JsonUtil.getSuccessfulMapAfterStore(Arrays.asList(pk.getId()));
+		} catch (Exception e) {
+			return JsonUtil.getModelMapError(e);
+		}
+	}
+	
+	//@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType)....)")
+	@RequestMapping(value="/dashboard/dashboard-design/editDashboard.spy")
+	public @ResponseBody Map<String,? extends Object> editDashboard(@RequestParam(required=true) Long dashboard, @RequestParam(required=false) String dashboardName) throws Exception {
+		try{
+			Dashboard dash = dashboardDao.findByPrimaryKey(dashboard);
+			dash.setTitle(dashboardName);
+			dashboardDao.update(dash.createPk(),dash);
+			
+			return JsonUtil.getSuccessfulMapAfterStore(Arrays.asList(dash.getId()));
+		} catch (Exception e) {
+			return JsonUtil.getModelMapError(e);
+		}
+	}
+	
+	//@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType)....)")
+	@RequestMapping(value="/dashboard/dashboard-design/deleteDashboard.spy")
+	public @ResponseBody Map<String,? extends Object> deleteDashboard(@RequestParam(required=true) Long dashboard) throws Exception {
+		try{
+			if(dashboardDao.findAll().size() > 1) {
+				Dashboard dash = dashboardDao.findByPrimaryKey(dashboard);
+				List<DashboardCol> dashCols = dashboardColDao.findByDashboard(dashboard);
+				for(DashboardCol dashCol : dashCols) {
+					dashboardDelCol(dashboard, dashCol.getId());
+				}
+				dashboardDao.delete(dash.createPk());
+				return JsonUtil.getSuccessfulMapAfterStore(Arrays.asList(dash.getId()));
+			} else {
+				throw new DashboardDaoException(PropertyProvider.get("eurb.app.dashboard.deletingLastDashboardNotPossible"));
+			}
+		} catch (Exception e) {
+			return JsonUtil.getModelMapError(e);
+		}
+	}
 	
 	@Autowired
 	public void setDashboardDao(DashboardDao dashboardDao) {
