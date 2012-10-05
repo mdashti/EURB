@@ -139,6 +139,7 @@ public class DashboardController {
 				if(colItems.get(j).getItemHeight() != null) {
 					dashboardItem.put("height", colItems.get(j).getItemHeight());
 				}
+				dashboardItem.put("colWidth", String.format("%.2f", cols.get(i).getColWidth() * 100));
 				dashboardItem.put("itemContent", colItems.get(j).getItemContent());
 				if(colItems.get(j).getReportDesignId() == null ){
 					dashboardItem.put("html", colItems.get(j).getItemContent());
@@ -331,7 +332,7 @@ public class DashboardController {
 					if(i > toPosition) {
 						items.get(i-1).setItemOrder(i + 1);
 						dashboardItemDao.update(items.get(i-1).createPk(), items.get(i-1));
-					} else { // i < toPosition
+					} else if(i < toPosition) {
 						items.get(i).setItemOrder(i + 1);
 						dashboardItemDao.update(items.get(i).createPk(), items.get(i));
 					}
@@ -346,7 +347,7 @@ public class DashboardController {
 	//@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType)....)")
 	@RequestMapping(value="/dashboard/dashboard-design/dashboardEditItem.spy")
 	public @ResponseBody Map<String,? extends Object> dashboardEditItem(@RequestParam(required=true) Long dashboard, @RequestParam(required=true) Long item,
-			@RequestParam(required=false) Double height, @RequestParam(required=false) String title,
+			@RequestParam(required=false) Double height, @RequestParam(required=false) Double colWidth, @RequestParam(required=false) String title,
 			@RequestParam(required=false) String content,
 			@RequestParam(required=false) Long reportDesign, @RequestParam(required=false) Long reportChart) throws Exception {
 		try{
@@ -357,6 +358,43 @@ public class DashboardController {
 			dashboardItem.setItemContent(content);
 			dashboardItem.setReportDesignId(reportDesign);
 			dashboardItem.setReportChartId(reportChart);
+			
+			List<DashboardCol> cols = dashboardColDao.findWhereDashboardIdEquals(dashboardItem.getDashboardId());
+			DashboardCol thisItemCol = null;
+			Double widthSumMinusThis = 0D;
+			for(int i = 0 ; i < cols.size(); i++) {
+				if(cols.get(i).getId().equals(dashboardItem.getDashboardColId())) {
+					thisItemCol = cols.get(i);
+				} else {
+					widthSumMinusThis += cols.get(i).getColWidth();
+				}
+			}
+			if(cols.size() > 1 && thisItemCol != null) {
+				Double oldColWidth = thisItemCol.getColWidth();
+				if(colWidth == null) { // RESET ALL WIDTHS
+					Double newWidth = 1D / cols.size();
+					for(int i = 0 ; i < cols.size(); i++) {
+						cols.get(i).setColWidth(newWidth);
+						dashboardColDao.update(cols.get(i).createPk(), cols.get(i));
+					}
+				} else if(Math.abs(colWidth - (oldColWidth * 100D)) < 0.01) {
+					// do nothing, it is not important
+				} else if(colWidth<100 && colWidth>0) {
+					Double newColWidth = colWidth / 100D;
+					Double widthDiff = newColWidth - oldColWidth;
+					thisItemCol.setColWidth(newColWidth);
+					dashboardColDao.update(thisItemCol.createPk(), thisItemCol);
+					cols.remove(thisItemCol);
+					for(int i = 0 ; i < cols.size(); i++) {
+						Double w = cols.get(i).getColWidth();
+						Double newWidth = w - ((w/widthSumMinusThis) * widthDiff);
+						cols.get(i).setColWidth(newWidth);
+						dashboardColDao.update(cols.get(i).createPk(), cols.get(i));
+					}
+				} else {
+					throw new DashboardDaoException(PropertyProvider.get("eurb.app.dashboard.colWidthIsPercent"));
+				}
+			}
 			
 			dashboardItemDao.update(dashboardItem.createPk(), dashboardItem);
 			

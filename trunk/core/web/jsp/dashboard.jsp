@@ -41,6 +41,7 @@ Long selectedDashboard = (Long) request.getAttribute("userDashboardId");
 		EURB.DashboardDesign.itemTitle = '<spring:message code="eurb.app.dashboard.itemTitle" />';
 		EURB.DashboardDesign.itemContent = '<spring:message code="eurb.app.dashboard.itemContent" />';
 		EURB.DashboardDesign.itemHeight = '<spring:message code="eurb.app.dashboard.itemHeight" />';
+		EURB.DashboardDesign.colWidth = '<spring:message code="eurb.app.dashboard.colWidth" />';
 		EURB.DashboardDesign.editDashboardItem = '<spring:message code="eurb.app.dashboard.editDashboardItem" />';
 		EURB.DashboardDesign.reportDesign = '<spring:message code="eurb.app.dashboard.reportDesign" />';
 		EURB.DashboardDesign.reportChart = '<spring:message code="eurb.app.dashboard.reportChart" />';
@@ -209,6 +210,12 @@ Long selectedDashboard = (Long) request.getAttribute("userDashboardId");
 				    ,anchor:'100%'  // anchor width by percentage
 				    ,allowBlank:false
 				},{
+				    fieldLabel: EURB.DashboardDesign.colWidth
+				    ,name: 'colWidth'
+				    ,anchor: '100%'  // anchor width by percentage
+					,xtype: 'numberfield'
+					,allowBlank:true
+				},{
 				    fieldLabel: EURB.DashboardDesign.itemHeight
 				    ,name: 'height'
 				    ,anchor: '100%'  // anchor width by percentage
@@ -245,6 +252,7 @@ Long selectedDashboard = (Long) request.getAttribute("userDashboardId");
 		                        	var panel = Ext.getCmp(item+'');
 		                        	panel.title = form.findField('title').getValue();
 		                        	panel.height = form.findField('height').getValue();
+		                        	panel.colWidth = form.findField('colWidth').getValue();
 		                        	panel.itemContent = form.findField('content').getValue();
 		                        	panel.reportDesign = form.findField('reportDesign').getValue();
 		                        	panel.reportChart = form.findField('reportChart').getValue();
@@ -280,7 +288,7 @@ Long selectedDashboard = (Long) request.getAttribute("userDashboardId");
 		        		EURB.DashboardDesign.chartStore.reload({ params: {reportDesign: panel.reportDesign} });
 		        	}
 		        	frm.reset();
-		        	var record = new Ext.data.Record({dashboard:EURB.DashboardDesign.userDashboardId, item: panel.id, height: panel.height, content: panel.itemContent, title: panel.title, reportDesign: panel.reportDesign, reportChart: panel.reportChart});
+		        	var record = new Ext.data.Record({dashboard:EURB.DashboardDesign.userDashboardId, item: panel.id, height: panel.height, colWidth: panel.colWidth, content: panel.itemContent, title: panel.title, reportDesign: panel.reportDesign, reportChart: panel.reportChart});
 		        	frm.loadRecord(record);
 		        	editDashboardItemWindow.show(panel.id+'', function(){EURB.DashboardDesign.chartCombo.setValue(panel.reportChart);});
 
@@ -351,6 +359,7 @@ Long selectedDashboard = (Long) request.getAttribute("userDashboardId");
 								,scope:this
 								,itemId: dashboardItems[i].items[j].id
 								,itemHeight: dashboardItems[i].items[j].height
+								,colWidth: dashboardItems[i].items[j].colWidth
 								,itemContent: dashboardItems[i].items[j].html
 								,reportDesign: dashboardItems[i].items[j].reportDesign
 								,reportChart: dashboardItems[i].items[j].reportChart
