@@ -57,7 +57,7 @@ public class DashboardController {
 	//@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType)....)")
 	@RequestMapping(value="/dashboard{dash}.spy")
 	public ModelAndView executeDashboardSpy(@PathVariable Long dash) throws Exception {
-		ModelAndView mv = executeDashboardGeneral(dash);
+		ModelAndView mv = executeDashboardGeneral(dash, "execute");
 		List<Dashboard> dashboardList = dashboardDao.findAll();
 		Object[][] dashboardArr = new Object[dashboardList.size()][2];
 		
@@ -80,7 +80,7 @@ public class DashboardController {
 	//@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType)....)")
 	@RequestMapping(value="/dashboard{dash}-design.spy")
 	public ModelAndView executeDashboardDesignSpy(@PathVariable Long dash) throws Exception {
-		ModelAndView mv = executeDashboardGeneral(dash);
+		ModelAndView mv = executeDashboardGeneral(dash, "design");
 		List<Dashboard> dashboardList = dashboardDao.findAll();
 		Object[][] dashboardArr = new Object[dashboardList.size()+1][2];
 		dashboardArr[0][0] = -1L;
@@ -94,7 +94,7 @@ public class DashboardController {
 		return mv;
 	}
 
-	private ModelAndView executeDashboardGeneral(Long dash) throws Exception{
+	private ModelAndView executeDashboardGeneral(Long dash, String mode) throws Exception{
 		ModelAndView mv = new ModelAndView();
 		Dashboard dashboard;
 		if(dash != null) {
@@ -133,6 +133,7 @@ public class DashboardController {
 				dashboardItem = new HashMap<String, Object>();
 				dashboardItem.put("id", colItems.get(j).getId());
 				dashboardItem.put("title", colItems.get(j).getItemTitle());
+				dashboardItem.put("draggable", "design".equals(mode));
 				dashboardItem.put("itemClosed", colItems.get(j).getItemClosed());
 				dashboardItem.put("itemCollapsed", colItems.get(j).getItemCollapsed());
 				dashboardItem.put("itemOrder", colItems.get(j).getItemOrder());
