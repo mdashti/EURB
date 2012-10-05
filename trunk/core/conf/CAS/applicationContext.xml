@@ -41,6 +41,8 @@
 		<property name="password" value="${application.jdbc.password}" />
 		<property name="maxIdle" value="${application.jdbc.maxIdle}" />
 		<property name="maxActive" value="${application.jdbc.maxActive}" />
+		<property name="validationQuery" value="${application.jdbc.validationQuery}" />
+		<property name="testOnBorrow" value="${application.jdbc.testOnBorrow}" />
 	</bean>
 	
 	<bean id="userDetailsService" class="com.sharifpro.eurb.management.security.dao.impl.UserDetailsServiceImpl">
@@ -241,7 +243,9 @@
 		<property name="username" value="${quartz.jdbc.username}" />
 		<property name="password" value="${quartz.jdbc.password}" />
 		<property name="maxIdle" value="${quartz.jdbc.maxIdle}" />
-		<property name="maxActive" value="${quartz.jdbc.maxActive}" />   
+		<property name="maxActive" value="${quartz.jdbc.maxActive}" />
+		<property name="validationQuery" value="${quartz.jdbc.validationQuery}" />
+		<property name="testOnBorrow" value="${quartz.jdbc.testOnBorrow}" /> 
 	</bean>
     
 	<bean id="scheduler"
