@@ -1,0 +1,1 @@
+ALTER TABLE `eurb`.`report_chart_axis` ADD COLUMN `has_formula` TINYINT(1) NOT NULL DEFAULT 0  AFTER `report_dataset_id` , ADD COLUMN `formula` LONGTEXT NULL  AFTER `has_formula` ;
