@@ -357,7 +357,7 @@ width: 100%; /*width of menu*/
 }
 
 .urbangreymenu .headerbar{
-font: bold 16px arial,tahoma;
+font: bold 14px tahoma,arial;
 color: white;
 background: #000066 url(../img/icon/menu/arrowstop.png) no-repeat 8px 6px; /*last 2 values are the x and y coordinates of bullet image*/
 margin-bottom: 0; /*bottom spacing between header and rest of content*/

@@ -150,6 +150,7 @@
 			EURB.ReportChart.average = '<spring:message code="eurb.app.builder.report.chart.average" />';
 			EURB.ReportChart.distinctCount = '<spring:message code="eurb.app.builder.report.chart.distinctCount" />';
 			EURB.ReportChart.Aggregation = '<spring:message code="eurb.app.builder.report.chart.aggregation" />';
+			EURB.ReportChart.HasFormula = '<spring:message code="eurb.app.builder.report.chart.hasFormula" />';
 			EURB.ReportChart.titleFont = '<spring:message code="eurb.app.builder.report.chart.titleFont" />';
 			EURB.ReportChart.titleSize = '<spring:message code="eurb.app.builder.report.chart.titleSize" />';
 			EURB.ReportChart.titleColor = '<spring:message code="eurb.app.builder.report.chart.titleColor" />';

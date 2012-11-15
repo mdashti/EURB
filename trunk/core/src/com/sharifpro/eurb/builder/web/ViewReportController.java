@@ -8,7 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.hibernate.mapping.Array;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -419,10 +418,10 @@ public class ViewReportController {
 		}
 	}
 
-	
+
 	@RequestMapping(value="/builder/report/get-reportchart{report}-c{chart}.spy")
 	public @ResponseBody Map<String,? extends Object> executeRunReportChartByChartId(@PathVariable Long report, @PathVariable Long chart) throws Exception {
-		
+
 		try{
 			long version = reportDesignDao.findWhereIdEquals(report).get(0).getVersionId();
 
@@ -432,8 +431,6 @@ public class ViewReportController {
 			//All Datasets must be in the same dbConfig
 			Long dbConfigId = reportDesign.getDbConfigId();
 
-			List<Object> res = new ArrayList<Object>();
-
 			List<ReportChart> reportCharts = reportChartDao.findAll(reportDesign);
 			for(ReportChart c : reportCharts){
 				if(c.getId().equals(chart)) {
@@ -442,6 +439,41 @@ public class ViewReportController {
 			}
 
 			throw new ReportChartDaoException("Chart not found!");
+
+		} catch (Exception e) {
+
+			return JsonUtil.getModelMapError(e);
+		}
+	}
+
+	@RequestMapping(value="/builder/report/get-reportchart{report}-i{chartIndex}.spy")
+	public @ResponseBody Map<String,? extends Object> executeNewRunReportChart(@PathVariable Long report, @PathVariable Integer chartIndex, @RequestParam String formula) throws Exception {
+		try{
+
+			//find report design with given id
+			ReportDesign reportDesign = reportDesignDao.findWhereIdEquals(report).get(0);
+
+			//All Datasets must be in the same dbConfig
+			Long dbConfigId = reportDesign.getDbConfigId();
+
+			List<Object> res = new ArrayList<Object>();
+
+			List<ReportChart> reportCharts = reportChartDao.findAll(reportDesign);
+			ReportChart chart;
+			List<ArrayList<Object>> resultList;
+			for(int i = 0; i < reportCharts.size(); i++){
+				chart = reportCharts.get(i);
+				resultList = getResultForChart(chart, dbConfigId, reportDesign);
+				res.add(resultList);
+				if(i == chartIndex)
+				{
+					resultList = getResultForChart(chart, dbConfigId, reportDesign, formula);
+					res.add(resultList);
+
+				}
+			}
+
+			return JsonUtil.getSuccessfulMap(res);
 
 		} catch (Exception e) {
 
@@ -477,6 +509,9 @@ public class ViewReportController {
 	}
 
 	private List<ArrayList<Object>> getResultForChart(ReportChart chart, Long dbConfigId, ReportDesign reportDesign) throws Exception{
+		return this.getResultForChart(chart, dbConfigId, reportDesign, null);
+	}
+	private List<ArrayList<Object>> getResultForChart(ReportChart chart, Long dbConfigId, ReportDesign reportDesign, String formula) throws Exception{
 
 		List<ReportDataset> datasetList = reportDatasetDao.findAll(reportDesign, chart);
 		//this dataset list may contain repeated values so we're gonna eliminate them
@@ -530,6 +565,11 @@ public class ViewReportController {
 		resultConfig.add(chart.getConfigMap().get("yAxisFont"));
 		resultConfig.add(chart.getConfigMap().get("yAxisSize"));
 		resultConfig.add(chart.getConfigMap().get("yAxisColor"));
+		if(yAxis.hasFormula())
+		{
+			resultConfig.add(true);
+			resultConfig.add(yAxis.getFormula());
+		}
 
 
 		//Build QUERY
@@ -539,8 +579,28 @@ public class ViewReportController {
 		String xAxisColumnKey = "t"+xAxis.getDatasetId()+"_"+datasetColumnMappingMap.get(xAxis.getDatasetId()).get(xAxis.getColumnMappingId()).getColumnName() + xAxis.getColumnMappingId();
 		querySelectSB.append(xAxisDatabaseKey).append(" AS ").append(xAxisColumnKey);
 		querySelectSB.append(", ");
-		String yAxisDatabaseKey = "t" + yAxis.getDatasetId() + "." + datasetColumnMappingMap.get(yAxis.getDatasetId()).get(yAxis.getColumnMappingId()).getColumnName();
-		String yAxisColumnKey = "t"+yAxis.getDatasetId()+"_"+datasetColumnMappingMap.get(yAxis.getDatasetId()).get(yAxis.getColumnMappingId()).getColumnName() + yAxis.getColumnMappingId();
+		String yAxisDatabaseKey = "";
+		String yAxisColumnKey = "";
+		if(yAxis.hasFormula()) {
+			String yAxisFormula;
+			if(formula == null || formula.equals("")){
+				yAxisFormula = yAxis.getFormula();
+			}
+			else {
+				yAxisFormula = formula;
+			}
+
+			yAxisFormula = yAxisFormula.replaceAll("\\[([^_])*__", "");
+			yAxisFormula = yAxisFormula.replaceAll("\\]", "");
+			yAxisDatabaseKey = yAxisFormula;
+			yAxisColumnKey = "axis" + yAxis.getId();
+		}
+		else {
+			yAxisDatabaseKey = "t" + yAxis.getDatasetId() + "." + datasetColumnMappingMap.get(yAxis.getDatasetId()).get(yAxis.getColumnMappingId()).getColumnName();
+			yAxisColumnKey = "t"+yAxis.getDatasetId()+"_"+datasetColumnMappingMap.get(yAxis.getDatasetId()).get(yAxis.getColumnMappingId()).getColumnName() + yAxis.getColumnMappingId();
+		}
+
+
 		if(yAxis.hasAggregation()){
 			if(yAxis.getAggregation().equals("distinct-count"))
 			{

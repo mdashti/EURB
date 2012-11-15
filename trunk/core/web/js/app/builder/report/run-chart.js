@@ -158,6 +158,13 @@ createChart = function(data, index, heightValue){
 	}
 	
 	chart = new Highcharts.Chart(options);
+	var sizeOfConfig = data[0].length;
+	if(index == 0 && sizeOfConfig > 14 && data[0][sizeOfConfig - 2])
+	{
+		formulaTextfield = EURB.RunReport.chartPanel.find('name', 'chart' + index +'_formula')[0];
+		formulaTextfield.setVisible(true);
+		formulaTextfield.setValue(data[0][sizeOfConfig - 1]);
+	}
 };
 
 updateChartData = function(charts){

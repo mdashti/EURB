@@ -40,6 +40,17 @@ public class ReportChartAxis extends PersistableObject implements Serializable
 	 * This attribute maps to the column aggregation in the report_chart_axis table.
 	 */
 	protected String aggregation;
+	
+	/** 
+	 * This attribute maps to the column has_formula in the report_chart_axis table.
+	 */
+	protected boolean hasFormula;
+	
+	/** 
+	 * This attribute maps to the column formula in the report_chart_axis table.
+	 */
+	protected String formula;
+	
 
 	
 	/**
@@ -79,7 +90,7 @@ public class ReportChartAxis extends PersistableObject implements Serializable
 	 */
 	public Long getColumnMappingId()
 	{
-		return columnMappingId;
+		return (columnMappingId == null || columnMappingId == 0) ? null : columnMappingId;
 	}
 
 	/**
@@ -94,6 +105,10 @@ public class ReportChartAxis extends PersistableObject implements Serializable
 	
 	public String getSelectedColumn()
 	{
+		if(this.datasetId == null || this.datasetId == 0 || this.columnMappingId == null || this.columnMappingId == 0)
+		{
+			return null;
+		}
 		return this.datasetId + "-" + this.columnMappingId;
 	}
 	
@@ -104,7 +119,7 @@ public class ReportChartAxis extends PersistableObject implements Serializable
 	 */
 	public Long getDatasetId()
 	{
-		return datasetId;
+		return (datasetId == null || datasetId == 0 ) ? null : datasetId;
 	}
 	
 	/**
@@ -185,7 +200,28 @@ public class ReportChartAxis extends PersistableObject implements Serializable
 	{
 		this.aggregation = aggregation;
 	}
+	
 
+	public boolean hasFormula()
+	{
+		return hasFormula;
+	}
+	
+	public void setHasFormula(boolean hasFormula)
+	{
+		this.hasFormula = hasFormula;
+	}
+	
+	
+	public String getFormula()
+	{
+		return formula;
+	}
+
+	public void setFormula(String formula)
+	{
+		this.formula = formula;
+	}
 	
 	/**
 	 * Method 'equals'
@@ -243,6 +279,8 @@ public class ReportChartAxis extends PersistableObject implements Serializable
 		ret.append( ", columnMappingId=" + columnMappingId );
 		ret.append( ", type=" + type );
 		ret.append( ", title=" + title );
+		ret.append( ", hasFormula=" + hasFormula);
+		ret.append( ", formula=" + formula);
 		return ret.toString();
 	}
 

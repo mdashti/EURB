@@ -23,7 +23,7 @@ import com.sharifpro.util.PropertyProvider;
 public class ReportChartAxisDaoImpl extends AbstractDAO implements ParameterizedRowMapper<ReportChartAxis>, ReportChartAxisDao
 {
 
-	private final static String QUERY_FROM_COLUMNS = " o.chart_id, o.axis_type, o.title, o.column_mapping_id, o.report_dataset_id, o.aggregation	";
+	private final static String QUERY_FROM_COLUMNS = " o.chart_id, o.axis_type, o.title, o.column_mapping_id, o.report_dataset_id, o.aggregation, o.has_formula, o.formula	";
 	private final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + " o " + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL_AND_JOIN;
 	private final static String COUNT_QUERY = "SELECT count(distinct(o.id)) FROM " + getTableName() + " o ";
 	/**
@@ -38,8 +38,9 @@ public class ReportChartAxisDaoImpl extends AbstractDAO implements Parameterized
 		try{
 			ReportChartAxisPk pk = new ReportChartAxisPk(); 
 			DaoFactory.createPersistableObjectDao().insert(dto, pk);
-			getJdbcTemplate().update("INSERT INTO " + getTableName() + " ( id, chart_id, axis_type, title, column_mapping_id, report_dataset_id, aggregation) VALUES ( ?, ?, ?, ?, ?, ?, ?)",
-					pk.getId(),dto.getChartId(),dto.getType(),dto.getTitle(), dto.getColumnMappingId(), dto.getDatasetId(), dto.getAggregation());
+			getJdbcTemplate().update("INSERT INTO " + getTableName() + " ( id, chart_id, axis_type, title, column_mapping_id, report_dataset_id, aggregation, has_formula, formula) " +
+					"VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+					pk.getId(),dto.getChartId(),dto.getType(),dto.getTitle(), dto.getColumnMappingId(), dto.getDatasetId(), dto.getAggregation(), dto.hasFormula(), dto.getFormula());
 			return pk;
 		}
 		catch (Exception e) {
@@ -55,8 +56,8 @@ public class ReportChartAxisDaoImpl extends AbstractDAO implements Parameterized
 	{
 		try{
 			DaoFactory.createPersistableObjectDao().update(pk);
-			getJdbcTemplate().update("UPDATE " + getTableName() + " SET  title = ? , column_mapping_id = ?, report_dataset_id = ?, aggregation = ?" +
-					" WHERE id = ?",dto.getTitle(), dto.getColumnMappingId(), dto.getDatasetId(), dto.getAggregation(), pk.getId());
+			getJdbcTemplate().update("UPDATE " + getTableName() + " SET  title = ? , column_mapping_id = ?, report_dataset_id = ?, aggregation = ?, has_formula = ?, formula = ?" +
+					" WHERE id = ?",dto.getTitle(), dto.getColumnMappingId(), dto.getDatasetId(), dto.getAggregation(), dto.hasFormula(), dto.getFormula(), pk.getId());
 		}
 		catch (Exception e) {
 			throw new ReportChartAxisDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -108,6 +109,8 @@ public class ReportChartAxisDaoImpl extends AbstractDAO implements Parameterized
 		dto.setColumnMappingId( new Long( rs.getLong(++i) ) );
 		dto.setDatasetId(new Long ( rs.getLong(++i) ) );
 		dto.setAggregation( rs.getString(++i) );
+		dto.setHasFormula(rs.getBoolean(++i));
+		dto.setFormula(rs.getString(++i));
 		return dto;
 	}
 

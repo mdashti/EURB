@@ -7,8 +7,9 @@
 <un:useConstants className="com.sharifpro.eurb.info.AuthorityType" var="authorityType" />
 <% String resourcesUrl = request.getParameter("resourcesUrl"); %>
 <% String baseUrl = request.getParameter("baseUrl"); %>
-<% boolean menuEnabled = !"false".equals(request.getParameter("menuEnabled")); %>
+<% boolean menuEnabled  = !"false".equals(request.getParameter("menuEnabled")); %>
 <% boolean statusEnabled = !"false".equals(request.getParameter("statusEnabled")); %>
+<% boolean headerEnabled = !"false".equals(request.getParameter("headerEnabled")); %>
 		<div id="loading-mask" style=""></div>
 		<div id="loading">
 			<div class="loading-indicator">
@@ -167,15 +168,16 @@
 		
 		<!-- Body Template -->
 		<script src="<%=resourcesUrl%>/js/eurb-reports.js"></script>
-		
 		<div id="header">
+		<% if (headerEnabled){ %>
 			<a href="http://www.sharifpro.com" style="float: left; margin-right: 10px;"><img
 				src="<%=resourcesUrl%>/img/icon/eurb.gif"
 				style="width: 83px; height: 24px; margin-top: 1px;" /></a>
 	
 			<div class="api-title"><spring:message code="eurb.app.title" /></div>
+		<% } %>
 		</div>
-	
+		
 		<div id="classes"></div>
 	
 		<div id="main"></div>

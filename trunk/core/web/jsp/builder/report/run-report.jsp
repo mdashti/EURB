@@ -78,7 +78,9 @@
 			EURB.RunReport.version = ${version};
 			EURB.RunReport.hasChart = ${hasChart};
 			EURB.RunReport.chartCount = ${chartCount};
-			EURB.RunReport.runChart = '<spring:url value="/builder/report/get-reportchart${report}-v${version}.spy" />';
+			EURB.RunReport.runChart = '<spring:url value="/builder/report/get-reportchart${report}-v${version}.spy" />';			
+			
+
 		</script>
 		<script src="${resourcesUrl}/js/app/builder/report/run-chart.js"></script>
 		<script src="${resourcesUrl}/js/app/builder/report/run-report.js"></script>

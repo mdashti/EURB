@@ -20,6 +20,7 @@
 			<jsp:param value="${baseUrl}" name="baseUrl"/>
 			<jsp:param value="false" name="menuEnabled"/>
 			<jsp:param value="false" name="statusEnabled"/>
+			<jsp:param value="false" name="headerEnabled"/>
 		</jsp:include>
 		<script type="text/javascript">
 		EURB.login = '<spring:message code="eurb.app.login" />';

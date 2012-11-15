@@ -25,6 +25,7 @@ EURB.ReportChart.xAxisColumnCombo = new Ext.form.ComboBox({
 EURB.ReportChart.yAxisColumnCombo = new Ext.form.ComboBox({
 	fieldLabel:EURB.ReportChart.AxisColumn,
 	hiddenName:'ySelectedColumn',
+	name: 'yAxisColumnCombo',
     typeAhead: true,
     triggerAction: 'all',
     lazyRender:true,
@@ -43,6 +44,54 @@ EURB.ReportChart.yAxisColumnCombo = new Ext.form.ComboBox({
     	}
     }
 });
+
+//////////////////////////yAxis has formula check box/////////////////////////////////
+
+EURB.ReportChart.yAxisHasFormula = new Ext.form.Checkbox({
+	fieldLabel: EURB.ReportChart.HasFormula,
+	name:'yHasFormula',
+	mode: 'local',
+	allowBlank: true,
+	listeners:{
+		 check: {
+	            fn: function(){
+	            	checkFormula();
+            	}
+	        }
+		
+	}
+});
+
+checkFormula = function(){
+	axisForm = EURB.ReportChart.reportChartGrid.axisForm;
+	yHasFormula = axisForm.find('name', 'yHasFormula')[0];
+	formulaFieldSet = axisForm.find('id', 'report-formula-collapsible')[0];
+	formulaField = formulaFieldSet.find('xtype', 'compositefield')[0].items.items[0];
+	yAggregationTypeCombo = axisForm.find('name', 'yAggregationTypeCombo')[0];
+	yAxisColumnCombo = axisForm.find('name', 'yAxisColumnCombo')[0];
+	if(yHasFormula.checked){
+		formulaFieldSet.show();
+		formulaFieldSet.enable();
+		formulaField.allowBlank = false;
+		
+		yAggregationTypeCombo.disable();
+		yAxisColumnCombo.disable();
+		yAxisColumnCombo.allowBlank = true;
+		
+		axisForm.doLayout();
+	}
+	else{
+		formulaFieldSet.doHide();
+		formulaFieldSet.disable();
+		formulaField.allowBlank = true;
+		
+		yAggregationTypeCombo.enable();
+		yAxisColumnCombo.enable();
+		yAxisColumnCombo.allowBlank = false;
+		
+		axisForm.doLayout();
+	}
+};
 ////////////////////////////chart type combo box///////////////////////////////
 EURB.ReportChart.chartTypeCombo = new Ext.form.ComboBox({
     typeAhead: true,
@@ -65,13 +114,14 @@ EURB.ReportChart.chartTypeCombo = new Ext.form.ComboBox({
 });
 
 
+
 ////////////////////////////aggregation type combo box///////////////////////////////
 EURB.ReportChart.aggregationTypeCombo = new Ext.form.ComboBox({
 	fieldLabel:EURB.ReportChart.Aggregation,
 	hiddenName:'yAggregation',
+	name: 'yAggregationTypeCombo',
     typeAhead: true,
     triggerAction: 'all',
-    lazyRender:true,
     mode: 'local',
     store: new Ext.data.ArrayStore({
         id: 0,
@@ -465,7 +515,9 @@ EURB.ReportChart.ChartGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 						,allowBlank:true
 					},
 					EURB.ReportChart.aggregationTypeCombo,
-					EURB.ReportChart.yAxisColumnCombo
+					EURB.ReportChart.yAxisColumnCombo,
+					EURB.ReportChart.yAxisHasFormula,
+					EURB.ReportColumn.formulaFieldSet
 				]
 					
 			}]
@@ -474,7 +526,7 @@ EURB.ReportChart.ChartGrid = Ext.extend(Ext.grid.EditorGridPanel, {
         var axisWindow = new Ext.Window({
 			title: EURB.ReportColumn.formulaEditor,
 			width: 500,
-			height:300,
+			height:500,
 			minWidth: 300,
 			closeAction: 'hide',
 			minHeight: 150,
@@ -606,6 +658,7 @@ EURB.ReportChart.ChartGrid = Ext.extend(Ext.grid.EditorGridPanel, {
             break;
             case 'icon-chart':
             	this.axisWindow.show(grid.getView().getCell(row, col),this.axisFor(record),this);
+            	checkFormula();
             break;
 
         }
@@ -649,21 +702,24 @@ EURB.ReportChart.ChartGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 			return;
 		}
 		data = o.data;
-		var RecordCons = Ext.data.Record.create(['id', 'xAxisId', 'xColumnMapping', 'xDataset', 'xTitle' , 'yAxisId', 'yDataset', 'yColumnMapping' , 'yTitle', 'yAggregation']);
+		var RecordCons = Ext.data.Record.create(['id', 'xAxisId', 'xColumnMapping', 'xDataset', 'xTitle' , 'yAxisId', 'yDataset', 'yColumnMapping' , 'yTitle', 'yAggregation', 'yHasFormula', 'formula']);
+		var i = 0;
 		var record = new RecordCons(
 			{
-				id: data[0],
-				xAxisId: data[1],
-				xColumnMapping: data[2],
-				xSelectedColumn: data[3],
-				xDataset: data[4],
-				xTitle: data[5],
-				yAxisId: data[6],
-				yColumnMapping: data[7],
-				ySelectedColumn: data[8],
-				yDataset: data[9],
-				yTitle: data[10],
-				yAggregation: data[11]
+				id: data[i++],
+				xAxisId: data[i++],
+				xColumnMapping: data[i++],
+				xSelectedColumn: data[i++],
+				xDataset: data[i++],
+				xTitle: data[i++],
+				yAxisId: data[i++],
+				yColumnMapping: data[i++],
+				ySelectedColumn: data[i++],
+				yDataset: data[i++],
+				yTitle: data[i++],
+				yAggregation: data[i++],
+				yHasFormula: data[i++],
+				formula: data[i++]
 			}
 		); 
 		var frm = this.axisForm.getForm();

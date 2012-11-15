@@ -102,7 +102,6 @@ if(EURB.RunReport.HasGroup){
 		viewConfig: { forceFit: true },
 	    border: false,
 	    width: '100%',
-	    //html: '<div id="container" style="width: 50%; height: 400px; direction: ltr !important;"></div>'
 	    items: [{
 	    	region: 'center',
 			split: true,
@@ -172,34 +171,95 @@ Ext.onReady(function() {
 		else{
 			h = '100%';
 		}
-		EURB.RunReport.chartPanel = new Ext.Panel({
+		EURB.RunReport.chartPanel = new Ext.FormPanel({
 		    layout: 'border',
 			viewConfig: { forceFit: true },
 		    border: false,
 		    width: '100%',
-		    //html: '<div id="container" style="width: 50%; height: 400px; direction: ltr !important;"></div>'
 		    items: [{
 		    	region: 'north',
 		    	layout: 'border',
 		    	border: false,
-		    	height: 300,
+		    	height: 320,
 		    	items: [{
+		    		region: 'north',
+		    		layout: 'border',
+			    	border: false,
+		    		height: 25,
+			    	items: [{
+				    	region: 'center',
+			    		xtype: 'textfield',
+						name: 'chart0_formula',
+						id: 'chart0_formula',
+						fieldLabel: 'formula',
+						allowBlank : true,
+						width:150,
+						hidden:true,
+						style:{
+							direction : 'ltr'
+						}
+			    	},
+			    	{
+						region: 'east',
+				    	xtype: 'button',
+						text: 'click',
+						id: 'chart0_formula_button',
+						width:100,
+						handler: function(){
+							formulaTextfield = EURB.RunReport.chartPanel.find('name', 'chart0_formula')[0];
+							newFormula = formulaTextfield.getValue();
+							var o = {
+									 url:EURB.baseURL + 'builder/report/get-reportchart' + EURB.RunReport.design + '-i0.spy'
+									,method:'post'
+									,callback:function(options, success, response) {
+										if(true !== success) {
+											this.showError(response.responseText);
+											return;
+										}
+										try {
+											var o = Ext.decode(response.responseText);
+										}
+										catch(e) {
+											this.showError(response.responseText, EURB.unableToDecodeJSON);
+											return;
+										}
+										if(true !== o.success) {
+											this.showError(o.error || o.message || EURB.unknownError);
+											return;
+										}	
+										EURB.RunReport.chartPanel.find('name', 'center-div')[0].setWidth('50%');
+										EURB.RunReport.chartPanel.find('name', 'east-div')[0].setWidth('50%');
+										EURB.RunReport.chartCount++;
+										updateChartData(o.data);
+										EURB.mainPanel.doLayout();
+									}
+									,params:{
+										formula: newFormula
+									}
+							};
+							Ext.Ajax.request(o);
+						}
+					}
+		    	]},	
+				{
 		    
 					region: 'center',
 					split: true,
 					height: h,
 					width: cw,
+					name: 'center-div',
 					autoEl: 
 					{
 						tag: 'div',
 						id: 'chart0'
-			        }
+					}
 			    },
 			    {
 			    	region: 'east',
 			    	split: true,
 					height: h,
 					width: ew,
+					name: 'east-div',
 					autoEl: 
 					{
 						tag: 'div',
