@@ -84,7 +84,9 @@ public class DefaultPermissionGrantingStrategy implements PermissionGrantingStra
                             firstRejection = ace;
                         }
 
-                        scanNextSid = false; // helps break the loop
+                        if(ace.getSid() instanceof PrincipalSid) { //if user has prevented access, then groups can not give hive the access
+                        	scanNextSid = false; // helps break the loop
+                        }
 
                         break; // exit aces loop
                     }
@@ -92,7 +94,7 @@ public class DefaultPermissionGrantingStrategy implements PermissionGrantingStra
 
                 if (!scanNextSid) {
                 	//try others, maybe some other one grants
-                    //break; // exit SID for loop (now try next permission)
+                    break; // exit SID for loop (now try next permission)
                 }
             }
         }
