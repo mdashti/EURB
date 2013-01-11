@@ -27,7 +27,10 @@ public class ReportCategory extends PersistableObject implements Serializable
 	protected Long _parent;
 	protected Boolean _is_leaf = false;
 	
-
+	private boolean accessPreventDel = true;
+	private boolean accessPreventEdit = true;
+	private boolean accessPreventExecute = true;
+	private boolean accessPreventSharing = true;
 
 	/**
 	 * Method 'ReportCategory'
@@ -210,4 +213,36 @@ public class ReportCategory extends PersistableObject implements Serializable
 		
 	}
 */
+	
+	public boolean isAccessPreventDel() {
+		return accessPreventDel;
+	}
+
+	public void setAccessPreventDel(boolean accessPreventDel) {
+		this.accessPreventDel = accessPreventDel;
+	}
+
+	public boolean isAccessPreventEdit() {
+		return accessPreventEdit;
+	}
+
+	public void setAccessPreventEdit(boolean accessPreventEdit) {
+		this.accessPreventEdit = accessPreventEdit;
+	}
+
+	public boolean isAccessPreventExecute() {
+		return accessPreventExecute;
+	}
+
+	public void setAccessPreventExecute(boolean accessPreventExecute) {
+		this.accessPreventExecute = accessPreventExecute;
+	}
+
+	public boolean isAccessPreventSharing() {
+		return accessPreventSharing;
+	}
+
+	public void setAccessPreventSharing(boolean accessPreventSharing) {
+		this.accessPreventSharing = accessPreventSharing;
+	}
 }

@@ -325,7 +325,7 @@ public class PersistableObjectDaoImpl extends AbstractDAO implements /*Parameter
 	}
 
 	@Override
-	public List<PersistableObject> findByPrimaryKeys(List<Integer> targetObjects) throws PersistableObjectDaoException {
+	public List<PersistableObject> findByPrimaryKeys(List<Long> targetObjects) throws PersistableObjectDaoException {
 		try {
 			List<PersistableObject> list = new NamedParameterJdbcTemplate(getJdbcTemplate()).query("SELECT "
 					+ PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS

@@ -14,6 +14,7 @@
 			<jsp:param value="${baseUrl}" name="baseUrl"/>
 		</jsp:include>
 		<!-- App custom css -->
+		<link rel="stylesheet" type="text/css" href="${resourcesUrl}/js/extjs/plugins/tricheck/tricheckbox.css">
 		<link rel="stylesheet" type="text/css" href="${resourcesUrl}/css/app/builder/report/report-list.css" />
 		<style type="text/css">
 		.dbconf-valid{
@@ -35,6 +36,7 @@
 			<jsp:param value="${baseUrl}" name="baseUrl"/>
 		</jsp:include>
 		<!-- App js -->
+		<script type="text/javascript" src="${resourcesUrl}/js/extjs/plugins/tricheck/tricheckbox.js"></script>
 		<script type="text/javascript">
 
 			EURB.Report = {};
@@ -48,12 +50,35 @@
 			EURB.Report.name = '<spring:message code="eurb.app.builder.report.name" />';
 			EURB.Report.description = '<spring:message code="eurb.app.builder.report.description" />';
 			EURB.Report.category = '<spring:message code="eurb.app.builder.report.category" />';
+			EURB.Report.share = '<spring:message code="eurb.app.builder.report.share" />';
+			EURB.Report.report = '<spring:message code="eurb.app.builder.report.reportof" />';
+			EURB.Report.category = '<spring:message code="eurb.app.builder.report.categoryof" />';
+			EURB.Report.viewInteractiveReport = '<spring:message code="eurb.app.builder.report.viewInteractiveReport" />';
 			
 			EURB.Report.editDesign = '<spring:message code="eurb.app.builder.report.editDesign" />';
 			
+			if(!EURB.ObjSec) {
+				EURB.ObjSec = {};
+			}
+			EURB.ObjSec.share = '<spring:message code="eurb.app.builder.report.share" />';
+			EURB.ObjSec.groupSearchAction = '<spring:url value="/management/security/group/groupSearch.spy" />';
+			EURB.ObjSec.userSearchAction = '<spring:url value="/management/security/user/userSearch.spy" />';
+			EURB.ObjSec.objectAuthoritiesSearchAction = '<spring:url value="/management/security/acl/loadPermission.spy" />';
+			EURB.ObjSec.objectAuthoritiesStoreAction = '<spring:url value="/management/security/acl/storePermission.spy" />';
 			
+			EURB.ObjSec.groupName = '<spring:message code="eurb.app.management.authorities.groupname" />';
+			EURB.ObjSec.userName = '<spring:message code="eurb.app.management.authorities.username" />';
+			EURB.ObjSec.groupOrUserName = '<spring:message code="eurb.app.management.authorities.grouporusername" />';;
+			
+			EURB.ObjSec.authoritiesView = '<spring:message code="eurb.app.management.authorities.view" />';
+			EURB.ObjSec.authoritiesCreate = '<spring:message code="eurb.app.management.authorities.create" />';
+			EURB.ObjSec.authoritiesEdit = '<spring:message code="eurb.app.management.authorities.edit" />';
+			EURB.ObjSec.authoritiesDel = '<spring:message code="eurb.app.management.authorities.del" />';
+			EURB.ObjSec.authoritiesExecute = '<spring:message code="eurb.app.management.authorities.execute" />';
+			EURB.ObjSec.authoritiesSharing = '<spring:message code="eurb.app.management.authorities.sharing" />';
 			
 		</script>
+		<script src="${resourcesUrl}/js/app/objsec/object-security-ui.js"></script>
 		<script src="${resourcesUrl}/js/app/builder/report/report-tree-list.js"></script>
 	</body>
 </html>

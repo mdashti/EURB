@@ -8,17 +8,19 @@ import com.sharifpro.eurb.builder.model.ReportDesign;
 import com.sharifpro.eurb.builder.model.ReportDesignPk;
 import com.sharifpro.eurb.info.RecordStatus;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
-import com.sharifpro.eurb.management.mapping.dao.impl.DbConfigDaoImpl;
 import com.sharifpro.eurb.management.mapping.dao.impl.PersistableObjectDaoImpl;
 import com.sharifpro.eurb.management.security.dao.impl.AclServiceImpl;
+import com.sharifpro.eurb.management.security.dao.impl.ExtendedPermission;
 import com.sharifpro.transaction.annotation.TransactionalReadOnly;
 import com.sharifpro.transaction.annotation.TransactionalReadWrite;
 import com.sharifpro.util.PropertyProvider;
+import com.sharifpro.util.SessionManager;
 
 import java.util.List;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.stereotype.Repository;
 
@@ -28,15 +30,33 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 {
 	private final static String QUERY_FROM_COLUMNS = "o.version_id, o.name, o.description, o.category_id, o.query_text, o.select_part, o.result_data, o.format_file, o.is_current, o.record_status, o.db_config_id ";
 
-	private final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + " o  INNER JOIN " + DbConfigDaoImpl.getTableName() + " d ON (o.db_config_id IS NULL OR (o.db_config_id=d.id AND d.record_status='" + RecordStatus.ACTIVE.getId() + "')) INNER JOIN " + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL + " ON (o.id=p.id)";
+	//private final static String QUERY_SELECT_PART_USERNAMED_BASED = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + " o  INNER JOIN " + DbConfigDaoImpl.getTableName() + " d ON (o.db_config_id IS NULL OR (o.db_config_id=d.id AND d.record_status='" + RecordStatus.ACTIVE.getId() + "')) INNER JOIN " + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL + " ON (o.id=p.id)";
+
+	private final static String QUERY_SELECT_PART_USERNAMED_BASED = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + " o, persistable_object p, acl_object_identity oi, acl_entry e"
+			+ " WHERE p.id=o.id"
+			+ " AND o.id=oi.object_id_identity"
+			+ " AND oi.object_id_class="+ReportDesign.ACL_CLASS_IDENTIFIER
+			+ " AND oi.id=e.acl_object_identity"
+			+ " AND e.mask & ?"
+			+ " AND e.granting=1"
+			+ " AND e.sid IN (SELECT id FROM acl_sid WHERE  (principal = 1 AND sid = ?) OR (principal = 0 AND sid IN (SELECT group_id FROM group_members WHERE username = ?)) )";
 
 	private final static String QUERY_ACTIVE_WHERE_PART = " o.is_current = 1 and o.record_status = '" + RecordStatus.ACTIVE + "'";
 
 	private final static String QUERY_ACTIVE_AND_PASSIVE_WHERE = " o.record_status IN ('" + RecordStatus.ACTIVE.getId() + "', '" + RecordStatus.PASSIVE.getId() + "') and o.is_current = 1 ";
 
-	private final static String COUNT_QUERY = "SELECT count(distinct(o.id)) FROM " + getTableName() + " o ";
+	//private final static String COUNT_QUERY = "SELECT count(distinct(o.id)) FROM " + getTableName() + " o ";
 
+	private final static String COUNT_QUERY_USERNAMED_BASED = "SELECT count(distinct(o.id)) FROM " + getTableName() + " o, acl_object_identity oi, acl_entry e"
+			+ " WHERE o.id=oi.object_id_identity"
+			+ " AND oi.object_id_class="+ReportDesign.ACL_CLASS_IDENTIFIER
+			+ " AND oi.id=e.acl_object_identity"
+			+ " AND e.mask & ?"
+			+ " AND e.granting=1"
+			+ " AND e.sid IN (SELECT id FROM acl_sid WHERE  (principal = 1 AND sid = ?) OR (principal = 0 AND sid IN (SELECT group_id FROM group_members WHERE username = ?)) )";
 
+	private AclServiceImpl aclService;
+	
 	/**
 	 * Method 'insert'
 	 * 
@@ -55,7 +75,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 			getJdbcTemplate().update("INSERT INTO " + getTableName() + " ( id, version_id, name, description, category_id, query_text, select_part, result_data, format_file, is_current, record_status, db_config_id ) " +
 					"VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",pk.getId(),pk.getVersionId(),dto.getName(),dto.getDescription(),dto.getCategoryId(),dto.getQueryText(),dto.getSelectPart(),dto.getResultData(),
 					dto.getFormatFile(),dto.isIsCurrent(),dto.getRecordStatusString(), dto.getDbConfigId());
-			//AclServiceImpl.insertObjectIdentity(getJdbcTemplate(), pk.getId(), ReportDesign.ACL_CLASS_IDENTIFIER, dto.getCategoryId(), ReportCategory.ACL_CLASS_IDENTIFIER);
+			AclServiceImpl.insertObjectIdentity(getJdbcTemplate(), pk.getId(), ReportDesign.ACL_CLASS_IDENTIFIER, dto.getCategoryId(), ReportCategory.ACL_CLASS_IDENTIFIER);
 			return pk;
 		}
 		catch (Exception e) {
@@ -77,7 +97,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 			getJdbcTemplate().update("INSERT INTO " + getTableName() + " ( id, version_id, name, description, category_id, query_text, select_part, result_data, format_file, is_current, record_status, db_config_id ) " +
 					"VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )",pk.getId(),pk.getVersionId(),dto.getName(),dto.getDescription(),dto.getCategoryId(),dto.getQueryText(),dto.getSelectPart(),dto.getResultData(),
 					dto.getFormatFile(),dto.isIsCurrent(),dto.getRecordStatusString(), dto.getDbConfigId());
-			//AclServiceImpl.updateObjectIdentity(getJdbcTemplate(), pk.getId(), ReportDesign.ACL_CLASS_IDENTIFIER, dto.getCategoryId(), ReportCategory.ACL_CLASS_IDENTIFIER);
+			AclServiceImpl.updateObjectIdentity(getJdbcTemplate(), pk.getId(), ReportDesign.ACL_CLASS_IDENTIFIER, dto.getCategoryId(), ReportCategory.ACL_CLASS_IDENTIFIER);
 		}
 		catch (Exception e) {
 			throw new ReportDesignDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -218,6 +238,16 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 			dto.setCategoryId( null );
 		}
 
+		try {
+			dto.setAccessPreventDel(!aclService.hasPermissionFor(dto, ExtendedPermission.DELETE));
+			dto.setAccessPreventEdit(!aclService.hasPermissionFor(dto, ExtendedPermission.WRITE));
+			dto.setAccessPreventExecute(!aclService.hasPermissionFor(dto, ExtendedPermission.EXECUTE));
+			dto.setAccessPreventSharing(!aclService.hasPermissionFor(dto, ExtendedPermission.ADMINISTRATION));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+		}
+		
 		dto.setQueryText( rs.getString( ++i ) );
 		dto.setSelectPart( rs.getString( ++i ) );
 		dto.setResultData( rs.getString( ++i ) );
@@ -245,7 +275,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	public ReportDesign findByPrimaryKey(Long id) throws ReportDesignDaoException
 	{
 		try {
-			List<ReportDesign> list = getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.id = ? AND o.is_current = 1", this,id);
+			List<ReportDesign> list = getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.id = ? AND o.is_current = 1", this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(),id);
 			return list.size() == 0 ? null : list.get(0);
 		}
 		catch (Exception e) {
@@ -258,7 +288,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	public ReportDesign findByPrimaryKey(Long id, Long versionId) throws ReportDesignDaoException
 	{
 		try {
-			List<ReportDesign> list = getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.id = ? AND o.version_id = ?", this,id, versionId);
+			List<ReportDesign> list = getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.id = ? AND o.version_id = ?", this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(),id, versionId);
 			return list.size() == 0 ? null : list.get(0);
 		}
 		catch (Exception e) {
@@ -275,7 +305,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportDesign> findAll() throws ReportDesignDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE " + QUERY_ACTIVE_AND_PASSIVE_WHERE + " ORDER BY o.id, o.version_id", this);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND " + QUERY_ACTIVE_AND_PASSIVE_WHERE + " ORDER BY o.id, o.version_id", this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName());
 		}
 		catch (Exception e) {
 			throw new ReportDesignDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -287,7 +317,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	public int countAll() throws ReportDesignDaoException
 	{
 		try {
-			return getJdbcTemplate().queryForInt(COUNT_QUERY + " WHERE " + QUERY_ACTIVE_AND_PASSIVE_WHERE);
+			return getJdbcTemplate().queryForInt(COUNT_QUERY_USERNAMED_BASED + " AND " + QUERY_ACTIVE_AND_PASSIVE_WHERE, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName());
 		}
 		catch (Exception e) {
 			throw new ReportDesignDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -301,7 +331,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	@TransactionalReadOnly
 	public List<ReportDesign> findAll(Integer start, Integer limit, String sortBy, String sortDir) throws ReportDesignDaoException{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE " + QUERY_ACTIVE_AND_PASSIVE_WHERE + " ORDER BY " + getSortClause(sortBy, sortDir) + " limit ?, ?", this, start, limit);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND " + QUERY_ACTIVE_AND_PASSIVE_WHERE + " ORDER BY " + getSortClause(sortBy, sortDir) + " limit ?, ?", this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(), start, limit);
 		}
 		catch (Exception e) {
 			throw new ReportDesignDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -315,8 +345,8 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportDesign> findAll(String query, List<String> onFields, Integer start, Integer limit, String sortBy, String sortDir) throws ReportDesignDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE " + QUERY_ACTIVE_AND_PASSIVE_WHERE + 
-					" AND (" + getMultipleFieldWhereClause(query, onFields) + ") ORDER BY " + getSortClause(sortBy, sortDir) + " limit ?, ?", this, start, limit);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND " + QUERY_ACTIVE_AND_PASSIVE_WHERE + 
+					" AND (" + getMultipleFieldWhereClause(query, onFields) + ") ORDER BY " + getSortClause(sortBy, sortDir) + " limit ?, ?", this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(), start, limit);
 		}
 		catch (Exception e) {
 			throw new ReportDesignDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -328,8 +358,8 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	public int countAll(String query, List<String> onFields) throws ReportDesignDaoException
 	{
 		try {
-			return getJdbcTemplate().queryForInt(COUNT_QUERY + " WHERE " + QUERY_ACTIVE_AND_PASSIVE_WHERE + 
-					" AND (" + getMultipleFieldWhereClause(query, onFields) + ")");
+			return getJdbcTemplate().queryForInt(COUNT_QUERY_USERNAMED_BASED + " AND " + QUERY_ACTIVE_AND_PASSIVE_WHERE + 
+					" AND (" + getMultipleFieldWhereClause(query, onFields) + ")", ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName());
 		}
 		catch (Exception e) {
 			throw new ReportDesignDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -344,7 +374,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportDesign> findAllActive() throws ReportDesignDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE " + QUERY_ACTIVE_WHERE_PART + "' ORDER BY o.id, o.version_id", this);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND " + QUERY_ACTIVE_WHERE_PART + "' ORDER BY o.id, o.version_id",this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName());
 		}
 		catch (Exception e) {
 			throw new ReportDesignDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -359,7 +389,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportDesign> findByPersistableObject(Long id) throws ReportDesignDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.id = ? and o.is_current = 1", this,id);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.id = ? and o.is_current = 1", this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(),id);
 		}
 		catch (Exception e) {
 			throw new ReportDesignDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -374,7 +404,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportDesign> findByPersistableObject(Long id, Long versionId) throws ReportDesignDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.id = ? and o.version_id = ?", this,id,versionId);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.id = ? and o.version_id = ?", this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(),id,versionId);
 		}
 		catch (Exception e) {
 			throw new ReportDesignDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -390,7 +420,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportDesign> findByReportCategory(Long categoryId) throws ReportDesignDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.category_id = ? and " + QUERY_ACTIVE_AND_PASSIVE_WHERE, this,categoryId);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.category_id = ? and " + QUERY_ACTIVE_AND_PASSIVE_WHERE, this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(),categoryId);
 		}
 		catch (Exception e) {
 			throw new ReportDesignDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -405,7 +435,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportDesign> findWhereIdEquals(Long id) throws ReportDesignDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.id = ? and o.is_current = 1 ORDER BY o.id", this,id);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.id = ? and o.is_current = 1 ORDER BY o.version_id DESC", this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(),id);
 		}
 		catch (Exception e) {
 			throw new ReportDesignDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -420,7 +450,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportDesign> findWhereIdAndVersionIdEquals(Long id, Long versionId) throws ReportDesignDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.id = ? AND o.version_id = ? ORDER BY o.id, o.version_id", this,id,versionId);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.id = ? AND o.version_id = ? ORDER BY o.id, o.version_id", this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(),id,versionId);
 		}
 		catch (Exception e) {
 			throw new ReportDesignDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -435,7 +465,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportDesign> findWhereNameEquals(String name) throws ReportDesignDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.name = ? AND " + QUERY_ACTIVE_WHERE_PART + " ORDER BY o.name", this,name);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.name = ? AND " + QUERY_ACTIVE_WHERE_PART + " ORDER BY o.name", this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(),name);
 		}
 		catch (Exception e) {
 			throw new ReportDesignDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -450,7 +480,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportDesign> findWhereDescriptionEquals(String description) throws ReportDesignDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.description = ? AND " + QUERY_ACTIVE_WHERE_PART + " ORDER BY o.description", this,description);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.description = ? AND " + QUERY_ACTIVE_WHERE_PART + " ORDER BY o.description", this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(),description);
 		}
 		catch (Exception e) {
 			throw new ReportDesignDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -465,7 +495,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportDesign> findWhereCategoryIdEquals(Long categoryId) throws ReportDesignDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.category_id = ? AND " + QUERY_ACTIVE_AND_PASSIVE_WHERE + " ORDER BY o.category_id", this,categoryId);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.category_id = ? AND " + QUERY_ACTIVE_AND_PASSIVE_WHERE + " ORDER BY o.category_id", this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(),categoryId);
 		}
 		catch (Exception e) {
 			throw new ReportDesignDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -480,7 +510,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportDesign> findWhereQueryTextEquals(String queryText) throws ReportDesignDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.query_text = ? AND " + QUERY_ACTIVE_WHERE_PART + " ORDER BY o.query_text", this,queryText);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.query_text = ? AND " + QUERY_ACTIVE_WHERE_PART + " ORDER BY o.query_text", this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(),queryText);
 		}
 		catch (Exception e) {
 			throw new ReportDesignDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -495,7 +525,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportDesign> findWhereSelectPartEquals(String selectPart) throws ReportDesignDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.select_part = ? AND " + QUERY_ACTIVE_WHERE_PART + " ORDER BY o.select_part", this,selectPart);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.select_part = ? AND " + QUERY_ACTIVE_WHERE_PART + " ORDER BY o.select_part", this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(),selectPart);
 		}
 		catch (Exception e) {
 			throw new ReportDesignDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -510,7 +540,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportDesign> findWhereResultDataEquals(String resultData) throws ReportDesignDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.result_data = ? AND " + QUERY_ACTIVE_WHERE_PART + " ORDER BY o.result_data", this,resultData);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.result_data = ? AND " + QUERY_ACTIVE_WHERE_PART + " ORDER BY o.result_data", this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(),resultData);
 		}
 		catch (Exception e) {
 			throw new ReportDesignDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -525,7 +555,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportDesign> findWhereFormatFileEquals(String formatFile) throws ReportDesignDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.format_file = ? AND " + QUERY_ACTIVE_WHERE_PART + " ORDER BY o.format_file", this,formatFile);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.format_file = ? AND " + QUERY_ACTIVE_WHERE_PART + " ORDER BY o.format_file", this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(),formatFile);
 		}
 		catch (Exception e) {
 			throw new ReportDesignDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -540,7 +570,7 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<ReportDesign> findWhereRecordStatusEquals(String recordStatus) throws ReportDesignDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.record_status = ? ORDER BY o.record_status", this,recordStatus);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.record_status = ? ORDER BY o.record_status", this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(),recordStatus);
 		}
 		catch (Exception e) {
 			throw new ReportDesignDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -591,11 +621,15 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 	@Override
 	public List<ReportDesign> findAllWithoutCategory() throws ReportDesignDaoException {
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE " + QUERY_ACTIVE_AND_PASSIVE_WHERE + " AND category_id IS NULL ORDER BY o.id, o.version_id", this);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND " + QUERY_ACTIVE_AND_PASSIVE_WHERE + " AND category_id IS NULL ORDER BY o.id, o.version_id", this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName());
 		}
 		catch (Exception e) {
 			throw new ReportDesignDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 	}
 
+	@Autowired
+	public void setAclService(AclServiceImpl aclService) {
+		this.aclService = aclService;
+	}
 }

@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.stereotype.Repository;
 
@@ -17,18 +18,38 @@ import com.sharifpro.eurb.info.RecordStatus;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
 import com.sharifpro.eurb.management.mapping.dao.impl.PersistableObjectDaoImpl;
 import com.sharifpro.eurb.management.security.dao.impl.AclServiceImpl;
+import com.sharifpro.eurb.management.security.dao.impl.ExtendedPermission;
 import com.sharifpro.transaction.annotation.TransactionalReadOnly;
 import com.sharifpro.transaction.annotation.TransactionalReadWrite;
 import com.sharifpro.util.PropertyProvider;
+import com.sharifpro.util.SessionManager;
 
 @Repository
 public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedRowMapper<ReportCategory>, ReportCategoryDao
 {
 	private final static String QUERY_FROM_COLUMNS = "o.name, o.description, o.parent_category_id";
 
-	private final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + " o " + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL_AND_JOIN;
+	private AclServiceImpl aclService;
+	
+	//private final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + " o " + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL_AND_JOIN;
+	
+	private final static String QUERY_SELECT_PART_USERNAMED_BASED = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + " o, persistable_object p, acl_object_identity oi, acl_entry e"
+			+ " WHERE p.id=o.id"
+			+ " AND o.id=oi.object_id_identity"
+			+ " AND oi.object_id_class="+ReportCategory.ACL_CLASS_IDENTIFIER
+			+ " AND oi.id=e.acl_object_identity"
+			+ " AND e.mask & ?"
+			+ " AND e.granting=1"
+			+ " AND e.sid IN (SELECT id FROM acl_sid WHERE  (principal = 1 AND sid = ?) OR (principal = 0 AND sid IN (SELECT group_id FROM group_members WHERE username = ?)) )";
 
-	private final static String COUNT_QUERY = "SELECT count(distinct(o.id)) FROM " + getTableName() + " o ";
+	//private final static String COUNT_QUERY = "SELECT count(distinct(o.id)) FROM " + getTableName() + " o ";
+	private final static String COUNT_QUERY_USERNAMED_BASED = "SELECT count(distinct(o.id)) FROM " + getTableName() + " o, acl_object_identity oi, acl_entry e"
+			+ " WHERE o.id=oi.object_id_identity"
+			+ " AND oi.object_id_class="+ReportCategory.ACL_CLASS_IDENTIFIER
+			+ " AND oi.id=e.acl_object_identity"
+			+ " AND e.mask & ?"
+			+ " AND e.granting=1"
+			+ " AND e.sid IN (SELECT id FROM acl_sid WHERE  (principal = 1 AND sid = ?) OR (principal = 0 AND sid IN (SELECT group_id FROM group_members WHERE username = ?)) )";
 
 	/**
 	 * Method 'insert'
@@ -131,6 +152,17 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 		dto.setName( rs.getString(++i) );
 		dto.setDescription( rs.getString(++i) );
 		dto.setParentCategory( new Long( rs.getLong(++i) ) );
+		
+		try {
+			dto.setAccessPreventDel(!aclService.hasPermissionFor(dto, ExtendedPermission.DELETE));
+			dto.setAccessPreventEdit(!aclService.hasPermissionFor(dto, ExtendedPermission.WRITE));
+			dto.setAccessPreventExecute(!aclService.hasPermissionFor(dto, ExtendedPermission.EXECUTE));
+			dto.setAccessPreventSharing(!aclService.hasPermissionFor(dto, ExtendedPermission.ADMINISTRATION));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+		}
+		
 		return dto;
 	}
 
@@ -151,7 +183,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	public ReportCategory findByPrimaryKey(Long id) throws ReportCategoryDaoException
 	{
 		try {
-			List<ReportCategory> list = getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.id = ?", this,id);
+			List<ReportCategory> list = getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.id = ?", this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(),id);
 			return list.size() == 0 ? null : list.get(0);
 		}
 		catch (Exception e) {
@@ -167,7 +199,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	public List<ReportCategory> findAll() throws ReportCategoryDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " ORDER BY o.id", this);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " ORDER BY o.id", this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName());
 		}
 		catch (Exception e) {
 			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -182,7 +214,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	public List<ReportCategory> findAll(Long parentCategory) throws ReportCategoryDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.parent_category_id = ? ORDER BY o.id", this, parentCategory);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.parent_category_id = ? ORDER BY o.id", this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(), parentCategory);
 		}
 		catch (Exception e) {
 			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -198,7 +230,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	public List<ReportCategory> findAllWithoutParent() throws ReportCategoryDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.parent_category_id IS NULL ORDER BY o.id", this);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.parent_category_id IS NULL ORDER BY o.id", this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName());
 		}
 		catch (Exception e) {
 			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -210,7 +242,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	public int countAll() throws ReportCategoryDaoException
 	{
 		try {
-			return getJdbcTemplate().queryForInt(COUNT_QUERY);
+			return getJdbcTemplate().queryForInt(COUNT_QUERY_USERNAMED_BASED, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName());
 		}
 		catch (Exception e) {
 			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -225,7 +257,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	@TransactionalReadOnly
 	public List<ReportCategory> findAll(Integer start, Integer limit) throws ReportCategoryDaoException{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " ORDER BY o.id limit ?, ?", this, start, limit);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " ORDER BY o.id limit ?, ?", this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(), start, limit);
 		}
 		catch (Exception e) {
 			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -239,7 +271,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	public List<ReportCategory> findAll(String query, List<String> onFields, Integer start, Integer limit) throws ReportCategoryDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE (" + getMultipleFieldWhereClause(query, onFields) + ") ORDER BY o.id limit ?, ?", this, start, limit);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND (" + getMultipleFieldWhereClause(query, onFields) + ") ORDER BY o.id limit ?, ?", this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(), start, limit);
 		}
 		catch (Exception e) {
 			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -251,7 +283,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	public int countAll(String query, List<String> onFields) throws ReportCategoryDaoException
 	{
 		try {
-			return getJdbcTemplate().queryForInt(COUNT_QUERY + " WHERE (" + getMultipleFieldWhereClause(query, onFields) + ")");
+			return getJdbcTemplate().queryForInt(COUNT_QUERY_USERNAMED_BASED + " AND (" + getMultipleFieldWhereClause(query, onFields) + ")", ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName());
 		}
 		catch (Exception e) {
 			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -268,7 +300,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	public List<ReportCategory> findByPersistableObject(Long id) throws ReportCategoryDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.id = ?", this,id);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.id = ?", this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(),id);
 		}
 		catch (Exception e) {
 			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -283,12 +315,11 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	public List<ReportCategory> findWhereIdEquals(Long id) throws ReportCategoryDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.id = ? ORDER BY id", this,id);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.id = ? ORDER BY id", this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(),id);
 		}
 		catch (Exception e) {
 			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
-
 	}
 
 	/** 
@@ -298,7 +329,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 	public List<ReportCategory> findWhereNameEquals(String name) throws ReportCategoryDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.name = ? ORDER BY name", this,name);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.name = ? ORDER BY name", this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(),name);
 		}
 		catch (Exception e) {
 			throw new ReportCategoryDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -332,5 +363,10 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 		} else {
 			return "";
 		}
+	}
+
+	@Autowired
+	public void setAclService(AclServiceImpl aclService) {
+		this.aclService = aclService;
 	}
 }

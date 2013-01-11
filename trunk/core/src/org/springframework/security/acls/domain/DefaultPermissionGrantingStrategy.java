@@ -65,7 +65,7 @@ public class DefaultPermissionGrantingStrategy implements PermissionGrantingStra
 
                 for (AccessControlEntry ace : aces ) {
 
-                    if (((ace.getPermission().getMask() | p.getMask()) != 0) && ace.getSid().equals(sid)) {
+                    if (((ace.getPermission().getMask() & p.getMask()) != 0) && ace.getSid().equals(sid)) {
                         // Found a matching ACE, so its authorization decision will prevail
                         if (ace.isGranting()) {
                             // Success
@@ -91,7 +91,8 @@ public class DefaultPermissionGrantingStrategy implements PermissionGrantingStra
                 }
 
                 if (!scanNextSid) {
-                    break; // exit SID for loop (now try next permission)
+                	//try others, maybe some other one grants
+                    //break; // exit SID for loop (now try next permission)
                 }
             }
         }

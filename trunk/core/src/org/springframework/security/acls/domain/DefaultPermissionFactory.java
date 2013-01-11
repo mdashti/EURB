@@ -10,6 +10,8 @@ import java.util.Map;
 import org.springframework.security.acls.model.Permission;
 import org.springframework.util.Assert;
 
+import com.sharifpro.eurb.management.security.dao.impl.ExtendedPermission;
+
 /**
  * Default implementation of {@link PermissionFactory}.
  * <p>
@@ -30,7 +32,7 @@ public class DefaultPermissionFactory implements PermissionFactory {
      * Registers the <tt>Permission</tt> fields from the <tt>BasePermission</tt> class.
      */
     public DefaultPermissionFactory() {
-        registerPublicPermissions(BasePermission.class);
+        registerPublicPermissions(ExtendedPermission.class);
     }
 
     /**

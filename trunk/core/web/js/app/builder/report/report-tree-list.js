@@ -9,6 +9,11 @@ EURB.Report.store = new Ext.ux.maximgb.tg.AdjacencyListStore({
 			,{name:'versionId', type:'int'}
 			,{name:'name', type:'string'}
 			,{name:'description', type:'string'}
+			,{name:'accessPreventDel', type:'boolean'}
+			,{name:'accessPreventEdit', type:'boolean'}
+			,{name:'accessPreventExecute', type:'boolean'}
+			,{name:'accessPreventSharing', type:'boolean'}
+			
 			,{name: '_parent', type: 'int'}
 			,{name: '_is_leaf', type: 'bool'}
 		]
@@ -59,24 +64,34 @@ EURB.Report.Grid = Ext.extend(Ext.ux.maximgb.tg.GridPanel, {
 	idName:'id',
 	title: EURB.appMenu.report,
 	initComponentPreOverride:function() {
+		this.sharingWindow = EURB.ObjSec.getSharingWindows();
+		
+		
 		// create row actions
 		this.rowActions = new Ext.ux.grid.RowActions({
 			actions:[{
 				iconCls:'icon-minus'
 				,qtip:EURB.delRecord
 				,style:'margin:0 0 0 3px'
+	           	,hideIndex: 'accessPreventDel'
 			},{
 	            iconCls:'icon-copy'
 	            ,qtip:EURB.copyRecord
 	        },{
 	            iconCls:'icon-edit-record'
 		        ,qtip:EURB.editRecord
+	           	,hideIndex: 'accessPreventEdit'
 		    },{
 	          	iconCls:'icon-interactive'
 	           	,qtip:EURB.Report.viewInteractiveReport
-	        },{
+	           	,hideIndex: 'accessPreventExecute'
+	        }/*,{
 	           	iconCls:'icon-calendar'
 	           	,qtip:EURB.Report.scheduleReport
+	        }*/,{
+	          	iconCls:'icon-share'
+	           	,qtip:EURB.ObjSec.share
+	           	,hideIndex: 'accessPreventSharing'
 	        }]
 			,groupActions:[]
 	        ,widthIntercept:Ext.isSafari ? 4 : 2
@@ -159,12 +174,31 @@ EURB.Report.Grid = Ext.extend(Ext.ux.maximgb.tg.GridPanel, {
 		        case 'icon-interactive':
 		        	window.location.href = EURB.baseURL+'builder/report/run-report'+record.get(this.idName)+'-v'+record.get('versionId')+'.spy';
 		        break;
+		        
+		        case 'icon-share':
+		        	this.sharingWindow.show(grid.getView().getCell(row, col),this.editSharingFor(record),this);
+		        break;
 			}
-		}
-		else{
+		} else if(action === 'icon-share'){
+			this.sharingWindow.show(grid.getView().getCell(row, col),this.editSharingFor(record),this);
+		} else{
 			Ext.Msg.alert(Ext.MessageBox.title.warning, EURB.cannotApplyFunctionOnCategory).setIcon(Ext.Msg.INFO);
 		}
 	}
+	,editSharingFor:function(record) {
+    	return function() {
+    		var title;
+    		var objectType;
+    		if(record.get('_is_leaf')) {
+				title = EURB.ObjSec.share+' '+EURB.Report.report+' '+record.get('name');
+				objectType = 1;//report
+			} else {
+				title = EURB.ObjSec.share+' '+EURB.Report.category+' '+record.get('name');
+				objectType = 2;//category
+			}
+    		this.sharingWindow.onShowForARecord(record.get('id'), title, objectType);
+    	}
+    }
 	,requestCallback:function(options, success, response) {
 		if(true !== success) {
 			this.showError(response.responseText);
@@ -341,7 +375,6 @@ EURB.Report.Grid = Ext.extend(Ext.ux.maximgb.tg.GridPanel, {
 	}
 });
  
-
 
 
 

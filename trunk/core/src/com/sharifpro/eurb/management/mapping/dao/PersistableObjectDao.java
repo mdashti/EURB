@@ -96,6 +96,6 @@ public interface PersistableObjectDao
 	 * @return list of objects
 	 * @throws PersistableObjectDaoException 
 	 */
-	public List<PersistableObject> findByPrimaryKeys(List<Integer> targetObjects) throws PersistableObjectDaoException;
+	public List<PersistableObject> findByPrimaryKeys(List<Long> targetObjects) throws PersistableObjectDaoException;
 
 }

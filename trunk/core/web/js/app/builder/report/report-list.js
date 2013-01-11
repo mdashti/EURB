@@ -97,10 +97,10 @@ EURB.Report.Grid = Ext.extend(Ext.grid.GridPanel, {
             },{
             	iconCls:'icon-interactive'
             	,qtip:EURB.Report.viewInteractiveReport
-            },{
+            }/*,{
             	iconCls:'icon-calendar'
             	,qtip:EURB.Report.scheduleReport
-            }]
+            }*/]
             ,widthIntercept:Ext.isSafari ? 4 : 2
             ,id:'actions'
             ,getEditor:Ext.emptyFn

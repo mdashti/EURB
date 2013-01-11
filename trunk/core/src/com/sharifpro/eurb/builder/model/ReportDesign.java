@@ -70,8 +70,11 @@ public class ReportDesign extends PersistableObject implements Serializable
 	 */
 	protected Long dbConfigId;
 
+	private boolean accessPreventDel = true;
+	private boolean accessPreventEdit = true;
+	private boolean accessPreventExecute = true;
+	private boolean accessPreventSharing = true;
 	
-
 	/**
 	 * Method 'ReportDesign'
 	 * 
@@ -469,6 +472,38 @@ public class ReportDesign extends PersistableObject implements Serializable
 		ret.append( ", isCurrent=" + isCurrent );
 		ret.append( ", recordStatus=" + recordStatus.getId() );
 		return ret.toString();
+	}
+
+	public boolean isAccessPreventDel() {
+		return accessPreventDel;
+	}
+
+	public void setAccessPreventDel(boolean accessPreventDel) {
+		this.accessPreventDel = accessPreventDel;
+	}
+
+	public boolean isAccessPreventEdit() {
+		return accessPreventEdit;
+	}
+
+	public void setAccessPreventEdit(boolean accessPreventEdit) {
+		this.accessPreventEdit = accessPreventEdit;
+	}
+
+	public boolean isAccessPreventExecute() {
+		return accessPreventExecute;
+	}
+
+	public void setAccessPreventExecute(boolean accessPreventExecute) {
+		this.accessPreventExecute = accessPreventExecute;
+	}
+
+	public boolean isAccessPreventSharing() {
+		return accessPreventSharing;
+	}
+
+	public void setAccessPreventSharing(boolean accessPreventSharing) {
+		this.accessPreventSharing = accessPreventSharing;
 	}
 
 }

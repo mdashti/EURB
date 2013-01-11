@@ -8,7 +8,7 @@ EURB.ReportCategory.categoriesCombo = new Ext.form.ComboBox({
 			    valueField: 'id',
 			    displayField: 'name',
 			    forceSelection: true,
-			    allowBlank: true,
+			    allowBlank: true
 			});
 EURB.ReportCategory.comboRenderer = function(combo){
     return function(value){
@@ -27,6 +27,9 @@ EURB.ReportCategory.store = new Ext.data.Store({
 			,{name:'name', type:'string'}
 			,{name:'description', type:'string'}
 			,{name:'parentCategory', type:'int'}
+			,{name:'accessPreventDel', type:'boolean'}
+			,{name:'accessPreventEdit', type:'boolean'}
+			,{name:'accessPreventSharing', type:'boolean'}
 		]
 	})
 	,proxy:new Ext.data.HttpProxy({
@@ -83,6 +86,7 @@ EURB.ReportCategory.CategoryGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 	,idName:'id'
 	,title: EURB.appMenu.category
 	,initComponent:function() {
+		this.sharingWindow = EURB.ObjSec.getSharingWindows();
         this.recordForm = new Ext.ux.grid.RecordForm({
              title:EURB.addEdit+' '+EURB.appMenu.category
             ,iconCls:'icon-edit-record'
@@ -112,10 +116,16 @@ EURB.ReportCategory.CategoryGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 				 iconCls:'icon-minus'
 				,qtip:EURB.delRecord
 				,style:'margin:0 0 0 3px'
+	           	,hideIndex: 'accessPreventDel'
 			},{
                  iconCls:'icon-edit-record'
                 ,qtip:EURB.editRecord
-            }]
+	           	,hideIndex: 'accessPreventEdit'
+            },{
+	          	iconCls:'icon-share'
+	           	,qtip:EURB.ObjSec.share
+	           	,hideIndex: 'accessPreventSharing'
+	        }]
             ,widthIntercept:Ext.isSafari ? 4 : 2
             ,id:'actions'
             ,getEditor:Ext.emptyFn
@@ -207,8 +217,20 @@ EURB.ReportCategory.CategoryGrid = Ext.extend(Ext.grid.EditorGridPanel, {
             case 'icon-edit-record':
                 this.recordForm.show(record, grid.getView().getCell(row, col));
             break;
+            
+            case 'icon-share':
+	        	this.sharingWindow.show(grid.getView().getCell(row, col),this.editSharingFor(record),this);
+	        break;
 
         }
+    }
+    ,editSharingFor:function(record) {
+    	return function() {
+			var title = EURB.ObjSec.share+' '+EURB.ReportCategory.category+' '+record.get('name');
+			var objectType = 2;//category
+			
+    		this.sharingWindow.onShowForARecord(record.get('id'), title, objectType);
+    	}
     }
 	,commitChanges:function() {
 		var records = this.store.getModifiedRecords();

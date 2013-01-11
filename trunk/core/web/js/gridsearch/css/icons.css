@@ -104,7 +104,10 @@
 	background-image:url(../../../img/icon/house_16.png) ! important;
 }
 .icon-user {
-	background-image:url(../../../img/icon/user2_16.png) ! important;
+	background-image:url(../../../img/icon/fam/user.png) ! important;
+}
+.icon-group {
+	background-image:url(../../../img/icon/fam/group.png) ! important;
 }
 .icon-trash-empty {
 	background-image:url(../../../img/icon/fam/bin_empty.png) ! important;
@@ -398,6 +401,9 @@
 }
 .icon-report-return-big{
 	background-image:url(../../../img/icon/big-green/back.png) ! important;
+}
+.icon-share{
+	background-image:url(../../../img/icon/block_share.png) ! important;
 }
 /*  Icon Classes end */
 

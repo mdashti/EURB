@@ -412,16 +412,18 @@ EURB.Schedule.ScheduleGrid = Ext.extend(Ext.grid.GridPanel, {
     	var schedulename = rec.get('schedulename');
     }
     ,editSchedFor:function(record, schedulenameEditable) {
-    	var frm = this.editSchedForm.getForm();
-    	frm.reset();
-    	if(!record.get('newRecord')) {
-	    	frm.loadRecord(record);
-	    	var scheduleTypeField = frm.findField('scheduleType');
-	    	var scheduleTypeVal = record.get('scheduleType');
-	    	if(scheduleTypeVal == null) {
-	    		scheduleTypeVal = 1;
+    	return function() {
+	    	var frm = this.editSchedForm.getForm();
+	    	frm.reset();
+	    	if(!record.get('newRecord')) {
+		    	frm.loadRecord(record);
+		    	var scheduleTypeField = frm.findField('scheduleType');
+		    	var scheduleTypeVal = record.get('scheduleType');
+		    	if(scheduleTypeVal == null) {
+		    		scheduleTypeVal = 1;
+		    	}
+		    	Ext.setCheckedValue(scheduleTypeField,scheduleTypeVal);
 	    	}
-	    	Ext.setCheckedValue(scheduleTypeField,scheduleTypeVal);
     	}
     }
 	,commitChanges:function() {

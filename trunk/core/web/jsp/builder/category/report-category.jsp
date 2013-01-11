@@ -32,6 +32,7 @@
 			EURB.ReportCategory.Name = '<spring:message code="eurb.app.builder.category.name" />';
 			EURB.ReportCategory.Description = '<spring:message code="eurb.app.builder.category.description" />';
 			EURB.ReportCategory.Parent = '<spring:message code="eurb.app.builder.category.parent" />';
+			EURB.ReportCategory.category = '<spring:message code="eurb.app.builder.report.category" />';
 			
 			EURB.ReportCategory.categoriesStore = new Ext.data.ArrayStore({
 				fields:['id',
@@ -40,7 +41,28 @@
 				        ],
 				data:${categoriesJson}
 			});
+			
+			if(!EURB.ObjSec) {
+				EURB.ObjSec = {};
+			}
+			EURB.ObjSec.share = '<spring:message code="eurb.app.builder.report.share" />';
+			EURB.ObjSec.groupSearchAction = '<spring:url value="/management/security/group/groupSearch.spy" />';
+			EURB.ObjSec.userSearchAction = '<spring:url value="/management/security/user/userSearch.spy" />';
+			EURB.ObjSec.objectAuthoritiesSearchAction = '<spring:url value="/management/security/acl/loadPermission.spy" />';
+			EURB.ObjSec.objectAuthoritiesStoreAction = '<spring:url value="/management/security/acl/storePermission.spy" />';
+			
+			EURB.ObjSec.groupName = '<spring:message code="eurb.app.management.authorities.groupname" />';
+			EURB.ObjSec.userName = '<spring:message code="eurb.app.management.authorities.username" />';
+			EURB.ObjSec.groupOrUserName = '<spring:message code="eurb.app.management.authorities.grouporusername" />';;
+			
+			EURB.ObjSec.authoritiesView = '<spring:message code="eurb.app.management.authorities.view" />';
+			EURB.ObjSec.authoritiesCreate = '<spring:message code="eurb.app.management.authorities.create" />';
+			EURB.ObjSec.authoritiesEdit = '<spring:message code="eurb.app.management.authorities.edit" />';
+			EURB.ObjSec.authoritiesDel = '<spring:message code="eurb.app.management.authorities.del" />';
+			EURB.ObjSec.authoritiesExecute = '<spring:message code="eurb.app.management.authorities.execute" />';
+			EURB.ObjSec.authoritiesSharing = '<spring:message code="eurb.app.management.authorities.sharing" />';
 		</script>
+		<script src="${resourcesUrl}/js/app/objsec/object-security-ui.js"></script>
 		<script src="${resourcesUrl}/js/app/builder/category/report-category.js"></script>
 	</body>
 </html>
