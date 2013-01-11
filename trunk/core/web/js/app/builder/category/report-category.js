@@ -111,25 +111,43 @@ EURB.ReportCategory.CategoryGrid = Ext.extend(Ext.grid.EditorGridPanel, {
         });
 
 		// create row actions
-		this.rowActions = new Ext.ux.grid.RowActions({
-			 actions:[{
-				 iconCls:'icon-minus'
-				,qtip:EURB.delRecord
-				,style:'margin:0 0 0 3px'
-	           	,hideIndex: 'accessPreventDel'
-			},{
-                 iconCls:'icon-edit-record'
-                ,qtip:EURB.editRecord
-	           	,hideIndex: 'accessPreventEdit'
-            },{
-	          	iconCls:'icon-share'
-	           	,qtip:EURB.ObjSec.share
-	           	,hideIndex: 'accessPreventSharing'
-	        }]
-            ,widthIntercept:Ext.isSafari ? 4 : 2
-            ,id:'actions'
-            ,getEditor:Ext.emptyFn
-		});
+        if(EURB.ReportCategory.sharingOn) {
+			this.rowActions = new Ext.ux.grid.RowActions({
+				 actions:[{
+					 iconCls:'icon-minus'
+					,qtip:EURB.delRecord
+					,style:'margin:0 0 0 3px'
+		           	,hideIndex: 'accessPreventDel'
+				},{
+	                 iconCls:'icon-edit-record'
+	                ,qtip:EURB.editRecord
+		           	,hideIndex: 'accessPreventEdit'
+	            },{
+		          	iconCls:'icon-share'
+		           	,qtip:EURB.ObjSec.share
+		           	,hideIndex: 'accessPreventSharing'
+		        }]
+	            ,widthIntercept:Ext.isSafari ? 4 : 2
+	            ,id:'actions'
+	            ,getEditor:Ext.emptyFn
+			});
+        } else {
+        	this.rowActions = new Ext.ux.grid.RowActions({
+				 actions:[{
+					 iconCls:'icon-minus'
+					,qtip:EURB.delRecord
+					,style:'margin:0 0 0 3px'
+		           	,hideIndex: 'accessPreventDel'
+				},{
+	                 iconCls:'icon-edit-record'
+	                ,qtip:EURB.editRecord
+		           	,hideIndex: 'accessPreventEdit'
+	            }]
+	            ,widthIntercept:Ext.isSafari ? 4 : 2
+	            ,id:'actions'
+	            ,getEditor:Ext.emptyFn
+			});
+        }
 		this.rowActions.on('action', this.onRowAction, this);
 		EURB.ReportCategory.cols.push(this.rowActions);
 		

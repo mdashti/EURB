@@ -158,6 +158,7 @@ public class ObjectSecurityRow {
 				perm.set(ExtendedPermission.ADMINISTRATION);
 			}
 			if(this.view || this.sharing) {
+				this.view = true;
 				perm.set(ExtendedPermission.READ);
 			}
 			if(this.view && this.edit) {
@@ -174,6 +175,7 @@ public class ObjectSecurityRow {
 				perm.set(ExtendedPermission.ADMINISTRATION);
 			}
 			if(!this.view && !this.sharing) {
+				this.view = false;
 				perm.set(ExtendedPermission.READ);
 			}
 			if(!this.view || !this.edit) {

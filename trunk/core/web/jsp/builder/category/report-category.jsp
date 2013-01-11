@@ -1,6 +1,10 @@
+<%@page import="com.sharifpro.eurb.info.AuthorityType"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib uri="http://java.sun.com/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib uri="http://jakarta.apache.org/taglibs/unstandard-1.0" prefix="un" %>
+<un:useConstants className="com.sharifpro.eurb.info.AuthorityType" var="authorityType" />
 <spring:eval expression="@applicationProps['application.version']" var="appVersion"/>
 <spring:eval expression="@applicationProps['application.mode']" var="appMode"/>
 <spring:url value="/resources-{appVersion}" var="resourcesUrl">
@@ -61,6 +65,11 @@
 			EURB.ObjSec.authoritiesDel = '<spring:message code="eurb.app.management.authorities.del" />';
 			EURB.ObjSec.authoritiesExecute = '<spring:message code="eurb.app.management.authorities.execute" />';
 			EURB.ObjSec.authoritiesSharing = '<spring:message code="eurb.app.management.authorities.sharing" />';
+			
+			EURB.ReportCategory.sharingOn = false;
+			<sec:authorize access="hasRole('${authorityType.ROLE_BASE_CATEGORY_MANAGEMENT_SHARING}')">
+			EURB.ReportCategory.sharingOn = true;
+			</sec:authorize>
 		</script>
 		<script src="${resourcesUrl}/js/app/objsec/object-security-ui.js"></script>
 		<script src="${resourcesUrl}/js/app/builder/category/report-category.js"></script>

@@ -68,36 +68,65 @@ EURB.Report.Grid = Ext.extend(Ext.ux.maximgb.tg.GridPanel, {
 		
 		
 		// create row actions
-		this.rowActions = new Ext.ux.grid.RowActions({
-			actions:[{
-				iconCls:'icon-minus'
-				,qtip:EURB.delRecord
-				,style:'margin:0 0 0 3px'
-	           	,hideIndex: 'accessPreventDel'
-			},{
-	            iconCls:'icon-copy'
-	            ,qtip:EURB.copyRecord
-	        },{
-	            iconCls:'icon-edit-record'
-		        ,qtip:EURB.editRecord
-	           	,hideIndex: 'accessPreventEdit'
-		    },{
-	          	iconCls:'icon-interactive'
-	           	,qtip:EURB.Report.viewInteractiveReport
-	           	,hideIndex: 'accessPreventExecute'
-	        }/*,{
-	           	iconCls:'icon-calendar'
-	           	,qtip:EURB.Report.scheduleReport
-	        }*/,{
-	          	iconCls:'icon-share'
-	           	,qtip:EURB.ObjSec.share
-	           	,hideIndex: 'accessPreventSharing'
-	        }]
-			,groupActions:[]
-	        ,widthIntercept:Ext.isSafari ? 4 : 2
-	        ,id:'actions'
-	        ,getEditor:Ext.emptyFn
-		});
+		if(EURB.Report.sharingOn) {
+			this.rowActions = new Ext.ux.grid.RowActions({
+				actions:[{
+					iconCls:'icon-minus'
+					,qtip:EURB.delRecord
+					,style:'margin:0 0 0 3px'
+		           	,hideIndex: 'accessPreventDel'
+				},{
+		            iconCls:'icon-copy'
+		            ,qtip:EURB.copyRecord
+		        },{
+		            iconCls:'icon-edit-record'
+			        ,qtip:EURB.editRecord
+		           	,hideIndex: 'accessPreventEdit'
+			    },{
+		          	iconCls:'icon-interactive'
+		           	,qtip:EURB.Report.viewInteractiveReport
+		           	,hideIndex: 'accessPreventExecute'
+		        }/*,{
+		           	iconCls:'icon-calendar'
+		           	,qtip:EURB.Report.scheduleReport
+		        }*/,{
+		          	iconCls:'icon-share'
+		           	,qtip:EURB.ObjSec.share
+		           	,hideIndex: 'accessPreventSharing'
+		        }]
+				,groupActions:[]
+		        ,widthIntercept:Ext.isSafari ? 4 : 2
+		        ,id:'actions'
+		        ,getEditor:Ext.emptyFn
+			});
+		} else {
+			this.rowActions = new Ext.ux.grid.RowActions({
+				actions:[{
+					iconCls:'icon-minus'
+					,qtip:EURB.delRecord
+					,style:'margin:0 0 0 3px'
+		           	,hideIndex: 'accessPreventDel'
+				},{
+		            iconCls:'icon-copy'
+		            ,qtip:EURB.copyRecord
+		        },{
+		            iconCls:'icon-edit-record'
+			        ,qtip:EURB.editRecord
+		           	,hideIndex: 'accessPreventEdit'
+			    },{
+		          	iconCls:'icon-interactive'
+		           	,qtip:EURB.Report.viewInteractiveReport
+		           	,hideIndex: 'accessPreventExecute'
+		        }/*,{
+		           	iconCls:'icon-calendar'
+		           	,qtip:EURB.Report.scheduleReport
+		        }*/]
+				,groupActions:[]
+		        ,widthIntercept:Ext.isSafari ? 4 : 2
+		        ,id:'actions'
+		        ,getEditor:Ext.emptyFn
+			});
+		}
 		this.rowActions.on('action', this.onRowAction, this);
 		EURB.Report.cols.push(this.rowActions);
 		var config = {
