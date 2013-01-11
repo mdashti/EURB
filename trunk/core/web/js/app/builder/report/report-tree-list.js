@@ -78,6 +78,7 @@ EURB.Report.Grid = Ext.extend(Ext.ux.maximgb.tg.GridPanel, {
 				},{
 		            iconCls:'icon-copy'
 		            ,qtip:EURB.copyRecord
+		           	,hideIndex: 'accessPreventEdit'
 		        },{
 		            iconCls:'icon-edit-record'
 			        ,qtip:EURB.editRecord
