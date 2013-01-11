@@ -1,5 +1,7 @@
 package org.springframework.security.acls.domain;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.security.acls.model.AccessControlEntry;
@@ -56,6 +58,22 @@ public class DefaultPermissionGrantingStrategy implements PermissionGrantingStra
 
         final List<AccessControlEntry> aces = acl.getEntries();
 
+        Collections.sort(aces, new Comparator<AccessControlEntry>() {
+			@Override
+			public int compare(AccessControlEntry ace1, AccessControlEntry ace2) {
+				boolean ace1Principal = ace1.getSid() instanceof PrincipalSid;
+				boolean ace2Principal = ace2.getSid() instanceof PrincipalSid;
+				if((ace1Principal && ace2Principal) || (!ace2Principal && ace2Principal)) {
+					return 0;
+				} else if(ace1Principal) {
+					return -1;
+				} else { //if(ace2Principal) {
+					return 1;
+				}
+			}
+		});
+        
+        
         AccessControlEntry firstRejection = null;
 
         for (Permission p : permission) {
