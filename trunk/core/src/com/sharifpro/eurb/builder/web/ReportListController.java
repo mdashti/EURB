@@ -120,6 +120,10 @@ public class ReportListController {
 			
 			List<Object> objList = new ArrayList<Object>();
 			for(ReportCategory cat : categories){
+				cat.setAccessPreventDel(true);
+				//cat.setAccessPreventSharing(true); //dont't touch sharing for now!
+				cat.setAccessPreventExecute(true);
+				cat.setAccessPreventEdit(true);
 				objList.add(cat);
 				List<Object> children = findChildren(cat);
 				objList.addAll(children);
