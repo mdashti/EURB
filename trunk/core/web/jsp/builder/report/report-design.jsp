@@ -48,6 +48,7 @@
 			
 			EURB.ReportDesign.runReport = '<spring:message code="eurb.app.builder.report.design.runReport" />';
 			EURB.ReportDesign.saveDesign = '<spring:message code="eurb.app.builder.report.design.saveDesign" />';
+			EURB.ReportDesign.saveDesignText = '<spring:message code="eurb.app.builder.report.design.saveDesignText" />';
 			EURB.ReportDesign.returnToList = '<spring:message code="eurb.app.builder.report.design.returnToList" />';
 			
 			
@@ -141,6 +142,7 @@
 			EURB.ReportChart.bar = '<spring:message code="eurb.app.builder.report.chart.bar" />';
 			EURB.ReportChart.pie = '<spring:message code="eurb.app.builder.report.chart.pie" />';
 			EURB.ReportChart.gauge = '<spring:message code="eurb.app.builder.report.chart.gauge" />';
+			EURB.ReportChart.bubble = '<spring:message code="eurb.app.builder.report.chart.bubble" />';
 			EURB.ReportChart.xAxis = '<spring:message code="eurb.app.builder.report.chart.xAxis" />';
 			EURB.ReportChart.AxisColumn = '<spring:message code="eurb.app.builder.report.chart.axisColumn" />';
 			EURB.ReportChart.AxisTitle = '<spring:message code="eurb.app.builder.report.chart.axisTitle" />';
@@ -161,6 +163,10 @@
 			EURB.ReportChart.yAxisSize = '<spring:message code="eurb.app.builder.report.chart.yAxisSize" />';
 			EURB.ReportChart.yAxisColor = '<spring:message code="eurb.app.builder.report.chart.yAxisColor" />';
 			EURB.ReportChart.chartColor = '<spring:message code="eurb.app.builder.report.chart.chartColor" />';
+			EURB.ReportChart.minValue = '<spring:message code="eurb.app.builder.report.chart.minValue" />';
+			EURB.ReportChart.maxValue = '<spring:message code="eurb.app.builder.report.chart.maxValue" />';
+			EURB.ReportChart.criticalValue = '<spring:message code="eurb.app.builder.report.chart.criticalValue" />';
+			EURB.ReportChart.hasAlaram = '<spring:message code="eurb.app.builder.report.chart.hasAlaram" />'; 
 			
 			EURB.ReportChart.saveAll = '<spring:message code="eurb.app.builder.report.chart.saveAll" />';
 			EURB.ReportChart.cancelAll = '<spring:message code="eurb.app.builder.report.chart.cancelAll" />';

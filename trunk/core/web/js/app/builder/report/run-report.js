@@ -205,6 +205,7 @@ Ext.onReady(function() {
 						text: 'click',
 						id: 'chart0_formula_button',
 						width:100,
+						hidden: true,
 						handler: function(){
 							formulaTextfield = EURB.RunReport.chartPanel.find('name', 'chart0_formula')[0];
 							newFormula = formulaTextfield.getValue();

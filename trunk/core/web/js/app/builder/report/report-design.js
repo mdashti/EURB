@@ -13,8 +13,13 @@ Ext.onReady(function() {
             text: EURB.ReportDesign.saveDesign,
             iconCls:  'icon-report-save-big',
             scale: 'large',
-            iconAlign: 'top'
-            //menu: [{text: 'Menu Button 1'}]
+            iconAlign: 'top',
+            listeners: {
+            	click:function(){
+            		Ext.Msg.alert(EURB.ReportDesign.saveDesign, EURB.ReportDesign.saveDesignText);
+            	}
+            }
+            
         },{
             text: EURB.ReportDesign.runReport,
             iconCls: 'icon-report-run-big',

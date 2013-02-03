@@ -565,6 +565,10 @@ public class ViewReportController {
 		resultConfig.add(chart.getConfigMap().get("yAxisFont"));
 		resultConfig.add(chart.getConfigMap().get("yAxisSize"));
 		resultConfig.add(chart.getConfigMap().get("yAxisColor"));
+		resultConfig.add(chart.getConfigMap().get("minValue"));
+		resultConfig.add(chart.getConfigMap().get("maxValue"));
+		resultConfig.add(chart.getConfigMap().get("criticalValue"));
+		resultConfig.add(chart.getConfigMap().get("hasAlaram"));
 		if(yAxis.hasFormula())
 		{
 			resultConfig.add(true);
@@ -741,6 +745,16 @@ public class ViewReportController {
 			}
 		}
 
+		/*if ("gauge".equals(chart.getType()) && chart.getConfigMap().get("hasAlaram") != null && "true".equals(chart.getConfigMap().get("hasAlaram").toString()) && chart.getConfigMap().get("criticalValue") != null)
+		{
+			if( (Double.parseDouble(yResult.get(0).toString()) > Double.parseDouble(chart.getConfigMap().get("criticalValue").toString()))){
+				System.out.println("Hello!");
+			}
+			else{
+				
+			}
+		}
+*/
 		resultList.add(resultConfig);
 		resultList.add(xResult);
 		resultList.add(yResult);

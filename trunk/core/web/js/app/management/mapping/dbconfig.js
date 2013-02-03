@@ -320,7 +320,7 @@ EURB.DBConfig.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 			data.push(r.data);
 		}, this);
 		var o = {
-			 url:EURB.DBConfig.storeAction
+			 url:EURB..storeAction
 			,method:'post'
 			,callback:this.requestCallback
 			,scope:this

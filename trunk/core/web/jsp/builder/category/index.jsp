@@ -15,19 +15,7 @@
 		</jsp:include>
 		<!-- App custom css -->
 		<link rel="stylesheet" type="text/css" href="${resourcesUrl}/css/app/builder/category/report-category.css" />
-		<style type="text/css">
-		.dbconf-valid{
-			background:#8eec6a;
-		}
 		
-		.dbconf-invalidcon{
-			background:#fb717e;
-		}
-		
-		.dbconf-inactive{
-			background:#ffc873;
-		}
-		</style>
 	</head>
 	<body scroll="no" id="docs" style="direction: rtl">
 		<jsp:include page="/WEB-INF/include/common-body.jsp">

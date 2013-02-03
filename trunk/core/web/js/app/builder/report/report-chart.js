@@ -104,7 +104,7 @@ EURB.ReportChart.chartTypeCombo = new Ext.form.ComboBox({
             'typeValue',
             'typeLabel'
         ],
-        data: [['line', EURB.ReportChart.line], ['column', EURB.ReportChart.column], ['bar', EURB.ReportChart.bar], ['pie', EURB.ReportChart.pie], ['gauge', EURB.ReportChart.gauge]]
+        data: [['line', EURB.ReportChart.line], ['column', EURB.ReportChart.column], ['bar', EURB.ReportChart.bar], ['pie', EURB.ReportChart.pie], ['gauge', EURB.ReportChart.gauge], ['bubble', EURB.ReportChart.bubble]]
     }),
     valueField: 'typeValue',
     displayField: 'typeLabel',
@@ -244,7 +244,7 @@ EURB.ReportChart.cellClickListener =  function(grid, rowIndex, columnIndex, e){
 			EURB.ReportChart.chartPropertyGrid.setSource({titleFont:'Tahoma', titleColor: '000000', titleSize:'12',
 				xAxisFont:'Tahoma', xAxisColor: '000000', xAxisSize:'12',
 				yAxisFont:'Tahoma', yAxisColor: '000000', yAxisSize:'12',
-				chartColor: '000000'
+				chartColor: '000000', minValue: 0, maxValue: 1000, criticalValue: 0,  hasAlaram : false
 				});
 		}
 	}
@@ -272,6 +272,10 @@ EURB.ReportChart.chartPropertyGrid = new Ext.grid.PropertyGrid({
 		,yAxisSize : EURB.ReportChart.yAxisSize
 		,yAxisColor : EURB.ReportChart.yAxisColor
 		,chartColor: EURB.ReportChart.chartColor
+		,minValue: EURB.ReportChart.minValue
+		,maxValue: EURB.ReportChart.maxValue
+		,criticalValue: EURB.ReportChart.criticalValue
+		,hasAlaram : EURB.ReportChart.hasAlaram 
 		
 	}
    ,region:'west'
@@ -286,6 +290,9 @@ EURB.ReportChart.chartPropertyGrid = new Ext.grid.PropertyGrid({
         ,yAxisSize: Ext.ux.comboRenderer(EURB.ReportChart.yAxisSizeCombo)
         ,yAxisColor: EURB.ReportChart.colorRenderer
         ,chartColor: EURB.ReportChart.colorRenderer
+        ,hasAlaram : function(value) {
+            return "<input type='checkbox' name='hasAlaram'" + (value ? " checked >" : ">");
+        }
     }
     ,customEditors: {
         titleFont: new Ext.grid.GridEditor(EURB.ReportChart.titleFontCombo)
@@ -330,6 +337,7 @@ EURB.ReportChart.chartPropertyGrid = new Ext.grid.PropertyGrid({
     			}
     		}
     	}))
+    	,hasAlaram : new Ext.grid.GridEditor(new Ext.form.Checkbox())
     }
     ,tbar: ['->',{
     	iconCls: 'icon-cancel'
