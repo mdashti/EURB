@@ -27,4 +27,7 @@ public class PropertyProvider {
 	public static final String ERROR_DATEANDTIME_INVALID = PropertyProvider.get("eurb.error.dateandtime.invalid", "Error: Date and time is invalid");
 	public static final String ERROR_NOT_AUTHORIZED_TO_CREATE = PropertyProvider.get("eurb.app.notAuthorizedToCreate", "Error: Not authorized to create record");
 	public static final String ERROR_NOT_AUTHORIZED_TO_EDIT = PropertyProvider.get("eurb.app.notAuthorizedToEdit", "Error: Not authorized to edit record");
+	public static final String ERROR_NOT_AUTHORIZED_TO_DELETE = PropertyProvider.get("eurb.app.notAuthorizedToDelete", "Error: Not authorized to delete record");
+	public static final String ERROR_NOT_AUTHORIZED_TO_ADMINISTER = PropertyProvider.get("eurb.app.notAuthorizedToAdminister", "Error: Not authorized to administer record");
+	
 }

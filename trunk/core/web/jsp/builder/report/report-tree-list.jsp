@@ -46,6 +46,8 @@
 			EURB.Report.report = '<spring:message code="eurb.app.builder.report.reportof" />';
 			EURB.Report.category = '<spring:message code="eurb.app.builder.report.categoryof" />';
 			EURB.Report.viewInteractiveReport = '<spring:message code="eurb.app.builder.report.viewInteractiveReport" />';
+			EURB.cannotApplyFunctionOnCategory = '<spring:message code="eurb.app.builder.report.cannotApplyFunctionOnCategory" />';
+			EURB.Report.noExecuteRight = '<spring:message code="eurb.app.builder.report.noExecuteRight" />';
 			
 			EURB.Report.editDesign = '<spring:message code="eurb.app.builder.report.editDesign" />';
 			
@@ -60,7 +62,7 @@
 			
 			EURB.ObjSec.groupName = '<spring:message code="eurb.app.management.authorities.groupname" />';
 			EURB.ObjSec.userName = '<spring:message code="eurb.app.management.authorities.username" />';
-			EURB.ObjSec.groupOrUserName = '<spring:message code="eurb.app.management.authorities.grouporusername" />';;
+			EURB.ObjSec.groupOrUserName = '<spring:message code="eurb.app.management.authorities.grouporusername" />';
 			
 			EURB.ObjSec.authoritiesView = '<spring:message code="eurb.app.management.authorities.view" />';
 			EURB.ObjSec.authoritiesCreate = '<spring:message code="eurb.app.management.authorities.create" />';

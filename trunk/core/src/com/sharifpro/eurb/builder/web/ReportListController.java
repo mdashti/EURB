@@ -23,6 +23,9 @@ import com.sharifpro.eurb.builder.model.ReportDesign;
 import com.sharifpro.eurb.builder.model.ReportDesignPk;
 import com.sharifpro.eurb.management.mapping.dao.impl.AbstractDAO;
 import com.sharifpro.eurb.management.mapping.model.PersistableObject;
+import com.sharifpro.eurb.management.security.dao.impl.AclServiceImpl;
+import com.sharifpro.eurb.management.security.dao.impl.ExtendedPermission;
+import com.sharifpro.util.PropertyProvider;
 import com.sharifpro.util.json.JsonUtil;
 
 /**
@@ -35,6 +38,8 @@ public class ReportListController {
 
 	private ReportDesignDao reportDesignDao;
 	private ReportCategoryDao reportCategoryDao;
+	
+	private AclServiceImpl aclService;
 
 	private JsonUtil jsonUtil;
 
@@ -173,9 +178,15 @@ public class ReportListController {
 		try{
 			List<Integer> deleteIds = jsonUtil.getListFromRequest(data, Integer.class);
 			List<ReportDesignPk> pkList = new ArrayList<ReportDesignPk>(deleteIds.size());
+			Long dto;
 			for(Integer id : deleteIds) {
-				pkList.add(new ReportDesignPk(new Long(id)));
+				dto = new Long(id);
+				pkList.add(new ReportDesignPk(dto));
+				if(!aclService.hasPermissionFor(dto, ExtendedPermission.DELETE)) {
+					throw new ReportDesignDaoException(PropertyProvider.ERROR_NOT_AUTHORIZED_TO_DELETE);
+				}
 			}
+			
 			reportDesignDao.deleteAll(pkList);
 
 			return JsonUtil.getSuccessfulMapAfterStore(deleteIds);
@@ -192,8 +203,13 @@ public class ReportListController {
 
 			List<Integer> activateIds = jsonUtil.getListFromRequest(data, Integer.class);
 			List<ReportDesignPk> pkList = new ArrayList<ReportDesignPk>(activateIds.size());
+			Long dto;
 			for(Integer id : activateIds) {
-				pkList.add(new ReportDesignPk(new Long(id)));
+				dto = new Long(id);
+				pkList.add(new ReportDesignPk(dto));
+				if(!aclService.hasPermissionFor(dto, ExtendedPermission.ADMINISTRATION)) {
+					throw new ReportDesignDaoException(PropertyProvider.ERROR_NOT_AUTHORIZED_TO_ADMINISTER);
+				}
 			}
 			reportDesignDao.activateAll(pkList);
 
@@ -211,8 +227,13 @@ public class ReportListController {
 
 			List<Integer> deactivateIds = jsonUtil.getListFromRequest(data, Integer.class);
 			List<ReportDesignPk> pkList = new ArrayList<ReportDesignPk>(deactivateIds.size());
+			Long dto;
 			for(Integer id : deactivateIds) {
-				pkList.add(new ReportDesignPk(new Long(id)));
+				dto = new Long(id);
+				pkList.add(new ReportDesignPk(dto));
+				if(!aclService.hasPermissionFor(dto, ExtendedPermission.ADMINISTRATION)) {
+					throw new ReportDesignDaoException(PropertyProvider.ERROR_NOT_AUTHORIZED_TO_ADMINISTER);
+				}
 			}
 			reportDesignDao.deactivateAll(pkList);
 
@@ -238,5 +259,10 @@ public class ReportListController {
 	@Autowired
 	public void setJsonUtil(JsonUtil jsonUtil) {
 		this.jsonUtil = jsonUtil;
+	}
+
+	@Autowired
+	public void setAclService(AclServiceImpl aclService) {
+		this.aclService = aclService;
 	}
 }
