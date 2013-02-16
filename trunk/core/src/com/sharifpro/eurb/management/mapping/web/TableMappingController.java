@@ -30,6 +30,8 @@ import com.sharifpro.eurb.management.mapping.model.DbConfig;
 import com.sharifpro.eurb.management.mapping.model.PersistableObject;
 import com.sharifpro.eurb.management.mapping.model.TableMapping;
 import com.sharifpro.eurb.management.mapping.model.TableMappingPk;
+import com.sharifpro.eurb.management.security.dao.impl.AclServiceImpl;
+import com.sharifpro.eurb.management.security.dao.impl.ExtendedPermission;
 import com.sharifpro.util.PropertyProvider;
 import com.sharifpro.util.SecurityUtil;
 import com.sharifpro.util.json.JsonUtil;
@@ -45,6 +47,8 @@ public class TableMappingController {
 	private DbConfigDao dbConfigDao;
 	private TableMappingDao tableMappingDao;
 
+	private AclServiceImpl aclService;
+	
 	private JsonUtil jsonUtil;
 
 	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_BASE_TABLE_MAPPING_VIEW_LIST)")
@@ -68,6 +72,12 @@ public class TableMappingController {
 			} else {
 				dbConf = dbConfigDao.findByPrimaryKey(dbconfig);
 			}
+			
+
+			if(!aclService.hasPermissionFor(dbConf, ExtendedPermission.ADMINISTRATION)) {
+				onlyMappedTablesVal = true;
+			}
+			
 			List<TableMapping> tableMappings = new ArrayList<TableMapping>(0);
 
 			if(dbConf != null) {
@@ -254,5 +264,10 @@ public class TableMappingController {
 	@Autowired
 	public void setJsonUtil(JsonUtil jsonUtil) {
 		this.jsonUtil = jsonUtil;
+	}
+
+	@Autowired
+	public void setAclService(AclServiceImpl aclService) {
+		this.aclService = aclService;
 	}
 }

@@ -1,7 +1,11 @@
+<%@page import="com.sharifpro.eurb.info.AuthorityType"%>
 <%@page import="org.apache.commons.lang.StringUtils"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib uri="http://java.sun.com/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib uri="http://jakarta.apache.org/taglibs/unstandard-1.0" prefix="un" %>
+<un:useConstants className="com.sharifpro.eurb.info.AuthorityType" var="authorityType" />
 <spring:eval expression="@applicationProps['application.version']" var="appVersion"/>
 <spring:eval expression="@applicationProps['application.mode']" var="appMode"/>
 <spring:url value="/resources-{appVersion}" var="resourcesUrl">
@@ -35,6 +39,7 @@
 			EURB.Table.activateAction = '<spring:url value="/management/mapping/table/tableActivate.spy" />';
 			EURB.Table.deactivateAction = '<spring:url value="/management/mapping/table/tableDeactivate.spy" />';
 
+			EURB.Table.title = '<spring:message code="eurb.app.management.table.title" />';
 			EURB.Table.catalog = '<spring:message code="eurb.app.management.table.catalog" />';
 			EURB.Table.schema = '<spring:message code="eurb.app.management.table.schema" />';
 			EURB.Table.tableName = '<spring:message code="eurb.app.management.table.tableName" />';
@@ -72,7 +77,33 @@
 			    	}
 			    }
 			});
+			
+			if(!EURB.ObjSec) {
+				EURB.ObjSec = {};
+			}
+			EURB.ObjSec.share = '<spring:message code="eurb.app.builder.report.share" />';
+			EURB.ObjSec.groupSearchAction = '<spring:url value="/management/security/group/groupSearch.spy" />';
+			EURB.ObjSec.userSearchAction = '<spring:url value="/management/security/user/userSearch.spy" />';
+			EURB.ObjSec.objectAuthoritiesSearchAction = '<spring:url value="/management/security/acl/loadPermission.spy" />';
+			EURB.ObjSec.objectAuthoritiesStoreAction = '<spring:url value="/management/security/acl/storePermission.spy" />';
+			
+			EURB.ObjSec.groupName = '<spring:message code="eurb.app.management.authorities.groupname" />';
+			EURB.ObjSec.userName = '<spring:message code="eurb.app.management.authorities.username" />';
+			EURB.ObjSec.groupOrUserName = '<spring:message code="eurb.app.management.authorities.grouporusername" />';;
+			
+			EURB.ObjSec.authoritiesView = '<spring:message code="eurb.app.management.authorities.view" />';
+			EURB.ObjSec.authoritiesCreate = '<spring:message code="eurb.app.management.authorities.create" />';
+			EURB.ObjSec.authoritiesEdit = '<spring:message code="eurb.app.management.authorities.edit" />';
+			EURB.ObjSec.authoritiesDel = '<spring:message code="eurb.app.management.authorities.del" />';
+			EURB.ObjSec.authoritiesExecute = '<spring:message code="eurb.app.management.authorities.execute" />';
+			EURB.ObjSec.authoritiesSharing = '<spring:message code="eurb.app.management.authorities.sharing" />';
+			
+			EURB.Table.sharingOn = false;
+			<sec:authorize access="hasRole('${authorityType.ROLE_BASE_TABLE_MAPPING_SHARING}')">
+			EURB.Table.sharingOn = true;
+			</sec:authorize>
 		</script>
+		<script src="${resourcesUrl}/js/app/objsec/object-security-ui.js"></script>
 		<script src="${resourcesUrl}/js/app/management/mapping/table.js"></script>
 	</body>
 </html>

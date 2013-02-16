@@ -1,18 +1,24 @@
 package com.sharifpro.eurb.management.mapping.dao.impl;
 
 import com.sharifpro.eurb.DaoFactory;
+import com.sharifpro.eurb.builder.model.ReportCategory;
 import com.sharifpro.eurb.info.RecordStatus;
 import com.sharifpro.eurb.management.mapping.dao.DbConfigDao;
 import com.sharifpro.eurb.management.mapping.exception.DbConfigDaoException;
 import com.sharifpro.eurb.management.mapping.model.DbConfig;
 import com.sharifpro.eurb.management.mapping.model.DbConfigPk;
+import com.sharifpro.eurb.management.security.dao.impl.AclServiceImpl;
+import com.sharifpro.eurb.management.security.dao.impl.ExtendedPermission;
 import com.sharifpro.transaction.annotation.TransactionalReadOnly;
 import com.sharifpro.transaction.annotation.TransactionalReadWrite;
 import com.sharifpro.util.PropertyProvider;
+import com.sharifpro.util.SessionManager;
 
 import java.util.List;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.stereotype.Repository;
 
@@ -20,11 +26,27 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapper<DbConfig>, DbConfigDao
 {
+	private AclServiceImpl aclService;
+	
 	private final static String QUERY_FROM_COLUMNS = "o.name, o.driver_class, o.driver_url, o.username, o.password, o.test_query, o.record_status";
 
-	private final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + " o " + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL_AND_JOIN;
+	private final static String QUERY_SELECT_PART_USERNAMED_BASED = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + " o, persistable_object p, acl_object_identity oi, acl_entry e"
+			+ " WHERE p.id=o.id"
+			+ " AND o.id=oi.object_id_identity"
+			+ " AND oi.object_id_class="+DbConfig.ACL_CLASS_IDENTIFIER
+			+ " AND oi.id=e.acl_object_identity"
+			+ " AND e.mask & ?"
+			+ " AND e.granting=1"
+			+ " AND e.sid IN (SELECT id FROM acl_sid WHERE  (principal = 1 AND sid = ?) OR (principal = 0 AND sid IN (SELECT group_id FROM group_members WHERE username = ?)) )";
 	
-	private final static String COUNT_QUERY = "SELECT count(distinct(o.id)) FROM " + getTableName() + " o WHERE o.record_status IN ('A', 'P')";
+	private final static String COUNT_QUERY_USERNAMED_BASED = "SELECT count(distinct(o.id)) FROM " + getTableName() + " o, acl_object_identity oi, acl_entry e"
+			+ " WHERE o.record_status IN ('A', 'P')"
+			+ " AND o.id=oi.object_id_identity"
+			+ " AND oi.object_id_class="+DbConfig.ACL_CLASS_IDENTIFIER
+			+ " AND oi.id=e.acl_object_identity"
+			+ " AND e.mask & ?"
+			+ " AND e.granting=1"
+			+ " AND e.sid IN (SELECT id FROM acl_sid WHERE  (principal = 1 AND sid = ?) OR (principal = 0 AND sid IN (SELECT group_id FROM group_members WHERE username = ?)) )";
 
 	/**
 	 * Method 'insert'
@@ -38,7 +60,11 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 		DbConfigPk pk = new DbConfigPk();
 		DaoFactory.createPersistableObjectDao().insert(dto, pk);
 		getJdbcTemplate().update("INSERT INTO " + getTableName() + " ( id, name, driver_class, driver_url, username, password, test_query, record_status ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )",pk.getId(),dto.getName(),dto.getDriverClass(),dto.getDriverUrl(),dto.getUsername(),dto.getPassword(),dto.getTestQuery(), dto.getRecordStatusString());
+		
+		AclServiceImpl.insertObjectIdentity(getJdbcTemplate(), pk.getId(), DbConfig.ACL_CLASS_IDENTIFIER, null, null);
+		
 		dto.resetDataSource();
+		
 		return pk;
 	}
 
@@ -50,6 +76,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	{
 		DaoFactory.createPersistableObjectDao().update(pk);
 		getJdbcTemplate().update("UPDATE " + getTableName() + " SET name = ?, driver_class = ?, driver_url = ?, username = ?, password = ?, test_query = ?, record_status = 'A' WHERE id = ?",dto.getName(),dto.getDriverClass(),dto.getDriverUrl(),dto.getUsername(),dto.getPassword(),dto.getTestQuery(),pk.getId());
+				
 		dto.resetDataSource();
 	}
 	
@@ -136,6 +163,16 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 		dto.setPassword( rs.getString( ++i ) );
 		dto.setTestQuery( rs.getString( ++i ) );
 		dto.setRecordStatus( rs.getString( ++i ) );
+		
+		try {
+			dto.setAccessPreventDel(!aclService.hasPermissionFor(dto, ExtendedPermission.DELETE));
+			dto.setAccessPreventEdit(!aclService.hasPermissionFor(dto, ExtendedPermission.WRITE));
+			dto.setAccessPreventExecute(!aclService.hasPermissionFor(dto, ExtendedPermission.EXECUTE));
+			dto.setAccessPreventSharing(!aclService.hasPermissionFor(dto, ExtendedPermission.ADMINISTRATION));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+		}
 		return dto;
 	}
 
@@ -156,7 +193,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public DbConfig findByPrimaryKey(Long id) throws DbConfigDaoException
 	{
 		try {
-			List<DbConfig> list = getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.id = ?", this,id);
+			List<DbConfig> list = getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.id = ?", this,ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(),id);
 			return list.size() == 0 ? null : list.get(0);
 		}
 		catch (Exception e) {
@@ -172,7 +209,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public List<DbConfig> findAll() throws DbConfigDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.record_status IN ('A', 'P') ORDER BY o.id", this);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.record_status IN ('A', 'P') ORDER BY o.id", this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName());
 		}
 		catch (Exception e) {
 			throw new DbConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -184,7 +221,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public int countAll() throws DbConfigDaoException
 	{
 		try {
-			return getJdbcTemplate().queryForInt(COUNT_QUERY);
+			return getJdbcTemplate().queryForInt(COUNT_QUERY_USERNAMED_BASED, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName());
 		}
 		catch (Exception e) {
 			throw new DbConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -199,7 +236,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public List<DbConfig> findAll(Integer start, Integer limit, String sortBy, String sortDir) throws DbConfigDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.record_status IN ('A', 'P') ORDER BY "+getSortClause(sortBy, sortDir)+" limit ?, ?", this, start, limit);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.record_status IN ('A', 'P') ORDER BY "+getSortClause(sortBy, sortDir)+" limit ?, ?", this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(), start, limit);
 		}
 		catch (Exception e) {
 			throw new DbConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -214,7 +251,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public List<DbConfig> findAll(String query, List<String> onFields, Integer start, Integer limit, String sortBy, String sortDir) throws DbConfigDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.record_status IN ('A', 'P') AND (" + getMultipleFieldWhereClause(query, onFields) + ") ORDER BY "+getSortClause(sortBy, sortDir)+" limit ?, ?", this, start, limit);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.record_status IN ('A', 'P') AND (" + getMultipleFieldWhereClause(query, onFields) + ") ORDER BY "+getSortClause(sortBy, sortDir)+" limit ?, ?", this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(), start, limit);
 		}
 		catch (Exception e) {
 			throw new DbConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -226,7 +263,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public int countAll(String query, List<String> onFields) throws DbConfigDaoException
 	{
 		try {
-			return getJdbcTemplate().queryForInt(COUNT_QUERY + " AND (" + getMultipleFieldWhereClause(query, onFields) + ")");
+			return getJdbcTemplate().queryForInt(COUNT_QUERY_USERNAMED_BASED + " AND (" + getMultipleFieldWhereClause(query, onFields) + ")", ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName());
 		}
 		catch (Exception e) {
 			throw new DbConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -287,7 +324,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public List<DbConfig> findAllActive() throws DbConfigDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.record_status='A' ORDER BY o.id", this);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.record_status='A' ORDER BY o.id", this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName());
 		}
 		catch (Exception e) {
 			throw new DbConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -302,7 +339,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public List<DbConfig> findByPersistableObject(Long id) throws DbConfigDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.id = ?", this,id);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.id = ?", this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(),id);
 		}
 		catch (Exception e) {
 			throw new DbConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -317,7 +354,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public List<DbConfig> findWhereIdEquals(Long id) throws DbConfigDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.id = ? ORDER BY o.id", this,id);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.id = ? ORDER BY o.id", this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(),id);
 		}
 		catch (Exception e) {
 			throw new DbConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -332,7 +369,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public List<DbConfig> findWhereNameEquals(String name) throws DbConfigDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.name = ? ORDER BY o.name", this,name);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.name = ? ORDER BY o.name", this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(),name);
 		}
 		catch (Exception e) {
 			throw new DbConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -347,7 +384,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public List<DbConfig> findWhereDriverClassEquals(String driverClass) throws DbConfigDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.driver_class = ? ORDER BY o.driver_class", this,driverClass);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.driver_class = ? ORDER BY o.driver_class", this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(),driverClass);
 		}
 		catch (Exception e) {
 			throw new DbConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -362,7 +399,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public List<DbConfig> findWhereDriverUrlEquals(String driverUrl) throws DbConfigDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.driver_url = ? ORDER BY o.driver_url", this,driverUrl);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.driver_url = ? ORDER BY o.driver_url", this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(),driverUrl);
 		}
 		catch (Exception e) {
 			throw new DbConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -377,7 +414,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public List<DbConfig> findWhereUsernameEquals(String username) throws DbConfigDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.username = ? ORDER BY o.username", this,username);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.username = ? ORDER BY o.username", this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(),username);
 		}
 		catch (Exception e) {
 			throw new DbConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -392,7 +429,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public List<DbConfig> findWherePasswordEquals(String password) throws DbConfigDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.password = ? ORDER BY o.password", this,password);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.password = ? ORDER BY o.password", this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(),password);
 		}
 		catch (Exception e) {
 			throw new DbConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -407,7 +444,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public List<DbConfig> findWhereTestQueryEquals(String testQuery) throws DbConfigDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.test_query = ? ORDER BY o.test_query", this,testQuery);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.test_query = ? ORDER BY o.test_query", this, ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(),testQuery);
 		}
 		catch (Exception e) {
 			throw new DbConfigDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -421,6 +458,11 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public DbConfig findByPrimaryKey(DbConfigPk pk) throws DbConfigDaoException
 	{
 		return findByPrimaryKey( pk.getId() );
+	}
+
+	@Autowired
+	public void setAclService(AclServiceImpl aclService) {
+		this.aclService = aclService;
 	}
 
 }

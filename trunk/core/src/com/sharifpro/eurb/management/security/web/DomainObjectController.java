@@ -2,7 +2,6 @@ package com.sharifpro.eurb.management.security.web;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,33 +13,24 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.acls.domain.AclImpl;
-import org.springframework.security.acls.domain.CumulativePermission;
-import org.springframework.security.acls.domain.DefaultPermissionFactory;
 import org.springframework.security.acls.domain.GrantedAuthoritySid;
 import org.springframework.security.acls.domain.PrincipalSid;
-import org.springframework.security.acls.domain.SidRetrievalStrategyImpl;
 import org.springframework.security.acls.model.AccessControlEntry;
 import org.springframework.security.acls.model.Acl;
 import org.springframework.security.acls.model.ObjectIdentity;
 import org.springframework.security.acls.model.Permission;
 import org.springframework.security.acls.model.Sid;
-import org.springframework.security.acls.model.SidRetrievalStrategy;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.sharifpro.eurb.management.mapping.dao.PersistableObjectDao;
-import com.sharifpro.eurb.management.mapping.model.PersistableObject;
+import com.sharifpro.eurb.management.security.dao.DomainSecurityDao;
 import com.sharifpro.eurb.management.security.dao.GroupsDao;
 import com.sharifpro.eurb.management.security.dao.UserDao;
 import com.sharifpro.eurb.management.security.dao.impl.AclServiceImpl;
-import com.sharifpro.eurb.management.security.dao.impl.ExtendedPermission;
-import com.sharifpro.eurb.management.security.exception.AuthoritiesDaoException;
 import com.sharifpro.eurb.management.security.model.Groups;
 import com.sharifpro.eurb.management.security.model.User;
-import com.sharifpro.util.PropertyProvider;
-import com.sharifpro.util.SessionManager;
 import com.sharifpro.util.json.JsonUtil;
 
 /**
@@ -54,6 +44,8 @@ public class DomainObjectController {
 	public static int OBJECT_SEC_TYPE_USER = 2;
 	
 	private AclServiceImpl aclService;
+	
+	private DomainSecurityDao domainSecurity;
 
 	private JsonUtil jsonUtil;
 	
@@ -64,7 +56,7 @@ public class DomainObjectController {
 	@RequestMapping(value="/management/security/acl/loadPermission.spy")
 	public @ResponseBody Map<String,? extends Object> loadPermission(@RequestParam Object data) throws Exception {
 		Map<String,Object> modelMap = new HashMap<String,Object>(3);
-		if(data != null && data.toString().isEmpty()){
+		if(data == null || data.toString().isEmpty()){
 			modelMap.put("success", true);
 			modelMap.put("aclEntryListTotalCount", 0);
 			modelMap.put("aclEntryList", Collections.EMPTY_LIST);
@@ -107,12 +99,15 @@ public class DomainObjectController {
 	
 	@RequestMapping(value="/management/security/acl/storePermission.spy")
 	public @ResponseBody Map<String,? extends Object> storePermission(@RequestParam Object permData, @RequestParam Object objData) throws Exception {
+		
 		try{
 			List<ObjectSecurityRow> targetObjectSecRows = jsonUtil.getListFromRequest(permData, ObjectSecurityRow.class);
 			List<Long> targetObjects = jsonUtil.getListFromRequest(objData, Long.class);
 			List<Serializable> destIdentities = new ArrayList<Serializable>(targetObjects.size());
 			
-			Map<String, ObjectSecurityRow> sidMap = new HashMap<String, ObjectSecurityRow>();
+			domainSecurity.storePermissions(targetObjectSecRows, targetObjects, destIdentities);
+			
+			/*Map<String, ObjectSecurityRow> sidMap = new HashMap<String, ObjectSecurityRow>();
 			for(ObjectSecurityRow osr : targetObjectSecRows){
 				if(osr.type == OBJECT_SEC_TYPE_GROUP) {
 					sidMap.put(osr.getId()+"", osr);
@@ -155,7 +150,7 @@ public class DomainObjectController {
 					}
 				}
 				aclService.updateAcl(acl);
-			}
+			}*/
 			
 			
 			
@@ -183,5 +178,10 @@ public class DomainObjectController {
 	@Autowired
 	public void setUserDao(UserDao userDao) {
 		this.userDao = userDao;
+	}
+	
+	@Autowired
+	public void setDomainSecurity(DomainSecurityDao domainSecurity) {
+		this.domainSecurity = domainSecurity;
 	}
 }

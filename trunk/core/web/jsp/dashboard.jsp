@@ -663,7 +663,7 @@ Long selectedDashboard = (Long) request.getAttribute("userDashboardId");
 		    EURB.mainPanel.items.add(new Ext.ux.Portal({
 	            xtype:'portal',
 	            region:'center',
-	            margins:'35 5 5 0',
+	            margins:'35 0 0 0',
 	            listeners:{
 					 scope:this,
 					 drop: function(dropEvent) {

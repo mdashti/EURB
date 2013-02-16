@@ -35,6 +35,8 @@ import com.sharifpro.util.db.DataSourceFactory;
 public class DbConfig extends PersistableObject implements Serializable
 {
 	private static final long serialVersionUID = 4348520185323565243L;
+	
+	public static final long ACL_CLASS_IDENTIFIER = 3;
 
 	/** 
 	 * This attribute maps to the column name in the db_config table.
@@ -65,6 +67,11 @@ public class DbConfig extends PersistableObject implements Serializable
 	 * This attribute maps to the column test_query in the db_config table.
 	 */
 	protected String testQuery;
+
+	private boolean accessPreventDel = true;
+	private boolean accessPreventEdit = true;
+	private boolean accessPreventExecute = true;
+	private boolean accessPreventSharing = true;
 
 	/** 
 	 * This attribute maps to the column record_status in the db_config table.
@@ -520,5 +527,37 @@ public class DbConfig extends PersistableObject implements Serializable
 		
 		sqlConn.setReadOnly(true);
 		sqlConn.close();
+	}
+
+	public boolean isAccessPreventDel() {
+		return accessPreventDel;
+	}
+
+	public void setAccessPreventDel(boolean accessPreventDel) {
+		this.accessPreventDel = accessPreventDel;
+	}
+
+	public boolean isAccessPreventEdit() {
+		return accessPreventEdit;
+	}
+
+	public void setAccessPreventEdit(boolean accessPreventEdit) {
+		this.accessPreventEdit = accessPreventEdit;
+	}
+
+	public boolean isAccessPreventExecute() {
+		return accessPreventExecute;
+	}
+
+	public void setAccessPreventExecute(boolean accessPreventExecute) {
+		this.accessPreventExecute = accessPreventExecute;
+	}
+
+	public boolean isAccessPreventSharing() {
+		return accessPreventSharing;
+	}
+
+	public void setAccessPreventSharing(boolean accessPreventSharing) {
+		this.accessPreventSharing = accessPreventSharing;
 	}
 }

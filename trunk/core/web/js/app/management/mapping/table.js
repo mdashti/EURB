@@ -13,6 +13,10 @@ EURB.Table.store = new Ext.data.GroupingStore({
 			,{name:'mappedTypeName', type:'string'}
 			,{name:'activeForManager', type:'boolean'}
 			,{name:'activeForUser', type:'boolean'}
+			,{name:'accessPreventDel', type:'boolean'}
+			,{name:'accessPreventEdit', type:'boolean'}
+			,{name:'accessPreventExecute', type:'boolean'}
+			,{name:'accessPreventSharing', type:'boolean'}
 		]
 	})
 	,proxy:new Ext.data.HttpProxy({
@@ -96,6 +100,8 @@ EURB.Table.TblGrid = Ext.extend(Ext.grid.GridPanel, {
 	,idName:'id'
 	,title: EURB.appMenu.table
 	,initComponent:function() {
+		this.sharingWindow = EURB.ObjSec.getSharingWindows();
+		
         this.recordForm = new Ext.ux.grid.RecordForm({
              title:EURB.addEdit+' '+EURB.appMenu.table
             ,iconCls:'icon-edit-record'
@@ -123,10 +129,16 @@ EURB.Table.TblGrid = Ext.extend(Ext.grid.GridPanel, {
 			 actions:[{
                  iconCls:'icon-edit-record'
                 ,qtip:EURB.editRecord
+	           	,hideIndex: 'accessPreventEdit'
             },{
                  iconCls:'icon-grid'
                  ,qtip:EURB.Table.editColumns
-            }]
+	           	,hideIndex: 'accessPreventEdit'
+            },{
+	          	iconCls:'icon-share'
+	           	,qtip:EURB.ObjSec.share
+	           	,hideIndex: 'accessPreventSharing'
+	        }]
             ,widthIntercept:Ext.isSafari ? 4 : 2
             ,id:'actions'
             ,getEditor:Ext.emptyFn
@@ -243,7 +255,18 @@ EURB.Table.TblGrid = Ext.extend(Ext.grid.GridPanel, {
             		Ext.Msg.alert(Ext.MessageBox.title.warning, EURB.Table.youShouldSaveTheRecordFisrt).setIcon(Ext.Msg.INFO);
             	}
             break;
+	        
+	        case 'icon-share':
+	        	this.sharingWindow.show(grid.getView().getCell(row, col),this.editSharingFor(record),this);
+	        break;
         }
+    }
+	,editSharingFor:function(record) {
+    	return function() {
+			var title = EURB.ObjSec.share+' '+EURB.Table.title+' '+record.get('name');
+			var objectType = 4;//table_mapping
+    		this.sharingWindow.onShowForARecord(record.get('id'), title, objectType);
+    	}
     }
 	,commitChanges:function() {
 		var records = this.store.getModifiedRecords();

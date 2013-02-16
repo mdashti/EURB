@@ -30,6 +30,9 @@ import com.sharifpro.db.DatabaseUtils;
 import com.sharifpro.eurb.management.mapping.dao.PersistableObjectDao;
 import com.sharifpro.eurb.management.mapping.model.PersistableObject;
 import com.sharifpro.eurb.management.security.exception.AuthoritiesDaoException;
+import com.sharifpro.eurb.management.security.web.DomainObjectController;
+import com.sharifpro.eurb.management.security.web.ObjectSecurityRow;
+import com.sharifpro.transaction.annotation.TransactionalReadWrite;
 import com.sharifpro.util.PropertyProvider;
 import com.sharifpro.util.SessionManager;
 

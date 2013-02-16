@@ -156,6 +156,7 @@ public class ReportCategoryDaoImpl extends AbstractDAO implements ParameterizedR
 		try {
 			dto.setAccessPreventDel(!aclService.hasPermissionFor(dto, ExtendedPermission.DELETE));
 			dto.setAccessPreventEdit(!aclService.hasPermissionFor(dto, ExtendedPermission.WRITE));
+			dto.setAccessPreventExecute(!aclService.hasPermissionFor(dto, ExtendedPermission.EXECUTE));
 			dto.setAccessPreventSharing(!aclService.hasPermissionFor(dto, ExtendedPermission.ADMINISTRATION));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

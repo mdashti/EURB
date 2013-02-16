@@ -47,7 +47,7 @@ public interface TableMappingDao
 	/** 
 	 * Counts all rows from the table_mapping table that match the criteria ''.
 	 */
-	public int countAll() throws TableMappingDaoException;
+	//public int countAll() throws TableMappingDaoException;
 	
 	/** 
 	 * Returns all rows from the table_mapping table that match the like query in onFields fields.
@@ -63,7 +63,7 @@ public interface TableMappingDao
 	/** 
 	 * Counts all rows from the table_mapping table that match the like query in onFields fields.
 	 */
-	public int countAll(String query, List<String> onFields) throws TableMappingDaoException;
+	//public int countAll(String query, List<String> onFields) throws TableMappingDaoException;
 
 
 	/** 

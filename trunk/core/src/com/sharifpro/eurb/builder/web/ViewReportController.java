@@ -139,16 +139,16 @@ public class ViewReportController {
 		return mv;
 	}
 
-	@RequestMapping(value="/builder/report/report{report}-v{version}.xls")
-	public ModelAndView executeRunReportExcel(@PathVariable Long report, @PathVariable Long version) throws Exception {
+	@RequestMapping(value="/builder/report/report{report}-v{version}-{year}-{month}-{day}-{min}-{sec}.xls")
+	public ModelAndView executeRunReportExcel(@PathVariable Long report, @PathVariable Long version, @PathVariable Long year, @PathVariable Long month, @PathVariable Long day, @PathVariable Long min, @PathVariable Long sec) throws Exception {
 		ModelAndView mv = new ModelAndView();
 		mv.addAllObjects(executeRunReportDataInner(report, version, null, null, null, null, true));
 		mv.setView(new com.sharifpro.eurb.builder.view.ViewExcelReport());
 		return mv;
 	}
 
-	@RequestMapping(value="/builder/report/report{report}-v{version}.docx")
-	public ModelAndView executeRunReportWord(@PathVariable Long report, @PathVariable Long version) throws Exception {
+	@RequestMapping(value="/builder/report/report{report}-v{version}-{year}-{month}-{day}-{min}-{sec}.docx")
+	public ModelAndView executeRunReportWord(@PathVariable Long report, @PathVariable Long version, @PathVariable Long year, @PathVariable Long month, @PathVariable Long day, @PathVariable Long min, @PathVariable Long sec) throws Exception {
 		ModelAndView mv = new ModelAndView();
 		mv.addAllObjects(executeRunReportDataInner(report, version, null, null, null, null, true));
 		mv.setView(new com.sharifpro.eurb.builder.view.ViewWordReport());

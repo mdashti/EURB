@@ -11,6 +11,10 @@ EURB.DBConfig.store = new Ext.data.Store({
 			,{name:'driverUrl', type:'string'}
 			,{name:'username', type:'string'}
 			,{name:'password', type:'string'}
+			,{name:'accessPreventDel', type:'boolean'}
+			,{name:'accessPreventEdit', type:'boolean'}
+			,{name:'accessPreventExecute', type:'boolean'}
+			,{name:'accessPreventSharing', type:'boolean'}
 			/*,{name:'testQuery', type:'string'}*/
 		]
 	})
@@ -151,6 +155,8 @@ EURB.DBConfig.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 	,idName:'id'
 	,title: EURB.appMenu.dbConfig
 	,initComponent:function() {
+		this.sharingWindow = EURB.ObjSec.getSharingWindows();
+		
         this.recordForm = new Ext.ux.grid.RecordForm({
              title:EURB.addEdit+' '+EURB.appMenu.dbConfig
             ,iconCls:'icon-edit-record'
@@ -181,16 +187,24 @@ EURB.DBConfig.DBGrid = Ext.extend(Ext.grid.GridPanel, {
 				 iconCls:'icon-minus'
 				,qtip:EURB.delRecord
 				,style:'margin:0 0 0 3px'
+	           	,hideIndex: 'accessPreventDel'
 			},{
                  iconCls:'icon-edit-record'
                 ,qtip:EURB.editRecord
+	           	,hideIndex: 'accessPreventEdit'
             },{
                  iconCls:'icon-copy'
                 ,qtip:EURB.copyRecord
+	           	,hideIndex: 'accessPreventEdit'
             },{
                  iconCls:'icon-grid'
                  ,qtip:EURB.DBConfig.editTables
-            }]
+	           	,hideIndex: 'accessPreventEdit'
+            },{
+	          	iconCls:'icon-share'
+	           	,qtip:EURB.ObjSec.share
+	           	,hideIndex: 'accessPreventSharing'
+	        }]
             ,widthIntercept:Ext.isSafari ? 4 : 2
             ,id:'actions'
             ,getEditor:Ext.emptyFn
@@ -303,7 +317,18 @@ EURB.DBConfig.DBGrid = Ext.extend(Ext.grid.GridPanel, {
             case 'icon-grid':
             	window.location.href = EURB.baseURL+'management/mapping/db'+record.get(this.idName)+'-table.spy';
             break;
+	        
+	        case 'icon-share':
+	        	this.sharingWindow.show(grid.getView().getCell(row, col),this.editSharingFor(record),this);
+	        break;
         }
+    }
+	,editSharingFor:function(record) {
+    	return function() {
+			var title = EURB.ObjSec.share+' '+EURB.DBConfig.title+' '+record.get('name');
+			var objectType = 3;//dbconfig
+    		this.sharingWindow.onShowForARecord(record.get('id'), title, objectType);
+    	}
     }
 	,commitChanges:function() {
 		var records = this.store.getModifiedRecords();

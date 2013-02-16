@@ -5,12 +5,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.stereotype.Repository;
 
 
 import com.sharifpro.eurb.DaoFactory;
+import com.sharifpro.eurb.builder.model.ReportCategory;
 import com.sharifpro.eurb.builder.model.ReportDesign;
 import com.sharifpro.eurb.info.RecordStatus;
 import com.sharifpro.eurb.management.mapping.dao.TableMappingDao;
@@ -18,18 +20,31 @@ import com.sharifpro.eurb.management.mapping.exception.TableMappingDaoException;
 import com.sharifpro.eurb.management.mapping.model.DbConfig;
 import com.sharifpro.eurb.management.mapping.model.TableMapping;
 import com.sharifpro.eurb.management.mapping.model.TableMappingPk;
+import com.sharifpro.eurb.management.security.dao.impl.AclServiceImpl;
+import com.sharifpro.eurb.management.security.dao.impl.ExtendedPermission;
 import com.sharifpro.transaction.annotation.TransactionalReadOnly;
 import com.sharifpro.transaction.annotation.TransactionalReadWrite;
 import com.sharifpro.util.PropertyProvider;
+import com.sharifpro.util.SessionManager;
 
 @Repository
 public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRowMapper<TableMapping>, TableMappingDao
 {
+	private AclServiceImpl aclService;
+	
 	private final static String QUERY_FROM_COLUMNS = "o.db_config_id, o.catalog, o.schema, o.table_name, o.mapped_name, o.mapped_type, o.active_for_manager, o.active_for_user";
 
-	private final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + " o  INNER JOIN " + DbConfigDaoImpl.getTableName() + " d ON (o.db_config_id=d.id AND d.record_status='" + RecordStatus.ACTIVE.getId() + "') INNER JOIN " + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL + " ON (o.id=p.id)";
+	private final static String QUERY_SELECT_PART_USERNAMED_BASED = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + " o, " + DbConfigDaoImpl.getTableName() + " d, persistable_object p, acl_object_identity oi, acl_entry e"
+			+ " WHERE p.id=o.id"
+			+ " AND o.db_config_id=d.id AND d.record_status='" + RecordStatus.ACTIVE.getId() + "')"
+			+ " AND o.id=oi.object_id_identity"
+			+ " AND oi.object_id_class="+TableMapping.ACL_CLASS_IDENTIFIER
+			+ " AND oi.id=e.acl_object_identity"
+			+ " AND e.mask & ?"
+			+ " AND e.granting=1"
+			+ " AND e.sid IN (SELECT id FROM acl_sid WHERE  (principal = 1 AND sid = ?) OR (principal = 0 AND sid IN (SELECT group_id FROM group_members WHERE username = ?)) )";
 	
-	private final static String COUNT_QUERY = "SELECT count(distinct(o.id)) FROM " + getTableName() + " o ";
+	//private final static String COUNT_QUERY = "SELECT count(distinct(o.id)) FROM " + getTableName() + " o ";
 
 	/**
 	 * Method 'insert'
@@ -43,6 +58,9 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 		TableMappingPk pk = new TableMappingPk();
 		DaoFactory.createPersistableObjectDao().insert(dto, pk);
 		getJdbcTemplate().update("INSERT INTO " + getTableName() + " ( id, db_config_id, `catalog`, `schema`, table_name, mapped_name, mapped_type, active_for_manager, active_for_user ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )",dto.getId(),dto.getDbConfigId(),dto.getCatalog(),dto.getSchema(),dto.getTableName(),dto.getMappedName(),dto.getMappedType(),dto.isActiveForManager(),dto.isActiveForUser());
+		
+		AclServiceImpl.insertObjectIdentity(getJdbcTemplate(), pk.getId(), TableMapping.ACL_CLASS_IDENTIFIER, dto.getDbConfigId(), DbConfig.ACL_CLASS_IDENTIFIER);
+
 		return pk;
 	}
 
@@ -62,6 +80,9 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	@TransactionalReadWrite
 	public void delete(TableMappingPk pk) throws TableMappingDaoException
 	{
+		TableMapping toBeDeletedMapping = findByPrimaryKey(pk);
+		AclServiceImpl.deleteObjectIdentity(getJdbcTemplate(),pk.getId(),TableMapping.ACL_CLASS_IDENTIFIER, toBeDeletedMapping.getDbConfigId(), DbConfig.ACL_CLASS_IDENTIFIER);
+
 		getJdbcTemplate().update("DELETE FROM " + getTableName() + " WHERE id = ?",pk.getId());
 		DaoFactory.createPersistableObjectDao().delete(pk);
 	}
@@ -87,6 +108,16 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 		dto.setMappedType( new Integer( rs.getInt(++i) ) );
 		dto.setActiveForManager( rs.getBoolean( ++i ) );
 		dto.setActiveForUser( rs.getBoolean( ++i ) );
+		
+		try {
+			dto.setAccessPreventDel(!aclService.hasPermissionFor(dto, ExtendedPermission.DELETE));
+			dto.setAccessPreventEdit(!aclService.hasPermissionFor(dto, ExtendedPermission.WRITE));
+			dto.setAccessPreventExecute(!aclService.hasPermissionFor(dto, ExtendedPermission.EXECUTE));
+			dto.setAccessPreventSharing(!aclService.hasPermissionFor(dto, ExtendedPermission.ADMINISTRATION));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+		}
 		return dto;
 	}
 
@@ -107,7 +138,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	public TableMapping findByPrimaryKey(Long id) throws TableMappingDaoException
 	{
 		try {
-			List<TableMapping> list = getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.id = ?", this,id);
+			List<TableMapping> list = getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.id = ?", this,ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(),id);
 			return list.size() == 0 ? null : list.get(0);
 		}
 		catch (Exception e) {
@@ -123,7 +154,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<TableMapping> findAll() throws TableMappingDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " ORDER BY o.id", this);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " ORDER BY o.id", this,ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName());
 		}
 		catch (Exception e) {
 			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -143,7 +174,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 				return findAllMapped(reportDesign.getDbConfigId());
 			}
 			else{
-				return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.mapped_name IS NOT NULL ORDER BY o.id", this);
+				return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.mapped_name IS NOT NULL ORDER BY o.id", this,ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName());
 			}
 		}
 		catch (Exception e) {
@@ -152,7 +183,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 		
 	}
 	
-	@TransactionalReadOnly
+	/*@TransactionalReadOnly
 	public int countAll() throws TableMappingDaoException
 	{
 		try {
@@ -162,7 +193,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 
-	}
+	}*?
 	
 	/** 
 	 * Returns all rows from the table_mapping table that match the criteria like query in onFields fields.
@@ -171,7 +202,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<TableMapping> findAll(String query, List<String> onFields) throws TableMappingDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE (" + getMultipleFieldWhereClause(query, onFields) + ") ", this);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND (" + getMultipleFieldWhereClause(query, onFields) + ") ", this,ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName());
 		}
 		catch (Exception e) {
 			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -183,7 +214,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<TableMapping> findAllMapped(String query, List<String> onFields) throws TableMappingDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE (" + getMultipleFieldWhereClause(query, onFields) + ") AND o.mapped_name IS NOT NULL ", this);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND (" + getMultipleFieldWhereClause(query, onFields) + ") AND o.mapped_name IS NOT NULL ", this,ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName());
 		}
 		catch (Exception e) {
 			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -191,7 +222,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 
 	}
 
-	@TransactionalReadOnly
+	/*@TransactionalReadOnly
 	public int countAll(String query, List<String> onFields) throws TableMappingDaoException
 	{
 		try {
@@ -201,7 +232,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
 		}
 
-	}
+	}*/
 
 	/** 
 	 * Returns all rows from the table_mapping table that match the criteria 'id = :id'.
@@ -210,7 +241,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<TableMapping> findByPersistableObject(Long id) throws TableMappingDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.id = ?", this,id);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.id = ?", this,ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(),id);
 		}
 		catch (Exception e) {
 			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -225,7 +256,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<TableMapping> findByDbConfig(Long dbConfigId) throws TableMappingDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.db_config_id = ?", this,dbConfigId);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.db_config_id = ?", this,ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(),dbConfigId);
 		}
 		catch (Exception e) {
 			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -240,7 +271,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<TableMapping> findWhereIdEquals(Long id) throws TableMappingDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.id = ? ORDER BY o.id", this,id);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.id = ? ORDER BY o.id", this,ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(),id);
 		}
 		catch (Exception e) {
 			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -255,7 +286,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<TableMapping> findWhereDbConfigIdEquals(Long dbConfigId) throws TableMappingDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.db_config_id = ? ORDER BY o.db_config_id", this,dbConfigId);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.db_config_id = ? ORDER BY o.db_config_id", this,ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(),dbConfigId);
 		}
 		catch (Exception e) {
 			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -270,7 +301,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<TableMapping> findWhereTableNameEquals(String tableName) throws TableMappingDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.table_name = ? ORDER BY o.table_name", this,tableName);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.table_name = ? ORDER BY o.table_name", this,ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(),tableName);
 		}
 		catch (Exception e) {
 			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -285,7 +316,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<TableMapping> findWhereMappedNameEquals(String mappedName) throws TableMappingDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.mapped_name = ? ORDER BY o.mapped_name", this,mappedName);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.mapped_name = ? ORDER BY o.mapped_name", this,ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(),mappedName);
 		}
 		catch (Exception e) {
 			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -300,7 +331,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<TableMapping> findWhereMappedTypeEquals(Integer mappedType) throws TableMappingDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.mapped_type = ? ORDER BY o.mapped_type", this,mappedType);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.mapped_type = ? ORDER BY o.mapped_type", this,ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(),mappedType);
 		}
 		catch (Exception e) {
 			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -315,7 +346,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<TableMapping> findWhereActiveForManagerEquals(Short activeForManager) throws TableMappingDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.active_for_manager = ? ORDER BY o.active_for_manager", this,activeForManager);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.active_for_manager = ? ORDER BY o.active_for_manager", this,ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(),activeForManager);
 		}
 		catch (Exception e) {
 			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -330,7 +361,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<TableMapping> findWhereActiveForUserEquals(Short activeForUser) throws TableMappingDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.active_for_user = ? ORDER BY o.active_for_user", this,activeForUser);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.active_for_user = ? ORDER BY o.active_for_user", this,ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(),activeForUser);
 		}
 		catch (Exception e) {
 			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -394,7 +425,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	@TransactionalReadOnly
 	public List<TableMapping> findAll(DbConfig dbConf, String query, List<String> onFields) throws TableMappingDaoException {
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.db_config_id=? AND (" + getMultipleFieldWhereClause(query, onFields) + ") ORDER BY o.id", this, dbConf.getId());
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.db_config_id=? AND (" + getMultipleFieldWhereClause(query, onFields) + ") ORDER BY o.id", this,ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(), dbConf.getId());
 		}
 		catch (Exception e) {
 			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -404,7 +435,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	@TransactionalReadOnly
 	public List<TableMapping> findAllMapped(Long dbConf, String query, List<String> onFields) throws TableMappingDaoException {
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.db_config_id=? AND (" + getMultipleFieldWhereClause(query, onFields) + ") AND o.mapped_name IS NOT NULL ORDER BY o.id", this, dbConf);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.db_config_id=? AND (" + getMultipleFieldWhereClause(query, onFields) + ") AND o.mapped_name IS NOT NULL ORDER BY o.id", this,ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(), dbConf);
 		}
 		catch (Exception e) {
 			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -415,7 +446,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<TableMapping> findAllMapped(Long dbConf)
 			throws TableMappingDaoException {
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.db_config_id=? AND o.mapped_name IS NOT NULL ORDER BY o.id", this, dbConf);
+			return getJdbcTemplate().query(QUERY_SELECT_PART_USERNAMED_BASED + " AND o.db_config_id=? AND o.mapped_name IS NOT NULL ORDER BY o.id", this,ExtendedPermission.READ.getMask(), SessionManager.getCurrentUserName(), SessionManager.getCurrentUserName(), dbConf);
 		}
 		catch (Exception e) {
 			throw new TableMappingDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -456,6 +487,11 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 	public List<TableMapping> findAll(DbConfig dbConf)
 			throws TableMappingDaoException {
 		return findByDbConfig(dbConf.getId());
+	}
+
+	@Autowired
+	public void setAclService(AclServiceImpl aclService) {
+		this.aclService = aclService;
 	}
 
 }

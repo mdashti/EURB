@@ -62,14 +62,14 @@ EURB.RunReport.Grid = Ext.extend(Ext.grid.GridPanel, {
 			,iconCls:'icon-excel'
 			,listeners:{
 				 scope:this
-				,click:{fn: function() { window.location.href = EURB.baseURL+'builder/report/report'+EURB.RunReport.design+'-v'+EURB.RunReport.version+'.xls'; },buffer:200}
+				,click:{fn: function() { window.location.href = EURB.baseURL+'builder/report/report'+EURB.RunReport.design+'-v'+EURB.RunReport.version+(new Date().format('-B-Q-R-G-i'))+'.xls'; },buffer:200}
 			}
 		}, {
 			 text:EURB.RunReport.exportAllReportToWord
 			,iconCls:'icon-word'
 			,listeners:{
 				 scope:this
-				,click:{fn: function() { window.location.href = EURB.baseURL+'builder/report/report'+EURB.RunReport.design+'-v'+EURB.RunReport.version+'.docx'; },buffer:200}
+				,click:{fn: function() { window.location.href = EURB.baseURL+'builder/report/report'+EURB.RunReport.design+'-v'+EURB.RunReport.version+(new Date().format('-B-Q-R-G-i'))+'.docx'; },buffer:200}
 			}
 		}];
 

@@ -1,6 +1,10 @@
+<%@page import="com.sharifpro.eurb.info.AuthorityType"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib uri="http://java.sun.com/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib uri="http://jakarta.apache.org/taglibs/unstandard-1.0" prefix="un" %>
+<un:useConstants className="com.sharifpro.eurb.info.AuthorityType" var="authorityType" />
 <spring:eval expression="@applicationProps['application.version']" var="appVersion"/>
 <spring:eval expression="@applicationProps['application.mode']" var="appMode"/>
 <spring:url value="/resources-{appVersion}" var="resourcesUrl">
@@ -31,6 +35,7 @@
 			EURB.DBConfig.deactivateAction = '<spring:url value="/management/mapping/dbconfig/dbconfigDeactivate.spy" />';
 			EURB.DBConfig.driverSearchAction = '<spring:url value="/management/mapping/dbconfig/driverSearch.spy" />';
 			
+			EURB.DBConfig.title = '<spring:message code="eurb.app.management.dbconfig.title" />';
 			EURB.DBConfig.name = '<spring:message code="eurb.app.management.dbconfig.name" />';
 			EURB.DBConfig.driverClass = '<spring:message code="eurb.app.management.dbconfig.driverClass" />';
 			EURB.DBConfig.driverUrl = '<spring:message code="eurb.app.management.dbconfig.driverUrl" />';
@@ -44,7 +49,33 @@
 			EURB.DBConfig.inactive = '<spring:message code="eurb.app.management.dbconfig.conStatus.inactive" />';
 			
 			EURB.DBConfig.editTables = '<spring:message code="eurb.app.management.dbconfig.editTables" />';
+			
+			if(!EURB.ObjSec) {
+				EURB.ObjSec = {};
+			}
+			EURB.ObjSec.share = '<spring:message code="eurb.app.builder.report.share" />';
+			EURB.ObjSec.groupSearchAction = '<spring:url value="/management/security/group/groupSearch.spy" />';
+			EURB.ObjSec.userSearchAction = '<spring:url value="/management/security/user/userSearch.spy" />';
+			EURB.ObjSec.objectAuthoritiesSearchAction = '<spring:url value="/management/security/acl/loadPermission.spy" />';
+			EURB.ObjSec.objectAuthoritiesStoreAction = '<spring:url value="/management/security/acl/storePermission.spy" />';
+			
+			EURB.ObjSec.groupName = '<spring:message code="eurb.app.management.authorities.groupname" />';
+			EURB.ObjSec.userName = '<spring:message code="eurb.app.management.authorities.username" />';
+			EURB.ObjSec.groupOrUserName = '<spring:message code="eurb.app.management.authorities.grouporusername" />';;
+			
+			EURB.ObjSec.authoritiesView = '<spring:message code="eurb.app.management.authorities.view" />';
+			EURB.ObjSec.authoritiesCreate = '<spring:message code="eurb.app.management.authorities.create" />';
+			EURB.ObjSec.authoritiesEdit = '<spring:message code="eurb.app.management.authorities.edit" />';
+			EURB.ObjSec.authoritiesDel = '<spring:message code="eurb.app.management.authorities.del" />';
+			EURB.ObjSec.authoritiesExecute = '<spring:message code="eurb.app.management.authorities.execute" />';
+			EURB.ObjSec.authoritiesSharing = '<spring:message code="eurb.app.management.authorities.sharing" />';
+			
+			EURB.DBConfig.sharingOn = false;
+			<sec:authorize access="hasRole('${authorityType.ROLE_BASE_DB_CONFIG_SHARING}')">
+			EURB.DBConfig.sharingOn = true;
+			</sec:authorize>
 		</script>
+		<script src="${resourcesUrl}/js/app/objsec/object-security-ui.js"></script>
 		<script src="${resourcesUrl}/js/app/management/mapping/dbconfig.js"></script>
 	</body>
 </html>

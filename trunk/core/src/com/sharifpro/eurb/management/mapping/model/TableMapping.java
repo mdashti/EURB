@@ -13,6 +13,8 @@ public class TableMapping extends PersistableObject implements Serializable
 	public final static int MAPPED_TYPE_VIEW = 1;
 	
 	private static final long serialVersionUID = 8016638670642078075L;
+	
+	public static final long ACL_CLASS_IDENTIFIER = 4;
 
 	/** 
 	 * This attribute maps to the column db_config_id in the table_mapping table.
@@ -53,6 +55,11 @@ public class TableMapping extends PersistableObject implements Serializable
 	 * This attribute maps to the column active_for_user in the table_mapping table.
 	 */
 	protected boolean activeForUser;
+
+	private boolean accessPreventDel = true;
+	private boolean accessPreventEdit = true;
+	private boolean accessPreventExecute = true;
+	private boolean accessPreventSharing = true;
 
 	/**
 	 * Method 'TableMapping'
@@ -389,6 +396,38 @@ public class TableMapping extends PersistableObject implements Serializable
 		}
 		fullName.append(this.getTableName());
 		return fullName.toString();
+	}
+
+	public boolean isAccessPreventDel() {
+		return accessPreventDel;
+	}
+
+	public void setAccessPreventDel(boolean accessPreventDel) {
+		this.accessPreventDel = accessPreventDel;
+	}
+
+	public boolean isAccessPreventEdit() {
+		return accessPreventEdit;
+	}
+
+	public void setAccessPreventEdit(boolean accessPreventEdit) {
+		this.accessPreventEdit = accessPreventEdit;
+	}
+
+	public boolean isAccessPreventExecute() {
+		return accessPreventExecute;
+	}
+
+	public void setAccessPreventExecute(boolean accessPreventExecute) {
+		this.accessPreventExecute = accessPreventExecute;
+	}
+
+	public boolean isAccessPreventSharing() {
+		return accessPreventSharing;
+	}
+
+	public void setAccessPreventSharing(boolean accessPreventSharing) {
+		this.accessPreventSharing = accessPreventSharing;
 	}
 
 }
