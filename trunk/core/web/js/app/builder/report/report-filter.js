@@ -126,7 +126,6 @@ simpleFilter = function(){
 	hideFormField(form.findField('reportDatasetId'));
 	hideFormField(form.findField('operand1DatasetId'));
 	hideFormField(form.findField('operand1ColumnMappingId'));
-	alert('hi');
 	
 	showFormField(operand1);
 	showFormField(operand2);

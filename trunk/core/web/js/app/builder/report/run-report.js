@@ -187,6 +187,18 @@ Ext.onReady(function() {
 			    	border: false,
 		    		height: 25,
 			    	items: [{
+					    
+			    		region: 'center',
+				    	xtype: 'button',
+						text: EURB.RunReport.exportCharts,
+						id: 'export',
+						width:100,
+						hidden: false,
+						handler : function(){
+							Highcharts.testExport();
+						}
+				    },
+	    	        {
 				    	region: 'center',
 			    		xtype: 'textfield',
 						name: 'chart0_formula',
