@@ -8,7 +8,8 @@
 <% String resourcesUrl = request.getParameter("resourcesUrl"); %>
 <% String baseUrl = request.getParameter("baseUrl"); %>
 <% boolean menuEnabled = !"false".equals(request.getParameter("menuEnabled")); %>
-<% boolean statusEnabled = !"false".equals(request.getParameter("statusEnabled")); %>
+<% boolean statusEnabled = false;//!"false".equals(request.getParameter("statusEnabled")); %>
+<% boolean headerEnabled = false;//!"false".equals(request.getParameter("headerEnabled")); %>
 		<div id="loading-mask" style=""></div>
 		<div id="loading">
 			<div class="loading-indicator">
@@ -88,7 +89,7 @@
 		EURB.baseURL = '<%=baseUrl%>';
 		EURB.resourcesURL = '<%=resourcesUrl%>';
 		EURB.menuEnabled = <%=menuEnabled%>;
-		EURB.statusEnabled = '<%=statusEnabled%>';
+		EURB.statusEnabled = <%=statusEnabled%>;
 		EURB.currentUser = '<%=SessionManager.getCurrentUserName() == null ? "admin" : SessionManager.getCurrentUserName() %>';
 		EURB.currentIpAddress = '<%=request.getRemoteAddr()%>';
 		
@@ -141,6 +142,7 @@
 		EURB.appMenu.dashboard = '<spring:message code="eurb.app.menu.builder.dashboard" />';
 		EURB.appMenu.dashboardDesigner = '<spring:message code="eurb.app.menu.builder.dashboardDesigner" />';
 		
+		
 		EURB.showError = function(msg, title) {
 			Ext.Msg.show({
 				 title:title || Ext.MessageBox.title.error
@@ -171,11 +173,14 @@
 		<script src="<%=resourcesUrl%>/js/eurb-reports.js"></script>
 		
 		<div id="header">
+			<% if (headerEnabled){ %>
 			<a href="http://www.sharifpro.com" style="float: left; margin-right: 10px;"><img
 				src="<%=resourcesUrl%>/img/icon/eurb.gif"
 				style="width: 83px; height: 24px; margin-top: 1px;" /></a>
 	
 			<div class="api-title"><img src="<%=resourcesUrl%>/img/icon/matma.png"  /></div>
+			<% } %>
+		
 		</div>
 	
 		<div id="classes"></div>

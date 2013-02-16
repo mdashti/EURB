@@ -50,7 +50,7 @@ MainPanel = function(){
         minTabWidth: 135,
         layout: 'fit',
         items: [],
-        bbar: EURB.menuEnabled ? new Ext.ux.StatusBar({
+        bbar: EURB.statusEnabled ? new Ext.ux.StatusBar({
             id: 'eurb-status',
             //statusAlign: 'right', // the magic config
             // These are just the standard toolbar TextItems we created above.  They get
@@ -67,7 +67,7 @@ MainPanel = function(){
             	currentIP, ' ', ' ', ' ', ' ', '-', ' ', ' ', ' ', 
             	clock, ' ', ' ', ' ']
         }) : [],
-        listeners: EURB.menuEnabled ? {
+        listeners: EURB.statusEnabled ? {
             render: {
                 fn: function(){
                     // Add a class to the parent TD of each text item so we can give them some custom inset box
