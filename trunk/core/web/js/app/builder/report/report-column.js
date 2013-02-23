@@ -325,7 +325,7 @@ EURB.ReportColumn.ColumnGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 			    ,xtype: 'textfield'
 				,allowBlank:false
 				
-			},EURB.ReportColumn.formulaFieldSet]
+			},EURB.ReportColumn.formulaFieldSet1]
 	    });
         this.editFormulaForm = editFormulaForm;
         var editFormulaWindow = new Ext.Window({
