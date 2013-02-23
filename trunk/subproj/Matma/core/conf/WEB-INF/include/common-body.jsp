@@ -64,6 +64,8 @@
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/app/menu/jquery.min.js" ></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/Highcharts/js/highcharts.js" ></script>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/Highcharts/js/highcharts-more.js" ></script>
+		<script type="text/javascript" src="<%=resourcesUrl%>/js/Highcharts/js/modules/exporting.js" ></script>
+		
 		
 		<%-- MutilGrouping --%>
 		<script type="text/javascript" src="<%=resourcesUrl%>/js/extjs/plugins/multigrouping/LockingGridView.js" ></script>

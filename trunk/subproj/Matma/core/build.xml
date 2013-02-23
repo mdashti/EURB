@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project basedir="." default="matma-build-dist">
-	<property file="../../../core/build.properties"/>
-	<property name="src.dir" value="../../../core/src"/>
-	<property name="src.jsp.dir" value="../../../core/web/jsp"/>
-	<property name="src.js.dir" value="../../../core/web/js"/>
-	<property name="src.css.dir" value="../../../core/web/css"/>
-	<property name="src.img.dir" value="../../../core/web/img"/>
-	<property name="lib.dir" value="../../../core/lib"/>
-	<property name="conf.dir" value="../../../core/conf"/>
+	<property file="../../../EURB/source/core/build.properties"/>
+	<property name="src.dir" value="../../../EURB/source/core/src"/>
+	<property name="src.jsp.dir" value="../../../EURB/source/core/web/jsp"/>
+	<property name="src.js.dir" value="../../../EURB/source/core/web/js"/>
+	<property name="src.css.dir" value="../../../EURB/source/core/web/css"/>
+	<property name="src.img.dir" value="../../../EURB/source/core/web/img"/>
+	<property name="lib.dir" value="../../../EURB/source/core/lib"/>
+	<property name="conf.dir" value="../../../EURB/source/core/conf"/>
 	
-	<import file="../../../core/build.xml"/>
+	<import file="../../../EURB/source/core/build.xml"/>
 	
 	<property name="matma.src.dir" value="src"/>
 	<property name="matma.src.jsp.dir" value="web/jsp"/>
@@ -85,6 +85,9 @@
 			<fileset dir="${matma.src.css.dir}">
 				<exclude name="**/.#*"/>
 				<include name="**/*.css"/>
+				<include name="**/*.ttf"/>
+				<include name="**/*.eot"/>
+				<include name="**/*.woff"/>
 			</fileset>
 		</copy>
 
