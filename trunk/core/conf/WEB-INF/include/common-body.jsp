@@ -140,6 +140,8 @@
 		EURB.appMenu.authorities = '<spring:message code="eurb.app.menu.security.authorities" />';
 		EURB.appMenu.showReport = '<spring:message code="eurb.app.menu.builder.showreport" />';
 		EURB.appMenu.schedule = '<spring:message code="eurb.app.menu.builder.schedule" />';
+		EURB.appMenu.dashboard = '<spring:message code="eurb.app.menu.builder.dashboard" />';
+		EURB.appMenu.dashboardDesigner = '<spring:message code="eurb.app.menu.builder.dashboardDesigner" />';
 		
 		EURB.showError = function(msg, title) {
 			Ext.Msg.show({

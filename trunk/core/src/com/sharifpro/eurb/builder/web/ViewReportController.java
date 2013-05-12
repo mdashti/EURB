@@ -423,8 +423,12 @@ public class ViewReportController {
 	public @ResponseBody Map<String,? extends Object> executeRunReportChartByChartId(@PathVariable Long report, @PathVariable Long chart) throws Exception {
 
 		try{
-			long version = reportDesignDao.findWhereIdEquals(report).get(0).getVersionId();
-
+			long version;
+			try {
+				version = reportDesignDao.findWhereIdEquals(report).get(0).getVersionId();
+			} catch (Exception e) {
+				throw new ReportChartDaoException("Chart not found!");
+			}
 			//find report design with given id
 			ReportDesign reportDesign = reportDesignDao.findByPrimaryKey(report, version);
 

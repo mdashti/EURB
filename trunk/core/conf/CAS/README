@@ -1,3 +1,9 @@
+Short Summary In Action:
+After building source, you should just replace applicationContext.xml and web.xml in $EURB_SRC$/core/conf/CAS folder 
+to $tomcat_home$/webapp/eurb/WEB-INF. Then you should change CAS parameters at the end of 
+$tomcat_home$/webapp/eurb/WEB-INF/application.properties file.
+
+==============================
 This document's aim is to help using the Central Authentication Service (CAS).
 
 First, you should install the CAS on your server, otherwise you can use a pre-installed CAS server:

@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 
 
 import com.sharifpro.eurb.DaoFactory;
-import com.sharifpro.eurb.builder.model.ReportCategory;
 import com.sharifpro.eurb.builder.model.ReportDesign;
 import com.sharifpro.eurb.info.RecordStatus;
 import com.sharifpro.eurb.management.mapping.dao.TableMappingDao;
@@ -36,7 +35,7 @@ public class TableMappingDaoImpl extends AbstractDAO implements ParameterizedRow
 
 	private final static String QUERY_SELECT_PART_USERNAMED_BASED = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + " o, " + DbConfigDaoImpl.getTableName() + " d, persistable_object p, acl_object_identity oi, acl_entry e"
 			+ " WHERE p.id=o.id"
-			+ " AND o.db_config_id=d.id AND d.record_status='" + RecordStatus.ACTIVE.getId() + "')"
+			+ " AND (o.db_config_id=d.id AND d.record_status='" + RecordStatus.ACTIVE.getId() + "')"
 			+ " AND o.id=oi.object_id_identity"
 			+ " AND oi.object_id_class="+TableMapping.ACL_CLASS_IDENTIFIER
 			+ " AND oi.id=e.acl_object_identity"
