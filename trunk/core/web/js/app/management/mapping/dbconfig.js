@@ -112,7 +112,7 @@ EURB.DBConfig.cols = [{
 	,sortable:true
 	,editor:{
 		xtype: 'textfield'
-		,allowBlank:false
+		,allowBlank:true
 		,inputType:'password'
 		,cls:'left-align-txt'
 	}
@@ -161,7 +161,7 @@ EURB.DBConfig.DBGrid = Ext.extend(Ext.grid.GridPanel, {
              title:EURB.addEdit+' '+EURB.appMenu.dbConfig
             ,iconCls:'icon-edit-record'
             ,columnCount:1
-            ,ignoreFields:{id:true, testCon:true}
+            ,ignoreFields:{id:true, testCon:true, accessPreventDel:true, accessPreventEdit: true, accessPreventExecute: true, accessPreventSharing: true }
             //,readonlyFields:{password:true}
             //,disabledFields:{name:true}
             ,formConfig:{

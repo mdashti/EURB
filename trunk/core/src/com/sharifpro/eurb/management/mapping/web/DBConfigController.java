@@ -3,6 +3,7 @@ package com.sharifpro.eurb.management.mapping.web;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -73,7 +74,27 @@ public class DBConfigController {
 				totalCount = dbConfigDao.countAll(query, onFields);
 			}
 
-			return JsonUtil.getSuccessfulMap(dbConfigs, totalCount);
+			//We do not want to send password to the client browser, so we create our own list of values
+			List<Map<String,String>> resList = new ArrayList<Map<String,String>>(dbConfigs.size());
+			Map<String,String> dbConfMap;
+			for(DbConfig dbConf: dbConfigs) {
+				dbConfMap = new HashMap<String, String>();
+				dbConfMap.put("id", dbConf.getId() + "");
+				dbConfMap.put("testCon", dbConf.getTestCon() + "");
+				dbConfMap.put("name", dbConf.getName() + "");
+				dbConfMap.put("driverClass", dbConf.getDriverClass() + "");
+				dbConfMap.put("driverUrl", dbConf.getDriverUrl() + "");
+				dbConfMap.put("username", dbConf.getUsername() + "");
+				dbConfMap.put("accessPreventDel", dbConf.isAccessPreventDel() + "");
+				dbConfMap.put("accessPreventEdit", dbConf.isAccessPreventEdit() + "");
+				dbConfMap.put("accessPreventExecute", dbConf.isAccessPreventExecute() + "");
+				dbConfMap.put("accessPreventSharing", dbConf.isAccessPreventSharing() + "");
+				dbConfMap.put("testQuery", dbConf.getTestQuery());
+				dbConfMap.put("newRecord", "false");
+				resList.add(dbConfMap);
+				//dbConf.setPassword("");
+			}
+			return JsonUtil.getSuccessfulMap(resList, totalCount);
 
 		} catch (Exception e) {
 

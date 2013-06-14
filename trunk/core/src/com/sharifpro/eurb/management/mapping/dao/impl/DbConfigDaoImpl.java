@@ -14,6 +14,8 @@ import com.sharifpro.transaction.annotation.TransactionalReadWrite;
 import com.sharifpro.util.PropertyProvider;
 import com.sharifpro.util.SessionManager;
 
+import edu.sharif.sjp.util.StringUtil;
+
 import java.util.List;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -28,7 +30,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 {
 	private AclServiceImpl aclService;
 	
-	private final static String QUERY_FROM_COLUMNS = "o.name, o.driver_class, o.driver_url, o.username, o.password, o.test_query, o.record_status";
+	private final static String QUERY_FROM_COLUMNS = "o.name, o.driver_class, AES_DECRYPT(o.driver_url, concat('durlpwd',o.id)), AES_DECRYPT(o.username, concat('usrpwd',o.id)), AES_DECRYPT(o.password, concat('pspwd',o.id)), o.test_query, o.record_status";
 
 	private final static String QUERY_SELECT_PART_USERNAMED_BASED = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + " o, persistable_object p, acl_object_identity oi, acl_entry e"
 			+ " WHERE p.id=o.id"
@@ -75,8 +77,11 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public void update(DbConfigPk pk, DbConfig dto) throws DbConfigDaoException
 	{
 		DaoFactory.createPersistableObjectDao().update(pk);
-		getJdbcTemplate().update("UPDATE " + getTableName() + " SET name = ?, driver_class = ?, driver_url = ?, username = ?, password = ?, test_query = ?, record_status = 'A' WHERE id = ?",dto.getName(),dto.getDriverClass(),dto.getDriverUrl(),dto.getUsername(),dto.getPassword(),dto.getTestQuery(),pk.getId());
-				
+		if(StringUtil.isEmpty(dto.getPassword())) {
+			getJdbcTemplate().update("UPDATE " + getTableName() + " SET name = ?, driver_class = ?, driver_url = AES_ENCRYPT(?, concat('durlpwd', ?)), username = AES_ENCRYPT(?, concat('usrpwd', ?)), test_query = ?, record_status = 'A' WHERE id = ?",dto.getName(),dto.getDriverClass(),dto.getDriverUrl(),pk.getId(),dto.getUsername(),pk.getId(),dto.getTestQuery(),pk.getId());
+		} else {
+			getJdbcTemplate().update("UPDATE " + getTableName() + " SET name = ?, driver_class = ?, driver_url = AES_ENCRYPT(?, concat('durlpwd', ?)), username = AES_ENCRYPT(?, concat('usrpwd', ?)), password = AES_ENCRYPT(?, concat('pspwd', ?)), test_query = ?, record_status = 'A' WHERE id = ?",dto.getName(),dto.getDriverClass(),dto.getDriverUrl(),pk.getId(),dto.getUsername(),pk.getId(),dto.getPassword(),pk.getId(),dto.getTestQuery(),pk.getId());
+		}
 		dto.resetDataSource();
 	}
 	
