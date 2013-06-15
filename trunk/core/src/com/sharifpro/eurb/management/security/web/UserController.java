@@ -156,7 +156,7 @@ public class UserController {
 	@RequestMapping(value="/management/security/user/userRemove.spy")
 	public @ResponseBody Map<String,? extends Object> delete(@RequestParam Object data) throws Exception {
 
-		/*try{
+		try{
 			List<Integer> deleteIds = jsonUtil.getListFromRequest(data, Integer.class);
 			List<UserPk> pkList = new ArrayList<UserPk>(deleteIds.size());
 			for(Integer id : deleteIds) {
@@ -169,8 +169,9 @@ public class UserController {
 		} catch (Exception e) {
 
 			return JsonUtil.getModelMapError(e);
-		}*/
-		return JsonUtil.getModelMapError(PropertyProvider.get("eurb.app.management.user.deleteNotSupported"));
+		}
+		
+		//return JsonUtil.getModelMapError(PropertyProvider.get("eurb.app.management.user.deleteNotSupported"));
 	}
 
 	@PreAuthorize("hasRole(T(com.sharifpro.eurb.info.AuthorityType).ROLE_SEC_USER_MANAGEMENT_EDIT)")

@@ -25,7 +25,7 @@ public interface UserDao
 	/** 
 	 * Sets enabled flag for a single user in the users table.
 	 */
-	public void setEnabled(UserPk pk, boolean enabled) throws UserDaoException;
+	public void setEnabled(UserPk pk, int enabledFlag) throws UserDaoException;
 	
 	/** 
 	 * Sets password for a single user in the users table.

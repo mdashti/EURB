@@ -35,9 +35,15 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<User>, UserDao
 {
+	private static final int USER_DISABLED = 0;
+
+	private static final int USER_ENABLED = 1;
+
+	private static final int USER_DELETED = 2;
+
 	private final static String QUERY_FROM_COLUMNS = "o.username, o.password, o.enabled, o.email";
 
-	private final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + " o " + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL_AND_JOIN;
+	private final static String QUERY_SELECT_PART = "SELECT " + PersistableObjectDaoImpl.PERSISTABLE_OBJECT_QUERY_FROM_COLUMNS + ", " + QUERY_FROM_COLUMNS + " FROM " + getTableName() + " o " + PersistableObjectDaoImpl.TABLE_NAME_AND_INITIAL_AND_JOIN + " WHERE o.enabled <> " + USER_DELETED;
 
 	private final static String COUNT_QUERY = "SELECT count(distinct(o.id)) FROM " + getTableName() + " o";
 
@@ -73,10 +79,10 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 	 * Sets enabled flag for a single user in the users table.
 	 */
 	@TransactionalReadWrite
-	public void setEnabled(UserPk pk, boolean enabled)
+	public void setEnabled(UserPk pk, int enabledFlag)
 	{
 		DaoFactory.createPersistableObjectDao().update(pk);
-		getJdbcTemplate().update("UPDATE " + getTableName() + " SET enabled = ? WHERE id = ?", enabled, pk.getId());
+		getJdbcTemplate().update("UPDATE " + getTableName() + " SET enabled = ? WHERE id = ?", enabledFlag, pk.getId());
 	}
 	
 	/** 
@@ -127,8 +133,9 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 	@TransactionalReadWrite
 	public void delete(UserPk pk)
 	{
-		getJdbcTemplate().update("DELETE FROM " + getTableName() + " WHERE id = ?",pk.getId());
-		DaoFactory.createPersistableObjectDao().delete(pk);
+		setEnabled(pk, USER_DELETED);
+//		getJdbcTemplate().update("DELETE FROM " + getTableName() + " WHERE id = ?",pk.getId());
+//		DaoFactory.createPersistableObjectDao().delete(pk);
 	}
 
 	/**
@@ -170,7 +177,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 	public User findByPrimaryKey(Long id) throws UserDaoException
 	{
 		try {
-			List<User> list = getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE id = ?", this,id);
+			List<User> list = getJdbcTemplate().query(QUERY_SELECT_PART + " AND id = ?", this,id);
 			return list.size() == 0 ? null : list.get(0);
 		}
 		catch (Exception e) {
@@ -197,7 +204,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 	@TransactionalReadOnly
 	public List<User> findAllActive() throws UserDaoException {
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.enabled=1 ORDER BY o.username", this);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " AND o.enabled=1 ORDER BY o.username", this);
 		}
 		catch (Exception e) {
 			throw new UserDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -211,7 +218,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 	public List<User> findByPersistableObject(Long id) throws UserDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE id = ?", this,id);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " AND id = ?", this,id);
 		}
 		catch (Exception e) {
 			throw new UserDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -226,7 +233,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 	public List<User> findWhereIdEquals(Long id) throws UserDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE id = ? ORDER BY id", this,id);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " AND id = ? ORDER BY id", this,id);
 		}
 		catch (Exception e) {
 			throw new UserDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -241,7 +248,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 	public User findWhereUsernameEquals(String username) throws UserDaoException
 	{
 		try {
-			List<User> list = getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE username = ? ORDER BY username", this,username);
+			List<User> list = getJdbcTemplate().query(QUERY_SELECT_PART + " AND username = ? ORDER BY username", this,username);
 			return list.size() == 0 ? null : list.get(0);
 		}
 		catch (Exception e) {
@@ -257,7 +264,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 	public User findByEmail(String email) throws UserDaoException
 	{
 		try {
-			List<User> list = getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE email = ? ORDER BY username", this,email);
+			List<User> list = getJdbcTemplate().query(QUERY_SELECT_PART + " AND email = ? ORDER BY username", this,email);
 			return list.size() == 0 ? null : list.get(0);
 		}
 		catch (Exception e) {
@@ -273,7 +280,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 	public List<User> findWherePasswordEquals(String password) throws UserDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE password = ? ORDER BY password", this,password);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " AND password = ? ORDER BY password", this,password);
 		}
 		catch (Exception e) {
 			throw new UserDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -288,7 +295,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 	public List<User> findWhereEnabledEquals(Short enabled) throws UserDaoException
 	{
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE enabled = ? ORDER BY enabled", this,enabled);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " AND enabled = ? ORDER BY enabled", this,enabled);
 		}
 		catch (Exception e) {
 			throw new UserDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -406,7 +413,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 	@TransactionalReadWrite
 	public void activate(UserPk pk) throws UserDaoException
 	{
-		setEnabled(pk, true);
+		setEnabled(pk, USER_ENABLED);
 	}
 	
 	/** 
@@ -426,7 +433,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 	@TransactionalReadWrite
 	public void deactivate(UserPk pk) throws UserDaoException
 	{
-		setEnabled(pk, false);
+		setEnabled(pk, USER_DISABLED);
 	}
 	
 	/** 
@@ -443,7 +450,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 	@TransactionalReadOnly
 	public List<User> findCurrentUsersForGroup(Long groupId) throws UserDaoException {
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.username IN (SELECT username FROM group_members WHERE group_id = ?) ORDER BY o.username", this,groupId);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " AND o.username IN (SELECT username FROM group_members WHERE group_id = ?) ORDER BY o.username", this,groupId);
 		}
 		catch (Exception e) {
 			throw new UserDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);
@@ -453,7 +460,7 @@ public class UserDaoImpl extends AbstractDAO implements ParameterizedRowMapper<U
 	@TransactionalReadOnly
 	public List<User> findSelectableUsersForGroup(Long groupId) throws UserDaoException {
 		try {
-			return getJdbcTemplate().query(QUERY_SELECT_PART + " WHERE o.username NOT IN (SELECT username FROM group_members WHERE group_id = ?) ORDER BY o.username", this,groupId);
+			return getJdbcTemplate().query(QUERY_SELECT_PART + " AND o.username NOT IN (SELECT username FROM group_members WHERE group_id = ?) ORDER BY o.username", this,groupId);
 		}
 		catch (Exception e) {
 			throw new UserDaoException(PropertyProvider.QUERY_FAILED_MESSAGE, e);

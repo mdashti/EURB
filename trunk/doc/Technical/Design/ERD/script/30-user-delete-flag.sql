@@ -1,0 +1,1 @@
+ALTER TABLE `eurb`.`users` CHANGE COLUMN `enabled` `enabled` TINYINT(2) NOT NULL  ;
