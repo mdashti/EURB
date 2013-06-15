@@ -90,7 +90,7 @@
 		EURB.baseURL = '<%=baseUrl%>';
 		EURB.resourcesURL = '<%=resourcesUrl%>';
 		EURB.menuEnabled = <%=menuEnabled%>;
-		EURB.statusEnabled = '<%=statusEnabled%>';
+		EURB.statusEnabled = <%=statusEnabled%>;
 		EURB.currentUser = '<%=SessionManager.getCurrentUserName() == null ? "admin" : SessionManager.getCurrentUserName() %>';
 		EURB.currentIpAddress = '<%=request.getRemoteAddr()%>';
 		
