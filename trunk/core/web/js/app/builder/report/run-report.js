@@ -46,20 +46,36 @@ EURB.RunReport.Grid = Ext.extend(Ext.grid.GridPanel, {
 			,plugins : [new Ext.ux.plugin.PagingToolbarResizer( {options : [ 15, 20, 25, 50, 100 ], prependCombo: false, displayText: EURB.pageSizeDisplayText})]
 		});
 		
-		this.tbar = ['->'/*,{
+		this.tbar = [{
+			 /*text:EURB.RunReport.fullscreen
+			,*/iconCls:'icon-fullscreen'
+			,tooltip: {
+				text: EURB.isFullScreen ? EURB.RunReport.exitFullscreen : EURB.RunReport.enterFullscreen
+			}, listeners:{
+				 scope:this
+				,click:{fn: function() { window.location.href = EURB.baseURL+'builder/report/run-report'+EURB.RunReport.design+'-v'+EURB.RunReport.version+'.spy'+(EURB.isFullScreen ? "" : "?menuEnabled=false&headerEnabled=false&statusEnabled=false"); },buffer:200}
+			}
+		}, '->'/*,{
 			xtype: 'exportbutton'
 			,component: this
 			,store: EURB.RunReport.store
 		}*/, {
 			 text:EURB.RunReport.printCurrentPage
 			,iconCls:'icon-print'
-			,listeners:{
+			,tooltip: {
+				text: EURB.RunReport.printCurrentPage,
+				anchor: 'top'
+			},listeners:{
 				 scope:this
 				,click:{fn: function() { Ext.ux.GridPrinter.print(EURB.RunReport.runReportGrid) },buffer:200}
 			}
 		}, {
 			 text:EURB.RunReport.exportAllReportToCSV
 			,iconCls:'icon-csv'
+			,tooltip: {
+				text: EURB.RunReport.exportAllReportToCSV,
+				anchor: 'top'
+			}
 			,listeners:{
 				 scope:this
 				,click:{fn: function() { window.location.href = EURB.baseURL+'builder/report/report'+EURB.RunReport.design+'-v'+EURB.RunReport.version+(new Date().format('-B-Q-R-G-i'))+'.csv'; },buffer:200}
@@ -67,6 +83,10 @@ EURB.RunReport.Grid = Ext.extend(Ext.grid.GridPanel, {
 		}, {
 			 text:EURB.RunReport.exportAllReportToExcel
 			,iconCls:'icon-excel'
+			,tooltip: {
+				text: EURB.RunReport.exportAllReportToExcel,
+				anchor: 'top'
+			}
 			,listeners:{
 				 scope:this
 				,click:{fn: function() { window.location.href = EURB.baseURL+'builder/report/report'+EURB.RunReport.design+'-v'+EURB.RunReport.version+(new Date().format('-B-Q-R-G-i'))+'.xls'; },buffer:200}
@@ -74,6 +94,10 @@ EURB.RunReport.Grid = Ext.extend(Ext.grid.GridPanel, {
 		}, {
 			 text:EURB.RunReport.exportAllReportToWord
 			,iconCls:'icon-word'
+			,tooltip: {
+				text: EURB.RunReport.exportAllReportToWord,
+				anchor: 'top'
+			}
 			,listeners:{
 				 scope:this
 				,click:{fn: function() { window.location.href = EURB.baseURL+'builder/report/report'+EURB.RunReport.design+'-v'+EURB.RunReport.version+(new Date().format('-B-Q-R-G-i'))+'.docx'; },buffer:200}

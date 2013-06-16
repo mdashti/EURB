@@ -88,8 +88,10 @@
 		}
 		EURB.title = '<spring:message code="eurb.app.title" />';
 		EURB.baseURL = '<%=baseUrl%>';
+		EURB.isFullScreen = <%=(!menuEnabled && !statusEnabled && !headerEnabled) ? "true" : "false" %>;
 		EURB.resourcesURL = '<%=resourcesUrl%>';
 		EURB.menuEnabled = <%=menuEnabled%>;
+		EURB.headerEnabled = <%=headerEnabled%>;
 		EURB.statusEnabled = <%=statusEnabled%>;
 		EURB.currentUser = '<%=SessionManager.getCurrentUserName() == null ? "admin" : SessionManager.getCurrentUserName() %>';
 		EURB.currentIpAddress = '<%=request.getRemoteAddr()%>';

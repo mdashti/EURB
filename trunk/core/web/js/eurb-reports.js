@@ -135,9 +135,17 @@ Ext.onReady(function(){
     });
     var viewPortArr;
 	if(EURB.menuEnabled) {
-    	viewPortArr = [ hd, api, EURB.mainPanel ];
+		if(EURB.headerEnabled) {
+    		viewPortArr = [ hd, api, EURB.mainPanel ];
+		} else {
+			viewPortArr = [ api, EURB.mainPanel ];
+		}
 	} else {
-		viewPortArr = [ hd, EURB.mainPanel ];
+		if(EURB.headerEnabled) {
+			viewPortArr = [ hd, EURB.mainPanel ];
+		} else {
+			viewPortArr = [ EURB.mainPanel ];
+		}
 	}
     if(EURB.westPanel) {
     	viewPortArr.push(EURB.westPanel);

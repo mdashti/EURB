@@ -35,6 +35,8 @@
 			EURB.RunReport.EmptyGroupField = '<spring:message code="eurb.app.builder.runreport.group.empty" />';
 			EURB.RunReport.ChartAlert = '<spring:message code="eurb.app.builder.runreport.chart.alert" />';
 			EURB.RunReport.exportCharts = '<spring:message code="eurb.app.builder.runreport.chart.exportAll" />';
+			EURB.RunReport.enterFullscreen = '<spring:message code="eurb.app.builder.runreport.enter.fullscreen" />';
+			EURB.RunReport.exitFullscreen = '<spring:message code="eurb.app.builder.runreport.exit.fullscreen" />';
 			EURB.RunReport.HasGroup = ${hasGroup};
 			
 			if(EURB.RunReport.HasGroup){
