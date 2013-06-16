@@ -1,8 +1,11 @@
 package com.sharifpro.db.util;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.CharUtils;
 import org.apache.commons.lang.StringUtils;
 /**
  * String handling utilities.
@@ -270,4 +273,21 @@ public class StringUtilities
 public static String toTwoDigitNum(int num) {
 	return num < 10 && num >= 0 ? "0"+num : ""+num;
 }
+
+	private static final char CSV_DELIMITER = ',';
+	private static final char CSV_QUOTE = '"';
+	private static final String CSV_QUOTE_STR = String.valueOf(CSV_QUOTE);
+	private static final char[] CSV_SEARCH_CHARS = 
+	    new char[] {CSV_DELIMITER, CSV_QUOTE, CharUtils.CR, CharUtils.LF};
+	
+	public static void escapeCSV(final CharSequence input, final Writer out) throws IOException {
+	
+	    if (StringUtils.containsNone(input.toString(), CSV_SEARCH_CHARS)) {
+	        out.write(input.toString());
+	    } else {
+	        out.write(CSV_QUOTE);
+	        out.write(StringUtils.replace(input.toString(), CSV_QUOTE_STR, CSV_QUOTE_STR + CSV_QUOTE_STR));
+	        out.write(CSV_QUOTE);
+	    }
+	}
 }

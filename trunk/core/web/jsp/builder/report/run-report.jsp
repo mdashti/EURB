@@ -29,6 +29,7 @@
 			EURB.RunReport = {};
 			EURB.RunReport.viewReport = '<spring:message code="eurb.app.builder.runreport.title" /> ${reportName}';
 			EURB.RunReport.printCurrentPage = '<spring:message code="eurb.app.builder.runreport.grid.printCurrentPage" />';
+			EURB.RunReport.exportAllReportToCSV = '<spring:message code="eurb.app.builder.runreport.grid.exportAllReportToCSV" />';
 			EURB.RunReport.exportAllReportToExcel = '<spring:message code="eurb.app.builder.runreport.grid.exportAllReportToExcel" />';
 			EURB.RunReport.exportAllReportToWord = '<spring:message code="eurb.app.builder.runreport.grid.exportAllReportToWord" />';
 			EURB.RunReport.EmptyGroupField = '<spring:message code="eurb.app.builder.runreport.group.empty" />';

@@ -1,6 +1,9 @@
 package com.sharifpro.eurb.builder.web;
 
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -8,10 +11,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
@@ -19,6 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.sharifpro.db.DBBean;
 import com.sharifpro.db.dialects.HibernateDialect;
 import com.sharifpro.db.meta.ISQLConnection;
+import com.sharifpro.db.util.StringUtilities;
 import com.sharifpro.eurb.builder.dao.GroupAggregationDao;
 import com.sharifpro.eurb.builder.dao.ReportCategoryDao;
 import com.sharifpro.eurb.builder.dao.ReportChartAxisDao;
@@ -139,10 +147,99 @@ public class ViewReportController {
 		return mv;
 	}
 
+	interface OutputCollector {
+		public void collect(DBBean db, int counter, int total, ReportDesign reportDesign, List<ReportDataset> datasetList, List<ReportColumn> columnList, List<ReportFilter> reportFilters) throws Exception;
+	}
+	
+	class MapOutputCollector implements OutputCollector {
+
+		boolean includeMetadata = true;
+		Object result;
+		
+		public void collect(DBBean db, int counter, int total, ReportDesign reportDesign, List<ReportDataset> datasetList, List<ReportColumn> columnList, List<ReportFilter> reportFilters) throws Exception {
+			Map<String,Object> resultMap = new HashMap<String, Object>();
+			List<Map<String, Object>> rowList = new LinkedList<Map<String,Object>>();
+			Map<String,Object> row;
+			while(db.result.next()) {
+				row = new HashMap<String, Object>();
+				row.put("id", counter++);
+				for(ReportColumn col : columnList) {
+					row.put(col.getColumnKey(), db.result.getObject(col.getColumnKey()));
+				}
+				rowList.add(row);
+			}
+
+			resultMap = JsonUtil.getSuccessfulMap(rowList, total);
+			if(includeMetadata) {
+				resultMap.put("reportDesign", reportDesign);
+				resultMap.put("datasetList", datasetList);
+				resultMap.put("columnList", columnList);
+				resultMap.put("reportFilters", reportFilters);
+			}
+			
+			this.result = resultMap;
+		}
+		
+	}
+	
+	@RequestMapping(value="/builder/report/report{report}-v{version}-{year}-{month}-{day}-{min}-{sec}.csv", method = RequestMethod.GET)
+	public @ResponseBody void executeRunReportCSV(@PathVariable Long report, @PathVariable Long version, @PathVariable Long year, @PathVariable Long month, @PathVariable Long day, @PathVariable Long min, @PathVariable Long sec, 
+	        HttpServletRequest request, 
+	        HttpServletResponse response) throws Exception {
+		response.setContentType("text/csv");
+		response.setHeader("Content-Disposition","attachment; filename=\"" + String.format("report%d-v%d-%04d-%02d-%02d-%02d-%02d.csv", report, version, year, month, day, min, sec) + "\"");
+		final BufferedWriter writer = new BufferedWriter(response.getWriter());
+
+		
+		OutputCollector collector = new OutputCollector() {
+				
+			@Override
+			public void collect(DBBean db, int counter, int total,
+					ReportDesign reportDesign, List<ReportDataset> datasetList,
+					List<ReportColumn> columnList, List<ReportFilter> reportFilters)
+					throws Exception {
+
+				for (int cellnum = 0; cellnum < columnList.size(); cellnum ++) {
+					if(cellnum > 0) {
+						writer.write(',');
+					}
+					StringUtilities.escapeCSV(columnList.get(cellnum).getColumnHeader(), writer); 
+				}
+				writer.append("\r\n");
+				Object value;
+				while(db.result.next()) {
+					for (int cellnum = 0; cellnum < columnList.size(); cellnum ++) {
+						if(cellnum > 0) {
+							writer.write(',');
+						}
+						value = db.result.getObject(columnList.get(cellnum).getColumnKey());
+						if(value != null) {
+							StringUtilities.escapeCSV(value.toString(), writer);
+						} else {
+							StringUtilities.escapeCSV("", writer);
+						}
+					}
+					writer.append("\r\n");
+				}
+			}
+		};
+		executeRunReportDataInner(report, version, null, null, null, null, collector);
+		
+		writer.flush();
+		writer.close();
+	}
+
 	@RequestMapping(value="/builder/report/report{report}-v{version}-{year}-{month}-{day}-{min}-{sec}.xls")
 	public ModelAndView executeRunReportExcel(@PathVariable Long report, @PathVariable Long version, @PathVariable Long year, @PathVariable Long month, @PathVariable Long day, @PathVariable Long min, @PathVariable Long sec) throws Exception {
 		ModelAndView mv = new ModelAndView();
-		mv.addAllObjects(executeRunReportDataInner(report, version, null, null, null, null, true));
+		try {
+			MapOutputCollector collector = new MapOutputCollector();
+			executeRunReportDataInner(report, version, null, null, null, null, collector);
+			mv.addAllObjects((Map<String, ?>) collector.result);
+		} catch (Exception e) {
+			e.printStackTrace();
+			mv.addAllObjects(JsonUtil.getModelMapError(e));
+		}
 		mv.setView(new com.sharifpro.eurb.builder.view.ViewExcelReport());
 		return mv;
 	}
@@ -150,7 +247,14 @@ public class ViewReportController {
 	@RequestMapping(value="/builder/report/report{report}-v{version}-{year}-{month}-{day}-{min}-{sec}.docx")
 	public ModelAndView executeRunReportWord(@PathVariable Long report, @PathVariable Long version, @PathVariable Long year, @PathVariable Long month, @PathVariable Long day, @PathVariable Long min, @PathVariable Long sec) throws Exception {
 		ModelAndView mv = new ModelAndView();
-		mv.addAllObjects(executeRunReportDataInner(report, version, null, null, null, null, true));
+		try {
+			MapOutputCollector collector = new MapOutputCollector();
+			executeRunReportDataInner(report, version, null, null, null, null, collector);
+			mv.addAllObjects((Map<String, ?>) collector.result);
+		} catch (Exception e) {
+			e.printStackTrace();
+			mv.addAllObjects(JsonUtil.getModelMapError(e));
+		}
 		mv.setView(new com.sharifpro.eurb.builder.view.ViewWordReport());
 		return mv;
 	}
@@ -161,260 +265,246 @@ public class ViewReportController {
 			,@RequestParam(required=false) String limit
 			,@RequestParam(required=false) String sort
 			,@RequestParam(required=false) String dir) throws Exception {
-		return executeRunReportDataInner(report, version, start, limit, sort, dir, false);
+		try {
+			MapOutputCollector collector = new MapOutputCollector();
+			collector.includeMetadata = false;
+			executeRunReportDataInner(report, version, start, limit, sort, dir, collector);
+			return (Map<String, ?>) collector.result;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return JsonUtil.getModelMapError(e);
+		}
 	}
 
-	private Map<String,? extends Object> executeRunReportDataInner(Long report, Long version
+	private void executeRunReportDataInner(Long report, Long version
 			,String start
 			,String limit
 			,String sort
 			,String dir
-			, boolean includeMetaData) throws Exception {
-		try{
-			//All Datasets must be in the same dbConfig
-			Long dbConfigId = null;
+			,OutputCollector collector) throws Exception {
+		//All Datasets must be in the same dbConfig
+		Long dbConfigId = null;
 
-			//find report design with given id
-			ReportDesign reportDesign = reportDesignDao.findByPrimaryKey(report, version);
-			List<ReportDataset> datasetList = reportDatasetDao.findAll(reportDesign);
-			List<ReportColumn> columnList = reportColumnDao.findAll(reportDesign);
-			List<ReportFilter> reportFilters = reportFilterDao.findAll(reportDesign.getId(), reportDesign.getVersionId());
+		//find report design with given id
+		ReportDesign reportDesign = reportDesignDao.findByPrimaryKey(report, version);
+		List<ReportDataset> datasetList = reportDatasetDao.findAll(reportDesign);
+		List<ReportColumn> columnList = reportColumnDao.findAll(reportDesign);
+		List<ReportFilter> reportFilters = reportFilterDao.findAll(reportDesign.getId(), reportDesign.getVersionId());
 
-			//Build QUERY
-			///Build SELECT Part
-			StringBuilder querySelectSB = new StringBuilder("Select ");
-			StringBuilder querySelectOnlyAliasSB = new StringBuilder("Select ");
-			boolean firstCol = true;
-			for(ReportColumn rcol : columnList) {
-				if(!firstCol) {
-					querySelectSB.append(", ");
-					querySelectOnlyAliasSB.append(", ");
+		//Build QUERY
+		///Build SELECT Part
+		StringBuilder querySelectSB = new StringBuilder("Select ");
+		StringBuilder querySelectOnlyAliasSB = new StringBuilder("Select ");
+		boolean firstCol = true;
+		for(ReportColumn rcol : columnList) {
+			if(!firstCol) {
+				querySelectSB.append(", ");
+				querySelectOnlyAliasSB.append(", ");
+			}
+			querySelectSB.append(rcol.getDatabaseKey()).append(" AS ").append(rcol.getColumnKey());
+			querySelectOnlyAliasSB.append(rcol.getColumnKey());
+			if(firstCol) {
+				firstCol = false;
+			}
+		}
+		//Build FROM part
+		StringBuilder queryFromSB = new StringBuilder(" From ");
+		boolean firstDS = true;
+		for(ReportDataset ds : datasetList) {
+			if(DBBean.isValidIdentifier(ds.getTableMappingId())) { // is directly bound to table
+				TableMapping table = tableMappingDao.findByPrimaryKey(ds.getTableMappingId());
+				if(!firstDS){
+					queryFromSB.append(", ");
 				}
-				querySelectSB.append(rcol.getDatabaseKey()).append(" AS ").append(rcol.getColumnKey());
-				querySelectOnlyAliasSB.append(rcol.getColumnKey());
-				if(firstCol) {
-					firstCol = false;
+				queryFromSB.append(table.getTableFullName()).append(" t").append(ds.getId());
+				dbConfigId = table.getDbConfigId();
+			} else { //is a report base on report
+				//TODO report based on report must be handled
+			}
+			if(firstDS) {
+				firstDS = false;
+			}
+		}
+		//Build Where part
+		StringBuilder queryWhereSB = new StringBuilder();
+		ReportFilter.ReportFilterOperator oper;
+		boolean firstFilter = true;
+		List<Integer> reportFilterTypes = new ArrayList<Integer>(reportFilters.size());
+		if(reportFilters != null && !reportFilters.isEmpty()) {
+			///////////GENERATING A COLUMN MAP FOR BUILDING FILTERS\\\\\\\\\\\\\\\
+			Map<Long, ColumnMapping> columnMap = new HashMap<Long, ColumnMapping>();
+			List<ReportDataset> reportDatasets = reportDatasetDao.findAll(reportDesign);
+			for(ReportDataset rds : reportDatasets){
+				List<ColumnMapping> columnMappings = columnMappingDao.findAllMapped(rds);
+				for(ColumnMapping cm : columnMappings){
+					columnMap.put(cm.getId(), cm);
 				}
 			}
-			//Build FROM part
-			StringBuilder queryFromSB = new StringBuilder(" From ");
-			boolean firstDS = true;
-			for(ReportDataset ds : datasetList) {
-				if(DBBean.isValidIdentifier(ds.getTableMappingId())) { // is directly bound to table
-					TableMapping table = tableMappingDao.findByPrimaryKey(ds.getTableMappingId());
-					if(!firstDS){
-						queryFromSB.append(", ");
+			/////////////////////////////////////////////////////////////////////////
+			for(ReportFilter filter : reportFilters) {
+				ColumnMapping relatedRCol = columnMap.get(filter.getColumnMappingId());
+				if(relatedRCol != null) {
+					reportFilterTypes.add(relatedRCol.getColDataType());
+					oper = filter.getOperatorObj();
+					if(firstFilter) {
+						queryWhereSB.append(" WHERE ");
+						firstFilter = false;
 					}
-					queryFromSB.append(table.getTableFullName()).append(" t").append(ds.getId());
-					dbConfigId = table.getDbConfigId();
-				} else { //is a report base on report
-					//TODO report based on report must be handled
-				}
-				if(firstDS) {
-					firstDS = false;
+					else {
+						queryWhereSB.append(" AND ");
+					}
+					queryWhereSB.append(" ").append(relatedRCol.getDatabaseKey(filter.getReportDatasetId())).append(" ").append(filter.getOperator()).append(" ");
+
+					if(oper.numberOfOperands == 0) {
+						queryWhereSB.append(oper.operator);
+					} else if(oper.numberOfOperands == 1) {
+						if(filter.isJoinFilter()) {
+							ColumnMapping oper1 = columnMap.get(filter.getOperand1ColumnMappingId());
+							queryWhereSB.append(oper1.getDatabaseKey(filter.getOperand1DatasetId()));
+						} else {
+							queryWhereSB.append("?");
+						}
+					} else if(oper.numberOfOperands == 2) {
+						queryWhereSB.append("? and ?");
+					}
 				}
 			}
-			//Build Where part
-			StringBuilder queryWhereSB = new StringBuilder();
-			ReportFilter.ReportFilterOperator oper;
-			boolean firstFilter = true;
-			List<Integer> reportFilterTypes = new ArrayList<Integer>(reportFilters.size());
-			if(reportFilters != null && !reportFilters.isEmpty()) {
-				///////////GENERATING A COLUMN MAP FOR BUILDING FILTERS\\\\\\\\\\\\\\\
-				Map<Long, ColumnMapping> columnMap = new HashMap<Long, ColumnMapping>();
-				List<ReportDataset> reportDatasets = reportDatasetDao.findAll(reportDesign);
-				for(ReportDataset rds : reportDatasets){
-					List<ColumnMapping> columnMappings = columnMappingDao.findAllMapped(rds);
-					for(ColumnMapping cm : columnMappings){
-						columnMap.put(cm.getId(), cm);
-					}
+		}
+
+		//Build ORDER BY part
+		StringBuilder querySortSB = new StringBuilder();
+		StringBuilder querySortOnlyAliasSB = new StringBuilder();
+		List<ReportColumn> sortCols = new LinkedList<ReportColumn>();
+		for(ReportColumn col : columnList) {
+			if((col.getSortType() != null && (ReportColumn.SORT_TYPE_ASC.equals(col.getSortType()) || ReportColumn.SORT_TYPE_DESC.equals(col.getSortType()))) ||
+					(col.getGroupLevel() != null && col.getGroupLevel() > 0)){
+				sortCols.add(col);
+			}
+		}
+		if(!sortCols.isEmpty()) {
+			querySortSB.append(" ORDER BY ");
+			querySortOnlyAliasSB.append(" ORDER BY ");
+			Collections.sort(sortCols, new ReportColumn.ReportColumnSortOrderComparator());
+			boolean firstSort = true;
+			for(ReportColumn col : sortCols) {
+				if(!firstSort){
+					querySortSB.append(", ");
+					querySortOnlyAliasSB.append(", ");
 				}
-				/////////////////////////////////////////////////////////////////////////
-				for(ReportFilter filter : reportFilters) {
-					ColumnMapping relatedRCol = columnMap.get(filter.getColumnMappingId());
-					if(relatedRCol != null) {
-						reportFilterTypes.add(relatedRCol.getColDataType());
+				querySortSB.append(col.getDatabaseKey()).append(" ");
+				querySortOnlyAliasSB.append(col.getColumnKey()).append(" ");
+				if(col.getGroupLevel() == null){
+					querySortSB.append(col.getSortType() == ReportColumn.SORT_TYPE_DESC ? "DESC" : "ASC");
+					querySortOnlyAliasSB.append(col.getSortType() == ReportColumn.SORT_TYPE_DESC ? "DESC" : "ASC");
+				}
+				if(firstSort) {
+					firstSort = false;
+				}
+			}
+		}
+
+		String querySelect = querySelectSB.toString();
+		String querySelectOnlyAlias = querySelectOnlyAliasSB.toString();
+		String queryFrom = queryFromSB.toString();
+		String queryWhere = queryWhereSB.toString();
+		String querySort = querySortSB.toString();
+		String querySortOnlyAlias = querySortOnlyAliasSB.toString();
+
+
+		//Execute QUERY
+		DbConfig dbConf = dbConfigDao.findByPrimaryKey(dbConfigId);
+		ISQLConnection conn = null;
+		int total = 0;
+		try {
+			conn = dbConf.getConnection();
+			if(conn == null) {
+				throw new ReportExecutionHistoryDaoException(PropertyProvider.get("eurb.app.management.table.dbConfigIsInvalid"));
+			}
+			conn.setReadOnly(true);
+
+			HibernateDialect dialect = dbConf.getDialect();
+
+			Map<String,Object> result;
+			DBBean db = new DBBean(dbConf.getDataSource());
+			String countQuery = dialect.buildCountQuery(querySelect, queryFrom, queryWhere);
+			if(queryWhere.isEmpty()) {
+				db.executeQuery(countQuery);
+			} else {
+				int index = 1;
+				db.prepareStatement(countQuery);
+				for(int i = 0; i < reportFilters.size(); i++) {
+					ReportFilter filter = reportFilters.get(i);
+					int type = reportFilterTypes.get(i);
+					if(!filter.isJoinFilter()) {
 						oper = filter.getOperatorObj();
-						if(firstFilter) {
-							queryWhereSB.append(" WHERE ");
-							firstFilter = false;
+						Object operand1 , operand2;
+						if(type == 2){
+							operand1 = (filter.getOperand1() == null || filter.getOperand1().equals("")) ? null : Integer.parseInt(filter.getOperand1());
+							operand2 = (filter.getOperand2() == null || filter.getOperand2().equals("")) ? null : Integer.parseInt(filter.getOperand2());
 						}
-						else {
-							queryWhereSB.append(" AND ");
+						else{
+							operand1 = filter.getOperand1();
+							operand2 = filter.getOperand2();
 						}
-						queryWhereSB.append(" ").append(relatedRCol.getDatabaseKey(filter.getReportDatasetId())).append(" ").append(filter.getOperator()).append(" ");
-
-						if(oper.numberOfOperands == 0) {
-							queryWhereSB.append(oper.operator);
-						} else if(oper.numberOfOperands == 1) {
-							if(filter.isJoinFilter()) {
-								ColumnMapping oper1 = columnMap.get(filter.getOperand1ColumnMappingId());
-								queryWhereSB.append(oper1.getDatabaseKey(filter.getOperand1DatasetId()));
-							} else {
-								queryWhereSB.append("?");
-							}
+						if(oper.numberOfOperands == 1) {
+							db.pstmt.setObject(index++, operand1);
 						} else if(oper.numberOfOperands == 2) {
-							queryWhereSB.append("? and ?");
+							db.pstmt.setObject(index++, operand1);
+							db.pstmt.setObject(index++, operand2);
 						}
 					}
 				}
+				db.executePrepared();
+			}
+			if(db.result.next()) {
+				total = db.result.getInt(1);
 			}
 
-			//Build ORDER BY part
-			StringBuilder querySortSB = new StringBuilder();
-			StringBuilder querySortOnlyAliasSB = new StringBuilder();
-			List<ReportColumn> sortCols = new LinkedList<ReportColumn>();
-			for(ReportColumn col : columnList) {
-				if((col.getSortType() != null && (ReportColumn.SORT_TYPE_ASC.equals(col.getSortType()) || ReportColumn.SORT_TYPE_DESC.equals(col.getSortType()))) ||
-						(col.getGroupLevel() != null && col.getGroupLevel() > 0)){
-					sortCols.add(col);
-				}
-			}
-			if(!sortCols.isEmpty()) {
-				querySortSB.append(" ORDER BY ");
-				querySortOnlyAliasSB.append(" ORDER BY ");
-				Collections.sort(sortCols, new ReportColumn.ReportColumnSortOrderComparator());
-				boolean firstSort = true;
-				for(ReportColumn col : sortCols) {
-					if(!firstSort){
-						querySortSB.append(", ");
-						querySortOnlyAliasSB.append(", ");
-					}
-					querySortSB.append(col.getDatabaseKey()).append(" ");
-					querySortOnlyAliasSB.append(col.getColumnKey()).append(" ");
-					if(col.getGroupLevel() == null){
-						querySortSB.append(col.getSortType() == ReportColumn.SORT_TYPE_DESC ? "DESC" : "ASC");
-						querySortOnlyAliasSB.append(col.getSortType() == ReportColumn.SORT_TYPE_DESC ? "DESC" : "ASC");
-					}
-					if(firstSort) {
-						firstSort = false;
-					}
-				}
+			String finalQuery;
+			int counter = 1;
+			if(start == null || limit == null) {
+				finalQuery = dialect.buildQuery(querySelect,queryFrom,queryWhere, querySort);
+			} else {
+				finalQuery = dialect.buildQuery(conn, datasetList, querySelectOnlyAlias, querySelect,queryFrom,queryWhere, querySort, querySortOnlyAlias, Integer.parseInt(start), Integer.parseInt(limit));
+				counter += Integer.parseInt(start);
 			}
 
-			String querySelect = querySelectSB.toString();
-			String querySelectOnlyAlias = querySelectOnlyAliasSB.toString();
-			String queryFrom = queryFromSB.toString();
-			String queryWhere = queryWhereSB.toString();
-			String querySort = querySortSB.toString();
-			String querySortOnlyAlias = querySortOnlyAliasSB.toString();
-
-
-			//Execute QUERY
-			DbConfig dbConf = dbConfigDao.findByPrimaryKey(dbConfigId);
-			ISQLConnection conn = null;
-			List<Map<String, Object>> resultList = new LinkedList<Map<String,Object>>();
-			int total = 0;
-			try {
-				conn = dbConf.getConnection();
-				if(conn == null) {
-					throw new ReportExecutionHistoryDaoException(PropertyProvider.get("eurb.app.management.table.dbConfigIsInvalid"));
-				}
-				conn.setReadOnly(true);
-
-				HibernateDialect dialect = dbConf.getDialect();
-
-				Map<String,Object> result;
-				DBBean db = new DBBean(dbConf.getDataSource());
-				String countQuery = dialect.buildCountQuery(querySelect, queryFrom, queryWhere);
-				if(queryWhere.isEmpty()) {
-					db.executeQuery(countQuery);
-				} else {
-					int index = 1;
-					db.prepareStatement(countQuery);
-					for(int i = 0; i < reportFilters.size(); i++) {
-						ReportFilter filter = reportFilters.get(i);
-						int type = reportFilterTypes.get(i);
-						if(!filter.isJoinFilter()) {
-							oper = filter.getOperatorObj();
-							Object operand1 , operand2;
-							if(type == 2){
-								operand1 = (filter.getOperand1() == null || filter.getOperand1().equals("")) ? null : Integer.parseInt(filter.getOperand1());
-								operand2 = (filter.getOperand2() == null || filter.getOperand2().equals("")) ? null : Integer.parseInt(filter.getOperand2());
-							}
-							else{
-								operand1 = filter.getOperand1();
-								operand2 = filter.getOperand2();
-							}
-							if(oper.numberOfOperands == 1) {
-								db.pstmt.setObject(index++, operand1);
-							} else if(oper.numberOfOperands == 2) {
-								db.pstmt.setObject(index++, operand1);
-								db.pstmt.setObject(index++, operand2);
-							}
+			if(queryWhere.isEmpty()) {
+				db.executeQuery(finalQuery);
+			} else {
+				int index = 1;
+				db.prepareStatement(finalQuery);
+				for(int i = 0; i < reportFilters.size(); i++) {
+					ReportFilter filter = reportFilters.get(i);
+					int type = reportFilterTypes.get(i);
+					if(!filter.isJoinFilter()) {
+						oper = filter.getOperatorObj();
+						Object operand1 , operand2;
+						if(type == 2){
+							operand1 = (filter.getOperand1() == null || filter.getOperand1().equals("")) ? null : Integer.parseInt(filter.getOperand1());
+							operand2 = (filter.getOperand2() == null || filter.getOperand2().equals("")) ? null : Integer.parseInt(filter.getOperand2());
+						}
+						else{
+							operand1 = filter.getOperand1();
+							operand2 = filter.getOperand2();
+						}
+						if(oper.numberOfOperands == 1) {
+							db.pstmt.setObject(index++, operand1);
+						} else if(oper.numberOfOperands == 2) {
+							db.pstmt.setObject(index++, operand1);
+							db.pstmt.setObject(index++, operand2);
 						}
 					}
-					db.executePrepared();
 				}
-				if(db.result.next()) {
-					total = db.result.getInt(1);
-				}
-
-				String finalQuery;
-				int counter = 1;
-				if(start == null || limit == null) {
-					finalQuery = dialect.buildQuery(querySelect,queryFrom,queryWhere, querySort);
-				} else {
-					finalQuery = dialect.buildQuery(conn, datasetList, querySelectOnlyAlias, querySelect,queryFrom,queryWhere, querySort, querySortOnlyAlias, Integer.parseInt(start), Integer.parseInt(limit));
-					counter += Integer.parseInt(start);
-				}
-
-				if(queryWhere.isEmpty()) {
-					db.executeQuery(finalQuery);
-				} else {
-					int index = 1;
-					db.prepareStatement(finalQuery);
-					for(int i = 0; i < reportFilters.size(); i++) {
-						ReportFilter filter = reportFilters.get(i);
-						int type = reportFilterTypes.get(i);
-						if(!filter.isJoinFilter()) {
-							oper = filter.getOperatorObj();
-							Object operand1 , operand2;
-							if(type == 2){
-								operand1 = (filter.getOperand1() == null || filter.getOperand1().equals("")) ? null : Integer.parseInt(filter.getOperand1());
-								operand2 = (filter.getOperand2() == null || filter.getOperand2().equals("")) ? null : Integer.parseInt(filter.getOperand2());
-							}
-							else{
-								operand1 = filter.getOperand1();
-								operand2 = filter.getOperand2();
-							}
-							if(oper.numberOfOperands == 1) {
-								db.pstmt.setObject(index++, operand1);
-							} else if(oper.numberOfOperands == 2) {
-								db.pstmt.setObject(index++, operand1);
-								db.pstmt.setObject(index++, operand2);
-							}
-						}
-					}
-					db.executePrepared();
-				}
-				while(db.result.next()) {
-					result = new HashMap<String, Object>();
-					result.put("id", counter++);
-					for(ReportColumn col : columnList) {
-						result.put(col.getColumnKey(), db.result.getObject(col.getColumnKey()));
-					}
-					resultList.add(result);
-				}
-			} catch (Exception e) {
-				throw e;
-			} finally {
-				if(conn != null) {
-					conn.close();
-				}
+				db.executePrepared();
 			}
-
-			Map<String,Object> result = JsonUtil.getSuccessfulMap(resultList, total);
-			if(includeMetaData) {
-				result.put("reportDesign", reportDesign);
-				result.put("datasetList", datasetList);
-				result.put("columnList", columnList);
-				result.put("reportFilters", reportFilters);
-			}
-			return result;
+			collector.collect(db, counter, total, reportDesign, datasetList, columnList, reportFilters);
 		} catch (Exception e) {
-			e.printStackTrace();
-			return JsonUtil.getModelMapError(e);
+			throw e;
+		} finally {
+			if(conn != null) {
+				conn.close();
+			}
 		}
 	}
 

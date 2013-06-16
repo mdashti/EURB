@@ -387,6 +387,9 @@
 .icon-excel {
 	background-image:url(../../../img/icon/export/excel.png) ! important;
 }
+.icon-csv {
+	background-image:url(../../../img/icon/export/csv.png) ! important;
+}
 .icon-word {
 	background-image:url(../../../img/icon/export/word.png) ! important;
 }
