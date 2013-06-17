@@ -7,6 +7,7 @@ import java.util.TimeZone;
 import com.ghasemkiani.util.DateFields;
 import com.ghasemkiani.util.SimplePersianCalendar;
 import com.ibm.icu.util.Calendar;
+import com.sharifpro.db.util.StringUtilities;
 
 public class DateUtil {
 	static TimeZone IRAN_TIME_ZONE = TimeZone.getTimeZone("+0330");
@@ -82,6 +83,13 @@ public class DateUtil {
 						.get(SimplePersianCalendar.YEAR) - 1),
 				c.get(SimplePersianCalendar.MONTH) + 1,
 				c.get(SimplePersianCalendar.DAY_OF_MONTH) };
+	}
+	
+	public static String getCurrentDateTimeString() {
+		Date now = new Date();
+        Calendar calendar = Calendar.getInstance();
+		calendar.setTime(now);
+		return DateUtil.convertGregorianToPersianString(now) + " " + StringUtilities.toTwoDigitNum(calendar.get(Calendar.HOUR_OF_DAY)) + ":" + StringUtilities.toTwoDigitNum(calendar.get(Calendar.MINUTE));
 	}
 	
 	public static void main(String[] args) {

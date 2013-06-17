@@ -9,14 +9,16 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.TextAlignment;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFHeader;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
-
 import com.sharifpro.eurb.builder.model.ReportColumn;
 import com.sharifpro.eurb.builder.model.ReportDesign;
+import com.sharifpro.util.DateUtil;
+import com.sharifpro.util.FarsiUtil;
 
 public class ViewWordReport extends AbstractWordView {
 
@@ -29,13 +31,26 @@ public class ViewWordReport extends AbstractWordView {
 		List<ReportColumn> columnList = (List<ReportColumn>) model.get("columnList");
 		List<Map<String, Object>> resultList = (List<Map<String, Object>>) model.get("data");
 
-		XWPFParagraph title = document.getParagraphs().get(0);
+//		XWPFHeader header = new XWPFHeader(document, CTHdrFtr.Factory.newInstance());
+//		header.
+		
+		XWPFHeader header = document.getHeaderFooterPolicy().getDefaultHeader();
+		List<XWPFTable> table = header.getTables();
+		for (XWPFTable xwpfTable : table) {
+            xwpfTable.getRow(0).getCell(0).setText(reportDesign.getName());
+            xwpfTable.getRow(1).getCell(0).setText(reportDesign.getDescription());
+            xwpfTable.getRow(0).getCell(1).setText("");//Here we should put group (if available)
+            xwpfTable.getRow(1).getCell(1).setText(FarsiUtil.convertDigits(DateUtil.getCurrentDateTimeString()));
+            //document.setTable(0, xwpfTable);
+            //header.insertTable(1, xwpfTable);
+        }
+		/*XWPFParagraph title = document.getParagraphs().get(0);
 		title.setAlignment(ParagraphAlignment.CENTER);
 		title.setVerticalAlignment(TextAlignment.CENTER);
 		//title.setWordWrap(true);
 		XWPFRun titleRun = title.createRun();
 		titleRun.setText(reportDesign.getName());
-		titleRun.setFontSize(14);
+		titleRun.setFontSize(14);*/
 
 		XWPFTable s = document.getTables().get(0);
 		// declare a row object reference
