@@ -259,6 +259,21 @@ public class ViewReportController {
 		return mv;
 	}
 
+	@RequestMapping(value="/builder/report/preview-report{report}-v{version}-{year}-{month}-{day}-{min}-{sec}.docx")
+	public ModelAndView executeRunReportWordPreview(@PathVariable Long report, @PathVariable Long version, @PathVariable Long year, @PathVariable Long month, @PathVariable Long day, @PathVariable Long min, @PathVariable Long sec) throws Exception {
+		ModelAndView mv = new ModelAndView();
+		try {
+			MapOutputCollector collector = new MapOutputCollector();
+			executeRunReportDataInner(report, version, "0", "100", null, null, collector);
+			mv.addAllObjects((Map<String, ?>) collector.result);
+		} catch (Exception e) {
+			e.printStackTrace();
+			mv.addAllObjects(JsonUtil.getModelMapError(e));
+		}
+		mv.setView(new com.sharifpro.eurb.builder.view.ViewWordReport());
+		return mv;
+	}
+
 	@RequestMapping(value="/builder/report/get-reportdata{report}-v{version}.spy")
 	public @ResponseBody Map<String,? extends Object> executeRunReportData(@PathVariable Long report, @PathVariable Long version
 			,@RequestParam(required=false) String start

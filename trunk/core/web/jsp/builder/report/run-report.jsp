@@ -32,6 +32,7 @@
 			EURB.RunReport.exportAllReportToCSV = '<spring:message code="eurb.app.builder.runreport.grid.exportAllReportToCSV" />';
 			EURB.RunReport.exportAllReportToExcel = '<spring:message code="eurb.app.builder.runreport.grid.exportAllReportToExcel" />';
 			EURB.RunReport.exportAllReportToWord = '<spring:message code="eurb.app.builder.runreport.grid.exportAllReportToWord" />';
+			EURB.RunReport.previewReportToWord = '<spring:message code="eurb.app.builder.runreport.grid.previewReportToWord" />';
 			EURB.RunReport.EmptyGroupField = '<spring:message code="eurb.app.builder.runreport.group.empty" />';
 			EURB.RunReport.ChartAlert = '<spring:message code="eurb.app.builder.runreport.chart.alert" />';
 			EURB.RunReport.exportCharts = '<spring:message code="eurb.app.builder.runreport.chart.exportAll" />';

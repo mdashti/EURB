@@ -55,11 +55,7 @@ EURB.RunReport.Grid = Ext.extend(Ext.grid.GridPanel, {
 				 scope:this
 				,click:{fn: function() { window.location.href = EURB.baseURL+'builder/report/run-report'+EURB.RunReport.design+'-v'+EURB.RunReport.version+'.spy'+(EURB.isFullScreen ? "" : "?menuEnabled=false&headerEnabled=false&statusEnabled=false"); },buffer:200}
 			}
-		}, '->'/*,{
-			xtype: 'exportbutton'
-			,component: this
-			,store: EURB.RunReport.store
-		}*/, {
+		}, {
 			 text:EURB.RunReport.printCurrentPage
 			,iconCls:'icon-print'
 			,tooltip: {
@@ -70,6 +66,21 @@ EURB.RunReport.Grid = Ext.extend(Ext.grid.GridPanel, {
 				,click:{fn: function() { Ext.ux.GridPrinter.print(EURB.RunReport.runReportGrid) },buffer:200}
 			}
 		}, {
+			 text:EURB.RunReport.previewReportToWord
+			,iconCls:'icon-preview'
+			,tooltip: {
+				text: EURB.RunReport.previewReportToWord,
+				anchor: 'top'
+			}
+			,listeners:{
+				 scope:this
+				,click:{fn: function() { window.location.href = EURB.baseURL+'builder/report/preview-report'+EURB.RunReport.design+'-v'+EURB.RunReport.version+(new Date().format('-B-Q-R-G-i'))+'.docx'; },buffer:200}
+			}
+		}, '->'/*,{
+			xtype: 'exportbutton'
+			,component: this
+			,store: EURB.RunReport.store
+		}*/, {
 			 text:EURB.RunReport.exportAllReportToCSV
 			,iconCls:'icon-csv'
 			,tooltip: {
