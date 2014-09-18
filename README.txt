@@ -1,6 +1,6 @@
-####################################################################################################
+########################################################################################
 For preparing development environment:
-####################################################################################################
+########################################################################################
 1- Download and install jdk1.6.0_16
 	- set Environment Variable (JAVA_HOME) to jdk extracted path
 	- set Environment Variable (CLASSPATH) to .
@@ -22,17 +22,17 @@ For preparing development environment:
 	- "build-jsp" to copy all JSP files only
 	- "clean" to clean the project directory in TOMCAT
 
-####################################################################################################
+########################################################################################
 To DEBUG:
-####################################################################################################
+########################################################################################
 1- add this line at top of TOMCAT_HOME/bin/catalina.bat (after @echo off)
 	- set JAVA_OPTS=%JAVA_OPTS% -Xdebug -Xrunjdwp:transport=dt_socket,address=8787,server=y,suspend=n
 2- in Eclipse go to run > Debug Configurations... and then double-click on Remote Java Application
 	- then config ip and port of debug server
 
-####################################################################################################
+########################################################################################
 Tips:
-####################################################################################################
+########################################################################################
 1- for I18N and other purposes, we should use resource bundle for every string shown to user
 	- core/conf/WEB-INF/messages/messages.properties (for now it is only for persian)
 	- we should use http://sourceforge.net/projects/eclipse-rbe/ plugin to write and extend this file
