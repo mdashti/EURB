@@ -14,7 +14,7 @@ import com.sharifpro.transaction.annotation.TransactionalReadWrite;
 import com.sharifpro.util.PropertyProvider;
 import com.sharifpro.util.SessionManager;
 
-import edu.sharif.sjp.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.List;
 import java.sql.ResultSet;
@@ -77,7 +77,7 @@ public class DbConfigDaoImpl extends AbstractDAO implements ParameterizedRowMapp
 	public void update(DbConfigPk pk, DbConfig dto) throws DbConfigDaoException
 	{
 		DaoFactory.createPersistableObjectDao().update(pk);
-		if(StringUtil.isEmpty(dto.getPassword())) {
+		if(StringUtils.isEmpty(dto.getPassword())) {
 			getJdbcTemplate().update("UPDATE " + getTableName() + " SET name = ?, driver_class = ?, driver_url = AES_ENCRYPT(?, concat('durlpwd', ?)), username = AES_ENCRYPT(?, concat('usrpwd', ?)), test_query = ?, record_status = 'A' WHERE id = ?",dto.getName(),dto.getDriverClass(),dto.getDriverUrl(),pk.getId(),dto.getUsername(),pk.getId(),dto.getTestQuery(),pk.getId());
 		} else {
 			getJdbcTemplate().update("UPDATE " + getTableName() + " SET name = ?, driver_class = ?, driver_url = AES_ENCRYPT(?, concat('durlpwd', ?)), username = AES_ENCRYPT(?, concat('usrpwd', ?)), password = AES_ENCRYPT(?, concat('pspwd', ?)), test_query = ?, record_status = 'A' WHERE id = ?",dto.getName(),dto.getDriverClass(),dto.getDriverUrl(),pk.getId(),dto.getUsername(),pk.getId(),dto.getPassword(),pk.getId(),dto.getTestQuery(),pk.getId());
