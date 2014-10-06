@@ -138,7 +138,10 @@ EURB.GroupAggregation.window =  new Ext.Window({
         			url:EURB.GroupAggregation.storeAggregationAction,
         			success:function(form, action){
         				EURB.GroupAggregation.window.hide();		        		
-        			}
+        			},
+                    failure: function(form, action) {
+                    	Ext.Msg.alert(Ext.MessageBox.title.error, EURB.saveError).setIcon(Ext.Msg.ERROR);
+                    }
         		});
         	}
         }

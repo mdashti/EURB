@@ -56,7 +56,7 @@ public class GroupAggregationController {
 
 	@RequestMapping(value="/builder/report/groupAggregationStore.spy")
 	public @ResponseBody Map<String,? extends Object> store( @RequestParam(required=false) Long id, @RequestParam(required=true) Long parentColumnId,
-			@RequestParam(required=true) Long aggregatedColumnMappingId, @RequestParam(required=true) Long aggregatedColumnDatasetId,
+			@RequestParam(required=true) String aggregatedColumnMappingId, @RequestParam(required=true) Long aggregatedColumnDatasetId,
 			@RequestParam(required=true) String aggregationFunction, @RequestParam(required=true) int place) throws Exception {
 
 		try{
@@ -71,9 +71,16 @@ public class GroupAggregationController {
 			else{
 				groupAggregation = groupAggregationDao.findByPrimaryKey(id);
 			}
+			
+			Long aggregatedColumnMappingIdLong = null;
+			if(aggregatedColumnMappingId.contains("-")) {
+				aggregatedColumnMappingIdLong = Long.parseLong(aggregatedColumnMappingId.substring(aggregatedColumnMappingId.indexOf('-')+1));
+			} else {
+				aggregatedColumnMappingIdLong = Long.parseLong(aggregatedColumnMappingId);
+			}
 			groupAggregation.setParentColumnId(parentColumnId);
 			groupAggregation.setAggregatedColumnDatasetId(aggregatedColumnDatasetId);
-			groupAggregation.setAggregatedColumnMappingId(aggregatedColumnMappingId);
+			groupAggregation.setAggregatedColumnMappingId(aggregatedColumnMappingIdLong);
 			groupAggregation.setAggregationFunction(aggregationFunction);
 			groupAggregation.setPlace(place);
 			if(id == null || id == 0) {
