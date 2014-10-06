@@ -106,7 +106,7 @@ EURB.Table.TblGrid = Ext.extend(Ext.grid.GridPanel, {
              title:EURB.addEdit+' '+EURB.appMenu.table
             ,iconCls:'icon-edit-record'
             ,columnCount:1
-            ,ignoreFields:{id:true, dbConfigId:true, schema:true}
+            ,ignoreFields:{id:true, dbConfigId:true, schema:true, accessPreventDel:true, accessPreventEdit: true, accessPreventExecute: true, accessPreventSharing: true}
             ,readonlyFields:{mappedTypeName:true, tableName: true, catalog:true}
             //,disabledFields:{name:true}
             ,formConfig:{
