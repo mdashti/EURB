@@ -533,12 +533,20 @@ public class DbConfig extends PersistableObject implements Serializable
 		return accessPreventDel;
 	}
 
+	public void setAccessPreventDel(Boolean accessPreventDel) {
+		this.accessPreventDel = accessPreventDel == null ? false : true;
+	}
+
 	public void setAccessPreventDel(boolean accessPreventDel) {
 		this.accessPreventDel = accessPreventDel;
 	}
 
 	public boolean isAccessPreventEdit() {
 		return accessPreventEdit;
+	}
+
+	public void setAccessPreventEdit(Boolean accessPreventEdit) {
+		this.accessPreventEdit = accessPreventEdit == null ? false : true;
 	}
 
 	public void setAccessPreventEdit(boolean accessPreventEdit) {
@@ -549,12 +557,20 @@ public class DbConfig extends PersistableObject implements Serializable
 		return accessPreventExecute;
 	}
 
+	public void setAccessPreventExecute(Boolean accessPreventExecute) {
+		this.accessPreventExecute = accessPreventExecute == null ? false : true;
+	}
+
 	public void setAccessPreventExecute(boolean accessPreventExecute) {
 		this.accessPreventExecute = accessPreventExecute;
 	}
 
 	public boolean isAccessPreventSharing() {
 		return accessPreventSharing;
+	}
+
+	public void setAccessPreventSharing(Boolean accessPreventSharing) {
+		this.accessPreventSharing = accessPreventSharing == null ? false : true;
 	}
 
 	public void setAccessPreventSharing(boolean accessPreventSharing) {

@@ -11,10 +11,10 @@ EURB.DBConfig.store = new Ext.data.Store({
 			,{name:'driverUrl', type:'string'}
 			,{name:'username', type:'string'}
 			,{name:'password', type:'string'}
-			,{name:'accessPreventDel', type:'boolean'}
-			,{name:'accessPreventEdit', type:'boolean'}
-			,{name:'accessPreventExecute', type:'boolean'}
-			,{name:'accessPreventSharing', type:'boolean'}
+			,{name:'accessPreventDel', type:'boolean', defaultValue: false}
+			,{name:'accessPreventEdit', type:'boolean', defaultValue: false}
+			,{name:'accessPreventExecute', type:'boolean', defaultValue: false}
+			,{name:'accessPreventSharing', type:'boolean', defaultValue: false}
 			/*,{name:'testQuery', type:'string'}*/
 		]
 	})
@@ -291,7 +291,7 @@ EURB.DBConfig.DBGrid = Ext.extend(Ext.grid.GridPanel, {
         if(store.recordType) {
             var rec = new store.recordType({newRecord:true});
             rec.fields.each(function(f) {
-                rec.data[f.name] = f.defaultValue || null;
+                rec.data[f.name] = f.defaultValue || (f.defaultValue === false ? false : null);
             });
             rec.commit();
             store.add(rec);

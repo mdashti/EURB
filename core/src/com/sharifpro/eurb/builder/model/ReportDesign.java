@@ -478,6 +478,10 @@ public class ReportDesign extends PersistableObject implements Serializable
 		return accessPreventDel;
 	}
 
+	public void setAccessPreventDel(Boolean accessPreventDel) {
+		this.accessPreventDel = accessPreventDel == null ? false : true;
+	}
+
 	public void setAccessPreventDel(boolean accessPreventDel) {
 		this.accessPreventDel = accessPreventDel;
 	}
@@ -490,8 +494,16 @@ public class ReportDesign extends PersistableObject implements Serializable
 		this.accessPreventEdit = accessPreventEdit;
 	}
 
+	public void setAccessPreventEdit(Boolean accessPreventEdit) {
+		this.accessPreventEdit = accessPreventEdit == null ? false : true;
+	}
+
 	public boolean isAccessPreventExecute() {
 		return accessPreventExecute;
+	}
+
+	public void setAccessPreventExecute(Boolean accessPreventExecute) {
+		this.accessPreventExecute = accessPreventExecute == null ? false : true;
 	}
 
 	public void setAccessPreventExecute(boolean accessPreventExecute) {
@@ -500,6 +512,10 @@ public class ReportDesign extends PersistableObject implements Serializable
 
 	public boolean isAccessPreventSharing() {
 		return accessPreventSharing;
+	}
+
+	public void setAccessPreventSharing(Boolean accessPreventSharing) {
+		this.accessPreventSharing = accessPreventSharing == null ? false : true;
 	}
 
 	public void setAccessPreventSharing(boolean accessPreventSharing) {
