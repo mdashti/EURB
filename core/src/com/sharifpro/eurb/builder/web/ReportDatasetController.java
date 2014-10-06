@@ -96,7 +96,8 @@ public class ReportDatasetController {
 	}
 
 	@RequestMapping(value="/builder/report/reportDatasetRemove.spy")
-	public @ResponseBody Map<String,? extends Object> delete(@RequestParam Object data) throws Exception {
+	public @ResponseBody Map<String,? extends Object> delete(@RequestParam Object data, @RequestParam(required=true) Long reportDesign
+			, @RequestParam(required=true) Long reportVersion) throws Exception {
 
 		try{
 			List<Integer> deleteIds = jsonUtil.getListFromRequest(data, Integer.class);
@@ -105,6 +106,12 @@ public class ReportDatasetController {
 				pkList.add(new ReportDatasetPk(new Long(id)));
 			}
 			reportDatasetDao.deleteAll(pkList);
+			ReportDesign report = reportDesignDao.findByPrimaryKey(Long.valueOf(reportDesign), Long.valueOf(reportVersion));
+			int totalCount = reportDatasetDao.countAll(report);
+			if(totalCount == 0) {
+				report.setDbConfigId(null);
+				reportDesignDao.updateCurrentVersion(report.createPk(), report);
+			}
 			
 			return JsonUtil.getSuccessfulMapAfterStore(deleteIds);
 

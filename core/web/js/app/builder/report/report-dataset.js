@@ -396,7 +396,9 @@ EURB.ReportDataset.DatasetGrid = Ext.extend(Ext.grid.EditorGridPanel, {
 					,scope:this
 					,params:{
 						cmd: 'deleteData',
-						data:Ext.encode(data)
+						data:Ext.encode(data),
+						reportDesign : EURB.ReportDesign.selectedDesign,
+						reportVersion: EURB.ReportDesign.selectedVersion
 					}
 				};
 				Ext.Ajax.request(o);
