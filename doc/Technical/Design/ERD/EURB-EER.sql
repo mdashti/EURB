@@ -990,6 +990,15 @@ INSERT INTO `eurb`.`users` (`id`, `username`, `password`, `enabled`) VALUES (100
 COMMIT;
 
 -- -----------------------------------------------------
+-- Data for table `eurb`.`acl_sid`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `eurb`;
+INSERT INTO `eurb`.`acl_sid` (`id`, `principal`, `sid`) VALUES ('1', '1', 'admin'); 
+
+COMMIT;
+
+-- -----------------------------------------------------
 -- Data for table `eurb`.`persistable_object`
 -- -----------------------------------------------------
 START TRANSACTION;

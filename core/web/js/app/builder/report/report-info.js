@@ -8,7 +8,9 @@ EURB.ReportDesign.categoryCombo = new Ext.form.ComboBox({
 	anchor:'100%',  // anchor width by percentage
 	store: EURB.ReportDesign.categoryStore,
 	valueField: 'id',
-	displayField: 'name'
+	displayField: 'name',
+	blankText: EURB.PleaseSelect,
+	valueNotFoundText: EURB.PleaseSelect
 });
 			
 
@@ -67,7 +69,10 @@ EURB.ReportDesign.InfoForm = new Ext.form.FormPanel({
 		        			success:function(form, action){
 		        				EURB.ReportDesign.selectedVersion = action.result.affectedIds[0][1];
 		        				EURB.ReportDesign.InfoForm.getForm().load({url:EURB.ReportDesign.searchAction, params:{reportDesign : EURB.ReportDesign.selectedDesign,reportVersion: EURB.ReportDesign.selectedVersion}} );
-		        			}
+		        			},
+	                        failure: function(form, action) {
+	                        	Ext.Msg.alert(Ext.MessageBox.title.error, EURB.saveError).setIcon(Ext.Msg.ERROR);
+	                        }
 		        		});
 		        	}
 		        }

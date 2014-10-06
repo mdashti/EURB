@@ -255,6 +255,9 @@ public class ReportDesignDaoImpl extends AbstractDAO implements ParameterizedRow
 		dto.setIsCurrent( rs.getBoolean( ++i ) );
 		dto.setRecordStatusString( rs.getString( ++i ) );
 		dto.setDbConfigId( new Long( rs.getLong( ++i ) ) );
+		if(rs.wasNull()) {
+			dto.setDbConfigId(null);
+		}
 		return dto;
 	}
 

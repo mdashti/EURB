@@ -204,7 +204,12 @@ public class ReportDesignController {
 			reportDesign.setId(Long.valueOf(id));
 			reportDesign.setVersionId(Long.valueOf(versionId));
 			reportDesign.setName(name);
-			reportDesign.setCategoryId(Long.valueOf(categoryId));
+			try {
+				long catId = Long.valueOf(categoryId);
+				if(catId > 0){
+					reportDesign.setCategoryId(catId);
+				}
+			}catch (Exception e) {}
 			reportDesign.setDescription(description);
 
 			List<Object[]> insertIds = new ArrayList<Object[]>(1);
