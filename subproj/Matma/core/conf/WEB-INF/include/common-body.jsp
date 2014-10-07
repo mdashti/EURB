@@ -112,6 +112,7 @@
 		EURB.disableRecord = '<spring:message code="eurb.disableRecord" />';
 		EURB.enableRecord = '<spring:message code="eurb.enableRecord" />';
 		EURB.saveRecords = '<spring:message code="eurb.saveRecords" />';
+		EURB.saveError = '<spring:message code="eurb.saveError" />';
 		EURB.unknownError = '<spring:message code="eurb.unknownError" />';
 		EURB.unableToDecodeJSON = '<spring:message code="eurb.unableToDecodeJSON" />';
 		EURB.areYouSureToDelTitle = '<spring:message code="eurb.areYouSureToDelTitle" />';
@@ -130,7 +131,8 @@
 		EURB.editAggregation = '<spring:message code="eurb.editAggregation" />';
 		EURB.editChartAxis = '<spring:message code="eurb.editChartAxis" />';
 		EURB.expandAll = '<spring:message code="eurb.expandAll" />';
-		
+		EURB.PleaseSelect = '<spring:message code="eurb.PleaseSelect" />';
+
 		EURB.appMenu = {};
 		EURB.appMenu.homepage = '<spring:message code="eurb.app.menu.homepage" />';
 		EURB.appMenu.dbConfig = '<spring:message code="eurb.app.menu.management.db" />';
