@@ -8,8 +8,8 @@
 <% String resourcesUrl = request.getParameter("resourcesUrl"); %>
 <% String baseUrl = request.getParameter("baseUrl"); %>
 <% boolean menuEnabled = !"false".equals(request.getParameter("menuEnabled")); %>
-<% boolean statusEnabled = !"false".equals(request.getParameter("statusEnabled")); %>
-<% boolean headerEnabled = !"false".equals(request.getParameter("headerEnabled")); %>
+<% boolean statusEnabled = "false"; /*!"false".equals(request.getParameter("statusEnabled"));*/ %>
+<% boolean headerEnabled = "false"; /*!"false".equals(request.getParameter("headerEnabled"));*/ %>
 		<div id="loading-mask" style=""></div>
 		<div id="loading">
 			<div class="loading-indicator">
